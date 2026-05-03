@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #059669;
+      text-align: center;
+    }
+    .success {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎉 SUCCESS! Dashboard is Working!</h1>
+    <div class="success">
+      <strong>Authentication is working perfectly!</strong><br>
+      You are successfully logged in and can access protected pages.
+    </div>
+    <p><strong>User Email:</strong> <span id="userEmail">Loading...</span></p>
+    <p><strong>User Role:</strong> <span id="userRole">Loading...</span></p>
+    <p><strong>Profile Status:</strong> <span id="profileStatus">Loading...</span></p>
+    
+    <div style="margin-top: 30px; text-align: center;">
+      <a href="dashboard.html" style="background: #059669; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 5px;">Go to Real Dashboard</a>
+      <a href="cmo-requirements.html" style="background: #dc2626; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 5px;">CMO Requirements</a>
+      <button onclick="logout()" style="background: #6b7280; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 5px; cursor: pointer;">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    // Load user data
+    async function loadUserData() {
+      try {
+        const response = await fetch('/api/student/me', {
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('userEmail').textContent = data.user.email;
+          document.getElementById('userRole').textContent = data.user.role;
+          document.getElementById('profileStatus').textContent = data.user.profile_status;
+        } else {
+          document.getElementById('userEmail').textContent = 'Error loading data';
+        }
+      } catch (error) {
+        document.getElementById('userEmail').textContent = 'Error: ' + error.message;
+      }
+    }
+
+    async function logout() {
+      try {
+        const response = await fetch('/api/student/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          window.location.href = '/student/login.html';
+        }
+      } catch (error) {
+        alert('Logout failed');
+      }
+    }
+
+    // Load data on page load
+    loadUserData();
+  </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Profile - NSTPConnect</title>
+  <link rel="stylesheet" href="css/student-profile.css?v=5">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="brutal-grid">
+      <!-- Header -->
+      <header class="brutal-header">
+        <h1 class="brutal-title">NSTPConnect</h1>
+        <p class="brutal-subtitle">Edit Your Profile</p>
+      </header>
+
+      <!-- Main Content -->
+      <main class="brutal-main">
+        <div class="brutal-form-container">
+          <div class="brutal-form-header">
+            <h2 class="brutal-form-title">Edit Student Profile</h2>
+            <p class="brutal-form-description">Update your profile information below</p>
+          </div>
+
+          <form id="editProfileForm" class="brutal-form">
+            <!-- Personal Information Section -->
+            <section class="brutal-section">
+              <div class="brutal-section-header">
+                <h3 class="brutal-section-title">Personal Information</h3>
+              </div>
+              <div class="brutal-section-content">
+                <div class="brutal-form-grid">
+                  <div class="brutal-form-group">
+                    <label for="fullName" class="brutal-label required">Full Name</label>
+                    <input type="text" id="fullName" name="full_name" class="brutal-input" required>
+                  </div>
+
+                  <div class="brutal-form-row">
+                    <div class="brutal-form-group">
+                      <label for="studentNumber" class="brutal-label required">Student Number</label>
+                      <input type="text" id="studentNumber" name="student_number" class="brutal-input" required>
+                    </div>
+                    <div class="brutal-form-group">
+                      <label for="contactNumber" class="brutal-label required">Contact Number</label>
+                      <input type="tel" id="contactNumber" name="contact_number" class="brutal-input" placeholder="09XXXXXXXXX" required>
+                    </div>
+                  </div>
+
+                  <div class="brutal-form-row">
+                    <div class="brutal-form-group">
+                      <label for="birthdate" class="brutal-label">Birthdate</label>
+                      <input type="date" id="birthdate" name="birthdate" class="brutal-input">
+                    </div>
+                    <div class="brutal-form-group">
+                      <label for="sex" class="brutal-label">Sex</label>
+                      <select id="sex" name="sex" class="brutal-select">
+                        <option value="">Select Sex</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Academic Information Section -->
+            <section class="brutal-section">
+              <div class="brutal-section-header">
+                <h3 class="brutal-section-title">Academic Information</h3>
+              </div>
+              <div class="brutal-section-content">
+                <div class="brutal-form-grid">
+                  <div class="brutal-form-group">
+                    <label for="course" class="brutal-label required">Course</label>
+                    <input type="text" id="course" name="course" class="brutal-input" placeholder="e.g., Bachelor of Science in Information Technology" required>
+                  </div>
+
+                  <div class="brutal-form-row">
+                    <div class="brutal-form-group">
+                      <label for="yearLevel" class="brutal-label required">Year Level</label>
+                      <select id="yearLevel" name="year_level" class="brutal-select" required>
+                        <option value="">Select Year Level</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                      </select>
+                    </div>
+                    <div class="brutal-form-group">
+                      <label for="section" class="brutal-label required">Section</label>
+                      <input type="text" id="section" name="section" class="brutal-input" placeholder="e.g., A, B, C" required>
+                    </div>
+                  </div>
+
+                  <div class="brutal-form-group">
+                    <label for="nstpComponent" class="brutal-label required">NSTP Component</label>
+                    <select id="nstpComponent" name="nstp_component" class="brutal-select" required>
+                      <option value="">Select NSTP Component</option>
+                      <option value="CWTS">CWTS (Civic Welfare Training Service)</option>
+                      <option value="LTS">LTS (Literacy Training Service)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Location and Skills Section -->
+            <section class="brutal-section">
+              <div class="brutal-section-header">
+                <h3 class="brutal-section-title">Location and Skills</h3>
+                <p class="brutal-section-description">Click on the map to select your location or use the "Find My Location" button</p>
+              </div>
+              <div class="brutal-section-content">
+                <div class="brutal-form-grid">
+                  <!-- Location Search and Controls -->
+                  <div class="brutal-form-group">
+                    <label for="locationSearch" class="brutal-label">Search Your Location</label>
+                    <div class="location-search-container">
+                      <input type="text" id="locationSearch" class="brutal-input" placeholder="Type your address or barangay name">
+                      <button type="button" id="useLocationBtn" class="location-btn" title="Find my current location">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                        </svg>
+                      </button>
+                      <button type="button" id="searchLocationBtn" class="location-btn" title="Search for address">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Interactive Map -->
+                  <div class="brutal-form-group">
+                    <div id="mapContainer" class="map-container">
+                      <div id="map" class="mini-map"></div>
+                      <div class="map-overlay">
+                        <button type="button" id="confirmLocationBtn" class="brutal-btn brutal-btn-primary brutal-btn-small">Confirm Location</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="brutal-form-group">
+                    <label for="completeAddress" class="brutal-label required">Complete Address</label>
+                    <textarea id="completeAddress" name="complete_address" class="brutal-textarea" rows="3" placeholder="House No., Street, Subdivision" required></textarea>
+                  </div>
+
+                  <div class="brutal-form-row">
+                    <div class="brutal-form-group">
+                      <label for="barangay" class="brutal-label required">Barangay</label>
+                      <input type="text" id="barangay" name="barangay" class="brutal-input" required>
+                    </div>
+                    <div class="brutal-form-group">
+                      <label for="municipality" class="brutal-label required">Municipality</label>
+                      <input type="text" id="municipality" name="municipality" class="brutal-input" required>
+                    </div>
+                  </div>
+
+                  <div class="brutal-form-group">
+                    <label for="province" class="brutal-label required">Province</label>
+                    <input type="text" id="province" name="province" class="brutal-input" required>
+                  </div>
+
+                  <!-- Hidden fields for coordinates -->
+                  <input type="hidden" id="latitude" name="latitude">
+                  <input type="hidden" id="longitude" name="longitude">
+
+                  <div class="brutal-form-group">
+                    <label for="skills" class="brutal-label required">Skills</label>
+                    <textarea id="skills" name="skills" class="brutal-textarea" rows="3" placeholder="List your skills, talents, and abilities that can help in community service" required></textarea>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Emergency Contact Section -->
+            <section class="brutal-section">
+              <div class="brutal-section-header">
+                <h3 class="brutal-section-title">Emergency Contact</h3>
+              </div>
+              <div class="brutal-section-content">
+                <div class="brutal-form-grid">
+                  <div class="brutal-form-group">
+                    <label for="emergencyContactName" class="brutal-label">Emergency Contact Name</label>
+                    <input type="text" id="emergencyContactName" name="emergency_contact_name" class="brutal-input" placeholder="Full name of emergency contact">
+                  </div>
+
+                  <div class="brutal-form-row">
+                    <div class="brutal-form-group">
+                      <label for="emergencyContactNumber" class="brutal-label">Emergency Contact Number</label>
+                      <input type="tel" id="emergencyContactNumber" name="emergency_contact_number" class="brutal-input" placeholder="09XXXXXXXXX">
+                    </div>
+                    <div class="brutal-form-group">
+                      <label for="emergencyContactRelationship" class="brutal-label">Relationship</label>
+                      <input type="text" id="emergencyContactRelationship" name="emergency_contact_relationship" class="brutal-input" placeholder="e.g., Parent, Guardian, Sibling">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Form Actions -->
+            <div class="brutal-actions">
+              <button type="button" id="cancelBtn" class="brutal-btn brutal-btn-secondary">Cancel</button>
+              <button type="submit" id="updateBtn" class="brutal-btn brutal-btn-primary">Update Profile</button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+      <div class="loading-spinner"></div>
+      <p>Updating your profile...</p>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="message-container" style="display: none;">
+      <div id="messageContent" class="message-content">
+        <p id="messageText"></p>
+        <button id="messageClose" class="btn-close">×</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/edit-profile.js"></script>
+</body>
+</html>

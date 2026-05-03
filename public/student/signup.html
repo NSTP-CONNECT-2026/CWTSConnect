@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — NSTPConnect Student Portal</title>
+  <link rel="stylesheet" href="css/student-auth.css?v=3" />
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <!-- Branding -->
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3L4 7v5c0 5 3.5 9.74 8 11 4.5-1.26 8-6 8-11V7l-8-4z"/>
+          </svg>
+        </div>
+        <h1 class="brand-title">NSTPConnect</h1>
+        <p class="brand-subtitle">Use your institutional email to create your NSTP deployment account.</p>
+      </div>
+
+      <h2 class="form-heading">Create Student Account</h2>
+
+      <!-- Error / Success Alert -->
+      <div id="alertBox" class="alert" role="alert" aria-live="polite"></div>
+
+      <!-- Sign Up Form -->
+      <form id="signupForm" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Institutional Email</label>
+          <input
+            class="form-input"
+            type="email"
+            id="email"
+            name="email"
+            placeholder="yourname@lspu.edu.ph"
+            autocomplete="email"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input
+            class="form-input"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Minimum 8 characters"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirmPassword">Confirm Password</label>
+          <input
+            class="form-input"
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Re-enter your password"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-text">Create Account</span>
+        </button>
+
+      </form>
+
+      <!-- Footer Links -->
+      <div class="form-footer">
+        <div class="form-footer-row">
+          Already have an account? <a href="login.html">Log In</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/signup.js"></script>
+</body>
+</html>

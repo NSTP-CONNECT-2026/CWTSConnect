@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — NSTPConnect Student Portal</title>
+  <link rel="stylesheet" href="css/student-profile.css?v=3" />
+</head>
+<body>
+  <div class="dashboard-page">
+
+    <!-- Top Navigation Bar -->
+    <header class="topbar">
+      <span class="topbar-brand">NSTPConnect</span>
+      <div class="topbar-right">
+        <span class="topbar-email" id="topbarEmail">Loading...</span>
+        <button class="brutal-btn brutal-btn-secondary" id="logoutBtn" style="padding: 8px 16px; font-size: 0.75rem; min-width: auto;">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-text">Log Out</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+
+      <!-- Welcome Section -->
+      <div class="dashboard-welcome">
+        <h1 id="welcomeHeading">Welcome back.</h1>
+        <p id="welcomeSub">Here is an overview of your NSTP deployment status.</p>
+      </div>
+
+      <!-- Incomplete Profile Banner (shown only if profile is incomplete) -->
+      <div class="profile-banner" id="profileBanner" style="display: none;" role="alert">
+        <div class="profile-banner-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div class="profile-banner-text">
+          <strong>Your profile is incomplete.</strong>
+          Please complete your student profile before accessing deployment-related features.
+        </div>
+      </div>
+
+      <!-- Dashboard Cards -->
+      <div class="cards-grid">
+
+        <!-- Card 1: Profile Status -->
+        <div class="card" id="profileCard">
+          <div class="card-header">
+            <div class="card-icon green" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Profile</div>
+            </div>
+          </div>
+          <div class="card-value" id="profileStatusValue">
+            <span class="skeleton" style="width:90px;">&nbsp;</span>
+          </div>
+          <span class="badge badge-incomplete" id="profileBadge" style="display:none;"></span>
+          <div class="card-action" id="profileAction" style="display:none;">
+            <a href="complete-profile.html" class="brutal-btn brutal-btn-primary" style="font-size:0.75rem; padding:8px 14px; min-width: auto;">
+              Complete Profile
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 2: CMO Requirements Status -->
+        <div class="card" id="requirementCard">
+          <div class="card-header">
+            <div class="card-icon yellow" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div>
+              <div class="card-title">CMO Requirements</div>
+            </div>
+          </div>
+          <div class="card-value" id="requirementValue">
+            <span class="skeleton" style="width:110px;">&nbsp;</span>
+          </div>
+          <span class="badge" id="requirementBadge" style="display:none;"></span>
+          <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:8px;" id="requirementNote"></p>
+        </div>
+
+        <!-- Card 3: Deployment Status -->
+        <div class="card" id="deploymentCard">
+          <div class="card-header">
+            <div class="card-icon blue" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Deployment</div>
+            </div>
+          </div>
+          <div class="card-value" id="deploymentValue">
+            <span class="skeleton" style="width:100px;">&nbsp;</span>
+          </div>
+          <span class="badge" id="deploymentBadge" style="display:none;"></span>
+          <p style="font-size:0.8rem; color:var(--gray-400); margin-top:8px;" id="deploymentNote"></p>
+        </div>
+
+        <!-- Card 4: Notifications -->
+        <div class="card" id="notificationsCard">
+          <div class="card-header">
+            <div class="card-icon purple" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Notifications</div>
+            </div>
+          </div>
+          <p id="notificationText" style="font-size:0.875rem; color:var(--gray-500); line-height:1.5;">
+            <span class="skeleton" style="width:160px;">&nbsp;</span>
+          </p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

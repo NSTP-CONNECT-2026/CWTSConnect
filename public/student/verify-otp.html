@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Email — NSTPConnect Student Portal</title>
+  <link rel="stylesheet" href="css/student-auth.css?v=3" />
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <!-- Branding -->
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3L4 7v5c0 5 3.5 9.74 8 11 4.5-1.26 8-6 8-11V7l-8-4z"/>
+          </svg>
+        </div>
+        <h1 class="brand-title">NSTPConnect</h1>
+        <p class="brand-subtitle">Check your institutional email for the 6-digit verification code.</p>
+      </div>
+
+      <h2 class="form-heading">Verify Your Email</h2>
+
+      <!-- Alert Box -->
+      <div id="alertBox" class="alert" role="alert" aria-live="polite"></div>
+
+      <!-- OTP Verification Form -->
+      <form id="otpForm" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Institutional Email</label>
+          <input
+            class="form-input"
+            type="email"
+            id="email"
+            name="email"
+            placeholder="yourname@lspu.edu.ph"
+            autocomplete="email"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="otp">Verification Code</label>
+          <input
+            class="form-input otp-input"
+            type="text"
+            id="otp"
+            name="otp"
+            placeholder="000000"
+            maxlength="6"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="verifyBtn">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-text">Verify Email</span>
+        </button>
+
+      </form>
+
+      <!-- Resend OTP -->
+      <div class="divider"><span>or</span></div>
+
+      <div style="text-align: center;">
+        <p style="font-size: 0.875rem; color: var(--gray-500); margin-bottom: 10px;">
+          Did not receive the code or code has expired?
+        </p>
+        <button class="btn btn-secondary" id="resendBtn">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-text">Resend Code</span>
+        </button>
+        <p id="resendCooldown" style="font-size: 0.8rem; color: var(--gray-400); margin-top: 8px; display: none;"></p>
+      </div>
+
+      <!-- Footer Links -->
+      <div class="form-footer" style="margin-top: 24px;">
+        <div class="form-footer-row">
+          <a href="login.html">Back to Login</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/verify-otp.js"></script>
+</body>
+</html>

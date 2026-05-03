@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - NSTPConnect</title>
+  <link rel="stylesheet" href="css/student-profile.css?v=3">
+</head>
+<body>
+  <div class="container">
+    <div class="brutal-grid">
+      <!-- Header -->
+      <header class="brutal-header">
+        <h1 class="brutal-title">NSTPConnect</h1>
+        <p class="brutal-subtitle">Student Profile</p>
+      </header>
+
+      <!-- Main Content -->
+      <main class="brutal-main">
+        <div class="brutal-profile-container">
+          <div class="brutal-profile-header">
+            <h2 class="brutal-profile-title">My Profile</h2>
+            <div class="brutal-profile-actions">
+              <button id="editProfileBtn" class="brutal-btn brutal-btn-primary">Edit Profile</button>
+              <button id="backToDashboardBtn" class="brutal-btn brutal-btn-secondary">Back to Dashboard</button>
+            </div>
+          </div>
+
+          <!-- Profile Status -->
+          <div id="profileStatus" class="brutal-status">
+            <div class="status-indicator">
+              <span id="statusBadge" class="brutal-status-badge"></span>
+              <span id="statusText"></span>
+            </div>
+          </div>
+
+          <!-- Profile Information -->
+          <div class="brutal-profile-content">
+            <!-- Personal Information -->
+            <section class="brutal-profile-section">
+              <div class="brutal-profile-section-header">
+                <h3 class="brutal-profile-section-title">Personal Information</h3>
+              </div>
+              <div class="brutal-profile-grid">
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Institutional Email</label>
+                  <span id="email" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Full Name</label>
+                  <span id="fullName" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Student Number</label>
+                  <span id="studentNumber" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Contact Number</label>
+                  <span id="contactNumber" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Birthdate</label>
+                  <span id="birthdate" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Sex</label>
+                  <span id="sex" class="brutal-profile-value">-</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- Academic Information -->
+            <section class="brutal-profile-section">
+              <div class="brutal-profile-section-header">
+                <h3 class="brutal-profile-section-title">Academic Information</h3>
+              </div>
+              <div class="brutal-profile-grid">
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Course</label>
+                  <span id="course" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Year Level</label>
+                  <span id="yearLevel" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Section</label>
+                  <span id="section" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">NSTP Component</label>
+                  <span id="nstpComponent" class="brutal-profile-value">-</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- Location Information -->
+            <section class="brutal-profile-section">
+              <div class="brutal-profile-section-header">
+                <h3 class="brutal-profile-section-title">Location Information</h3>
+              </div>
+              <div class="brutal-profile-grid">
+                <div class="brutal-profile-item full-width">
+                  <label class="brutal-profile-label">Complete Address</label>
+                  <span id="completeAddress" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Barangay</label>
+                  <span id="barangay" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Municipality</label>
+                  <span id="municipality" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Province</label>
+                  <span id="province" class="brutal-profile-value">-</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- Skills -->
+            <section class="brutal-profile-section">
+              <div class="brutal-profile-section-header">
+                <h3 class="brutal-profile-section-title">Skills and Abilities</h3>
+              </div>
+              <div class="brutal-profile-grid">
+                <div class="brutal-profile-item full-width">
+                  <span id="skills" class="brutal-profile-value">-</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- Emergency Contact -->
+            <section class="brutal-profile-section">
+              <div class="brutal-profile-section-header">
+                <h3 class="brutal-profile-section-title">Emergency Contact</h3>
+              </div>
+              <div class="brutal-profile-grid">
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Contact Name</label>
+                  <span id="emergencyContactName" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Contact Number</label>
+                  <span id="emergencyContactNumber" class="brutal-profile-value">-</span>
+                </div>
+                <div class="brutal-profile-item">
+                  <label class="brutal-profile-label">Relationship</label>
+                  <span id="emergencyContactRelationship" class="brutal-profile-value">-</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+      <div class="loading-spinner"></div>
+      <p>Loading your profile...</p>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="message-container" style="display: none;">
+      <div id="messageContent" class="message-content">
+        <p id="messageText"></p>
+        <button id="messageClose" class="btn-close">×</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/profile.js"></script>
+</body>
+</html>

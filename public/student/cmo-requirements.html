@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMO Requirements - NSTPConnect</title>
+  <link rel="stylesheet" href="css/student-profile.css?v=3">
+</head>
+<body>
+  <div class="container">
+    <div class="brutal-grid">
+      <!-- Header -->
+      <header class="brutal-header">
+        <h1 class="brutal-title">NSTPConnect</h1>
+        <p class="brutal-subtitle">CMO Requirements</p>
+      </header>
+
+      <!-- Main Content -->
+      <main class="brutal-main">
+        <div class="brutal-form-container">
+          <div class="brutal-form-header">
+            <h2 class="brutal-form-title">CMO Requirements</h2>
+            <p class="brutal-form-description">Upload the required pre-deployment documents. Your submissions will be reviewed by the NSTP Official.</p>
+          </div>
+
+          <!-- Profile Incomplete Warning -->
+          <div id="profileIncompleteWarning" class="profile-banner" style="display: none;">
+            <div class="profile-banner-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <div class="profile-banner-text">
+              <strong>Profile Incomplete.</strong>
+              Please complete your profile information before submitting CMO requirements.
+              <div style="margin-top: 8px;">
+                <a href="complete-profile.html" class="brutal-btn brutal-btn-primary" style="font-size: 0.875rem; padding: 8px 16px;">Complete Profile</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status Summary -->
+          <div id="statusSummary" class="brutal-status" style="display: none;">
+            <div class="status-info">
+              <h3 style="margin-bottom: 12px; color: var(--text-primary);">Requirements Status</h3>
+              <div class="status-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                <div class="status-item">
+                  <span class="status-label">Total Required:</span>
+                  <span id="totalRequired" class="status-value">4</span>
+                </div>
+                <div class="status-item">
+                  <span class="status-label">Submitted:</span>
+                  <span id="submittedCount" class="status-value">0</span>
+                </div>
+                <div class="status-item">
+                  <span class="status-label">Approved:</span>
+                  <span id="approvedCount" class="status-value">0</span>
+                </div>
+                <div class="status-item">
+                  <span class="status-label">Rejected:</span>
+                  <span id="rejectedCount" class="status-value">0</span>
+                </div>
+              </div>
+              <div class="overall-status">
+                <span class="status-label">Overall Status:</span>
+                <span id="overallStatus" class="brutal-status-badge incomplete">Incomplete</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Requirements Upload Cards -->
+          <div id="requirementsContainer" class="brutal-form" style="display: none;">
+            <!-- Requirements will be loaded here dynamically -->
+          </div>
+
+          <!-- Actions -->
+          <div class="brutal-actions">
+            <button id="backToDashboardBtn" class="brutal-btn brutal-btn-secondary">Back to Dashboard</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+      <div class="loading-spinner"></div>
+      <p>Loading requirements...</p>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="message-container" style="display: none;">
+      <div id="messageContent" class="message-content">
+        <p id="messageText"></p>
+        <button id="messageClose" class="btn-close">×</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/cmo-requirements.js"></script>
+</body>
+</html>
