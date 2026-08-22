@@ -590,7 +590,7 @@ body {
   border: 1px solid rgba(252, 211, 77, 0.8);
 }
 
-.badge-none, .badge-unassigned {
+.badge-none, .badge-unassigned, .badge-locked, .badge-inactive {
   background: linear-gradient(135deg, rgba(241, 245, 249, 0.95), rgba(226, 232, 240, 0.95));
   color: var(--cwts-text-muted);
   border: 1px solid rgba(203, 213, 225, 0.8);

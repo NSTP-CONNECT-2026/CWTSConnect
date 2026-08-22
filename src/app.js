@@ -158,6 +158,10 @@ app.get('/student/dashboard.html', isAuthenticated, roleMiddleware('student'), (
   res.sendFile(path.join(__dirname, '../public/student/dashboard.html'));
 });
 
+app.get('/student/deployment.html', isAuthenticated, roleMiddleware('student'), (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/student/deployment.html'));
+});
+
 app.get('/student/complete-profile.html', isAuthenticated, roleMiddleware('student'), (req, res) => {
   res.sendFile(path.join(__dirname, '../public/student/complete-profile.html'));
 });

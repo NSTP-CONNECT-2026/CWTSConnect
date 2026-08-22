@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deployment & Monitoring — CWTSConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/student-layout.css?v=12" />
+  <link rel="stylesheet" href="css/student-deployment.css?v=1" />
+</head>
+<body>
+  <div class="dashboard-layout">
+
+    <!-- Standardized Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand">
+          <span class="sidebar-brand-text">
+            <span class="brand-name">CWTS</span><span class="brand-accent">Connect</span>
+          </span>
+          <span class="sidebar-portal-badge">Student Portal</span>
+        </a>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav">
+        
+        <!-- Main Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Main</div>
+          
+          <a href="dashboard.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              </svg>
+            </span>
+            <span>Dashboard</span>
+          </a>
+
+          <a href="complete-profile.html" class="sidebar-item" id="profileNavLink">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </span>
+            <span id="profileNavLabel">My Profile</span>
+          </a>
+
+          <a href="cmo-requirements.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </span>
+            <span>CMO Requirements</span>
+          </a>
+        </div>
+
+        <!-- Monitoring Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Monitoring</div>
+
+          <a href="deployment.html" class="sidebar-item active">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+            </span>
+            <span>Deployment & Monitoring</span>
+          </a>
+
+          <a href="make-up-request.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </span>
+            <span>Make-up Request</span>
+          </a>
+        </div>
+
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="logoutBtn" type="button">
+          <span class="spinner" aria-hidden="true"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      
+      <!-- Top Bar Header -->
+      <header class="header">
+        <div class="header-left">
+          <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle Navigation Menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <span class="header-title">Deployment & Service Monitoring</span>
+        </div>
+
+        <div class="header-right">
+          <!-- Notification Bell Trigger -->
+          <button class="header-notif-btn" id="headerNotifBtn" type="button" aria-label="Notifications" title="Notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notif-badge-dot" id="headerNotifDot"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="content-container">
+
+        <!-- 3-Tab Navigation Switcher -->
+        <div class="deployment-tabs-bar" id="deploymentTabsBar" role="tablist">
+          <button type="button" class="deployment-tab-btn active" id="tabOverviewBtn" data-tab="overview" role="tab" aria-selected="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+            <span>Overview</span>
+          </button>
+
+          <button type="button" class="deployment-tab-btn" id="tabAttendanceBtn" data-tab="attendance" role="tab" aria-selected="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <polyline points="9 11 12 14 22 4"></polyline>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+            <span>Attendance</span>
+            <span class="deployment-tab-badge" id="attendanceCountBadge">0 Days</span>
+          </button>
+
+          <button type="button" class="deployment-tab-btn" id="tabHoursBtn" data-tab="hours" role="tab" aria-selected="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Service Hours</span>
+            <span class="deployment-tab-badge" id="hoursCountBadge">0.0h</span>
+          </button>
+        </div>
+
+        <!-- Section 12 Skeleton Loading Container -->
+        <div id="deploymentSkeleton" class="page-loading-skeleton">
+          <div class="skeleton-card" style="padding: 28px; margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div class="skeleton skeleton-title" style="width: 240px; height: 24px;"></div>
+                <div class="skeleton skeleton-text" style="width: 180px; height: 14px;"></div>
+              </div>
+              <div class="skeleton skeleton-badge" style="width: 90px; height: 26px;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0;">
+              <div class="skeleton skeleton-row" style="height: 60px;"></div>
+              <div class="skeleton skeleton-row" style="height: 60px;"></div>
+              <div class="skeleton skeleton-row" style="height: 60px;"></div>
+            </div>
+          </div>
+          <div class="skeleton-card" style="padding: 24px; height: 280px;"></div>
+        </div>
+
+        <!-- Real Content Container -->
+        <div id="deploymentContent" class="hidden">
+
+          <!-- ====================================================================
+               TAB 1: OVERVIEW (Deployment Information)
+               ==================================================================== -->
+          <div class="deployment-tab-pane active" id="paneOverview" role="tabpanel">
+            
+            <!-- Not Deployed Empty State -->
+            <div id="noDeploymentState" class="card hidden" style="padding: 48px 32px; text-align: center;">
+              <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(47, 125, 91, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; color: var(--cwts-accent-green);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                  <polyline points="2 17 12 22 22 17"></polyline>
+                  <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+              </div>
+              <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--cwts-primary-dark);" id="noDeploymentTitle">No Active Deployment Assignment</h2>
+              <p style="font-size: 0.875rem; color: var(--text-muted); max-width: 480px; margin: 8px auto 20px auto; line-height: 1.5;" id="noDeploymentDesc">
+                You are not currently assigned to a community deployment. Ensure your Student Profile and CMO Requirements are approved so the NSTP Coordinator can include you in the DSS matching allocation.
+              </p>
+              <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <a href="cmo-requirements.html" class="btn btn-primary btn-sm">Check CMO Requirements</a>
+                <a href="dashboard.html" class="btn btn-secondary btn-sm">Go to Dashboard</a>
+              </div>
+            </div>
+
+            <!-- Active Deployment Details Card -->
+            <div id="activeDeploymentCard" class="deployment-hero-card">
+              <div class="deployment-hero-header">
+                <div>
+                  <h1 class="deployment-hero-title" id="deployActivityTitle">Loading Activity...</h1>
+                  <div class="deployment-hero-subtitle" id="deployBatchName">Batch Deployment</div>
+                </div>
+                <div>
+                  <span class="badge badge-active" id="deployStatusBadge">Active Deployment</span>
+                </div>
+              </div>
+
+              <!-- 3-Column Meta Details Grid -->
+              <div class="deployment-details-grid">
+                <div class="detail-item-box">
+                  <span class="detail-item-label">Assigned Community</span>
+                  <span class="detail-item-value highlight" id="deployCommunityName">---</span>
+                </div>
+
+                <div class="detail-item-box">
+                  <span class="detail-item-label">Activity Category</span>
+                  <span class="detail-item-value" id="deployActivityType">CWTS Project</span>
+                </div>
+
+                <div class="detail-item-box">
+                  <span class="detail-item-label">Location / Barangay</span>
+                  <span class="detail-item-value" id="deployLocation">---</span>
+                </div>
+
+                <div class="detail-item-box">
+                  <span class="detail-item-label">Deployment Period</span>
+                  <span class="detail-item-value" id="deployDateRange">--- to ---</span>
+                </div>
+
+                <div class="detail-item-box">
+                  <span class="detail-item-label">Required Target Hours</span>
+                  <span class="detail-item-value" id="deployTargetHours">90.0 Hours Total</span>
+                </div>
+
+                <div class="detail-item-box">
+                  <span class="detail-item-label">Your Volunteer Status</span>
+                  <span class="detail-item-value highlight" id="deployStudentStatus">Active Volunteer</span>
+                </div>
+              </div>
+
+              <!-- Quick Action Bar -->
+              <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 16px; border-top: 1px solid rgba(226, 232, 240, 0.8); flex-wrap: wrap;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="window.switchDeploymentTab('attendance')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                  </svg>
+                  <span>Go to Attendance Check-In</span>
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="window.switchDeploymentTab('hours')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  <span>View Rendered Hours</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ====================================================================
+               TAB 2: ATTENDANCE (Check In / Out & Attendance History)
+               ==================================================================== -->
+          <div class="deployment-tab-pane" id="paneAttendance" role="tabpanel">
+            
+            <!-- Minimized Check In / Out Live Bar -->
+            <div class="check-in-hero" id="checkInHero">
+              <div class="check-in-info">
+                <div class="check-in-icon-badge" id="checkInIconBadge">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                  </svg>
+                </div>
+                <div class="check-in-text-group">
+                  <div class="check-in-header-line">
+                    <span class="check-in-title" id="checkInStatusTitle">Check-In Inactive</span>
+                    <span class="live-time-ticker" id="liveClockTicker">--:--:-- --</span>
+                  </div>
+                  <div class="check-in-desc" id="checkInStatusDesc">You do not have an active deployment assignment yet. Daily check-in will become available once assigned to a community activity.</div>
+                </div>
+              </div>
+
+              <!-- Action Controls -->
+              <div class="check-in-controls">
+                <span class="badge badge-locked" id="badgeNoDeployment">
+                  No Active Deployment
+                </span>
+
+                <button type="button" class="btn btn-primary btn-sm hidden" id="btnCheckIn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                    <polyline points="10 17 15 12 10 7"></polyline>
+                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                  </svg>
+                  <span>Check In Today</span>
+                </button>
+
+                <button type="button" class="btn btn-secondary btn-sm hidden" id="btnCheckOut" style="color: #DC2626; border-color: rgba(220, 38, 38, 0.3);">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                  </svg>
+                  <span>Check Out Now</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Attendance History Table Card -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <div class="table-card-title-group">
+                  <div class="table-card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="table-card-title">Attendance History</h3>
+                    <p class="table-card-subtitle">Official log of daily service time-ins, time-outs, and community attendance records</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="neu-table" id="attendanceHistoryTable">
+                  <thead>
+                    <tr>
+                      <th>Activity Date</th>
+                      <th>Time In</th>
+                      <th>Time Out</th>
+                      <th>Duration</th>
+                      <th>Remarks</th>
+                    </tr>
+                  </thead>
+                  <tbody id="attendanceHistoryBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ====================================================================
+               TAB 3: SERVICE HOURS (Rendered Service Hours)
+               ==================================================================== -->
+          <div class="deployment-tab-pane" id="paneHours" role="tabpanel">
+            
+            <!-- Service Hours Overview (Linear Progress + Target Stats) -->
+            <div class="hours-overview-grid">
+              
+              <!-- Progress Card -->
+              <div class="hours-progress-card">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.8125rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">Completed Service Hours</span>
+                    <span class="badge badge-complete" id="hoursPercentBadge">0% Completed</span>
+                  </div>
+
+                  <div class="hours-metric-headline">
+                    <span class="hours-big-number" id="hoursCompletedNumber">0.0</span>
+                    <span class="hours-target-text">/ 90.0 Hours Required</span>
+                  </div>
+
+                  <!-- Progress Bar -->
+                  <div class="progress-track">
+                    <div class="progress-bar-fill" id="hoursProgressBarFill" style="width: 0%;"></div>
+                  </div>
+                  
+                  <div style="font-size: 0.8125rem; color: var(--text-muted);" id="hoursRemainingText">
+                    90.0 hours remaining to fulfill the CWTS 2 community service mandate.
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Service Sessions Breakdown Table -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <div class="table-card-title-group">
+                  <div class="table-card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="table-card-title">Rendered Service Sessions</h3>
+                    <p class="table-card-subtitle">Detailed breakdown of credited hours per deployment session</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="neu-table" id="serviceSessionsTable">
+                  <thead>
+                    <tr>
+                      <th>Service Date</th>
+                      <th>Source / Activity Type</th>
+                      <th>Hours Rendered</th>
+                    </tr>
+                  </thead>
+                  <tbody id="serviceSessionsBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Slide-out Notifications Center Drawer -->
+  <aside class="notif-drawer" id="notifDrawer" aria-label="Notifications Center">
+    <div class="notif-drawer-header">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color: var(--cwts-accent-green);">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span style="font-size: 1rem; font-weight: 700; color: var(--text-main);">Notifications</span>
+      </div>
+      <button type="button" id="closeNotifDrawerBtn" class="btn-close" aria-label="Close Notifications">×</button>
+    </div>
+
+    <!-- Notification Filter Categories -->
+    <div class="notif-drawer-body" id="notifDrawerList">
+      <!-- Populated dynamically with updates on: Requirements, Deployment, Attendance, Service Hours, Evaluation -->
+    </div>
+  </aside>
+
+  <!-- Toast Notification Message Container -->
+  <div id="messageContainer" class="message-container" style="display: none;">
+    <div id="messageContent" class="message-content info">
+      <p id="messageText"></p>
+      <button id="messageClose" class="btn-close" type="button">×</button>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="js/student-layout.js?v=12"></script>
+  <script src="js/deployment.js?v=2"></script>
+</body>
+</html>
