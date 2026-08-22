@@ -1,0 +1,31 @@
+/* ==========================================================================
+   CWTSConnect — NSTP Coordinator Community Requests Stylesheet
+   Strictly adheres to CWTSConnect_Design_Guide_Updated.md
+   Inherits full Neumorphic Design System from community-requests.css & student-layout.css
+   ========================================================================== */
+
+@import url('../../community/css/community-requests.css');
+
+/* Coordinator-specific tweaks */
+.request-details-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin: var(--space-md) 0;
+}
+
+.coord-action-bar-modal {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  margin-top: var(--space-md);
+}
+
+@media (max-width: 768px) {
+  .request-details-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}

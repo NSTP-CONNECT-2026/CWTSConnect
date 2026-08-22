@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Attendance — NSTPConnect Student Portal</title>
+  <link rel="stylesheet" href="css/student-profile.css?v=3" />
+</head>
+<body>
+  <div class="dashboard-page">
+
+    <!-- Top Navigation Bar -->
+    <header class="topbar">
+      <span class="topbar-brand">NSTPConnect</span>
+      <div class="topbar-right">
+        <span class="topbar-email" id="topbarEmail">Loading...</span>
+        <button class="brutal-btn brutal-btn-secondary" id="logoutBtn" style="padding: 8px 16px; font-size: 0.75rem; min-width: auto;">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-text">Log Out</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+
+      <!-- Header Section -->
+      <div class="dashboard-welcome">
+        <h1>My Attendance</h1>
+        <p>Track your attendance and check in/out for deployment activities.</p>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a> > My Attendance
+        </div>
+      </div>
+
+      <!-- Check In/Out Section -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Quick Check In/Out</h2>
+        </div>
+
+        <div class="check-in-container">
+          <div class="check-in-status" id="checkInStatus">
+            <div class="status-icon" id="statusIcon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12,6 12,12 16,14"/>
+              </svg>
+            </div>
+            <div class="status-text">
+              <h3 id="statusTitle">Not Checked In</h3>
+              <p id="statusMessage">Click the button below to check in for today's activity.</p>
+            </div>
+          </div>
+
+          <div class="check-in-actions">
+            <button type="button" class="brutal-btn brutal-btn-primary" id="checkInBtn" style="display: none;">
+              <span class="btn-text">Check In</span>
+            </button>
+            <button type="button" class="brutal-btn brutal-btn-danger" id="checkOutBtn" style="display: none;">
+              <span class="btn-text">Check Out</span>
+            </button>
+          </div>
+
+          <div class="check-in-info" id="todayInfo" style="display: none;">
+            <div class="info-row">
+              <span class="info-label">Check In Time:</span>
+              <span class="info-value" id="checkInTime">--:--</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Duration:</span>
+              <span class="info-value" id="duration">0h 0m</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Total Attendance</div>
+            </div>
+          </div>
+          <div class="card-value" id="totalAttendance">0</div>
+          <p class="card-description">Days attended</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12,6 12,12 16,14"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Pending Verification</div>
+            </div>
+          </div>
+          <div class="card-value" id="pendingCount">0</div>
+          <p class="card-description">Awaiting approval</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Verified</div>
+            </div>
+          </div>
+          <div class="card-value" id="verifiedCount">0</div>
+          <p class="card-description">Approved records</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon yellow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Attendance Rate</div>
+            </div>
+          </div>
+          <div class="card-value" id="attendanceRate">0%</div>
+          <p class="card-description">Overall attendance</p>
+        </div>
+      </div>
+
+      <!-- Attendance History -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Attendance History</h2>
+          <div class="section-actions">
+            <select id="statusFilter" class="form-select">
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="verified">Verified</option>
+              <option value="rejected">Rejected</option>
+            </select>
+            <button type="button" class="brutal-btn brutal-btn-secondary" id="refreshBtn" style="padding: 8px 16px; font-size: 0.75rem;">
+              <span class="btn-text">Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table" id="attendanceTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Hours</th>
+                <th>Status</th>
+                <th>Verified By</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+              <tr>
+                <td colspan="6" class="text-center">Loading attendance records...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Processing...</p>
+    </div>
+  </div>
+
+  <script src="js/attendance.js"></script>
+</body>
+</html>

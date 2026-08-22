@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "build": "echo 'No build step required for Node.js app'"
+    "build": "echo 'No build step required for Node.js app'",
+    "seed:nstp": "node src/seeders/createNstpOfficialAccount.js"
   },
   "engines": {
     "node": ">=18.0.0",

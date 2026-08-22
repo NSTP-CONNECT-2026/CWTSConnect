@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify Email — NSTPConnect Student Portal</title>
-  <link rel="stylesheet" href="css/student-auth.css?v=3" />
+  <title>Verify Email — CWTSConnect Student Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/student-auth.css?v=4" />
 </head>
 <body>
   <div class="auth-page">
     <div class="auth-card">
 
-      <!-- Branding -->
+      <!-- Text-Based Branding -->
       <div class="brand">
-        <div class="brand-logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 3L4 7v5c0 5 3.5 9.74 8 11 4.5-1.26 8-6 8-11V7l-8-4z"/>
-          </svg>
+        <div class="brand-text-logo">
+          <span class="brand-name">CWTS</span><span class="brand-accent">Connect</span>
         </div>
-        <h1 class="brand-title">NSTPConnect</h1>
         <p class="brand-subtitle">Check your institutional email for the 6-digit verification code.</p>
       </div>
 
@@ -64,22 +64,22 @@
 
       </form>
 
-      <!-- Resend OTP -->
+      <!-- Resend OTP Section -->
       <div class="divider"><span>or</span></div>
 
-      <div style="text-align: center;">
-        <p style="font-size: 0.875rem; color: var(--gray-500); margin-bottom: 10px;">
+      <div class="auth-secondary-action">
+        <p class="auth-secondary-desc">
           Did not receive the code or code has expired?
         </p>
-        <button class="btn btn-secondary" id="resendBtn">
+        <button class="btn btn-secondary" id="resendBtn" type="button">
           <span class="spinner" aria-hidden="true"></span>
           <span class="btn-text">Resend Code</span>
         </button>
-        <p id="resendCooldown" style="font-size: 0.8rem; color: var(--gray-400); margin-top: 8px; display: none;"></p>
+        <p id="resendCooldown" class="auth-cooldown-text"></p>
       </div>
 
       <!-- Footer Links -->
-      <div class="form-footer" style="margin-top: 24px;">
+      <div class="form-footer">
         <div class="form-footer-row">
           <a href="login.html">Back to Login</a>
         </div>

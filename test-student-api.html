@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Student API</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    .section {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #2563EB;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    pre {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .success { color: green; }
+    .error { color: red; }
+    .info { color: blue; }
+  </style>
+</head>
+<body>
+  <h1>Test Student API</h1>
+  <p>This page tests the <code>/api/nstp/students</code> endpoint</p>
+
+  <div class="section">
+    <h2>Step 1: Check Authentication</h2>
+    <button onclick="checkAuth()">Check Auth Status</button>
+    <div id="authResult"></div>
+  </div>
+
+  <div class="section">
+    <h2>Step 2: Fetch Students</h2>
+    <button onclick="fetchStudents()">Fetch Students</button>
+    <div id="studentsResult"></div>
+  </div>
+
+  <div class="section">
+    <h2>Step 3: Analysis</h2>
+    <div id="analysis"></div>
+  </div>
+
+  <script>
+    async function checkAuth() {
+      const resultDiv = document.getElementById('authResult');
+      resultDiv.innerHTML = '<p class="info">Checking authentication...</p>';
+      
+      try {
+        const response = await fetch('/api/auth/me');
+        const data = await response.json();
+        
+        if (response.ok) {
+          resultDiv.innerHTML = `
+            <p class="success">✅ Authenticated!</p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+        } else {
+          resultDiv.innerHTML = `
+            <p class="error">❌ Not authenticated</p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+            <p>Please login first at: <a href="/login.html">/login.html</a></p>
+          `;
+        }
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <p class="error">❌ Error checking auth</p>
+          <pre>${error.message}</pre>
+        `;
+      }
+    }
+
+    async function fetchStudents() {
+      const resultDiv = document.getElementById('studentsResult');
+      const analysisDiv = document.getElementById('analysis');
+      
+      resultDiv.innerHTML = '<p class="info">Fetching students...</p>';
+      analysisDiv.innerHTML = '';
+      
+      try {
+        const response = await fetch('/api/nstp/students');
+        const data = await response.json();
+        
+        if (response.ok) {
+          const students = data.students || [];
+          
+          resultDiv.innerHTML = `
+            <p class="success">✅ API call successful!</p>
+            <p><strong>Total students:</strong> ${students.length}</p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+          
+          // Analysis
+          if (students.length === 0) {
+            analysisDiv.innerHTML = `
+              <h3 class="error">⚠️ Problem: No students in database</h3>
+              <p><strong>Solution:</strong></p>
+              <ol>
+                <li>Go to Supabase SQL Editor</li>
+                <li>Run the SQL queries in <code>QUICK_FIX_STUDENT_RECORDS.md</code></li>
+                <li>Create test students</li>
+                <li>Refresh this page</li>
+              </ol>
+            `;
+          } else {
+            // Check first student
+            const firstStudent = students[0];
+            const hasProfile = firstStudent.full_name && firstStudent.student_number;
+            
+            if (!hasProfile) {
+              analysisDiv.innerHTML = `
+                <h3 class="error">⚠️ Problem: Students exist but no profile data</h3>
+                <p><strong>First student data:</strong></p>
+                <pre>${JSON.stringify(firstStudent, null, 2)}</pre>
+                <p><strong>Solution:</strong></p>
+                <ol>
+                  <li>Students need to complete their profiles</li>
+                  <li>Login as student</li>
+                  <li>Complete profile form</li>
+                  <li>Or run SQL to insert profile data</li>
+                </ol>
+              `;
+            } else {
+              analysisDiv.innerHTML = `
+                <h3 class="success">✅ Everything looks good!</h3>
+                <p><strong>Students have profile data:</strong></p>
+                <ul>
+                  <li>Full Name: ${firstStudent.full_name}</li>
+                  <li>Student Number: ${firstStudent.student_number}</li>
+                  <li>Course: ${firstStudent.course}</li>
+                  <li>NSTP Component: ${firstStudent.nstp_component}</li>
+                  <li>Municipality: ${firstStudent.municipality}</li>
+                </ul>
+                <p><strong>If Student Records page still shows N/A:</strong></p>
+                <ol>
+                  <li>Clear browser cache (Ctrl + Shift + Delete)</li>
+                  <li>Hard refresh (Ctrl + Shift + R)</li>
+                  <li>Check browser console for JavaScript errors</li>
+                </ol>
+              `;
+            }
+          }
+        } else {
+          resultDiv.innerHTML = `
+            <p class="error">❌ API call failed</p>
+            <p><strong>Status:</strong> ${response.status}</p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+          
+          if (response.status === 401) {
+            analysisDiv.innerHTML = `
+              <h3 class="error">⚠️ Problem: Not authenticated</h3>
+              <p><strong>Solution:</strong></p>
+              <ol>
+                <li>Login at: <a href="/login.html">/login.html</a></li>
+                <li>Email: nstpconnect@gmail.com</li>
+                <li>Password: Test123!</li>
+                <li>Come back to this page</li>
+              </ol>
+            `;
+          }
+        }
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <p class="error">❌ Error fetching students</p>
+          <pre>${error.message}</pre>
+        `;
+        
+        analysisDiv.innerHTML = `
+          <h3 class="error">⚠️ Problem: Network or server error</h3>
+          <p><strong>Possible causes:</strong></p>
+          <ul>
+            <li>Server is not running</li>
+            <li>Network connection issue</li>
+            <li>Backend error</li>
+          </ul>
+          <p><strong>Solution:</strong></p>
+          <ol>
+            <li>Check if server is running on port 3001</li>
+            <li>Check server console for errors</li>
+            <li>Check .env file for correct Supabase credentials</li>
+          </ol>
+        `;
+      }
+    }
+
+    // Auto-check auth on load
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+    });
+  </script>
+</body>
+</html>

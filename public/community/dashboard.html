@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Official Dashboard — CWTSConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../student/css/student-layout.css?v=12" />
+  <link rel="stylesheet" href="css/community-dashboard.css?v=2" />
+</head>
+<body>
+  <div class="dashboard-layout">
+
+    <!-- Standardized Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand">
+          <span class="sidebar-brand-text">
+            <span class="brand-name">CWTS</span><span class="brand-accent">Connect</span>
+          </span>
+          <span class="sidebar-portal-badge">Community Portal</span>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Main</div>
+          
+          <a href="dashboard.html" class="sidebar-item active">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              </svg>
+            </span>
+            <span>Dashboard</span>
+          </a>
+
+          <a href="community-requests.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </span>
+            <span>Community Requests</span>
+          </a>
+
+          <a href="create-request.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+            </span>
+            <span>Create New Request</span>
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Monitoring</div>
+
+          <a href="deployments.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </span>
+            <span>Deployments</span>
+          </a>
+
+          <a href="attendance.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </span>
+            <span>Student Attendance</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="logoutBtn" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      
+      <!-- Top Bar Header -->
+      <header class="header">
+        <div class="header-left">
+          <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle Navigation Menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <span class="header-title">Community Official Dashboard</span>
+        </div>
+
+        <div class="header-right">
+          <button class="header-notif-btn" id="headerNotifBtn" type="button" aria-label="Notifications" title="Notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notif-badge-dot" id="headerNotifDot"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="content-container">
+
+        <!-- Section 12 Skeleton Loading State (Displayed while fetching data) -->
+        <div id="dashboardSkeleton" class="page-loading-skeleton">
+          <!-- 4 Core Skeletons in 2x2 Grid -->
+          <div class="summary-grid">
+            <div class="skeleton-card" style="padding: 24px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="skeleton skeleton-icon"></div>
+                  <div class="skeleton skeleton-title" style="width: 160px; height: 20px;"></div>
+                </div>
+                <div class="skeleton skeleton-badge" style="width: 80px;"></div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px; margin: 16px 0;">
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <div class="skeleton skeleton-btn" style="width: 150px; height: 36px;"></div>
+              </div>
+            </div>
+
+            <div class="skeleton-card" style="padding: 24px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="skeleton skeleton-icon"></div>
+                  <div class="skeleton skeleton-title" style="width: 150px; height: 20px;"></div>
+                </div>
+                <div class="skeleton skeleton-badge" style="width: 80px;"></div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px; margin: 16px 0;">
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <div class="skeleton skeleton-btn" style="width: 160px; height: 36px;"></div>
+              </div>
+            </div>
+
+            <div class="skeleton-card" style="padding: 24px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="skeleton skeleton-icon"></div>
+                  <div class="skeleton skeleton-title" style="width: 150px; height: 20px;"></div>
+                </div>
+                <div class="skeleton skeleton-badge" style="width: 80px;"></div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px; margin: 16px 0;">
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <div class="skeleton skeleton-btn" style="width: 170px; height: 36px;"></div>
+              </div>
+            </div>
+
+            <div class="skeleton-card" style="padding: 24px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="skeleton skeleton-icon"></div>
+                  <div class="skeleton skeleton-title" style="width: 130px; height: 20px;"></div>
+                </div>
+                <div class="skeleton skeleton-badge" style="width: 70px;"></div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px; margin: 16px 0;">
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px;"></div>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <div class="skeleton skeleton-btn" style="width: 110px; height: 36px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions Skeleton -->
+          <div class="skeleton skeleton-title" style="width: 180px; height: 22px; margin-bottom: 16px;"></div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+            <div class="skeleton-card" style="padding: 16px; flex-direction: row; align-items: center; gap: 12px;">
+              <div class="skeleton skeleton-icon" style="width: 38px; height: 38px;"></div>
+              <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+                <div class="skeleton skeleton-title" style="width: 90px; height: 16px;"></div>
+                <div class="skeleton skeleton-text" style="width: 120px; height: 12px;"></div>
+              </div>
+            </div>
+            <div class="skeleton-card" style="padding: 16px; flex-direction: row; align-items: center; gap: 12px;">
+              <div class="skeleton skeleton-icon" style="width: 38px; height: 38px;"></div>
+              <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+                <div class="skeleton skeleton-title" style="width: 90px; height: 16px;"></div>
+                <div class="skeleton skeleton-text" style="width: 120px; height: 12px;"></div>
+              </div>
+            </div>
+            <div class="skeleton-card" style="padding: 16px; flex-direction: row; align-items: center; gap: 12px;">
+              <div class="skeleton skeleton-icon" style="width: 38px; height: 38px;"></div>
+              <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+                <div class="skeleton skeleton-title" style="width: 90px; height: 16px;"></div>
+                <div class="skeleton skeleton-text" style="width: 120px; height: 12px;"></div>
+              </div>
+            </div>
+            <div class="skeleton-card" style="padding: 16px; flex-direction: row; align-items: center; gap: 12px;">
+              <div class="skeleton skeleton-icon" style="width: 38px; height: 38px;"></div>
+              <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+                <div class="skeleton skeleton-title" style="width: 90px; height: 16px;"></div>
+                <div class="skeleton skeleton-text" style="width: 120px; height: 12px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real Dashboard Content Area -->
+        <div id="dashboardContent" class="hidden">
+
+          <!-- 4 Core Summary Cards Grid (2x2 Layout) -->
+          <div class="summary-grid">
+
+            <!-- 1. Submitted Requests Card -->
+            <div class="dashboard-card" id="requestsCard">
+              <div class="card-header">
+                <div class="card-header-left">
+                  <div class="card-icon-wrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                  </div>
+                  <h2 class="card-title">Submitted Requests</h2>
+                </div>
+                <span class="badge badge-pending" id="requestsBadge">Active</span>
+              </div>
+
+              <div class="card-body">
+                <div class="meta-list">
+                  <div class="meta-item">
+                    <span class="meta-label">Total Filed Requests</span>
+                    <span class="meta-value" id="totalRequestsVal">0</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Pending Coordinator Review</span>
+                    <span class="meta-value" id="pendingRequestsVal">0</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Approved & Queued</span>
+                    <span class="meta-value" id="approvedRequestsVal">0</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Action Required / Rejected</span>
+                    <span class="meta-value" id="rejectedRequestsVal">0</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-action">
+                <a href="create-request.html" class="btn btn-secondary btn-sm">+ New Request</a>
+                <a href="community-requests.html" class="btn btn-primary btn-sm">Manage Requests</a>
+              </div>
+            </div>
+
+            <!-- 2. Active Deployments Card -->
+            <div class="dashboard-card" id="deploymentsCard">
+              <div class="card-header">
+                <div class="card-header-left">
+                  <div class="card-icon-wrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                      <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                  </div>
+                  <h2 class="card-title">Active Deployments</h2>
+                </div>
+                <span class="badge badge-complete" id="deploymentsBadge">Operational</span>
+              </div>
+
+              <div class="card-body">
+                <div class="meta-list">
+                  <div class="meta-item">
+                    <span class="meta-label">Ongoing Deployments</span>
+                    <span class="meta-value" id="ongoingDeploymentsVal">0 Active</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Scheduled Upcoming</span>
+                    <span class="meta-value" id="scheduledActivitiesVal">0 Scheduled</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Completed Activities</span>
+                    <span class="meta-value" id="completedProjectsVal">0 Projects</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Deployment Status</span>
+                    <span class="meta-value" id="deploymentStatusText">Ready for Deployment</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-action">
+                <a href="community-requests.html" class="btn btn-secondary btn-sm">View Activities</a>
+              </div>
+            </div>
+
+            <!-- 3. Assigned Students Card -->
+            <div class="dashboard-card" id="studentsCard">
+              <div class="card-header">
+                <div class="card-header-left">
+                  <div class="card-icon-wrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                  </div>
+                  <h2 class="card-title">Assigned Students</h2>
+                </div>
+                <span class="badge badge-complete" id="studentsBadge">CWTS Volunteers</span>
+              </div>
+
+              <div class="card-body">
+                <div class="meta-list">
+                  <div class="meta-item">
+                    <span class="meta-label">Assigned Student Volunteers</span>
+                    <span class="meta-value" id="assignedStudentsVal">0 Students</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Verified Hours Rendered</span>
+                    <span class="meta-value" id="renderedHoursVal">0.0 Hrs</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Attendance Verification</span>
+                    <span class="meta-value" id="attendanceRateVal">100% Rate</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Assigned Component</span>
+                    <span class="meta-value" id="nstpUnitText">CWTS</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-action">
+                <a href="community-requests.html" class="btn btn-secondary btn-sm">Track Volunteers</a>
+              </div>
+            </div>
+
+            <!-- 4. Notifications & Updates Card -->
+            <div class="dashboard-card" id="notificationsCard">
+              <div class="card-header">
+                <div class="card-header-left">
+                  <div class="card-icon-wrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    </svg>
+                  </div>
+                  <h2 class="card-title">Notifications</h2>
+                </div>
+                <span class="badge badge-complete" id="notifBadge">Latest Updates</span>
+              </div>
+
+              <div class="card-body">
+                <div class="notif-feed-list" id="notifFeedList">
+                  <div class="notif-feed-item unread">
+                    <div class="notif-feed-title">Welcome to CWTSConnect Community Portal</div>
+                    <div class="notif-feed-time">System Announcement</div>
+                  </div>
+                  <div class="notif-feed-item">
+                    <div class="notif-feed-title">Submit community requests early for faster coordinator DSS matching.</div>
+                    <div class="notif-feed-time">Deployment Advisory</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-action">
+                <button type="button" class="btn btn-secondary btn-sm" id="refreshNotifsBtn">Refresh Feed</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Quick Actions Section -->
+          <div class="quick-actions-section">
+            <h3 class="quick-actions-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+              <span>Quick Actions</span>
+            </h3>
+
+            <div class="quick-actions-grid">
+              
+              <a href="create-request.html" class="quick-card">
+                <div class="quick-card-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                  </svg>
+                </div>
+                <div>
+                  <div class="quick-card-title">New Request</div>
+                  <div class="quick-card-desc">File community activity</div>
+                </div>
+              </a>
+
+              <a href="community-requests.html" class="quick-card">
+                <div class="quick-card-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="quick-card-title">Request Records</div>
+                  <div class="quick-card-desc">Track filed request status</div>
+                </div>
+              </a>
+
+              <a href="community-requests.html" class="quick-card">
+                <div class="quick-card-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="quick-card-title">Deployments</div>
+                  <div class="quick-card-desc">Monitor student activities</div>
+                </div>
+              </a>
+
+              <a href="community-requests.html" class="quick-card">
+                <div class="quick-card-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <div>
+                  <div class="quick-card-title">Attendance & Hours</div>
+                  <div class="quick-card-desc">Verify student rendered hours</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="../student/js/student-layout.js?v=12"></script>
+  <script src="js/dashboard.js?v=2"></script>
+</body>
+</html>

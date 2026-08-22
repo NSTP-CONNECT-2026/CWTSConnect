@@ -1,5 +1,7 @@
 // Complete Profile JavaScript with Leaflet Map Integration
 document.addEventListener('DOMContentLoaded', function() {
+  const profileSkeleton = document.getElementById('profileSkeleton');
+  const profileWizardNav = document.getElementById('profileWizardNav');
   const profileForm = document.getElementById('profileForm');
   const submitBtn = document.getElementById('submitBtn');
   const backBtn = document.getElementById('backBtn');
@@ -8,6 +10,20 @@ document.addEventListener('DOMContentLoaded', function() {
   const messageContent = document.getElementById('messageContent');
   const messageText = document.getElementById('messageText');
   const messageClose = document.getElementById('messageClose');
+
+  function showLoading() {
+    if (profileSkeleton) profileSkeleton.style.display = 'block';
+    if (profileWizardNav) profileWizardNav.classList.add('hidden');
+    if (profileForm) profileForm.classList.add('hidden');
+    if (loadingOverlay) loadingOverlay.style.display = 'none';
+  }
+
+  function hideLoading() {
+    if (profileSkeleton) profileSkeleton.style.display = 'none';
+    if (profileWizardNav) profileWizardNav.classList.remove('hidden');
+    if (profileForm) profileForm.classList.remove('hidden');
+    if (loadingOverlay) loadingOverlay.style.display = 'none';
+  }
 
   // Map integration elements
   const locationSearch = document.getElementById('locationSearch');
@@ -263,8 +279,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Insert after location search container
-    const searchContainer = document.querySelector('.location-search-container');
-    searchContainer.parentNode.insertBefore(suggestionsDiv, searchContainer.nextSibling);
+    const searchContainer = document.querySelector('.location-search-bar') || document.querySelector('.location-search-container') || document.getElementById('locationSearch');
+    if (searchContainer && searchContainer.parentNode) {
+      searchContainer.parentNode.insertBefore(suggestionsDiv, searchContainer.nextSibling);
+    }
   }
 
   function onMapClick(e) {
@@ -415,8 +433,10 @@ document.addEventListener('DOMContentLoaded', function() {
     statusDiv.textContent = message;
 
     // Insert after location search container
-    const searchContainer = document.querySelector('.location-search-container');
-    searchContainer.parentNode.insertBefore(statusDiv, searchContainer.nextSibling);
+    const searchContainer = document.querySelector('.location-search-bar') || document.querySelector('.location-search-container') || document.getElementById('locationSearch');
+    if (searchContainer && searchContainer.parentNode) {
+      searchContainer.parentNode.insertBefore(statusDiv, searchContainer.nextSibling);
+    }
 
     // Auto-remove success/error messages after 5 seconds
     if (type !== 'loading') {
@@ -437,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Profile exists, redirect to view profile
         showMessage('You already have a profile. Redirecting to profile view...', 'success');
         setTimeout(() => {
-          window.location.href = '/student/profile.html';
+          window.location.href = '/student/edit-profile.html';
         }, 2000);
       }
     } catch (error) {
@@ -469,6 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!profileData.emergency_contact_relationship) delete profileData.emergency_contact_relationship;
       if (!profileData.latitude) delete profileData.latitude;
       if (!profileData.longitude) delete profileData.longitude;
+      profileData.nstp_component = 'CWTS';
 
       // Submit profile
       const response = await fetch('/api/student/profile', {
@@ -497,14 +518,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } finally {
       hideLoading();
     }
-  }
-
-  function showLoading() {
-    loadingOverlay.style.display = 'flex';
-  }
-
-  function hideLoading() {
-    loadingOverlay.style.display = 'none';
   }
 
   function showMessage(message, type = 'info') {
@@ -596,4 +609,102 @@ document.addEventListener('DOMContentLoaded', function() {
 
     return true;
   }
-});
+
+  // ==========================================
+  // WIZARD STEP PAGINATION LOGIC
+  // ==========================================
+  let currentStep = 1;
+  const totalSteps = 3;
+
+  function goToStep(targetStep) {
+    if (targetStep < 1 || targetStep > totalSteps) return;
+
+    // Validate current step before advancing
+    if (targetStep > currentStep) {
+      if (!validateStep(currentStep)) {
+        return;
+      }
+    }
+
+    currentStep = targetStep;
+
+    // Toggle Panels & Nav Tabs
+    for (let i = 1; i <= totalSteps; i++) {
+      const panel = document.getElementById(`stepPanel${i}`);
+      const tab = document.getElementById(`tabStep${i}`);
+      
+      if (panel) {
+        panel.classList.toggle('active', i === currentStep);
+      }
+      if (tab) {
+        tab.classList.toggle('active', i === currentStep);
+        tab.classList.toggle('completed', i < currentStep);
+        tab.setAttribute('aria-selected', i === currentStep ? 'true' : 'false');
+      }
+    }
+
+    // Invalidate Leaflet Map Size so it immediately renders clearly on Step 2
+    if (currentStep === 2 && map) {
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 150);
+    }
+  }
+
+  function validateStep(step) {
+    let isValid = true;
+    let firstInvalid = null;
+
+    if (step === 1) {
+      const step1Fields = ['full_name', 'student_number', 'contact_number', 'course', 'year_level', 'section', 'nstp_component'];
+      for (let fieldName of step1Fields) {
+        const input = profileForm.querySelector(`[name="${fieldName}"]`);
+        if (input && (!input.value || !input.value.trim())) {
+          input.classList.add('invalid');
+          if (!firstInvalid) firstInvalid = input;
+          isValid = false;
+        }
+      }
+      if (!isValid) {
+        showMessage('Please fill in all required Student Information fields before proceeding.', 'error');
+      }
+    } else if (step === 2) {
+      const step2Fields = ['complete_address', 'barangay', 'municipality', 'province'];
+      for (let fieldName of step2Fields) {
+        const input = profileForm.querySelector(`[name="${fieldName}"]`);
+        if (input && (!input.value || !input.value.trim())) {
+          input.classList.add('invalid');
+          if (!firstInvalid) firstInvalid = input;
+          isValid = false;
+        }
+      }
+      if (!isValid) {
+        showMessage('Please fill in your complete location details before proceeding.', 'error');
+      }
+    }
+
+    if (firstInvalid) {
+      firstInvalid.focus();
+    }
+    return isValid;
+  }
+
+  // Hook up step buttons
+  const btnNextStep1 = document.getElementById('btnNextStep1');
+  const btnNextStep2 = document.getElementById('btnNextStep2');
+  const btnPrevStep2 = document.getElementById('btnPrevStep2');
+  const btnPrevStep3 = document.getElementById('btnPrevStep3');
+
+  if (btnNextStep1) btnNextStep1.addEventListener('click', () => goToStep(2));
+  if (btnNextStep2) btnNextStep2.addEventListener('click', () => goToStep(3));
+  if (btnPrevStep2) btnPrevStep2.addEventListener('click', () => goToStep(1));
+  if (btnPrevStep3) btnPrevStep3.addEventListener('click', () => goToStep(2));
+
+  // Hook up top step tab clicks
+  document.querySelectorAll('.wizard-step-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const step = parseInt(this.getAttribute('data-step'), 10);
+      if (step) goToStep(step);
+    });
+  });
+});

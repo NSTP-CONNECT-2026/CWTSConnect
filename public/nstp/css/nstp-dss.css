@@ -1,0 +1,411 @@
+/* ==========================================================================
+   CWTSConnect — NSTP Decision Support System (DSS) Matching Stylesheet
+   Strictly adheres to CWTSConnect_Design_Guide_Updated.md & Manuscript Specs
+   Covers:
+     - 4-Phase DSS Pipeline Stepper
+     - Screen 21: Approved Community Request Selection
+     - Screen 22: Eligibility Screening & Gatekeeper Matrix
+     - Screen 23: DSS Input & Quantification Matrix
+     - Screen 24: Vector Normalization Table
+     - Screen 25: SAW (Simple Additive Weighting) Computation Cards
+     - Screen 26: Student Ranking & Suitability Scores
+     - Screen 27: Recommendation Review & Coordinator Decision Action Bar
+   ========================================================================== */
+
+@import url('../../student/css/student-layout.css');
+@import url('nstp-coordinator.css');
+@import url('nstp-users.css');
+
+/* --------------------------------------------------------------------------
+   1. DSS PIPELINE STEPPER NAV
+   -------------------------------------------------------------------------- */
+.dss-stepper-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-xl);
+  box-shadow: var(--neu-shadow-raised);
+  gap: var(--space-xs);
+  position: relative;
+  overflow: hidden;
+}
+
+.dss-stepper-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+}
+
+.dss-step-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dss-step-btn:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.dss-step-btn.active {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--neu-shadow-inset);
+}
+
+.dss-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #EFF3F1;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: inset 2px 2px 4px rgba(163, 177, 198, 0.35), inset -2px -2px 4px rgba(255, 255, 255, 0.9);
+  transition: all 0.25s ease;
+}
+
+.dss-step-btn.active .dss-step-num {
+  background: linear-gradient(145deg, #348b65, #276b4d);
+  color: #FFFFFF;
+  box-shadow: 2px 2px 6px rgba(47, 125, 91, 0.35);
+}
+
+.dss-step-btn.completed .dss-step-num {
+  background: linear-gradient(145deg, #186843, #0f4a2f);
+  color: #FFFFFF;
+  box-shadow: 2px 2px 6px rgba(20, 90, 58, 0.35);
+}
+
+.dss-step-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.dss-step-subtitle {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+.dss-pipeline-connector {
+  width: 20px;
+  height: 2px;
+  background: rgba(226, 232, 240, 0.9);
+  flex-shrink: 0;
+}
+
+/* Step Panels */
+.dss-step-panel {
+  display: none;
+  animation: dssPanelFade 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dss-step-panel.active {
+  display: block;
+}
+
+@keyframes dssPanelFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --------------------------------------------------------------------------
+   2. SCREEN 21: COMMUNITY REQUEST SELECTION CARDS
+   -------------------------------------------------------------------------- */
+.requests-select-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.request-select-card {
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--neu-shadow-raised);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.request-select-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--neu-shadow-raised-hover);
+  border-color: rgba(47, 125, 91, 0.4);
+}
+
+.request-select-card.selected {
+  border-color: var(--cwts-accent-green);
+  box-shadow: 0 0 0 2px rgba(47, 125, 91, 0.3), var(--neu-shadow-raised);
+  background: rgba(236, 253, 245, 0.85);
+}
+
+/* Selected Request Hero Banner */
+.active-request-hero {
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-xl);
+  margin-bottom: var(--space-lg);
+  box-shadow: var(--neu-shadow-raised);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+/* --------------------------------------------------------------------------
+   3. SCREEN 22: ELIGIBILITY SCREENING CALLOUT & MATRIX
+   -------------------------------------------------------------------------- */
+.eligibility-info-callout {
+  background: rgba(239, 246, 255, 0.9);
+  border: 1px solid #BFDBFE;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: var(--space-lg);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.8125rem;
+  color: #1E40AF;
+  line-height: 1.5;
+}
+
+.eligibility-info-callout svg {
+  width: 20px;
+  height: 20px;
+  color: #2563EB;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.eligibility-badge-eligible {
+  background: rgba(236, 253, 245, 0.95);
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.eligibility-badge-ineligible {
+  background: rgba(254, 242, 242, 0.95);
+  color: #991B1B;
+  border: 1px solid #FECACA;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   4. SCREENS 23, 24, 25: MATHEMATICAL DSS CALCULATION INSPECTOR
+   -------------------------------------------------------------------------- */
+.dss-calc-tabs {
+  display: flex;
+  gap: 6px;
+  background: rgba(241, 245, 249, 0.85);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  width: fit-content;
+  margin-bottom: var(--space-md);
+}
+
+.dss-calc-tab-btn {
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dss-calc-tab-btn.active {
+  background: #FFFFFF;
+  color: var(--cwts-primary-dark);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.saw-formula-card {
+  background: linear-gradient(135deg, rgba(11, 61, 46, 0.95), rgba(20, 90, 58, 0.95));
+  color: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-xl);
+  margin-bottom: var(--space-lg);
+  box-shadow: 0 10px 25px -5px rgba(11, 61, 46, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.saw-formula-title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.saw-formula-math {
+  font-family: monospace;
+  font-size: 1.05rem;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #5EEAD4;
+}
+
+.weight-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  margin-left: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   5. SCREEN 26 & 27: STUDENT RANKING & COORDINATOR DECISION BAR
+   -------------------------------------------------------------------------- */
+.rank-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  background: rgba(241, 245, 249, 0.9);
+  color: var(--text-main);
+  border: 1px solid rgba(203, 213, 225, 0.9);
+}
+
+.rank-badge.top-1 {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #FFFFFF;
+  border-color: #B45309;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.35);
+}
+
+.rank-badge.top-2 {
+  background: linear-gradient(135deg, #94A3B8, #64748B);
+  color: #FFFFFF;
+  border-color: #475569;
+}
+
+.rank-badge.top-3 {
+  background: linear-gradient(135deg, #D97706, #B45309);
+  color: #FFFFFF;
+  border-color: #78350F;
+}
+
+.suitability-score-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.suitability-score-number {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--cwts-primary-dark);
+}
+
+/* Coordinator Decision Callout */
+.coordinator-decision-disclaimer {
+  background: rgba(254, 243, 199, 0.9);
+  border: 1px solid #FDE68A;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin: var(--space-lg) 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.8125rem;
+  color: #92400E;
+  line-height: 1.5;
+}
+
+.coordinator-decision-disclaimer svg {
+  width: 20px;
+  height: 20px;
+  color: #D97706;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Bottom Action Bar */
+.dss-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-xl);
+  margin-top: var(--space-lg);
+  box-shadow: var(--neu-shadow-raised);
+}
+
+@media (max-width: 1024px) {
+  .requests-select-grid {
+    grid-template-columns: 1fr;
+  }
+  .dss-stepper-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dss-pipeline-connector {
+    display: none;
+  }
+}

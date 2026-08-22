@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deployment Details - NSTPConnect</title>
+  <link rel="stylesheet" href="css/nstp-dashboard.css?v=3">
+</head>
+<body>
+  <div class="dashboard-page">
+    <!-- Top Navigation -->
+    <nav class="topbar">
+      <div class="topbar-brand">NSTPConnect</div>
+      <div class="topbar-right">
+        <span class="topbar-email" id="userEmail">Loading...</span>
+        <button type="button" class="btn btn-secondary" id="logoutBtn">Logout</button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+      <!-- Header Section -->
+      <div class="dashboard-welcome">
+        <h1>Deployment Details</h1>
+        <p>View and manage deployment information and assigned students.</p>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a> > 
+          <a href="deployment-management.html">Deployment Management</a> > 
+          Deployment Details
+        </div>
+      </div>
+
+      <!-- Deployment Information Card -->
+      <div class="deployment-details-card" id="deploymentDetailsCard">
+        <div class="loading-spinner">Loading deployment details...</div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons" id="actionButtons" style="display: none;">
+        <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px;">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          Back to Management
+        </button>
+        <div class="status-actions" id="statusActions">
+          <!-- Status update buttons will be dynamically added here -->
+        </div>
+      </div>
+
+      <!-- Assigned Students Section -->
+      <div class="section" id="studentsSection" style="display: none;">
+        <div class="section-header">
+          <h2>Assigned Students</h2>
+          <div class="section-actions">
+            <span id="studentsCount" class="text-muted"></span>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table" id="studentsTable">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Student Number</th>
+                <th>Course</th>
+                <th>Year Level</th>
+                <th>NSTP Component</th>
+                <th>Deployment Status</th>
+                <th>Assigned Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Status Update Modal -->
+  <div class="modal" id="statusUpdateModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Update Deployment Status</h3>
+        <button type="button" class="modal-close" id="closeStatusModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="statusUpdateForm">
+          <div class="form-group">
+            <label for="newStatus">New Status</label>
+            <select id="newStatus" name="status" required class="form-select">
+              <option value="">Select new status...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="statusNotes">Notes (Optional)</label>
+            <textarea id="statusNotes" name="notes" rows="3" 
+                      placeholder="Reason for status change or additional notes..."></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="cancelStatusUpdate">Cancel</button>
+            <button type="submit" class="btn btn-primary">Update Status</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Updating deployment status...</p>
+    </div>
+  </div>
+
+  <script src="js/view-deployment.js"></script>
+</body>
+</html>

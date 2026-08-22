@@ -1,0 +1,693 @@
+/* ==========================================================================
+   CWTSConnect — NSTP Coordinator User Management Stylesheet
+   Inherits base tokens, sidebar, header, and shell from student-layout.css
+   Covers:
+     - User Management Tabs (Students vs Community Accounts)
+     - Stats Row (4-Box Grid)
+     - Search & Filters Toolbar (Search Input, Select Dropdowns, Action Buttons)
+     - Neumorphic Glass Data Tables
+     - Badges, Skill Tags, Location Snippets
+     - Empty Table States
+     - User Modals (Create Official, View Student Profile, Edit Details)
+     - Floating Toast Notifications
+   ========================================================================== */
+
+@import url('../../student/css/student-layout.css');
+@import url('nstp-coordinator.css');
+
+/* --------------------------------------------------------------------------
+   1. MAIN USER MANAGEMENT TAB SWITCHER
+   -------------------------------------------------------------------------- */
+.user-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: 6px 8px;
+  margin-bottom: var(--space-lg);
+  box-shadow: var(--neu-shadow-raised);
+  width: fit-content;
+}
+
+.user-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.user-tab-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.user-tab-btn.active {
+  background: var(--cwts-accent-green);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: var(--neu-shadow-btn-primary);
+}
+
+.user-tab-btn.active svg {
+  stroke: #FFFFFF;
+}
+
+.user-tab-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.user-tab-btn.active .user-tab-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.tab-pane {
+  display: none;
+  animation: tabFade 0.25s ease-out;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+@keyframes tabFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --------------------------------------------------------------------------
+   2. STATS ROW (4-Box Grid)
+   -------------------------------------------------------------------------- */
+.stats-row-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.stat-box {
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  box-shadow: var(--neu-shadow-raised);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+}
+
+.stat-box:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neu-shadow-raised-hover);
+}
+
+.stat-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.stat-box-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.stat-box-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: rgba(47, 125, 91, 0.08);
+  color: var(--cwts-accent-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-box-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.stat-box-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--cwts-primary-dark);
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   3. FILTER & ACTION TOOLBAR
+   -------------------------------------------------------------------------- */
+.toolbar-card {
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-lg);
+  box-shadow: var(--neu-shadow-raised);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.toolbar-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 1;
+}
+
+.search-input-wrap {
+  position: relative;
+  min-width: 240px;
+  flex: 1;
+}
+
+.search-input-wrap svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--text-subtle);
+  pointer-events: none;
+}
+
+.toolbar-input {
+  width: 100%;
+  height: 40px;
+  padding: 8px 12px 8px 36px;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  color: var(--text-main);
+  background: rgba(248, 250, 252, 0.85);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--neu-shadow-inset);
+  transition: all 0.2s ease;
+}
+
+.toolbar-input:focus {
+  outline: none;
+  border-color: var(--cwts-accent-green);
+  background: #FFFFFF;
+}
+
+.toolbar-select {
+  height: 40px;
+  padding: 8px 32px 8px 12px;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  color: var(--text-main);
+  background: rgba(248, 250, 252, 0.85);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--neu-shadow-inset);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.toolbar-select:focus {
+  outline: none;
+  border-color: var(--cwts-accent-green);
+  background-color: #FFFFFF;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* --------------------------------------------------------------------------
+   4. DATA TABLES & ACTION BUTTONS
+   -------------------------------------------------------------------------- */
+.table-card {
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--neu-shadow-raised);
+  overflow: hidden;
+  margin-bottom: var(--space-xl);
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.neu-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.8125rem;
+}
+
+.neu-table thead {
+  background: rgba(241, 245, 249, 0.85);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.neu-table th {
+  padding: 14px 16px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.neu-table td {
+  padding: 16px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+  vertical-align: middle;
+  color: var(--text-main);
+}
+
+.neu-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.neu-table tbody tr:hover {
+  background-color: rgba(248, 250, 252, 0.85);
+}
+
+.user-name-title {
+  font-weight: 700;
+  color: var(--cwts-primary-dark);
+  font-size: 0.875rem;
+  margin-bottom: 2px;
+}
+
+.user-sub-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.user-code-tag {
+  font-family: monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(241, 245, 249, 0.9);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  color: var(--text-muted);
+}
+
+.skills-pills-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 260px;
+}
+
+.skill-mini-pill {
+  font-size: 0.6875rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(47, 125, 91, 0.08);
+  color: var(--cwts-accent-green);
+  border: 1px solid rgba(47, 125, 91, 0.2);
+  font-weight: 500;
+}
+
+.skills-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skill-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(47, 125, 91, 0.1);
+  color: var(--cwts-accent-green);
+  border: 1px solid rgba(47, 125, 91, 0.2);
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.action-btn-sm {
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.action-btn-view {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--cwts-glass-border);
+  color: var(--text-main);
+}
+
+.action-btn-view:hover {
+  border-color: var(--cwts-accent-green);
+  color: var(--cwts-accent-green);
+}
+
+.action-btn-status-toggle {
+  background: rgba(241, 245, 249, 0.9);
+  border-color: rgba(203, 213, 225, 0.8);
+  color: var(--text-main);
+}
+
+.action-btn-status-toggle:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #DC2626;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   5. EMPTY TABLE STATES
+   -------------------------------------------------------------------------- */
+.empty-table-state {
+  padding: 48px var(--space-xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(241, 245, 249, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-subtle);
+  margin-bottom: var(--space-md);
+}
+
+.empty-state-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.empty-state-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.empty-state-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  max-width: 380px;
+  margin-bottom: var(--space-md);
+}
+
+/* --------------------------------------------------------------------------
+   6. FORM INPUTS & GRIDS (Used in Modals)
+   -------------------------------------------------------------------------- */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.form-label span.required {
+  color: #EF4444;
+  margin-left: 2px;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--neu-shadow-inset);
+  transition: all 0.2s ease;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--cwts-accent-green);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(47, 125, 91, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   7. MODALS (Create Account, View Profile, Edit Details)
+   -------------------------------------------------------------------------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 61, 46, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-card {
+  background: #FFFFFF;
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(16px);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.modal-backdrop.active .modal-card {
+  transform: translateY(0);
+}
+
+.modal-header {
+  padding: var(--space-lg) var(--space-xl);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(248, 250, 252, 0.7);
+}
+
+.modal-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.modal-body {
+  padding: var(--space-xl);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: var(--space-md) var(--space-xl);
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  background: rgba(248, 250, 252, 0.7);
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-subtle);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close-btn:hover {
+  color: var(--text-main);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* --------------------------------------------------------------------------
+   8. TOAST NOTIFICATION CONTAINER
+   -------------------------------------------------------------------------- */
+.message-container {
+  position: fixed;
+  top: 85px;
+  right: 24px;
+  z-index: 1000;
+  max-width: 420px;
+  animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.message-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.15), 0 4px 10px -2px rgba(0, 0, 0, 0.08);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  backdrop-filter: blur(16px);
+}
+
+.message-content.info {
+  background: rgba(239, 246, 255, 0.95);
+  border: 1px solid #BFDBFE;
+  color: #1E40AF;
+}
+
+.message-content.success {
+  background: rgba(236, 253, 245, 0.95);
+  border: 1px solid #A7F3D0;
+  color: #065F46;
+}
+
+.message-content.error {
+  background: rgba(254, 242, 242, 0.95);
+  border: 1px solid #FECACA;
+  color: #991B1B;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: currentColor;
+  cursor: pointer;
+  opacity: 0.7;
+  padding: 0 4px;
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   9. RESPONSIVE BREAKPOINTS
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .stats-row-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .stats-row-4 {
+    grid-template-columns: 1fr;
+  }
+  .user-tabs-bar {
+    width: 100%;
+  }
+  .user-tab-btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}

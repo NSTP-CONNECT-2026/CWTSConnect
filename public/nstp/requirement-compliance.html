@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMO Requirement Compliance — CWTSConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../student/css/student-layout.css?v=12" />
+  <link rel="stylesheet" href="css/nstp-coordinator.css?v=1" />
+  <link rel="stylesheet" href="css/nstp-requirements.css?v=1" />
+</head>
+<body>
+  <div class="dashboard-layout">
+
+    <!-- Standardized Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand">
+          <span class="sidebar-brand-text">
+            <span class="brand-name">CWTS</span><span class="brand-accent">Connect</span>
+          </span>
+          <span class="sidebar-portal-badge">Coordinator Portal</span>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="sidebar-nav">
+        <!-- Main Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Main</div>
+          
+          <a href="dashboard.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              </svg>
+            </span>
+            <span>Dashboard</span>
+          </a>
+
+          <a href="user-management.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </span>
+            <span>User Management</span>
+          </a>
+
+          <a href="community-requests.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </span>
+            <span>Community Requests</span>
+          </a>
+
+          <a href="dss-matching.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="6"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+              </svg>
+            </span>
+            <span>DSS Matching</span>
+          </a>
+
+          <a href="deployment-management.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </span>
+            <span>Deployments</span>
+          </a>
+        </div>
+
+        <!-- Monitoring Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Monitoring</div>
+
+          <a href="attendance-management.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+            </span>
+            <span>Attendance Logs</span>
+          </a>
+
+          <a href="rendered-hours.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </span>
+            <span>Rendered Hours</span>
+          </a>
+
+          <a href="make-up-requests.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </span>
+            <span>Make-up Requests</span>
+          </a>
+        </div>
+
+        <!-- Management Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Management</div>
+
+          <a href="requirement-compliance.html" class="sidebar-item active">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+            </span>
+            <span>CMO Compliance</span>
+          </a>
+
+          <a href="community-officials.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </span>
+            <span>Community Officials</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="logoutBtn" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      
+      <!-- Top Bar Header -->
+      <header class="header">
+        <div class="header-left">
+          <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle Navigation Menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <span class="header-title">CMO Requirement Management</span>
+        </div>
+
+        <div class="header-right">
+          <button class="header-notif-btn" id="headerNotifBtn" type="button" aria-label="Notifications" title="Notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notif-badge-dot" id="headerNotifDot"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="content-container">
+
+        <!-- Section 12 Skeleton Loading State -->
+        <div id="complianceSkeleton" class="page-loading-skeleton">
+          <!-- 1. Stats Mini-Boxes Skeleton -->
+          <div class="stats-row-4" style="margin-bottom: 24px;">
+            <div class="skeleton-card" style="padding: 18px 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="skeleton skeleton-text" style="width: 120px; height: 13px;"></div>
+                <div class="skeleton skeleton-icon" style="width: 34px; height: 34px; border-radius: var(--radius-sm);"></div>
+              </div>
+              <div class="skeleton skeleton-title" style="width: 50px; height: 28px;"></div>
+            </div>
+
+            <div class="skeleton-card" style="padding: 18px 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="skeleton skeleton-text" style="width: 130px; height: 13px;"></div>
+                <div class="skeleton skeleton-icon" style="width: 34px; height: 34px; border-radius: var(--radius-sm);"></div>
+              </div>
+              <div class="skeleton skeleton-title" style="width: 45px; height: 28px;"></div>
+            </div>
+
+            <div class="skeleton-card" style="padding: 18px 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="skeleton skeleton-text" style="width: 100px; height: 13px;"></div>
+                <div class="skeleton skeleton-icon" style="width: 34px; height: 34px; border-radius: var(--radius-sm);"></div>
+              </div>
+              <div class="skeleton skeleton-title" style="width: 45px; height: 28px;"></div>
+            </div>
+
+            <div class="skeleton-card" style="padding: 18px 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="skeleton skeleton-text" style="width: 110px; height: 13px;"></div>
+                <div class="skeleton skeleton-icon" style="width: 34px; height: 34px; border-radius: var(--radius-sm);"></div>
+              </div>
+              <div class="skeleton skeleton-title" style="width: 40px; height: 28px;"></div>
+            </div>
+          </div>
+
+          <!-- 2. Search & Filters Toolbar Skeleton -->
+          <div class="skeleton-card" style="padding: 16px 20px; margin-bottom: 24px; flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 12px; flex: 1; flex-wrap: wrap;">
+              <div class="skeleton skeleton-input" style="width: 320px; height: 40px; border-radius: var(--radius-md);"></div>
+              <div class="skeleton skeleton-btn" style="width: 160px; height: 40px; border-radius: var(--radius-md);"></div>
+              <div class="skeleton skeleton-btn" style="width: 160px; height: 40px; border-radius: var(--radius-md);"></div>
+            </div>
+            <div class="skeleton skeleton-btn" style="width: 100px; height: 40px; border-radius: var(--radius-md);"></div>
+          </div>
+
+          <!-- 3. Compliance Data Table Skeleton -->
+          <div class="table-card" style="padding: 0; overflow: hidden;">
+            <div class="table-responsive">
+              <table class="neu-table" style="pointer-events: none; margin: 0;">
+                <thead>
+                  <tr>
+                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 130px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 110px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 140px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 110px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 80px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-text" style="width: 70px; height: 13px; margin-left: auto;"></div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="skeleton skeleton-icon" style="width: 38px; height: 38px; border-radius: 50%;"></div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                          <div class="skeleton skeleton-title" style="width: 140px; height: 14px;"></div>
+                          <div class="skeleton skeleton-text" style="width: 100px; height: 11px;"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <div class="skeleton skeleton-text" style="width: 90px; height: 13px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 60px; height: 11px;"></div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <div class="skeleton skeleton-text" style="width: 130px; height: 13px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 80px; height: 11px;"></div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 90px; height: 13px;"></div></td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 85px; height: 22px;"></div></td>
+                    <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 85px; height: 32px; margin-left: auto;"></div></td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="skeleton skeleton-icon" style="width: 38px; height: 38px; border-radius: 50%;"></div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                          <div class="skeleton skeleton-title" style="width: 155px; height: 14px;"></div>
+                          <div class="skeleton skeleton-text" style="width: 110px; height: 11px;"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <div class="skeleton skeleton-text" style="width: 80px; height: 13px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 65px; height: 11px;"></div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <div class="skeleton skeleton-text" style="width: 120px; height: 13px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 70px; height: 11px;"></div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 95px; height: 13px;"></div></td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 90px; height: 22px;"></div></td>
+                    <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 85px; height: 32px; margin-left: auto;"></div></td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="skeleton skeleton-icon" style="width: 38px; height: 38px; border-radius: 50%;"></div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                          <div class="skeleton skeleton-title" style="width: 130px; height: 14px;"></div>
+                          <div class="skeleton skeleton-text" style="width: 95px; height: 11px;"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <div class="skeleton skeleton-text" style="width: 100px; height: 13px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 55px; height: 11px;"></div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <div class="skeleton skeleton-text" style="width: 140px; height: 13px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 85px; height: 11px;"></div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 85px; height: 13px;"></div></td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 75px; height: 22px;"></div></td>
+                    <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 85px; height: 32px; margin-left: auto;"></div></td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="skeleton skeleton-icon" style="width: 38px; height: 38px; border-radius: 50%;"></div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                          <div class="skeleton skeleton-title" style="width: 160px; height: 14px;"></div>
+                          <div class="skeleton skeleton-text" style="width: 105px; height: 11px;"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <div class="skeleton skeleton-text" style="width: 95px; height: 13px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 60px; height: 11px;"></div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <div class="skeleton skeleton-text" style="width: 115px; height: 13px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 65px; height: 11px;"></div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 100px; height: 13px;"></div></td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 85px; height: 22px;"></div></td>
+                    <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 85px; height: 32px; margin-left: auto;"></div></td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="skeleton skeleton-icon" style="width: 38px; height: 38px; border-radius: 50%;"></div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                          <div class="skeleton skeleton-title" style="width: 135px; height: 14px;"></div>
+                          <div class="skeleton skeleton-text" style="width: 90px; height: 11px;"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <div class="skeleton skeleton-text" style="width: 85px; height: 13px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 50px; height: 11px;"></div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;">
+                      <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <div class="skeleton skeleton-text" style="width: 125px; height: 13px;"></div>
+                        <div class="skeleton skeleton-text" style="width: 75px; height: 11px;"></div>
+                      </div>
+                    </td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 90px; height: 13px;"></div></td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 90px; height: 22px;"></div></td>
+                    <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 85px; height: 32px; margin-left: auto;"></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real Content Container -->
+        <div id="complianceContent" class="hidden">
+
+          <!-- 1. Stats Mini-Tiles (4-Box Grid) -->
+          <div class="stats-row-4">
+            <div class="stat-box">
+              <div class="stat-box-header">
+                <span class="stat-box-label">Total Enrolled Students</span>
+                <div class="stat-box-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                </div>
+              </div>
+              <div class="stat-box-value" id="statTotalStudents">0</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-box-header">
+                <span class="stat-box-label">Fully Compliant</span>
+                <div class="stat-box-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+              </div>
+              <div class="stat-box-value" id="statCompliantStudents" style="color: #059669;">0</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-box-header">
+                <span class="stat-box-label">Pending Verification</span>
+                <div class="stat-box-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+              </div>
+              <div class="stat-box-value" id="statPendingReviews" style="color: #D97706;">0</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-box-header">
+                <span class="stat-box-label">Incomplete / Action Needed</span>
+                <div class="stat-box-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+              </div>
+              <div class="stat-box-value" id="statNonCompliant" style="color: #DC2626;">0</div>
+            </div>
+          </div>
+
+          <!-- 2. Search & Filter Toolbar -->
+          <div class="toolbar-card">
+            <div class="toolbar-left">
+              <div class="search-input-wrap">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="complianceSearchInput" class="toolbar-input" placeholder="Search by student name, number, or email..." />
+              </div>
+
+              <select id="complianceStatusFilter" class="toolbar-select">
+                <option value="all">All Compliance Statuses</option>
+                <option value="compliant">Fully Compliant</option>
+                <option value="pending">Pending Document Review</option>
+                <option value="incomplete">Incomplete / Missing</option>
+              </select>
+
+              <select id="complianceCourseFilter" class="toolbar-select">
+                <option value="all">All Academic Courses</option>
+                <option value="BSIT">BSIT</option>
+                <option value="BSCS">BSCS</option>
+                <option value="BSBA">BSBA</option>
+                <option value="BSED">BSED</option>
+                <option value="BSHM">BSHM</option>
+              </select>
+
+              <button type="button" id="clearComplianceFiltersBtn" class="btn btn-secondary btn-sm">Clear Filters</button>
+            </div>
+          </div>
+
+          <!-- 3. Compliance Data Table -->
+          <div class="table-card" id="complianceTableCard">
+            <div class="table-responsive">
+              <table class="neu-table" id="complianceTable">
+                <thead>
+                  <tr>
+                    <th>Student Information</th>
+                    <th>Course & Section</th>
+                    <th>Compliance Progress</th>
+                    <th>CMO Requirement Status</th>
+                    <th>Overall Status</th>
+                    <th>Review Action</th>
+                  </tr>
+                </thead>
+                <tbody id="complianceTableBody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="complianceEmptyState" class="empty-table-state hidden">
+              <div class="empty-state-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </div>
+              <div class="empty-state-title">No Requirement Records Found</div>
+              <div class="empty-state-desc">No student compliance records match your search filters.</div>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="../student/js/student-layout.js?v=12"></script>
+  <script src="js/requirement-compliance.js?v=2"></script>
+</body>
+</html>

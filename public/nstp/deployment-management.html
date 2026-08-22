@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deployment Management - NSTPConnect</title>
+  <link rel="stylesheet" href="css/nstp-dashboard.css?v=3">
+</head>
+<body>
+  <div class="dashboard-page">
+    <!-- Top Navigation -->
+    <nav class="topbar">
+      <div class="topbar-brand">NSTPConnect</div>
+      <div class="topbar-right">
+        <span class="topbar-email" id="userEmail">Loading...</span>
+        <button type="button" class="btn btn-secondary" id="logoutBtn">Logout</button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+      <!-- Header Section -->
+      <div class="dashboard-welcome">
+        <h1>Deployment Management</h1>
+        <p>Assign and manage NSTP student deployments to approved community requests.</p>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a> > Deployment Management
+        </div>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="cards-grid" id="summaryCards">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 2v4"/>
+                <path d="M16 2v4"/>
+                <rect width="18" height="18" x="3" y="4" rx="2"/>
+                <path d="M3 10h18"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Total Deployments</div>
+            </div>
+          </div>
+          <div class="card-value" id="totalDeployments">Loading...</div>
+          <p class="card-description">All deployment batches created in the system.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12,6 12,12 16,14"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Active Deployments</div>
+            </div>
+          </div>
+          <div class="card-value" id="activeDeployments">Loading...</div>
+          <p class="card-description">Currently active and ongoing deployments.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Completed Deployments</div>
+            </div>
+          </div>
+          <div class="card-value" id="completedDeployments">Loading...</div>
+          <p class="card-description">Successfully completed deployment batches.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon yellow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 1v6m0 6v6"/>
+                <path d="M21 12h-6m-6 0H3"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Pending Deployments</div>
+            </div>
+          </div>
+          <div class="card-value" id="pendingDeployments">Loading...</div>
+          <p class="card-description">Deployments awaiting activation or approval.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon orange">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Assigned Students</div>
+            </div>
+          </div>
+          <div class="card-value" id="assignedStudents">Loading...</div>
+          <p class="card-description">Students currently assigned to deployments.</p>
+        </div>
+      </div>
+
+      <!-- Deployable Requests Section -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Approved Community Requests</h2>
+          <button type="button" class="btn btn-secondary" id="refreshRequestsBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px;">
+              <polyline points="23 4 23 10 17 10"/>
+              <polyline points="1 20 1 14 7 14"/>
+              <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+            </svg>
+            Refresh
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table" id="requestsTable">
+            <thead>
+              <tr>
+                <th>Community Name</th>
+                <th>Activity Title</th>
+                <th>Activity Type</th>
+                <th>NSTP Component</th>
+                <th>Students Needed</th>
+                <th>Assigned Students</th>
+                <th>Deployment Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="requestsTableBody">
+              <tr>
+                <td colspan="8" class="text-center">Loading approved requests...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Student Assignment Section -->
+      <div class="section" id="assignmentSection" style="display: none;">
+        <div class="section-header">
+          <h2>Assign Students to Deployment</h2>
+          <div class="section-actions">
+            <span id="assignmentInfo" class="text-muted"></span>
+            <button type="button" class="btn btn-secondary" id="cancelAssignmentBtn">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Deployment Details Form -->
+        <div class="deployment-form-container">
+          <form id="deploymentForm" class="deployment-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="deploymentBatchName">Deployment Batch Name *</label>
+                <input type="text" id="deploymentBatchName" name="deployment_batch_name" required 
+                       placeholder="e.g., CWTS Batch A - June 2026">
+              </div>
+              <div class="form-group">
+                <label for="deploymentStartDate">Start Date *</label>
+                <input type="date" id="deploymentStartDate" name="deployment_start_date" required>
+              </div>
+              <div class="form-group">
+                <label for="deploymentEndDate">End Date *</label>
+                <input type="date" id="deploymentEndDate" name="deployment_end_date" required>
+              </div>
+              <div class="form-group full-width">
+                <label for="deploymentNotes">Notes (Optional)</label>
+                <textarea id="deploymentNotes" name="notes" rows="3" 
+                          placeholder="Additional deployment instructions or notes..."></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Student Selection -->
+        <div class="student-selection-container">
+          <div class="selection-header">
+            <h3>Select Students for Deployment</h3>
+            <div class="selection-info">
+              <span id="selectionCount">0 selected</span> / 
+              <span id="studentsNeeded">0 needed</span>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table" id="studentsTable">
+              <thead>
+                <tr>
+                  <th>Select</th>
+                  <th>Rank</th>
+                  <th>Student Name</th>
+                  <th>Student Number</th>
+                  <th>Course</th>
+                  <th>NSTP Component</th>
+                  <th>Match Score</th>
+                  <th>Match Label</th>
+                  <th>Municipality</th>
+                  <th>Skills</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTableBody">
+                <tr>
+                  <td colspan="10" class="text-center">Select a request to load student recommendations...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="assignment-actions">
+            <button type="button" class="btn btn-primary" id="createDeploymentBtn" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px;">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Create Deployment
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Existing Deployments Section -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Existing Deployments</h2>
+          <div class="section-actions">
+            <select id="deploymentStatusFilter" class="form-select">
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="active">Active</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <button type="button" class="btn btn-secondary" id="refreshDeploymentsBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px;">
+                <polyline points="23 4 23 10 17 10"/>
+                <polyline points="1 20 1 14 7 14"/>
+                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+              </svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table" id="deploymentsTable">
+            <thead>
+              <tr>
+                <th>Batch Name</th>
+                <th>Community</th>
+                <th>Activity</th>
+                <th>Assigned Students</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="deploymentsTableBody">
+              <tr>
+                <td colspan="8" class="text-center">Loading deployments...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Processing deployment assignment...</p>
+    </div>
+  </div>
+
+  <script src="js/deployment-management.js"></script>
+</body>
+</html>

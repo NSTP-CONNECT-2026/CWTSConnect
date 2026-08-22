@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DSS Matching Engine — CWTSConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../student/css/student-layout.css?v=12" />
+  <link rel="stylesheet" href="css/nstp-coordinator.css?v=1" />
+  <link rel="stylesheet" href="css/nstp-users.css?v=2" />
+  <link rel="stylesheet" href="css/nstp-dss.css?v=2" />
+</head>
+<body>
+  <div class="dashboard-layout">
+
+    <!-- Standardized Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand">
+          <span class="sidebar-brand-text">
+            <span class="brand-name">CWTS</span><span class="brand-accent">Connect</span>
+          </span>
+          <span class="sidebar-portal-badge">Coordinator Portal</span>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="sidebar-nav">
+        <!-- Main Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Main</div>
+          
+          <a href="dashboard.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              </svg>
+            </span>
+            <span>Dashboard</span>
+          </a>
+
+          <a href="user-management.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </span>
+            <span>User Management</span>
+          </a>
+
+          <a href="community-requests.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </span>
+            <span>Community Requests</span>
+          </a>
+
+          <a href="dss-matching.html" class="sidebar-item active">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="6"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+              </svg>
+            </span>
+            <span>DSS Matching</span>
+          </a>
+
+          <a href="deployment-management.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </span>
+            <span>Deployments</span>
+          </a>
+        </div>
+
+        <!-- Monitoring Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Monitoring</div>
+
+          <a href="attendance-management.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+            </span>
+            <span>Attendance Logs</span>
+          </a>
+
+          <a href="rendered-hours.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </span>
+            <span>Rendered Hours</span>
+          </a>
+
+          <a href="make-up-requests.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </span>
+            <span>Make-up Requests</span>
+          </a>
+        </div>
+
+        <!-- Management Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Management</div>
+
+          <a href="requirement-compliance.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+            </span>
+            <span>CMO Compliance</span>
+          </a>
+
+          <a href="community-officials.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </span>
+            <span>Community Officials</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="logoutBtn" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      
+      <!-- Top Bar Header -->
+      <header class="header">
+        <div class="header-left">
+          <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle Navigation Menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <span class="header-title">DSS Matching Engine</span>
+        </div>
+
+        <div class="header-right">
+          <button class="header-notif-btn" id="headerNotifBtn" type="button" aria-label="Notifications" title="Notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notif-badge-dot" id="headerNotifDot"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="content-container">
+
+        <!-- 4-Phase DSS Pipeline Stepper Bar -->
+        <div class="dss-stepper-bar" id="dssStepperBar" role="tablist">
+          
+          <button type="button" class="dss-step-btn active" id="dssStep1Btn" data-step="1">
+            <div class="dss-step-num">1</div>
+            <div>
+              <div class="dss-step-title">Request Selection</div>
+              <div class="dss-step-subtitle">Select Activity</div>
+            </div>
+          </button>
+
+          <div class="dss-pipeline-connector"></div>
+
+          <button type="button" class="dss-step-btn" id="dssStep2Btn" data-step="2">
+            <div class="dss-step-num">2</div>
+            <div>
+              <div class="dss-step-title">Eligibility Screening</div>
+              <div class="dss-step-subtitle">Candidate Filter</div>
+            </div>
+          </button>
+
+          <div class="dss-pipeline-connector"></div>
+
+          <button type="button" class="dss-step-btn" id="dssStep3Btn" data-step="3">
+            <div class="dss-step-num">3</div>
+            <div>
+              <div class="dss-step-title">Matching Matrix</div>
+              <div class="dss-step-subtitle">Score Computation</div>
+            </div>
+          </button>
+
+          <div class="dss-pipeline-connector"></div>
+
+          <button type="button" class="dss-step-btn" id="dssStep4Btn" data-step="4">
+            <div class="dss-step-num">4</div>
+            <div>
+              <div class="dss-step-title">Recommendations</div>
+              <div class="dss-step-subtitle">Deployment Allocation</div>
+            </div>
+          </button>
+
+        </div>
+
+        <!-- Section 12 Skeleton Loading Container -->
+        <div id="dssSkeleton" class="page-loading-skeleton">
+          <div style="margin-bottom: var(--space-lg);">
+            <div class="skeleton skeleton-title" style="width: 280px; height: 22px; margin-bottom: 8px;"></div>
+            <div class="skeleton skeleton-text" style="width: 420px; height: 14px;"></div>
+          </div>
+
+          <div class="requests-select-grid">
+            <!-- Skeleton Card 1 -->
+            <div class="skeleton-card" style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div class="skeleton skeleton-title" style="width: 180px; height: 18px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 140px; height: 12px;"></div>
+                  </div>
+                  <div class="skeleton skeleton-badge" style="width: 110px; height: 22px;"></div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px; margin: 16px 0;">
+                  <div class="skeleton skeleton-row" style="height: 34px;"></div>
+                  <div class="skeleton skeleton-row" style="height: 34px;"></div>
+                </div>
+
+                <div>
+                  <div class="skeleton skeleton-text" style="width: 90px; height: 12px; margin-bottom: 8px;"></div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <div class="skeleton skeleton-badge" style="width: 70px; height: 20px;"></div>
+                    <div class="skeleton skeleton-badge" style="width: 85px; height: 20px;"></div>
+                    <div class="skeleton skeleton-badge" style="width: 60px; height: 20px;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(226, 232, 240, 0.8);">
+                <div class="skeleton skeleton-btn" style="width: 170px; height: 36px;"></div>
+              </div>
+            </div>
+
+            <!-- Skeleton Card 2 -->
+            <div class="skeleton-card" style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div class="skeleton skeleton-title" style="width: 200px; height: 18px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 150px; height: 12px;"></div>
+                  </div>
+                  <div class="skeleton skeleton-badge" style="width: 110px; height: 22px;"></div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px; margin: 16px 0;">
+                  <div class="skeleton skeleton-row" style="height: 34px;"></div>
+                  <div class="skeleton skeleton-row" style="height: 34px;"></div>
+                </div>
+
+                <div>
+                  <div class="skeleton skeleton-text" style="width: 90px; height: 12px; margin-bottom: 8px;"></div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <div class="skeleton skeleton-badge" style="width: 80px; height: 20px;"></div>
+                    <div class="skeleton skeleton-badge" style="width: 65px; height: 20px;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(226, 232, 240, 0.8);">
+                <div class="skeleton skeleton-btn" style="width: 170px; height: 36px;"></div>
+              </div>
+            </div>
+
+            <!-- Skeleton Card 3 -->
+            <div class="skeleton-card" style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div class="skeleton skeleton-title" style="width: 170px; height: 18px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 130px; height: 12px;"></div>
+                  </div>
+                  <div class="skeleton skeleton-badge" style="width: 110px; height: 22px;"></div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px; margin: 16px 0;">
+                  <div class="skeleton skeleton-row" style="height: 34px;"></div>
+                  <div class="skeleton skeleton-row" style="height: 34px;"></div>
+                </div>
+
+                <div>
+                  <div class="skeleton skeleton-text" style="width: 90px; height: 12px; margin-bottom: 8px;"></div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <div class="skeleton skeleton-badge" style="width: 90px; height: 20px;"></div>
+                    <div class="skeleton skeleton-badge" style="width: 75px; height: 20px;"></div>
+                    <div class="skeleton skeleton-badge" style="width: 65px; height: 20px;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(226, 232, 240, 0.8);">
+                <div class="skeleton skeleton-btn" style="width: 170px; height: 36px;"></div>
+              </div>
+            </div>
+
+            <!-- Skeleton Card 4 -->
+            <div class="skeleton-card" style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div class="skeleton skeleton-title" style="width: 190px; height: 18px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 145px; height: 12px;"></div>
+                  </div>
+                  <div class="skeleton skeleton-badge" style="width: 110px; height: 22px;"></div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px; margin: 16px 0;">
+                  <div class="skeleton skeleton-row" style="height: 34px;"></div>
+                  <div class="skeleton skeleton-row" style="height: 34px;"></div>
+                </div>
+
+                <div>
+                  <div class="skeleton skeleton-text" style="width: 90px; height: 12px; margin-bottom: 8px;"></div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <div class="skeleton skeleton-badge" style="width: 75px; height: 20px;"></div>
+                    <div class="skeleton skeleton-badge" style="width: 80px; height: 20px;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(226, 232, 240, 0.8);">
+                <div class="skeleton skeleton-btn" style="width: 170px; height: 36px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real Content Container -->
+        <div id="dssContent" class="hidden">
+
+          <!-- ====================================================================
+               PHASE 1: Approved Community Request Selection
+               ==================================================================== -->
+          <div class="dss-step-panel active" id="dssPanel1">
+            <div style="margin-bottom: var(--space-lg);">
+              <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main);">Select Approved Community Request</h2>
+              <p style="font-size: 0.8125rem; color: var(--text-muted);">Choose which community activity to process for automated volunteer matching.</p>
+            </div>
+
+            <div class="requests-select-grid" id="approvedRequestsGrid">
+              <!-- Populated dynamically by dss-matching.js -->
+            </div>
+          </div>
+
+          <!-- ====================================================================
+               PHASE 2: Eligibility Screening Matrix
+               ==================================================================== -->
+          <div class="dss-step-panel" id="dssPanel2">
+            
+            <!-- Active Request Hero Banner -->
+            <div class="active-request-hero" id="activeRequestHero2">
+              <!-- Dynamic Request Summary -->
+            </div>
+
+            <!-- Eligibility Screening Data Table -->
+            <div class="table-card">
+              <div class="table-responsive">
+                <table class="neu-table" id="eligibilityTable">
+                  <thead>
+                    <tr>
+                      <th>Student Candidate</th>
+                      <th>Course & Section</th>
+                      <th>Requirement Compliance Status</th>
+                      <th>Eligibility Result</th>
+                    </tr>
+                  </thead>
+                  <tbody id="eligibilityTableBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ====================================================================
+               PHASE 3: DSS Quantification, Normalization & SAW Matrix
+               ==================================================================== -->
+          <div class="dss-step-panel" id="dssPanel3">
+            
+            <!-- Active Request Hero Banner -->
+            <div class="active-request-hero" id="activeRequestHero3">
+              <!-- Dynamic Request Summary -->
+            </div>
+
+            <!-- Calculation Sub-Tabs Switcher -->
+            <div class="dss-calc-tabs">
+              <button type="button" class="dss-calc-tab-btn active" id="calcTabQuant" onclick="window.switchCalcTab('quant')">
+                Raw Inputs & Distance
+              </button>
+              <button type="button" class="dss-calc-tab-btn" id="calcTabNorm" onclick="window.switchCalcTab('norm')">
+                Normalized Scores
+              </button>
+              <button type="button" class="dss-calc-tab-btn" id="calcTabSaw" onclick="window.switchCalcTab('saw')">
+                SAW Computation
+              </button>
+            </div>
+
+            <!-- Calculation View Containers -->
+            <div class="table-card">
+              <div class="table-responsive">
+                
+                <!-- 1. Quantification Table -->
+                <table class="neu-table" id="quantificationTable">
+                  <thead>
+                    <tr>
+                      <th>Eligible Student</th>
+                      <th>Student Location</th>
+                      <th>Geographic Distance</th>
+                      <th>Skills Matched</th>
+                      <th>Skill Compatibility Ratio</th>
+                    </tr>
+                  </thead>
+                  <tbody id="quantificationTableBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+
+                <!-- 2. Normalization Table -->
+                <table class="neu-table hidden" id="normalizationTable">
+                  <thead>
+                    <tr>
+                      <th>Eligible Student</th>
+                      <th>Raw Distance (km)</th>
+                      <th>Normalized Location Score</th>
+                      <th>Raw Skills Matched</th>
+                      <th>Normalized Skills Score</th>
+                    </tr>
+                  </thead>
+                  <tbody id="normalizationTableBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+
+                <!-- 3. SAW Weighting Table -->
+                <table class="neu-table hidden" id="sawComputationTable">
+                  <thead>
+                    <tr>
+                      <th>Eligible Student</th>
+                      <th>Location Weight (30%)</th>
+                      <th>Skills Weight (70%)</th>
+                      <th>Computation Breakdown</th>
+                      <th>Suitability Score</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sawComputationTableBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- ====================================================================
+               PHASE 4: Student Ranking & Deployment Allocation
+               ==================================================================== -->
+          <div class="dss-step-panel" id="dssPanel4">
+            
+            <!-- Active Request Hero Banner -->
+            <div class="active-request-hero" id="activeRequestHero4">
+              <!-- Dynamic Request Summary -->
+            </div>
+
+            <!-- Student Selection Controls Toolbar -->
+            <div class="toolbar-card">
+              <div class="toolbar-left">
+                <button type="button" class="btn btn-secondary btn-sm" id="btnSelectTopQuota">Select Top Quota (<span id="quotaCountLabel">15</span>)</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnSelectAllRanked">Select All</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnDeselectAllRanked">Deselect All</button>
+              </div>
+              <div class="toolbar-right">
+                <span style="font-size: 0.875rem; font-weight: 700; color: var(--cwts-primary-dark);" id="selectedStudentSummaryLabel">0 Students Selected</span>
+              </div>
+            </div>
+
+            <!-- Ranked Student Recommendations Table -->
+            <div class="table-card">
+              <div class="table-responsive">
+                <table class="neu-table" id="rankingTable">
+                  <thead>
+                    <tr>
+                      <th style="width: 40px;"><input type="checkbox" id="masterSelectCheckbox" /></th>
+                      <th>Rank</th>
+                      <th>Student Candidate</th>
+                      <th>Normalized Location</th>
+                      <th>Normalized Skills</th>
+                      <th>Suitability Score</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rankingTableBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: center; align-items: center; margin: 32px 0 16px 0;">
+              <button type="button" class="btn btn-primary" id="btnCreateDeploymentFromDss" style="padding: 12px 32px; font-size: 0.9375rem; height: 46px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                <span>Proceed to Deployment Creation</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Message Container -->
+  <div id="messageContainer" class="message-container" style="display: none;">
+    <div id="messageContent" class="message-content info">
+      <p id="messageText"></p>
+      <button id="messageClose" class="btn-close" type="button">×</button>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="../student/js/student-layout.js?v=12"></script>
+  <script src="js/dss-matching.js?v=4"></script>
+</body>
+</html>

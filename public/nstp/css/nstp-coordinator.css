@@ -1,0 +1,313 @@
+/* ==========================================================================
+   CWTSConnect — NSTP Coordinator Portal Stylesheet
+   Inherits base tokens, sidebar, header, and shell from student-layout.css
+   Covers:
+     - Coordinator 3x2 / 2x3 Summary Cards Grid
+     - Metric Highlights & Meta Rows
+     - Pending Actions Queue Card
+     - Quick Action Tiles
+     - Notification & Audit Feed
+   ========================================================================== */
+
+@import url('../../student/css/student-layout.css');
+
+/* --------------------------------------------------------------------------
+   1. COORDINATOR 6-CARD SUMMARY GRID (3 Columns on Desktop, 2 on Tablet)
+   -------------------------------------------------------------------------- */
+.coordinator-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.coord-card {
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--neu-shadow-raised);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.coord-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+  pointer-events: none;
+}
+
+.coord-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neu-shadow-raised-hover);
+  background: var(--cwts-glass-card-hover);
+}
+
+/* Card Header */
+.coord-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.coord-card-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.coord-card-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(47, 125, 91, 0.1);
+  border: 1px solid rgba(47, 125, 91, 0.2);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cwts-accent-green);
+  flex-shrink: 0;
+}
+
+.coord-card-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.coord-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+/* Card Body & Metadata List */
+.coord-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.meta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(248, 250, 252, 0.7);
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+}
+
+.meta-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.meta-value {
+  color: var(--text-main);
+  font-weight: 600;
+  text-align: right;
+}
+
+.meta-value.highlight {
+  color: var(--cwts-primary-dark);
+  font-weight: 700;
+}
+
+.meta-value.accent {
+  color: var(--cwts-accent-green);
+  font-weight: 700;
+}
+
+.meta-value.warning {
+  color: #B45309;
+  font-weight: 700;
+}
+
+.meta-value.danger {
+  color: #DC2626;
+  font-weight: 700;
+}
+
+/* Card Action Area */
+.coord-card-action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-top: auto;
+  padding-top: var(--space-xs);
+}
+
+/* --------------------------------------------------------------------------
+   2. NOTIFICATION FEED LIST
+   -------------------------------------------------------------------------- */
+.notif-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.notif-feed-item {
+  padding: 8px 12px;
+  background: rgba(248, 250, 252, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notif-feed-item.unread {
+  background: rgba(236, 253, 245, 0.9);
+  border-color: rgba(167, 243, 208, 0.9);
+}
+
+.notif-feed-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.notif-feed-time {
+  font-size: 0.6875rem;
+  color: var(--text-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   3. QUICK ACTIONS GRID (4-Column Layout)
+   -------------------------------------------------------------------------- */
+.quick-actions-section {
+  margin-top: var(--space-md);
+}
+
+.quick-actions-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+}
+
+.quick-card {
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  box-shadow: var(--neu-shadow-raised);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  text-decoration: none;
+  color: var(--text-main);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.quick-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+  pointer-events: none;
+}
+
+.quick-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neu-shadow-raised-hover);
+  border-color: rgba(47, 125, 91, 0.35);
+  background: var(--cwts-glass-card-hover);
+}
+
+.quick-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: rgba(47, 125, 91, 0.08);
+  border: 1px solid rgba(47, 125, 91, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cwts-accent-green);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.quick-card:hover .quick-card-icon {
+  background: var(--cwts-accent-green);
+  color: #FFFFFF;
+  transform: scale(1.05);
+}
+
+.quick-card-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.quick-card-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   4. RESPONSIVE BREAKPOINTS
+   -------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .coordinator-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .coordinator-summary-grid {
+    grid-template-columns: 1fr;
+  }
+  .quick-actions-grid {
+    grid-template-columns: 1fr;
+  }
+}

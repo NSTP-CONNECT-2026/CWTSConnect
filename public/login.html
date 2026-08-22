@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CWTSConnect Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/auth.css?v=5" />
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <!-- Text-Based Branding -->
+      <div class="brand">
+        <div class="brand-text-logo">
+          <span class="brand-name">CWTS</span><span class="brand-accent">Connect</span>
+        </div>
+        <p class="brand-subtitle">Sign in to access your CWTSConnect account</p>
+      </div>
+
+      <h2 class="form-heading">Account Login</h2>
+
+      <!-- Alert Box -->
+      <div id="alertBox" class="alert" role="alert" aria-live="polite"></div>
+
+      <!-- Login Form -->
+      <form id="loginForm" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input
+            class="form-input"
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your registered email"
+            autocomplete="email"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input
+            class="form-input"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="loginBtn">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-text">Log In</span>
+        </button>
+
+      </form>
+
+      <!-- Footer Links -->
+      <div class="form-footer">
+        <div class="form-footer-row">
+          Student? <a href="student/signup.html">Create an account</a>
+        </div>
+        <div class="form-footer-row">
+          Need to verify your email? <a href="student/verify-otp.html">Verify OTP</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+/* ==========================================================================
+   CWTSConnect — NSTP Coordinator Requirement Compliance Stylesheet
+   Inherits base tokens, sidebar, header, and shell from student-layout.css
+   Covers:
+     - 4 Compliance Summary Tiles
+     - Student Requirements Data Table & Progress Rings
+     - Document Preview / Verification Modals
+     - Detailed Review Screen Cards & Action Bars
+   ========================================================================== */
+
+@import url('../../student/css/student-layout.css');
+@import url('nstp-coordinator.css');
+@import url('nstp-users.css');
+
+/* --------------------------------------------------------------------------
+   1. COMPLIANCE STATUS TILES & PROGRESS
+   -------------------------------------------------------------------------- */
+.compliance-progress-bar-wrap {
+  width: 100%;
+  height: 8px;
+  background: rgba(226, 232, 240, 0.9);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.compliance-progress-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width 0.4s ease;
+}
+
+.compliance-progress-fill.high {
+  background: linear-gradient(90deg, #10B981, #059669);
+}
+
+.compliance-progress-fill.mid {
+  background: linear-gradient(90deg, #F59E0B, #D97706);
+}
+
+.compliance-progress-fill.low {
+  background: linear-gradient(90deg, #EF4444, #DC2626);
+}
+
+.doc-status-pills {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.doc-mini-pill {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.doc-mini-pill.approved {
+  background: rgba(236, 253, 245, 0.95);
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.doc-mini-pill.pending {
+  background: rgba(254, 243, 199, 0.95);
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
+.doc-mini-pill.rejected {
+  background: rgba(254, 242, 242, 0.95);
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+.doc-mini-pill.missing {
+  background: rgba(241, 245, 249, 0.85);
+  color: var(--text-subtle);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+/* --------------------------------------------------------------------------
+   2. REQUIREMENT REVIEW SCREEN (review-requirements.html)
+   -------------------------------------------------------------------------- */
+.review-header-card {
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  box-shadow: var(--neu-shadow-raised);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.student-hero-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.student-hero-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: rgba(47, 125, 91, 0.12);
+  border: 2px solid rgba(47, 125, 91, 0.25);
+  color: var(--cwts-accent-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.requirements-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.req-item-card {
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--neu-shadow-raised);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.req-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neu-shadow-raised-hover);
+}
+
+.req-item-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.req-item-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.req-item-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.req-file-preview-box {
+  background: rgba(248, 250, 252, 0.85);
+  border: 1px dashed rgba(203, 213, 225, 0.9);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.file-info-snippet {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-icon-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: rgba(47, 125, 91, 0.1);
+  color: var(--cwts-accent-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-title-text {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.file-date-text {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+.req-review-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+@media (max-width: 1024px) {
+  .requirements-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}

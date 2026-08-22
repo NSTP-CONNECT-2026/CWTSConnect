@@ -64,3 +64,18 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+
+# Uploads and user data (should be backed up separately)
+uploads/
+quarantine/
+
+# Backups (large files, stored separately)
+backups/
+
+# Test artifacts and reports
+integrity-report-*.json
+*.test.log
+
+# Agent skills and local configuration
+.agents/
+skills-lock.json
