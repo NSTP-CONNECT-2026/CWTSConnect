@@ -153,6 +153,14 @@ app.get('/community/edit-request.html', isAuthenticated, roleMiddleware('communi
   res.sendFile(path.join(__dirname, '../public/community/edit-request.html'));
 });
 
+app.get('/community/deployments.html', isAuthenticated, roleMiddleware('community_official'), (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/community/deployments.html'));
+});
+
+app.get('/community/attendance-hours.html', isAuthenticated, roleMiddleware('community_official'), (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/community/attendance-hours.html'));
+});
+
 // Student Dashboard and Pages
 app.get('/student/dashboard.html', isAuthenticated, roleMiddleware('student'), (req, res) => {
   res.sendFile(path.join(__dirname, '../public/student/dashboard.html'));
@@ -182,9 +190,7 @@ app.get('/student/my-hours.html', isAuthenticated, roleMiddleware('student'), (r
   res.sendFile(path.join(__dirname, '../public/student/my-hours.html'));
 });
 
-app.get('/student/make-up-request.html', isAuthenticated, roleMiddleware('student'), (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/student/make-up-request.html'));
-});
+
 
 // Test dashboard for debugging
 app.get('/student/test-dashboard.html', isAuthenticated, roleMiddleware('student'), (req, res) => {

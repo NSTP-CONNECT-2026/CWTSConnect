@@ -1,442 +1,270 @@
 /**
- * NSTPConnect - View Deployment JavaScript
- * Handles deployment details view functionality
+ * CWTSConnect — NSTP Coordinator Deployment Details Controller
  */
 
-// Global variables
-let currentDeployment = null;
-let deploymentId = null;
+(function () {
+  'use strict';
 
-// DOM elements
-const deploymentDetailsCard = document.getElementById('deploymentDetailsCard');
-const actionButtons = document.getElementById('actionButtons');
-const statusActions = document.getElementById('statusActions');
-const studentsSection = document.getElementById('studentsSection');
-const studentsTableBody = document.getElementById('studentsTableBody');
-const studentsCount = document.getElementById('studentsCount');
-const statusUpdateModal = document.getElementById('statusUpdateModal');
-const statusUpdateForm = document.getElementById('statusUpdateForm');
-const newStatusSelect = document.getElementById('newStatus');
-const loadingOverlay = document.getElementById('loadingOverlay');
+  const urlParams = new URLSearchParams(window.location.search);
+  const deploymentId = urlParams.get('id');
 
-// Event listeners
-document.addEventListener('DOMContentLoaded', initializePage);
-document.getElementById('logoutBtn').addEventListener('click', logout);
-document.getElementById('closeStatusModal').addEventListener('click', closeStatusUpdateModal);
-document.getElementById('cancelStatusUpdate').addEventListener('click', closeStatusUpdateModal);
-statusUpdateForm.addEventListener('submit', updateDeploymentStatus);
+  let deploymentData = null;
 
-// Initialize page
-async function initializePage() {
-  try {
-    await loadUserInfo();
-    await loadDeploymentDetails();
-  } catch (error) {
-    console.error('Initialization error:', error);
-    showError('Failed to initialize page: ' + error.message);
-  }
-}
+  document.addEventListener('DOMContentLoaded', initializePage);
 
-// Load user information
-async function loadUserInfo() {
-  try {
-    const response = await fetch('/api/nstp/profile');
-    if (!response.ok) {
-      if (response.status === 401) {
-        window.location.href = '/login.html';
-        return;
-      }
-      throw new Error('Failed to load user info');
-    }
-    
-    const data = await response.json();
-    if (data.success) {
-      document.getElementById('userEmail').textContent = data.data.email;
-    }
-  } catch (error) {
-    console.error('Load user info error:', error);
-  }
-}
-
-// Load deployment details
-async function loadDeploymentDetails() {
-  try {
-    // Get deployment ID from URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    deploymentId = urlParams.get('deploymentId');
-
+  async function initializePage() {
     if (!deploymentId) {
-      throw new Error('Deployment ID not provided');
+      showToast('No deployment ID specified.', 'error');
+      setTimeout(() => {
+        window.location.href = 'deployment-management.html';
+      }, 1500);
+      return;
     }
 
-    const response = await fetch(`/api/nstp/deployments/${deploymentId}`);
-    if (!response.ok) {
-      throw new Error('Failed to load deployment details');
+    showLoading();
+    try {
+      await loadDeploymentDetails(deploymentId);
+    } catch (err) {
+      console.error('Error loading deployment details:', err);
+      showToast('Failed to load deployment details.', 'error');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  function showLoading() {
+    const skeleton = document.getElementById('deploymentDetailsSkeleton');
+    const content = document.getElementById('deploymentDetailsContent');
+    if (skeleton) skeleton.style.display = 'block';
+    if (content) content.classList.add('hidden');
+  }
+
+  function hideLoading() {
+    const skeleton = document.getElementById('deploymentDetailsSkeleton');
+    const content = document.getElementById('deploymentDetailsContent');
+    if (skeleton) skeleton.style.display = 'none';
+    if (content) content.classList.remove('hidden');
+  }
+
+  async function loadDeploymentDetails(id) {
+    try {
+      const res = await fetch(`/api/nstp/deployments/${encodeURIComponent(id)}`);
+      const result = await res.json();
+
+      if (result.success && result.data) {
+        deploymentData = result.data;
+        renderHeroCard(deploymentData);
+        renderStudentsTable(deploymentData.students || []);
+        renderStatusControls(deploymentData.deployment_status);
+      } else {
+        throw new Error(result.message || 'Deployment not found');
+      }
+    } catch (err) {
+      console.error('Fetch deployment error:', err);
+      showToast(err.message || 'Error loading deployment.', 'error');
+    }
+  }
+
+  function renderHeroCard(dep) {
+    const container = document.getElementById('deploymentHeroContainer');
+    if (!container) return;
+
+    const startDate = dep.deployment_start_date || 'N/A';
+    const endDate = dep.deployment_end_date || 'N/A';
+    const status = dep.deployment_status || 'pending';
+    const statusBadge = getStatusBadge(status);
+    const studentCount = (dep.students || []).length;
+    const barangayText = dep.barangay ? `Brgy. ${dep.barangay}` : 'Barangay Community';
+    const muniText = dep.municipality ? `, ${dep.municipality}` : '';
+
+    container.innerHTML = `
+      <div class="deployment-hero-card">
+        <div class="deployment-hero-header">
+          <div>
+            <div class="deployment-hero-title">${escapeHtml(dep.activity_title || dep.deployment_batch_name)}</div>
+            <div class="deployment-hero-subtitle">${escapeHtml(barangayText)}${escapeHtml(muniText)} • Batch: ${escapeHtml(dep.deployment_batch_name)}</div>
+          </div>
+          <div>${statusBadge}</div>
+        </div>
+
+        <div class="deployment-details-grid">
+          <div class="detail-item-box">
+            <span class="detail-item-label">Activity Type</span>
+            <span class="detail-item-value">${escapeHtml(dep.activity_type || 'CWTS Community Service')}</span>
+          </div>
+          <div class="detail-item-box">
+            <span class="detail-item-label">Deployment Schedule</span>
+            <span class="detail-item-value">${escapeHtml(startDate)} to ${escapeHtml(endDate)}</span>
+          </div>
+          <div class="detail-item-box">
+            <span class="detail-item-label">Total Assigned Volunteers</span>
+            <span class="detail-item-value highlight">${studentCount} Student(s)</span>
+          </div>
+        </div>
+
+        ${dep.notes ? `
+          <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(226, 232, 240, 0.8); font-size: 0.875rem; color: var(--text-main);">
+            <strong style="color: var(--cwts-primary-dark);">Coordinator Notes:</strong> ${escapeHtml(dep.notes)}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  function renderStudentsTable(students) {
+    const tbody = document.getElementById('studentsTableBody');
+    const badge = document.getElementById('studentsTotalBadge');
+    if (badge) badge.textContent = `${students.length} Student${students.length === 1 ? '' : 's'}`;
+
+    if (!tbody) return;
+
+    if (!students || students.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 36px 20px; color: var(--text-muted);">
+            No student volunteers assigned to this deployment batch yet.
+          </td>
+        </tr>
+      `;
+      return;
     }
 
-    const data = await response.json();
-    if (data.success) {
-      currentDeployment = data.data;
-      renderDeploymentDetails();
-      renderAssignedStudents();
-      renderStatusActions();
-      actionButtons.style.display = 'flex';
-      studentsSection.style.display = 'block';
-    } else {
-      throw new Error(data.message);
-    }
-  } catch (error) {
-    console.error('Load deployment details error:', error);
-    deploymentDetailsCard.innerHTML = `
-      <div class="error-message">
-        <h3>Error Loading Deployment</h3>
-        <p>${error.message}</p>
-        <button type="button" class="btn btn-secondary" onclick="window.history.back()">
-          Go Back
+    tbody.innerHTML = students.map(s => {
+      const hours = Number(s.hours_rendered || s.total_hours_rendered || 0).toFixed(1);
+      const assignedDate = s.assigned_at ? s.assigned_at.split('T')[0] : '---';
+      const stStatus = s.deployment_student_status || 'assigned';
+
+      return `
+        <tr>
+          <td>
+            <div style="font-weight: 700; color: var(--cwts-primary-dark, #0B3D2E); font-size: 0.9375rem;">${escapeHtml(s.full_name || s.name || 'Student Volunteer')}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">${escapeHtml(s.student_number || '')}</div>
+          </td>
+          <td>
+            <div style="font-weight: 600; font-size: 0.875rem;">${escapeHtml(s.course || 'BSIT')}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Sec ${escapeHtml(s.section || '1')} (Yr ${escapeHtml(s.year_level || '1')})</div>
+          </td>
+          <td style="font-size: 0.875rem;">
+            ${escapeHtml(s.contact_number || s.phone_number || '---')}
+          </td>
+          <td>
+            <span style="font-weight: 800; color: var(--cwts-primary-dark); font-size: 0.95rem;">${hours} hrs</span>
+          </td>
+          <td style="font-size: 0.8125rem;">${escapeHtml(assignedDate)}</td>
+          <td>
+            <span class="badge ${stStatus === 'active' || stStatus === 'assigned' ? 'badge-verified' : 'badge-pending'}">
+              ${escapeHtml(stStatus.toUpperCase())}
+            </span>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function renderStatusControls(status) {
+    const group = document.getElementById('statusControlGroup');
+    if (!group) return;
+
+    if (status === 'pending') {
+      group.innerHTML = `
+        <button type="button" class="btn btn-primary btn-sm" id="btnActivate">
+          Activate Deployment
         </button>
-      </div>
-    `;
-  }
-}
-
-// Render deployment details
-function renderDeploymentDetails() {
-  const deployment = currentDeployment;
-  
-  deploymentDetailsCard.innerHTML = `
-    <div class="deployment-header">
-      <div class="deployment-status-indicator">
-        <span class="deployment-status-badge deployment-${deployment.deployment_status}">
-          ${getDeploymentStatusDisplay(deployment.deployment_status)}
-        </span>
-      </div>
-      <div class="deployment-title">
-        <h2>${escapeHtml(deployment.deployment_batch_name)}</h2>
-        <p class="deployment-subtitle">
-          ${escapeHtml(deployment.activity_title)} • ${escapeHtml(deployment.community_name)}
-        </p>
-      </div>
-    </div>
-
-    <div class="deployment-content">
-      <div class="deployment-section">
-        <h3>Community Information</h3>
-        <div class="deployment-grid">
-          <div class="deployment-item">
-            <label>Community Name</label>
-            <span>${escapeHtml(deployment.community_name)}</span>
-          </div>
-          <div class="deployment-item">
-            <label>Activity Title</label>
-            <span>${escapeHtml(deployment.activity_title)}</span>
-          </div>
-          <div class="deployment-item">
-            <label>Activity Type</label>
-            <span>${escapeHtml(deployment.activity_type)}</span>
-          </div>
-          <div class="deployment-item">
-            <label>Location</label>
-            <span>${escapeHtml(deployment.municipality)}, ${escapeHtml(deployment.province)}</span>
-          </div>
-          <div class="deployment-item">
-            <label>Community Address</label>
-            <span>${escapeHtml(deployment.community_address || 'Not provided')}</span>
-          </div>
-          <div class="deployment-item">
-            <label>Preferred NSTP Component</label>
-            <span class="component-badge component-${deployment.preferred_nstp_component.toLowerCase()}">
-              ${escapeHtml(deployment.preferred_nstp_component)}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="deployment-section">
-        <h3>Deployment Information</h3>
-        <div class="deployment-grid">
-          <div class="deployment-item">
-            <label>Deployment Batch Name</label>
-            <span>${escapeHtml(deployment.deployment_batch_name)}</span>
-          </div>
-          <div class="deployment-item">
-            <label>Deployment Status</label>
-            <span class="deployment-status-badge deployment-${deployment.deployment_status}">
-              ${getDeploymentStatusDisplay(deployment.deployment_status)}
-            </span>
-          </div>
-          <div class="deployment-item">
-            <label>Assigned By</label>
-            <span>${escapeHtml(deployment.assigned_by_email)}</span>
-          </div>
-          <div class="deployment-item">
-            <label>Created Date</label>
-            <span>${formatDateTime(deployment.created_at)}</span>
-          </div>
-          <div class="deployment-item">
-            <label>Start Date</label>
-            <span>${formatDate(deployment.deployment_start_date)}</span>
-          </div>
-          <div class="deployment-item">
-            <label>End Date</label>
-            <span>${formatDate(deployment.deployment_end_date)}</span>
-          </div>
-          ${deployment.notes ? `
-            <div class="deployment-item full-width">
-              <label>Notes</label>
-              <span>${escapeHtml(deployment.notes)}</span>
-            </div>
-          ` : ''}
-        </div>
-      </div>
-
-      <div class="deployment-section">
-        <h3>Deployment Summary</h3>
-        <div class="summary-grid">
-          <div class="summary-item">
-            <div class="summary-value">${deployment.total_assigned_students}</div>
-            <div class="summary-label">Total Assigned Students</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-value">${deployment.students_needed}</div>
-            <div class="summary-label">Students Needed</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-value">${deployment.active_students}</div>
-            <div class="summary-label">Active Students</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-value">${deployment.completed_students}</div>
-            <div class="summary-label">Completed Students</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-// Render assigned students
-function renderAssignedStudents() {
-  const students = currentDeployment.assigned_students || [];
-  
-  studentsCount.textContent = `${students.length} student${students.length !== 1 ? 's' : ''} assigned`;
-
-  if (students.length === 0) {
-    studentsTableBody.innerHTML = `
-      <tr>
-        <td colspan="8" class="text-center text-muted">No students assigned to this deployment.</td>
-      </tr>
-    `;
-    return;
-  }
-
-  studentsTableBody.innerHTML = students.map(student => `
-    <tr>
-      <td>${escapeHtml(student.student_name)}</td>
-      <td>${escapeHtml(student.student_number)}</td>
-      <td>${escapeHtml(student.course)}</td>
-      <td>${escapeHtml(student.year_level)}</td>
-      <td>
-        <span class="component-badge component-${student.nstp_component.toLowerCase()}">
-          ${escapeHtml(student.nstp_component)}
-        </span>
-      </td>
-      <td>
-        <span class="student-status-badge student-${student.deployment_student_status}">
-          ${getStudentStatusDisplay(student.deployment_student_status)}
-        </span>
-      </td>
-      <td>${formatDateTime(student.assigned_at)}</td>
-      <td>
-        <div class="action-buttons">
-          <button type="button" class="btn btn-sm btn-secondary" onclick="viewStudentProfile('${student.student_user_id}')">
-            View Profile
-          </button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
-}
-
-// Render status action buttons
-function renderStatusActions() {
-  const currentStatus = currentDeployment.deployment_status;
-  const allowedTransitions = getAllowedStatusTransitions(currentStatus);
-  
-  if (allowedTransitions.length === 0) {
-    statusActions.innerHTML = `
-      <span class="text-muted">No status changes available</span>
-    `;
-    return;
-  }
-
-  statusActions.innerHTML = allowedTransitions.map(status => `
-    <button type="button" class="btn btn-primary" onclick="openStatusUpdateModal('${status}')">
-      ${getStatusActionLabel(status)}
-    </button>
-  `).join('');
-}
-
-// Get allowed status transitions
-function getAllowedStatusTransitions(currentStatus) {
-  const transitions = {
-    'pending': ['active', 'cancelled'],
-    'active': ['ongoing', 'cancelled'],
-    'ongoing': ['completed', 'cancelled'],
-    'completed': [],
-    'cancelled': []
-  };
-  
-  return transitions[currentStatus] || [];
-}
-
-// Get status action label
-function getStatusActionLabel(status) {
-  const labels = {
-    'active': 'Activate Deployment',
-    'ongoing': 'Mark as Ongoing',
-    'completed': 'Mark as Completed',
-    'cancelled': 'Cancel Deployment'
-  };
-  
-  return labels[status] || `Update to ${status}`;
-}
-
-// Open status update modal
-function openStatusUpdateModal(targetStatus) {
-  // Populate status options
-  newStatusSelect.innerHTML = `<option value="${targetStatus}">${getDeploymentStatusDisplay(targetStatus)}</option>`;
-  
-  statusUpdateModal.style.display = 'flex';
-}
-
-// Close status update modal
-function closeStatusUpdateModal() {
-  statusUpdateModal.style.display = 'none';
-  statusUpdateForm.reset();
-}
-
-// Update deployment status
-async function updateDeploymentStatus(event) {
-  event.preventDefault();
-  
-  try {
-    showLoadingOverlay(true);
-    
-    const formData = new FormData(statusUpdateForm);
-    const newStatus = formData.get('status');
-    const notes = formData.get('notes');
-
-    const response = await fetch(`/api/nstp/deployments/${deploymentId}/status`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        status: newStatus,
-        notes: notes
-      })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to update status');
-    }
-
-    const data = await response.json();
-    if (data.success) {
-      showSuccess(`Deployment status updated to ${getDeploymentStatusDisplay(newStatus)}`);
-      
-      // Reload deployment details
-      await loadDeploymentDetails();
-      closeStatusUpdateModal();
+        <button type="button" class="btn btn-secondary btn-sm" id="btnCancel" style="color: #DC2626;">
+          Cancel Deployment
+        </button>
+      `;
+    } else if (status === 'active' || status === 'ongoing') {
+      group.innerHTML = `
+        <button type="button" class="btn btn-primary btn-sm" id="btnComplete" style="background: #10B981; border-color: #10B981;">
+          Mark as Completed
+        </button>
+      `;
     } else {
-      throw new Error(data.message);
+      group.innerHTML = '';
     }
-  } catch (error) {
-    console.error('Update deployment status error:', error);
-    showError('Failed to update deployment status: ' + error.message);
-  } finally {
-    showLoadingOverlay(false);
+
+    const btnAct = document.getElementById('btnActivate');
+    if (btnAct) btnAct.addEventListener('click', () => updateStatus('active'));
+
+    const btnComp = document.getElementById('btnComplete');
+    if (btnComp) btnComp.addEventListener('click', () => updateStatus('completed'));
+
+    const btnCanc = document.getElementById('btnCancel');
+    if (btnCanc) btnCanc.addEventListener('click', () => updateStatus('cancelled'));
   }
-}
 
-// View student profile
-function viewStudentProfile(studentId) {
-  window.open(`student-match-profile.html?studentId=${studentId}`, '_blank');
-}
+  async function updateStatus(newStatus) {
+    if (!confirm(`Are you sure you want to change deployment status to ${newStatus.toUpperCase()}?`)) return;
 
-// Get deployment status display
-function getDeploymentStatusDisplay(status) {
-  const displays = {
-    'pending': 'Pending Deployment',
-    'active': 'Active',
-    'ongoing': 'Ongoing',
-    'completed': 'Completed',
-    'cancelled': 'Cancelled'
-  };
-  
-  return displays[status] || status;
-}
-
-// Get student status display
-function getStudentStatusDisplay(status) {
-  const displays = {
-    'assigned': 'Assigned',
-    'active': 'Active',
-    'completed': 'Completed',
-    'removed': 'Removed'
-  };
-  
-  return displays[status] || status;
-}
-
-// Show/hide loading overlay
-function showLoadingOverlay(show) {
-  loadingOverlay.style.display = show ? 'flex' : 'none';
-}
-
-// Utility functions
-function escapeHtml(text) {
-  if (!text) return '';
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-function formatDate(dateString) {
-  if (!dateString) return 'N/A';
-  return new Date(dateString).toLocaleDateString();
-}
-
-function formatDateTime(dateString) {
-  if (!dateString) return 'N/A';
-  return new Date(dateString).toLocaleString();
-}
-
-function showSuccess(message) {
-  alert('Success: ' + message);
-}
-
-function showError(message) {
-  alert('Error: ' + message);
-}
-
-function logout() {
-  if (confirm('Are you sure you want to logout?')) {
-    fetch('/api/auth/logout', { method: 'POST' })
-      .then(() => {
-        window.location.href = '/login.html';
-      })
-      .catch(error => {
-        console.error('Logout error:', error);
-        window.location.href = '/login.html';
+    try {
+      const res = await fetch(`/api/nstp/deployments/${encodeURIComponent(deploymentId)}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
       });
-  }
-}
 
-// Close modal when clicking outside
-window.addEventListener('click', function(event) {
-  if (event.target === statusUpdateModal) {
-    closeStatusUpdateModal();
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast(`Deployment status updated to ${newStatus}!`, 'success');
+        await loadDeploymentDetails(deploymentId);
+      } else {
+        throw new Error(data.message || 'Failed to update status');
+      }
+    } catch (err) {
+      console.error('Update status error:', err);
+      showToast(err.message || 'Error updating status.', 'error');
+    }
   }
-});
+
+  function getStatusBadge(status) {
+    switch ((status || '').toLowerCase()) {
+      case 'active':
+      case 'ongoing':
+        return '<span class="badge badge-verified">Active</span>';
+      case 'completed':
+        return '<span class="badge badge-verified" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6; border-color: rgba(59, 130, 246, 0.2);">Completed</span>';
+      case 'cancelled':
+        return '<span class="badge badge-inactive">Cancelled</span>';
+      case 'pending':
+      default:
+        return '<span class="badge badge-pending">Pending</span>';
+    }
+  }
+
+  function showToast(msg, type = 'info') {
+    const toast = document.getElementById('toastMessage');
+    if (!toast) return;
+
+    toast.textContent = msg;
+    if (type === 'success') {
+      toast.style.background = 'rgba(16, 185, 129, 0.15)';
+      toast.style.color = '#0B3D2E';
+      toast.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+    } else if (type === 'error') {
+      toast.style.background = 'rgba(220, 38, 38, 0.15)';
+      toast.style.color = '#7F1D1D';
+      toast.style.border = '1px solid rgba(220, 38, 38, 0.3)';
+    } else {
+      toast.style.background = 'rgba(59, 130, 246, 0.15)';
+      toast.style.color = '#1E3A8A';
+      toast.style.border = '1px solid rgba(59, 130, 246, 0.3)';
+    }
+
+    toast.style.display = 'block';
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 4000);
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+})();

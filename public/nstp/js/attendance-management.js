@@ -1,406 +1,354 @@
-// Attendance Management JavaScript
-let currentDeploymentId = null;
-let currentStudents = [];
+/**
+ * CWTSConnect — NSTP Coordinator Attendance Monitoring Controller
+ */
 
-// Initialize page
-document.addEventListener('DOMContentLoaded', () => {
-  checkAuth();
-  loadUserEmail();
-  loadDeployments();
-  loadSummaryStats();
-  setupEventListeners();
-});
+(function () {
+  'use strict';
 
-// Check authentication
-async function checkAuth() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    window.location.href = '../login.html';
-    return;
-  }
-}
+  let deployments = [];
+  let currentDeploymentId = 'all';
+  let currentMode = 'all_students'; // 'all_students' or 'batch_details'
+  let attendanceRecords = [];
 
-// Load user email
-async function loadUserEmail() {
-  try {
-    const token = localStorage.getItem('token');
-    const response = await fetch('/api/nstp/profile', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      document.getElementById('userEmail').textContent = data.email || 'NSTP Official';
+  document.addEventListener('DOMContentLoaded', initializePage);
+
+  async function initializePage() {
+    setupEventListeners();
+    showLoading();
+    try {
+      await loadDeployments();
+    } catch (err) {
+      console.error('Error initializing attendance monitoring:', err);
+      showToast('Failed to load deployments for attendance monitoring.', 'error');
+    } finally {
+      hideLoading();
     }
-  } catch (error) {
-    console.error('Error loading user email:', error);
   }
-}
 
-// Load summary statistics
-async function loadSummaryStats() {
-  try {
-    const token = localStorage.getItem('token');
-    
-    // Get today's attendance
-    const today = new Date().toISOString().split('T')[0];
-    const attendanceResponse = await fetch(`/api/attendance/deployment/${currentDeploymentId || 'all'}?date=${today}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    
-    if (attendanceResponse.ok) {
-      const attendanceData = await attendanceResponse.json();
-      const records = attendanceData.attendance || [];
-      
-      document.getElementById('totalAttendanceToday').textContent = records.length;
-      document.getElementById('pendingVerification').textContent = 
-        records.filter(r => r.verification_status === 'pending').length;
-      document.getElementById('activeStudents').textContent = 
-        records.filter(r => r.check_out_time === null).length;
-      
-      const verifiedCount = records.filter(r => r.verification_status === 'verified').length;
-      const rate = records.length > 0 ? Math.round((verifiedCount / records.length) * 100) : 0;
-      document.getElementById('averageAttendanceRate').textContent = `${rate}%`;
-    }
-  } catch (error) {
-    console.error('Error loading summary stats:', error);
-  }
-}
-
-// Load deployments
-async function loadDeployments() {
-  try {
-    const token = localStorage.getItem('token');
-    const response = await fetch('/api/nstp/deployments?status=active,ongoing', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      const deployments = data.deployments || [];
-      
-      const select = document.getElementById('deploymentSelect');
-      select.innerHTML = '<option value="">-- Select Deployment --</option>';
-      
-      deployments.forEach(deployment => {
-        const option = document.createElement('option');
-        option.value = deployment.deployment_id;
-        option.textContent = `${deployment.deployment_batch_name} - ${deployment.community_name}`;
-        select.appendChild(option);
+  function setupEventListeners() {
+    const deploymentSelect = document.getElementById('deploymentSelect');
+    if (deploymentSelect) {
+      deploymentSelect.addEventListener('change', function () {
+        currentDeploymentId = this.value || 'all';
+        loadAttendanceRecords(currentDeploymentId);
       });
     }
-  } catch (error) {
-    console.error('Error loading deployments:', error);
-    showError('Failed to load deployments');
-  }
-}
 
-// Load attendance records
-async function loadAttendance() {
-  if (!currentDeploymentId) return;
-  
-  try {
-    showLoading();
-    const token = localStorage.getItem('token');
-    const statusFilter = document.getElementById('statusFilter').value;
-    
-    let url = `/api/attendance/deployment/${currentDeploymentId}`;
-    if (statusFilter !== 'all') {
-      url += `?status=${statusFilter}`;
+    const refreshBtn = document.getElementById('refreshAttendanceBtn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', function () {
+        loadAttendanceRecords(currentDeploymentId);
+      });
     }
-    
-    const response = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      displayAttendance(data.attendance || []);
-      document.getElementById('attendanceSection').style.display = 'block';
-    } else {
-      showError('Failed to load attendance records');
+
+    const searchInput = document.getElementById('searchStudentInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        filterRecords(this.value.trim().toLowerCase());
+      });
     }
-  } catch (error) {
-    console.error('Error loading attendance:', error);
-    showError('Failed to load attendance records');
-  } finally {
-    hideLoading();
   }
-}
 
-// Display attendance records
-function displayAttendance(records) {
-  const tbody = document.getElementById('attendanceTableBody');
-  
-  if (records.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="text-center">No attendance records found.</td></tr>';
-    return;
+  function showLoading() {
+    const skeleton = document.getElementById('attendanceSkeleton');
+    const content = document.getElementById('attendanceContent');
+    if (skeleton) skeleton.style.display = 'block';
+    if (content) content.classList.add('hidden');
   }
-  
-  tbody.innerHTML = records.map(record => `
-    <tr>
-      <td>${record.student_name || 'N/A'}</td>
-      <td>${record.student_number || 'N/A'}</td>
-      <td>${formatDate(record.attendance_date)}</td>
-      <td>${formatTime(record.check_in_time)}</td>
-      <td>${record.check_out_time ? formatTime(record.check_out_time) : 'Not checked out'}</td>
-      <td>${record.hours_rendered || '0.0'} hrs</td>
-      <td><span class="badge badge-${record.verification_status}">${record.verification_status}</span></td>
-      <td>
-        ${record.verification_status === 'pending' ? `
-          <button class="btn btn-sm btn-primary" onclick="verifyAttendance(${record.attendance_id})">Verify</button>
-          <button class="btn btn-sm btn-danger" onclick="rejectAttendance(${record.attendance_id})">Reject</button>
-        ` : ''}
-        <button class="btn btn-sm btn-secondary" onclick="editAttendance(${record.attendance_id})">Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteAttendance(${record.attendance_id})">Delete</button>
-      </td>
-    </tr>
-  `).join('');
-}
 
-// Verify attendance
-async function verifyAttendance(attendanceId) {
-  if (!confirm('Verify this attendance record?')) return;
-  
-  try {
-    showLoading();
-    const token = localStorage.getItem('token');
-    const response = await fetch(`/api/attendance/${attendanceId}/verify`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+  function hideLoading() {
+    const skeleton = document.getElementById('attendanceSkeleton');
+    const content = document.getElementById('attendanceContent');
+    if (skeleton) skeleton.style.display = 'none';
+    if (content) content.classList.remove('hidden');
+  }
+
+  async function loadDeployments() {
+    try {
+      const res = await fetch('/api/nstp/deployments');
+      const result = await res.json();
+
+      if (result.success && Array.isArray(result.data)) {
+        deployments = result.data;
+        populateDeploymentSelect(deployments);
+
+        currentDeploymentId = 'all';
+        const select = document.getElementById('deploymentSelect');
+        if (select) select.value = 'all';
+
+        await loadAttendanceRecords(currentDeploymentId);
+      } else {
+        renderNoDeployments();
       }
-    });
-    
-    if (response.ok) {
-      showSuccess('Attendance verified successfully');
-      loadAttendance();
-      loadSummaryStats();
-    } else {
-      const error = await response.json();
-      showError(error.message || 'Failed to verify attendance');
+    } catch (err) {
+      console.error('Error loading deployments:', err);
+      renderNoDeployments();
     }
-  } catch (error) {
-    console.error('Error verifying attendance:', error);
-    showError('Failed to verify attendance');
-  } finally {
-    hideLoading();
   }
-}
 
-// Reject attendance
-async function rejectAttendance(attendanceId) {
-  const reason = prompt('Enter reason for rejection:');
-  if (!reason) return;
-  
-  try {
-    showLoading();
-    const token = localStorage.getItem('token');
-    const response = await fetch(`/api/attendance/${attendanceId}/reject`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ rejection_reason: reason })
-    });
-    
-    if (response.ok) {
-      showSuccess('Attendance rejected');
-      loadAttendance();
-      loadSummaryStats();
-    } else {
-      const error = await response.json();
-      showError(error.message || 'Failed to reject attendance');
-    }
-  } catch (error) {
-    console.error('Error rejecting attendance:', error);
-    showError('Failed to reject attendance');
-  } finally {
-    hideLoading();
+  function populateDeploymentSelect(deps) {
+    const select = document.getElementById('deploymentSelect');
+    if (!select) return;
+
+    const allOption = '<option value="all">All Deployment Batches (All Students)</option>';
+    const options = deps.map(d => {
+      const label = `${d.deployment_batch_name} - ${d.activity_title || d.community_name || 'Project'}`;
+      return `<option value="${d.deployment_id}">${escapeHtml(label)}</option>`;
+    }).join('');
+
+    select.innerHTML = allOption + options;
   }
-}
 
-// Delete attendance
-async function deleteAttendance(attendanceId) {
-  if (!confirm('Delete this attendance record? This action cannot be undone.')) return;
-  
-  try {
-    showLoading();
-    const token = localStorage.getItem('token');
-    const response = await fetch(`/api/attendance/${attendanceId}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    
-    if (response.ok) {
-      showSuccess('Attendance deleted successfully');
-      loadAttendance();
-      loadSummaryStats();
+  async function loadAttendanceRecords(deploymentId) {
+    const tbody = document.getElementById('attendanceTableBody');
+    const thead = document.getElementById('attendanceTableHead');
+    const titleEl = document.getElementById('attendanceTableTitle');
+
+    currentMode = (!deploymentId || deploymentId === 'all') ? 'all_students' : 'batch_details';
+
+    // Update Table Title and Headers
+    if (currentMode === 'all_students') {
+      if (titleEl) titleEl.textContent = 'All Students Attendance Overview';
+      if (thead) {
+        thead.innerHTML = `
+          <tr>
+            <th>Student Name</th>
+            <th style="width: 220px;">Student Course</th>
+            <th style="width: 170px; text-align: center;">Total Deployment</th>
+            <th style="width: 170px; text-align: center;">Total Attendance</th>
+          </tr>
+        `;
+      }
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 24px; color: var(--text-muted);">Loading students overview...</td></tr>';
+      }
     } else {
-      const error = await response.json();
-      showError(error.message || 'Failed to delete attendance');
+      const selectedDep = deployments.find(d => d.deployment_id === deploymentId);
+      const batchName = selectedDep ? selectedDep.deployment_batch_name : 'Deployment Batch';
+      if (titleEl) titleEl.textContent = `${batchName} — Assigned Students Attendance`;
+      if (thead) {
+        thead.innerHTML = `
+          <tr>
+            <th>Name</th>
+            <th style="width: 220px;">Course</th>
+            <th style="width: 150px;">Date</th>
+            <th style="width: 130px;">Time In</th>
+            <th style="width: 130px;">Time Out</th>
+          </tr>
+        `;
+      }
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 24px; color: var(--text-muted);">Loading batch attendance details...</td></tr>';
+      }
     }
-  } catch (error) {
-    console.error('Error deleting attendance:', error);
-    showError('Failed to delete attendance');
-  } finally {
-    hideLoading();
+
+    try {
+      const url = currentMode === 'batch_details' 
+        ? `/api/attendance/deployment/${encodeURIComponent(deploymentId)}` 
+        : '/api/attendance/deployment/all';
+      const res = await fetch(url);
+      const result = await res.json();
+
+      if (result.success && Array.isArray(result.attendance)) {
+        attendanceRecords = result.attendance;
+        renderAttendanceTable(attendanceRecords);
+        updateMetrics(attendanceRecords);
+      } else {
+        renderEmptyRecords();
+      }
+    } catch (err) {
+      console.error('Error loading attendance logs:', err);
+      renderEmptyRecords();
+    }
   }
-}
 
-// Edit attendance
-function editAttendance(attendanceId) {
-  // Implementation for edit modal
-  showError('Edit functionality coming soon');
-}
+  function renderAttendanceTable(records) {
+    const tbody = document.getElementById('attendanceTableBody');
+    const badge = document.getElementById('recordsCountBadge');
+    if (badge) badge.textContent = `${records.length} Student${records.length === 1 ? '' : 's'}`;
 
-// Load students for manual attendance
-async function loadStudentsForManual() {
-  if (!currentDeploymentId) return;
-  
-  try {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`/api/nstp/deployments/${currentDeploymentId}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      currentStudents = data.students || [];
-      
-      const select = document.getElementById('studentSelect');
-      select.innerHTML = '<option value="">-- Select Student --</option>';
-      
-      currentStudents.forEach(student => {
-        const option = document.createElement('option');
-        option.value = student.student_id;
-        option.textContent = `${student.full_name} (${student.student_number})`;
-        select.appendChild(option);
-      });
-    }
-  } catch (error) {
-    console.error('Error loading students:', error);
-  }
-}
+    if (!tbody) return;
 
-// Setup event listeners
-function setupEventListeners() {
-  // Logout
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('token');
-    window.location.href = '../login.html';
-  });
-  
-  // Deployment selection
-  document.getElementById('deploymentSelect').addEventListener('change', (e) => {
-    currentDeploymentId = e.target.value;
-    if (currentDeploymentId) {
-      loadAttendance();
-      loadSummaryStats();
-    } else {
-      document.getElementById('attendanceSection').style.display = 'none';
-    }
-  });
-  
-  // Status filter
-  document.getElementById('statusFilter').addEventListener('change', loadAttendance);
-  
-  // Refresh buttons
-  document.getElementById('refreshDeploymentsBtn').addEventListener('click', loadDeployments);
-  document.getElementById('refreshAttendanceBtn').addEventListener('click', loadAttendance);
-  
-  // Manual attendance
-  document.getElementById('addManualAttendanceBtn').addEventListener('click', () => {
-    if (!currentDeploymentId) {
-      showError('Please select a deployment first');
+    if (!records || records.length === 0) {
+      renderEmptyRecords();
       return;
     }
-    loadStudentsForManual();
-    document.getElementById('manualAttendanceModal').style.display = 'flex';
-  });
-  
-  document.getElementById('closeManualModal').addEventListener('click', () => {
-    document.getElementById('manualAttendanceModal').style.display = 'none';
-  });
-  
-  document.getElementById('cancelManualBtn').addEventListener('click', () => {
-    document.getElementById('manualAttendanceModal').style.display = 'none';
-  });
-  
-  // Manual attendance form
-  document.getElementById('manualAttendanceForm').addEventListener('submit', handleManualAttendance);
-}
 
-// Handle manual attendance submission
-async function handleManualAttendance(e) {
-  e.preventDefault();
-  
-  const formData = new FormData(e.target);
-  const data = {
-    deployment_id: currentDeploymentId,
-    student_id: formData.get('student_id'),
-    attendance_date: formData.get('attendance_date'),
-    check_in_time: formData.get('check_in_time'),
-    check_out_time: formData.get('check_out_time') || null,
-    notes: formData.get('notes')
-  };
-  
-  try {
-    showLoading();
-    const token = localStorage.getItem('token');
-    const response = await fetch('/api/attendance/manual', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
-    
-    if (response.ok) {
-      showSuccess('Manual attendance added successfully');
-      document.getElementById('manualAttendanceModal').style.display = 'none';
-      e.target.reset();
-      loadAttendance();
-      loadSummaryStats();
+    if (currentMode === 'all_students') {
+      // Render Mode A: Student Name, Student Course, Total Deployment, Total Attendance
+      tbody.innerHTML = records.map(r => {
+        const studentName = r.student_name || 'Student Volunteer';
+        const studentNumber = r.student_number || '---';
+        const course = r.course || 'BSIT';
+        const sec = r.section ? `Sec ${r.section}` : '';
+        const yr = r.year_level ? `(Yr ${r.year_level})` : '';
+        const courseStr = `${course} ${sec} ${yr}`.trim();
+        const totalDeps = r.total_deployments || 0;
+        const totalAtt = r.total_attendance || 0;
+
+        return `
+          <tr>
+            <td>
+              <div style="font-weight: 700; color: var(--cwts-primary-dark, #0B3D2E); font-size: 0.9375rem;">${escapeHtml(studentName)}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${escapeHtml(studentNumber)}</div>
+            </td>
+            <td>
+              <div style="font-weight: 600; font-size: 0.875rem;">${escapeHtml(courseStr)}</div>
+            </td>
+            <td style="text-align: center;">
+              <span class="badge ${totalDeps > 0 ? 'badge-verified' : 'badge-pending'}" style="font-weight: 700; font-size: 0.875rem; padding: 6px 12px;">
+                ${totalDeps} Deployment${totalDeps === 1 ? '' : 's'}
+              </span>
+            </td>
+            <td style="text-align: center;">
+              <span class="badge ${totalAtt > 0 ? 'badge-verified' : 'badge-pending'}" style="font-weight: 700; font-size: 0.875rem; padding: 6px 12px;">
+                ${totalAtt} Session${totalAtt === 1 ? '' : 's'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
     } else {
-      const error = await response.json();
-      showError(error.message || 'Failed to add manual attendance');
+      // Render Mode B: Name, Course, Date, Time In, Time Out
+      tbody.innerHTML = records.map(r => {
+        const studentName = r.student_name || 'Student Volunteer';
+        const studentNumber = r.student_number || '---';
+        const course = r.course || 'BSIT';
+        const sec = r.section ? `Sec ${r.section}` : '';
+        const yr = r.year_level ? `(Yr ${r.year_level})` : '';
+        const courseStr = `${course} ${sec} ${yr}`.trim();
+
+        const dateStr = r.attendance_date || '---';
+        const timeIn = r.check_in_time ? r.check_in_time.substring(0, 5) : '---';
+        const timeOut = r.check_out_time ? r.check_out_time.substring(0, 5) : '---';
+
+        return `
+          <tr>
+            <td>
+              <div style="font-weight: 700; color: var(--cwts-primary-dark, #0B3D2E); font-size: 0.9375rem;">${escapeHtml(studentName)}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${escapeHtml(studentNumber)}</div>
+            </td>
+            <td>
+              <div style="font-weight: 600; font-size: 0.875rem;">${escapeHtml(courseStr)}</div>
+            </td>
+            <td style="font-size: 0.875rem; font-weight: 500;">${escapeHtml(dateStr)}</td>
+            <td>
+              <span style="font-weight: 700; font-size: 0.875rem; color: ${timeIn !== '---' ? 'var(--cwts-primary-dark, #0B3D2E)' : 'var(--text-muted)'};">
+                ${escapeHtml(timeIn)}
+              </span>
+            </td>
+            <td>
+              <span style="font-weight: 700; font-size: 0.875rem; color: ${timeOut !== '---' ? 'var(--cwts-primary-dark, #0B3D2E)' : 'var(--text-muted)'};">
+                ${escapeHtml(timeOut)}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
-  } catch (error) {
-    console.error('Error adding manual attendance:', error);
-    showError('Failed to add manual attendance');
-  } finally {
-    hideLoading();
   }
-}
 
-// Utility functions
-function formatDate(dateString) {
-  if (!dateString) return 'N/A';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-}
+  function updateMetrics(records) {
+    if (currentMode === 'all_students') {
+      const studentsWithDeployments = records.filter(r => (r.total_deployments || 0) > 0);
+      const studentsWithAttendance = records.filter(r => (r.total_attendance || 0) > 0);
 
-function formatTime(timeString) {
-  if (!timeString) return 'N/A';
-  return timeString.substring(0, 5);
-}
+      setElText('statPresentToday', studentsWithAttendance.length);
+      setElText('statActiveOnDuty', studentsWithDeployments.length);
+      setElText('statTotalLogs', records.length);
+    } else {
+      const timedIn = records.filter(r => r.check_in_time);
+      const activeDuty = records.filter(r => r.check_in_time && !r.check_out_time);
 
-function showLoading() {
-  document.getElementById('loadingOverlay').style.display = 'flex';
-}
+      setElText('statPresentToday', timedIn.length);
+      setElText('statActiveOnDuty', activeDuty.length);
+      setElText('statTotalLogs', records.length);
+    }
+  }
 
-function hideLoading() {
-  document.getElementById('loadingOverlay').style.display = 'none';
-}
+  function filterRecords(term) {
+    if (!term) {
+      renderAttendanceTable(attendanceRecords);
+      return;
+    }
 
-function showSuccess(message) {
-  alert(message);
-}
+    const filtered = attendanceRecords.filter(r => {
+      const name = (r.student_name || '').toLowerCase();
+      const num = (r.student_number || '').toLowerCase();
+      const course = (r.course || '').toLowerCase();
+      return name.includes(term) || num.includes(term) || course.includes(term);
+    });
 
-function showError(message) {
-  alert('Error: ' + message);
-}
+    renderAttendanceTable(filtered);
+  }
+
+  function renderEmptyRecords() {
+    const tbody = document.getElementById('attendanceTableBody');
+    const cols = currentMode === 'all_students' ? 4 : 5;
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="${cols}" style="text-align: center; padding: 36px 20px; color: var(--text-muted);">
+            No records found for this selection.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  function renderNoDeployments() {
+    const tbody = document.getElementById('attendanceTableBody');
+    const cols = currentMode === 'all_students' ? 4 : 5;
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="${cols}" style="text-align: center; padding: 36px 20px; color: var(--text-muted);">
+            No active deployments available.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  function showToast(msg, type = 'info') {
+    const toast = document.getElementById('toastMessage');
+    if (!toast) return;
+
+    toast.textContent = msg;
+    if (type === 'success') {
+      toast.style.background = 'rgba(16, 185, 129, 0.15)';
+      toast.style.color = '#0B3D2E';
+      toast.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+    } else if (type === 'error') {
+      toast.style.background = 'rgba(220, 38, 38, 0.15)';
+      toast.style.color = '#7F1D1D';
+      toast.style.border = '1px solid rgba(220, 38, 38, 0.3)';
+    } else {
+      toast.style.background = 'rgba(59, 130, 246, 0.15)';
+      toast.style.color = '#1E3A8A';
+      toast.style.border = '1px solid rgba(59, 130, 246, 0.3)';
+    }
+
+    toast.style.display = 'block';
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 4000);
+  }
+
+  function setElText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+})();

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Feedback & Performance Evaluation - CWTSConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/student-layout.css?v=12" />
+  <link rel="stylesheet" href="css/student-deployment.css?v=2" />
+  <style>
+    /* Specific Feedback & Evaluation Visual Components */
+    .eval-card {
+      background: var(--cwts-glass-surface, rgba(255, 255, 255, 0.85));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--cwts-glass-border, rgba(255, 255, 255, 0.9));
+      border-radius: var(--radius-lg, 12px);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--neu-shadow-raised);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .eval-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--neu-shadow-raised-hover);
+    }
+
+    .eval-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .eval-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--cwts-primary-dark, #0B3D2E);
+      margin-bottom: 4px;
+    }
+
+    .eval-subtitle {
+      font-size: 0.8125rem;
+      color: var(--text-muted, #596773);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .rating-stars {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      color: #F59E0B;
+    }
+
+    .rating-stars svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .rating-stars svg.empty {
+      color: #D1D5DB;
+    }
+
+    .feedback-comment-box {
+      background: rgba(244, 246, 244, 0.7);
+      border-left: 4px solid var(--cwts-accent-green, #2F7D5B);
+      border-radius: 6px;
+      padding: 16px 18px;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--cwts-dark-neutral, #1B1F23);
+      font-style: italic;
+      margin: 16px 0;
+    }
+
+    /* Criteria Grid for Evaluation */
+    .criteria-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .criteria-box {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .criteria-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--cwts-primary-dark, #0B3D2E);
+      margin-bottom: 8px;
+    }
+
+    .criteria-score {
+      font-size: 0.9375rem;
+      font-weight: 800;
+      color: var(--cwts-accent-green, #2F7D5B);
+    }
+
+    .criteria-meter-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(11, 61, 46, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .criteria-meter-fill {
+      height: 100%;
+      background: var(--cwts-accent-green, #2F7D5B);
+      border-radius: 999px;
+    }
+
+    .criteria-remarks {
+      font-size: 0.75rem;
+      color: var(--text-muted, #596773);
+      line-height: 1.4;
+    }
+
+    .eval-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      font-size: 0.8125rem;
+      color: var(--text-muted, #596773);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+
+    <!-- Standardized Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand">
+          <span class="sidebar-brand-text">
+            <span class="brand-name">CWTS</span><span class="brand-accent">Connect</span>
+          </span>
+          <span class="sidebar-portal-badge">Student Portal</span>
+        </a>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav">
+        
+        <!-- Main Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Main</div>
+          
+          <a href="dashboard.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              </svg>
+            </span>
+            <span>Dashboard</span>
+          </a>
+
+          <a href="complete-profile.html" class="sidebar-item" id="profileNavLink">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </span>
+            <span id="profileNavLabel">My Profile</span>
+          </a>
+
+          <a href="cmo-requirements.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </span>
+            <span>CMO Requirements</span>
+          </a>
+        </div>
+
+        <!-- Monitoring Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Monitoring</div>
+
+          <a href="deployment.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+            </span>
+            <span>Deployment & Monitoring</span>
+          </a>
+
+          <a href="feedback-evaluation.html" class="sidebar-item active">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </span>
+            <span>Feedback & Evaluation</span>
+          </a>
+        </div>
+
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="logoutBtn" type="button">
+          <span class="spinner" aria-hidden="true"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      
+      <!-- Top Bar Header -->
+      <header class="header">
+        <div class="header-left">
+          <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle Navigation Menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <span class="header-title">Community Feedback & Performance Evaluation</span>
+        </div>
+
+        <div class="header-right">
+          <!-- Notification Bell Trigger -->
+          <button class="header-notif-btn" id="headerNotifBtn" type="button" aria-label="Notifications" title="Notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notif-badge-dot" id="headerNotifDot"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="content-container">
+
+        <!-- 2-Tab Navigation Switcher -->
+        <div class="deployment-tabs-bar" id="feTabsBar" role="tablist">
+          <button type="button" class="deployment-tab-btn active" id="tabFeedbackBtn" data-tab="feedback" role="tab" aria-selected="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Community Feedback</span>
+            <span class="deployment-tab-badge" id="feedbackCountBadge">0</span>
+          </button>
+
+          <button type="button" class="deployment-tab-btn" id="tabEvaluationBtn" data-tab="evaluation" role="tab" aria-selected="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            <span>Performance Evaluation</span>
+            <span class="deployment-tab-badge" id="evaluationCountBadge">0</span>
+          </button>
+        </div>
+
+        <!-- Section 12 Skeleton Loading Container -->
+        <div id="pageSkeleton" class="page-loading-skeleton">
+          <div class="skeleton-card" style="padding: 24px; margin-bottom: 20px;">
+            <div class="skeleton skeleton-title" style="width: 40%; height: 24px; margin-bottom: 12px;"></div>
+            <div class="skeleton skeleton-text" style="width: 70%; height: 16px; margin-bottom: 20px;"></div>
+            <div class="skeleton skeleton-row" style="height: 80px; border-radius: 8px;"></div>
+          </div>
+          <div class="skeleton-card" style="padding: 24px;">
+            <div class="skeleton skeleton-title" style="width: 35%; height: 24px; margin-bottom: 12px;"></div>
+            <div class="skeleton skeleton-text" style="width: 60%; height: 16px; margin-bottom: 20px;"></div>
+            <div class="skeleton skeleton-row" style="height: 80px; border-radius: 8px;"></div>
+          </div>
+        </div>
+
+        <!-- Real Content Container -->
+        <div id="pageContent" class="hidden">
+
+          <!-- Tab 1: Community Feedback Pane -->
+          <div class="deployment-tab-pane active" id="feedbackTabPane" role="tabpanel">
+            <div id="feedbackListContainer">
+              <!-- Rendered Feedback Cards -->
+            </div>
+          </div>
+
+          <!-- Tab 2: Performance Evaluation Pane -->
+          <div class="deployment-tab-pane" id="evaluationTabPane" role="tabpanel">
+            <div id="evaluationListContainer">
+              <!-- Rendered Evaluation Cards -->
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="js/student-layout.js?v=14"></script>
+  <script src="js/feedback-evaluation.js?v=14"></script>
+</body>
+</html>

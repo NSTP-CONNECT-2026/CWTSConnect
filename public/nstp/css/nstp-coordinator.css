@@ -1,15 +1,19 @@
 /* ==========================================================================
    CWTSConnect — NSTP Coordinator Portal Stylesheet
+   Strictly adheres to CWTSConnect_Design_Guide_Updated.md
    Inherits base tokens, sidebar, header, and shell from student-layout.css
    Covers:
      - Coordinator 3x2 / 2x3 Summary Cards Grid
-     - Metric Highlights & Meta Rows
-     - Pending Actions Queue Card
-     - Quick Action Tiles
+     - Neumorphic Table Cards & .neu-table
+     - Action Filter Bars & Control Inputs
+     - Form Sections & Input Fields
+     - Deployment Hero Cards & Metadata Boxes
+     - Badges & Status Pills
      - Notification & Audit Feed
    ========================================================================== */
 
 @import url('../../student/css/student-layout.css');
+@import url('../../student/css/student-deployment.css');
 
 /* --------------------------------------------------------------------------
    1. COORDINATOR 6-CARD SUMMARY GRID (3 Columns on Desktop, 2 on Tablet)
@@ -163,7 +167,236 @@
 }
 
 /* --------------------------------------------------------------------------
-   2. NOTIFICATION FEED LIST
+   2. ACTION FILTER BAR & CONTROL INPUTS
+   -------------------------------------------------------------------------- */
+.action-filter-bar {
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--cwts-glass-border);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+  box-shadow: var(--neu-shadow-raised);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.control-input {
+  height: 38px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  font-family: inherit;
+  font-size: 0.875rem;
+  background: #FFFFFF;
+  color: var(--text-main, #1B1F23);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.control-input:focus {
+  border-color: var(--cwts-secondary-green, #145A3A);
+  box-shadow: 0 0 0 3px rgba(20, 90, 58, 0.12);
+}
+
+/* --------------------------------------------------------------------------
+   3. NEUMORPHIC TABLE CARDS & NEU-TABLE
+   -------------------------------------------------------------------------- */
+.table-card {
+  background: var(--cwts-glass-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--neu-shadow-raised);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.table-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.table-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.table-card-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(47, 125, 91, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cwts-accent-green);
+}
+
+.table-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--cwts-primary-dark, #0B3D2E);
+  margin: 0;
+}
+
+.table-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.neu-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.neu-table thead {
+  background: rgba(248, 250, 252, 0.95);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.neu-table th {
+  padding: 14px 18px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted, #64748B);
+  white-space: nowrap;
+}
+
+.neu-table td {
+  padding: 16px 18px;
+  font-size: 0.875rem;
+  color: var(--text-main, #1B1F23);
+  border-bottom: 1px solid rgba(241, 245, 249, 0.9);
+  vertical-align: middle;
+}
+
+.neu-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.neu-table tbody tr:hover {
+  background-color: rgba(47, 125, 91, 0.03);
+}
+
+/* --------------------------------------------------------------------------
+   4. FORM GRIDS & INPUTS
+   -------------------------------------------------------------------------- */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--cwts-primary-dark, #0B3D2E);
+}
+
+.form-label .required {
+  color: #DC2626;
+  font-weight: 700;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  font-family: inherit;
+  font-size: 0.875rem;
+  background: #FFFFFF;
+  color: var(--text-main, #1B1F23);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--cwts-secondary-green, #145A3A);
+  box-shadow: 0 0 0 3px rgba(20, 90, 58, 0.12);
+}
+
+/* --------------------------------------------------------------------------
+   5. BADGES & STATUS PILLS
+   -------------------------------------------------------------------------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badge-verified,
+.badge-complete,
+.badge-active {
+  background: rgba(16, 185, 129, 0.12);
+  color: #065F46;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.badge-pending {
+  background: rgba(245, 158, 11, 0.12);
+  color: #92400E;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.badge-inactive,
+.badge-rejected,
+.badge-cancelled {
+  background: rgba(239, 68, 68, 0.12);
+  color: #991B1B;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* --------------------------------------------------------------------------
+   6. NOTIFICATION FEED LIST
    -------------------------------------------------------------------------- */
 .notif-feed-list {
   display: flex;
@@ -201,7 +434,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   3. QUICK ACTIONS GRID (4-Column Layout)
+   7. QUICK ACTIONS GRID (4-Column Layout)
    -------------------------------------------------------------------------- */
 .quick-actions-section {
   margin-top: var(--space-md);
@@ -292,7 +525,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   4. RESPONSIVE BREAKPOINTS
+   8. RESPONSIVE BREAKPOINTS
    -------------------------------------------------------------------------- */
 @media (max-width: 1200px) {
   .coordinator-summary-grid {
@@ -300,6 +533,9 @@
   }
   .quick-actions-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .form-grid-2 {
+    grid-template-columns: 1fr;
   }
 }
 

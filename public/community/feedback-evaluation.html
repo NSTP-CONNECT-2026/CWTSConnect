@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Feedback & Performance Evaluation - CWTSConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../student/css/student-layout.css?v=12" />
+  <link rel="stylesheet" href="../student/css/student-deployment.css?v=2" />
+  <link rel="stylesheet" href="../nstp/css/nstp-coordinator.css?v=3" />
+  <style>
+    /* Specific Community Feedback & Evaluation Styles */
+    .eval-form-card {
+      background: var(--cwts-glass-surface, rgba(255, 255, 255, 0.85));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--cwts-glass-border, rgba(255, 255, 255, 0.9));
+      border-radius: var(--radius-lg, 12px);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--neu-shadow-raised);
+    }
+
+    .star-rating-picker {
+      display: inline-flex;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .star-rating-picker svg {
+      width: 24px;
+      height: 24px;
+      fill: #D1D5DB;
+      transition: fill 0.15s ease, transform 0.15s ease;
+    }
+
+    .star-rating-picker svg.active,
+    .star-rating-picker svg:hover {
+      fill: #F59E0B;
+      transform: scale(1.1);
+    }
+
+    .criteria-slider-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .criteria-input-card {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .criteria-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--cwts-primary-dark, #0B3D2E);
+      margin-bottom: 8px;
+    }
+
+    .criteria-val-badge {
+      font-size: 0.875rem;
+      font-weight: 800;
+      color: var(--cwts-accent-green, #2F7D5B);
+      background: rgba(47, 125, 91, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .eval-slider {
+      width: 100%;
+      height: 6px;
+      background: #E2E8F0;
+      border-radius: 999px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .eval-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--cwts-accent-green, #2F7D5B);
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+
+    <!-- Standardized Community Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-brand">
+          <span class="sidebar-brand-text">
+            <span class="brand-name">CWTS</span><span class="brand-accent">Connect</span>
+          </span>
+          <span class="sidebar-portal-badge">Community Portal</span>
+        </a>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Main</div>
+          
+          <a href="dashboard.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              </svg>
+            </span>
+            <span>Dashboard</span>
+          </a>
+
+          <a href="community-requests.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </span>
+            <span>Community Requests</span>
+          </a>
+
+          <a href="create-request.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+            </span>
+            <span>Create New Request</span>
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Monitoring</div>
+
+          <a href="deployments.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+            </span>
+            <span>Deployment & Monitoring</span>
+          </a>
+
+          <a href="attendance-hours.html" class="sidebar-item">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </span>
+            <span>Attendance & Hours</span>
+          </a>
+
+          <a href="feedback-evaluation.html" class="sidebar-item active">
+            <span class="sidebar-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </span>
+            <span>Feedback & Evaluation</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="logoutBtn" type="button">
+          <span class="spinner" aria-hidden="true"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      
+      <!-- Top Bar Header -->
+      <header class="header">
+        <div class="header-left">
+          <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle Navigation Menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <span class="header-title">Student Feedback & Performance Evaluation</span>
+        </div>
+
+        <div class="header-right">
+          <!-- Notification Bell Trigger -->
+          <button class="header-notif-btn" id="headerNotifBtn" type="button" aria-label="Notifications" title="Notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notif-badge-dot" id="headerNotifDot"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="content-container">
+
+        <!-- Toast Feedback Notification -->
+        <div id="toastMessage" style="display: none; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; font-size: 0.875rem;"></div>
+
+        <!-- 2-Tab Navigation Switcher -->
+        <div class="deployment-tabs-bar" id="commFeTabsBar" role="tablist">
+          <button type="button" class="deployment-tab-btn active" id="tabCommFeedbackBtn" data-tab="feedback" role="tab" aria-selected="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Community Feedback</span>
+            <span class="deployment-tab-badge" id="commFeedbackBadge">0</span>
+          </button>
+
+          <button type="button" class="deployment-tab-btn" id="tabCommEvaluationBtn" data-tab="evaluation" role="tab" aria-selected="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            <span>Performance Evaluation</span>
+            <span class="deployment-tab-badge" id="commEvaluationBadge">0</span>
+          </button>
+        </div>
+
+        <!-- Section 12 Skeleton Loading Container -->
+        <div id="commFeSkeleton" class="page-loading-skeleton">
+          <div class="skeleton-card" style="padding: 24px; margin-bottom: 24px;">
+            <div class="skeleton skeleton-title" style="width: 30%; height: 24px; margin-bottom: 16px;"></div>
+            <div class="skeleton skeleton-row" style="height: 120px; border-radius: 8px;"></div>
+          </div>
+          <div class="skeleton-card" style="padding: 24px;">
+            <div class="skeleton skeleton-row" style="height: 48px; border-radius: 6px; margin-bottom: 12px;"></div>
+            <div class="skeleton skeleton-row" style="height: 48px; border-radius: 6px;"></div>
+          </div>
+        </div>
+
+        <!-- Real Content Container -->
+        <div id="commFeContent" class="hidden">
+
+          <!-- TAB 1: COMMUNITY FEEDBACK -->
+          <div class="deployment-tab-pane active" id="feedbackTabPane" role="tabpanel">
+            
+            <!-- Submit Feedback Form Card -->
+            <div class="eval-form-card">
+              <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--cwts-primary-dark); margin-bottom: 16px;">Record Community Feedback & Rating</h3>
+              
+              <form id="feedbackForm">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                  <div>
+                    <label for="fbDeploymentSelect" style="display:block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Select Deployment Batch:</label>
+                    <select id="fbDeploymentSelect" class="control-input" style="width: 100%;" required>
+                      <option value="">Loading deployments...</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label for="fbStudentSelect" style="display:block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Target Student Volunteer:</label>
+                    <select id="fbStudentSelect" class="control-input" style="width: 100%;">
+                      <option value="">All Students in Batch</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                  <label style="display:block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Rating Score (1 to 5 Stars):</label>
+                  <div class="star-rating-picker" id="fbStarPicker">
+                    <svg data-val="1" viewBox="0 0 24 24" class="active"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <svg data-val="2" viewBox="0 0 24 24" class="active"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <svg data-val="3" viewBox="0 0 24 24" class="active"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <svg data-val="4" viewBox="0 0 24 24" class="active"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <svg data-val="5" viewBox="0 0 24 24" class="active"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  </div>
+                  <input type="hidden" id="fbRatingVal" value="5" />
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                  <label for="fbComments" style="display:block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Comments / Feedback Remarks:</label>
+                  <textarea id="fbComments" class="control-input" rows="3" style="width: 100%; height: auto; padding: 12px;" placeholder="Provide feedback or commendations regarding the student volunteer's service..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitFeedbackBtn">
+                  <span>Submit Feedback</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Feedback History Table -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <h3 class="table-card-title">Recorded Community Feedback</h3>
+              </div>
+              <div class="table-responsive">
+                <table class="neu-table" id="commFeedbackTable">
+                  <thead>
+                    <tr>
+                      <th>Deployment Activity</th>
+                      <th style="width: 200px;">Target Student</th>
+                      <th style="width: 150px;">Rating</th>
+                      <th>Comments</th>
+                      <th style="width: 130px;">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="commFeedbackBody">
+                    <tr>
+                      <td colspan="5" style="text-align: center; padding: 24px; color: var(--text-muted);">No feedback records found.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- TAB 2: PERFORMANCE EVALUATION -->
+          <div class="deployment-tab-pane" id="evaluationTabPane" role="tabpanel">
+            
+            <!-- Submit Evaluation Form Card -->
+            <div class="eval-form-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--cwts-primary-dark);">Evaluate Student Performance</h3>
+                <div style="font-size: 1.125rem; font-weight: 800; color: var(--cwts-primary-dark);">
+                  Overall: <span id="evalOverallScorePreview" style="color: var(--cwts-accent-green);">5.00</span> / 5.0 
+                  <span class="badge badge-verified" id="evalGradeBadge" style="margin-left: 8px;">Outstanding</span>
+                </div>
+              </div>
+
+              <form id="evaluationForm">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                  <div>
+                    <label for="evalDeploymentSelect" style="display:block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Select Deployment Batch:</label>
+                    <select id="evalDeploymentSelect" class="control-input" style="width: 100%;" required>
+                      <option value="">Loading deployments...</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label for="evalStudentSelect" style="display:block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Select Student Volunteer:</label>
+                    <select id="evalStudentSelect" class="control-input" style="width: 100%;" required>
+                      <option value="">Select a deployment first...</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- 4 Evaluation Criteria Sliders -->
+                <div class="criteria-slider-group">
+                  <div class="criteria-input-card">
+                    <div class="criteria-label-row">
+                      <span>1. Punctuality & Attendance</span>
+                      <span class="criteria-val-badge" id="punctualityVal">5.0</span>
+                    </div>
+                    <input type="range" class="eval-slider criteria-input" id="ratingPunctuality" min="1" max="5" step="1" value="5" />
+                  </div>
+
+                  <div class="criteria-input-card">
+                    <div class="criteria-label-row">
+                      <span>2. Community Engagement & Rapport</span>
+                      <span class="criteria-val-badge" id="engagementVal">5.0</span>
+                    </div>
+                    <input type="range" class="eval-slider criteria-input" id="ratingEngagement" min="1" max="5" step="1" value="5" />
+                  </div>
+
+                  <div class="criteria-input-card">
+                    <div class="criteria-label-row">
+                      <span>3. Teamwork & Cooperation</span>
+                      <span class="criteria-val-badge" id="teamworkVal">5.0</span>
+                    </div>
+                    <input type="range" class="eval-slider criteria-input" id="ratingTeamwork" min="1" max="5" step="1" value="5" />
+                  </div>
+
+                  <div class="criteria-input-card">
+                    <div class="criteria-label-row">
+                      <span>4. Initiative & Work Attitude</span>
+                      <span class="criteria-val-badge" id="attitudeVal">5.0</span>
+                    </div>
+                    <input type="range" class="eval-slider criteria-input" id="ratingAttitude" min="1" max="5" step="1" value="5" />
+                  </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                  <label for="evalRemarks" style="display:block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Evaluator Summary Remarks / Qualitative Assessment:</label>
+                  <textarea id="evalRemarks" class="control-input" rows="3" style="width: 100%; height: auto; padding: 12px;" placeholder="Write official evaluation remarks and qualitative feedback..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitEvalBtn">
+                  <span>Submit Performance Evaluation</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Recorded Evaluations Table -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <h3 class="table-card-title">Recorded Student Evaluations</h3>
+              </div>
+              <div class="table-responsive">
+                <table class="neu-table" id="commEvalTable">
+                  <thead>
+                    <tr>
+                      <th>Student Volunteer</th>
+                      <th style="width: 200px;">Deployment Activity</th>
+                      <th style="width: 130px; text-align: center;">Overall Score</th>
+                      <th style="width: 150px; text-align: center;">Performance Grade</th>
+                      <th>Remarks</th>
+                      <th style="width: 120px;">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="commEvalBody">
+                    <tr>
+                      <td colspan="6" style="text-align: center; padding: 24px; color: var(--text-muted);">No student evaluations recorded yet.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="../student/js/student-layout.js?v=12"></script>
+  <script src="js/feedback-evaluation.js?v=1"></script>
+</body>
+</html>

@@ -285,10 +285,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     studentsTableBody.innerHTML = students.map(s => {
       const p = s.student_profiles || {};
-      const name = escapeHtml(p.full_name || s.full_name || 'Student Enrollee');
+      const name = escapeHtml(p.full_name || s.full_name || 'Student Volunteer');
       const studentNumber = escapeHtml(p.student_number || s.student_number || 'No ID');
       const email = escapeHtml(s.email || 'N/A');
-      const course = escapeHtml(p.course || 'CWTS');
+      const course = escapeHtml(p.course || 'BSIT');
       const yearSection = `${escapeHtml(p.year_level || '1st Year')} • Section ${escapeHtml(p.section || '1')}`;
       const location = `${escapeHtml(p.barangay || '---')}, ${escapeHtml(p.municipality || '---')}`;
       const isActive = s.is_active !== false;

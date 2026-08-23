@@ -191,10 +191,6 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="request-cell-meta">${escapeHtml(req.province || 'Philippines')}</div>
           </td>
           <td>
-            <div style="font-weight: 700; color: var(--cwts-primary-dark); font-size: 0.9375rem;">${studentsNeeded}</div>
-            <div class="request-cell-meta">CWTS Volunteers</div>
-          </td>
-          <td>
             ${getStatusBadge(status)}
           </td>
           <td>

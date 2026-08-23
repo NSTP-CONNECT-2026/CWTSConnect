@@ -249,8 +249,6 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="meta-list">
               <div class="meta-item"><span class="meta-label">Location Address</span><span class="meta-value">${escapeHtml(r.complete_address || '')}, ${escapeHtml(r.barangay || '')}, ${escapeHtml(r.municipality || '')}, ${escapeHtml(r.province || '')}</span></div>
               <div class="meta-item"><span class="meta-label">Target Schedule</span><span class="meta-value">${startDate} &mdash; ${endDate}</span></div>
-              <div class="meta-item"><span class="meta-label">Volunteer Quota</span><span class="meta-value highlight">${r.students_needed || r.required_students || 15} Students (${r.estimated_hours || 30} Hours)</span></div>
-              <div class="meta-item"><span class="meta-label">Beneficiaries</span><span class="meta-value">${escapeHtml(r.beneficiaries_description || 'General Community Members')}</span></div>
             </div>
 
             <div>

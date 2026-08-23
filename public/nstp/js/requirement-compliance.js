@@ -145,10 +145,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     complianceTableBody.innerHTML = records.map(item => {
       const p = item.profile || {};
-      const name = escapeHtml(p.full_name || item.full_name || 'Student Enrollee');
+      const name = escapeHtml(p.full_name || item.full_name || 'Student Volunteer');
       const studentNum = escapeHtml(p.student_number || item.student_number || 'N/A');
       const email = escapeHtml(item.email || 'N/A');
-      const course = escapeHtml(p.course || 'CWTS');
+      const course = escapeHtml(p.course || 'BSIT');
       const yearSection = `${escapeHtml(p.year_level || '1st Year')} • Sec ${escapeHtml(p.section || '1')}`;
       const studentId = item.student_id || item.user_id || item.id;
 
@@ -157,13 +157,6 @@ document.addEventListener('DOMContentLoaded', function () {
       const totalDocs = 4;
       const percent = Math.min(100, Math.round((approvedCount / totalDocs) * 100));
       const fillClass = percent >= 100 ? 'high' : (percent >= 50 ? 'mid' : 'low');
-
-      // Requirement Status Badges
-      const reqs = item.requirements || {};
-      const medStatus = getDocPill('Medical Clearance', reqs.medical_clearance || reqs['Medical Clearance']);
-      const consentStatus = getDocPill('Parent Consent', reqs.parent_consent || reqs['Parent Consent']);
-      const waiverStatus = getDocPill('Waiver', reqs.waiver || reqs['Waiver']);
-      const idStatus = getDocPill('Valid ID', reqs.valid_id || reqs['Valid ID']);
 
       // Overall Badge
       const isCompliant = approvedCount === 4 || item.compliance_status === 'compliant';
@@ -198,14 +191,6 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
           </td>
           <td>
-            <div class="doc-status-pills">
-              ${medStatus}
-              ${consentStatus}
-              ${waiverStatus}
-              ${idStatus}
-            </div>
-          </td>
-          <td>
             ${overallBadge}
           </td>
           <td>
@@ -228,13 +213,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const st = (docObj.status || docObj.verification_status || '').toLowerCase();
     if (st === 'approved') {
-      return `<span class="doc-mini-pill approved" title="${docName}: Approved">✓ ${docName.split(' ')[0]}</span>`;
+      return `<span class="doc-mini-pill approved" title="${docName}: Approved">${docName.split(' ')[0]}</span>`;
     } else if (st === 'pending') {
-      return `<span class="doc-mini-pill pending" title="${docName}: Pending Review">⏳ ${docName.split(' ')[0]}</span>`;
+      return `<span class="doc-mini-pill pending" title="${docName}: Pending Review">${docName.split(' ')[0]}</span>`;
     } else if (st === 'rejected') {
-      return `<span class="doc-mini-pill rejected" title="${docName}: Rejected">✕ ${docName.split(' ')[0]}</span>`;
+      return `<span class="doc-mini-pill rejected" title="${docName}: Rejected">${docName.split(' ')[0]}</span>`;
     } else {
-      return `<span class="doc-mini-pill missing" title="${docName}: Not submitted">${docName.split(' ')[0]}: -</span>`;
+      return `<span class="doc-mini-pill missing" title="${docName}: Not submitted">${docName.split(' ')[0]}: None</span>`;
     }
   }
 

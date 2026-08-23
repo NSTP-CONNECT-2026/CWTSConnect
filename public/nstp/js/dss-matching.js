@@ -211,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             <div class="meta-list" style="margin: 12px 0;">
               <div class="meta-item"><span class="meta-label">Location:</span><span class="meta-value">${location}</span></div>
-              <div class="meta-item"><span class="meta-label">Volunteer Quota:</span><span class="meta-value highlight">${quota} Students (${hours} Hours)</span></div>
             </div>
 
             <div>
@@ -282,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </div>
       <div>
-        <span class="badge badge-approved" style="font-size: 0.8125rem;">Quota: ${quota} Students</span>
+        <span class="badge badge-approved" style="font-size: 0.8125rem;">Approved for DSS Matching</span>
       </div>
     `;
 
@@ -362,26 +361,26 @@ document.addEventListener('DOMContentLoaded', function () {
       const s = item.student;
       const name = escapeHtml(p.full_name || s.full_name || 'Student Candidate');
       const num = escapeHtml(p.student_number || s.student_number || 'N/A');
-      const course = escapeHtml(p.course || 'CWTS');
+      const course = escapeHtml(p.course || 'BSIT');
       const yearSec = `${escapeHtml(p.year_level || '1st Year')} • Sec ${escapeHtml(p.section || '1')}`;
       const approved = item.approvedDocsCount;
 
       let complianceHtml = '';
       if (approved === 4) {
-        complianceHtml = `<span class="doc-mini-pill approved">✓ Complete (4/4 Approved)</span>`;
+        complianceHtml = `<span class="doc-mini-pill approved">Complete (4/4 Approved)</span>`;
       } else {
-        complianceHtml = `<span class="doc-mini-pill rejected">✕ Incomplete (${approved}/4 Approved)</span>`;
+        complianceHtml = `<span class="doc-mini-pill rejected">Incomplete (${approved}/4 Approved)</span>`;
       }
 
       let gatekeeperBadge = '';
       if (item.isEligible) {
-        gatekeeperBadge = `<span class="eligibility-badge-eligible">✓ Eligible for DSS Matching</span>`;
+        gatekeeperBadge = `<span class="eligibility-badge-eligible">Eligible for DSS Matching</span>`;
       } else if (!item.isCompliant) {
-        gatekeeperBadge = `<span class="eligibility-badge-ineligible">✕ Ineligible: Incomplete CMO Requirements</span>`;
+        gatekeeperBadge = `<span class="eligibility-badge-ineligible">Ineligible: Incomplete CMO Requirements</span>`;
       } else if (!item.hasProfile) {
-        gatekeeperBadge = `<span class="eligibility-badge-ineligible">✕ Ineligible: Pending Profile Setup</span>`;
+        gatekeeperBadge = `<span class="eligibility-badge-ineligible">Ineligible: Pending Profile Setup</span>`;
       } else {
-        gatekeeperBadge = `<span class="eligibility-badge-ineligible">✕ Ineligible: Already Deployed</span>`;
+        gatekeeperBadge = `<span class="eligibility-badge-ineligible">Ineligible: Already Deployed</span>`;
       }
 
       return `
@@ -484,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function () {
         studentId,
         studentName: name,
         studentNumber: p.student_number || s.student_number || 'N/A',
-        course: p.course || 'CWTS',
+        course: p.course || 'BSIT',
         address: `${p.barangay || ''}, ${p.municipality || ''}`,
         distanceKm,
         matchedCount,
@@ -607,10 +606,10 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Default select top quota (e.g. top 15)
+    // Default select top candidates (e.g. top 15)
     selectedStudentIds.clear();
-    const quota = selectedRequest ? (selectedRequest.students_needed || selectedRequest.required_students || 15) : 15;
-    rankedList.slice(0, quota).forEach(r => selectedStudentIds.add(r.studentId));
+    const defaultCount = Math.min(15, rankedList.length);
+    rankedList.slice(0, defaultCount).forEach(r => selectedStudentIds.add(r.studentId));
 
     rankingTableBody.innerHTML = rankedList.map((r, idx) => {
       const rankNum = idx + 1;
@@ -752,9 +751,9 @@ document.addEventListener('DOMContentLoaded', function () {
   function setupSelectionControls() {
     if (btnSelectTopQuota) {
       btnSelectTopQuota.addEventListener('click', () => {
-        const quota = selectedRequest ? (selectedRequest.students_needed || selectedRequest.required_students || 15) : 15;
+        const topCount = Math.min(15, rankedRecommendations.length);
         selectedStudentIds.clear();
-        rankedRecommendations.slice(0, quota).forEach(r => selectedStudentIds.add(r.studentId));
+        rankedRecommendations.slice(0, topCount).forEach(r => selectedStudentIds.add(r.studentId));
         refreshCheckboxes();
       });
     }
@@ -810,10 +809,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function updateSelectionSummary() {
     const count = selectedStudentIds.size;
-    const quota = selectedRequest ? (selectedRequest.students_needed || selectedRequest.required_students || 15) : 15;
 
     if (selectedStudentSummaryLabel) {
-      selectedStudentSummaryLabel.textContent = `${count} of ${quota} Students Selected`;
+      selectedStudentSummaryLabel.textContent = `${count} Students Selected`;
     }
   }
 

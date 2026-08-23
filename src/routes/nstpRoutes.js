@@ -10,6 +10,9 @@ const {
   updateCommunityOfficialStatus,
   updateCommunityOfficialDetails
 } = require('../controllers/nstpController');
+const { getNstpFeedbackAndEvaluations } = require('../controllers/nstpFeedbackEvaluationController');
+const { getNstpAnalytics } = require('../controllers/nstpAnalyticsController');
+const { generateReport } = require('../controllers/nstpReportsController');
 
 const router = express.Router();
 
@@ -37,5 +40,14 @@ router.put('/community-officials/:userId/status', updateCommunityOfficialStatus)
 
 // PUT /api/nstp/community-officials/:userId/details - Update basic details
 router.put('/community-officials/:userId/details', updateCommunityOfficialDetails);
+
+// GET /api/nstp/feedback-evaluations/records - Get all feedback and evaluations for coordinator
+router.get('/feedback-evaluations/records', getNstpFeedbackAndEvaluations);
+
+// GET /api/nstp/analytics - Comprehensive analytics dashboard records
+router.get('/analytics', getNstpAnalytics);
+
+// GET /api/nstp/reports/generate - Generate institutional reports
+router.get('/reports/generate', generateReport);
 
 module.exports = router;

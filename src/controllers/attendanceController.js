@@ -340,14 +340,71 @@ module.exports = {
     try {
       const { deploymentId } = req.params;
       const { status, date } = req.query;
-      
-      let query = require('../config/supabaseClient')
+      const supabase = require('../config/supabaseClient');
+
+      // MODE 1: ALL STUDENTS OVERVIEW (Total Deployments & Total Attendance)
+      if (!deploymentId || deploymentId === 'all') {
+        const { data: studentsData, error: stuErr } = await supabase
+          .from('users')
+          .select(`
+            user_id,
+            email,
+            student_profiles(full_name, student_number, course, section, year_level)
+          `)
+          .eq('role', 'student');
+
+        if (stuErr) throw new Error(stuErr.message);
+
+        const { data: assignmentsData } = await supabase
+          .from('deployment_students')
+          .select('student_user_id, deployment_id');
+
+        const { data: allAttendance } = await supabase
+          .from('attendance_records')
+          .select('student_user_id, hours_rendered, attendance_status, verification_status');
+
+        const depCountMap = new Map();
+        (assignmentsData || []).forEach(a => {
+          depCountMap.set(a.student_user_id, (depCountMap.get(a.student_user_id) || 0) + 1);
+        });
+
+        const attCountMap = new Map();
+        const hoursMap = new Map();
+        (allAttendance || []).forEach(att => {
+          attCountMap.set(att.student_user_id, (attCountMap.get(att.student_user_id) || 0) + 1);
+          hoursMap.set(att.student_user_id, (hoursMap.get(att.student_user_id) || 0) + Number(att.hours_rendered || 0));
+        });
+
+        const summary = (studentsData || []).map(stu => {
+          const prof = stu.student_profiles?.[0] || {};
+          return {
+            student_user_id: stu.user_id,
+            student_name: prof.full_name || stu.email,
+            student_number: prof.student_number || 'N/A',
+            course: prof.course || 'BSIT',
+            section: prof.section || '1',
+            year_level: prof.year_level || '1',
+            total_deployments: depCountMap.get(stu.user_id) || 0,
+            total_attendance: attCountMap.get(stu.user_id) || 0,
+            total_hours_rendered: hoursMap.get(stu.user_id) || 0
+          };
+        });
+
+        return res.json({
+          success: true,
+          mode: 'all_students',
+          attendance: summary
+        });
+      }
+
+      // MODE 2: SPECIFIC DEPLOYMENT BATCH
+      let query = supabase
         .from('attendance_records')
         .select(`
           *,
           student:users!attendance_records_student_user_id_fkey(
             email,
-            student_profiles(full_name, student_number)
+            student_profiles(full_name, student_number, course, section, year_level)
           ),
           verified_by_user:users!attendance_records_verified_by_fkey(
             email,
@@ -356,29 +413,82 @@ module.exports = {
         `)
         .eq('deployment_id', deploymentId)
         .order('attendance_date', { ascending: false });
-      
+
       if (status && status !== 'all') {
         query = query.eq('verification_status', status);
       }
-      
+
       if (date) {
         query = query.eq('attendance_date', date);
       }
-      
+
       const { data, error } = await query;
-      
+
       if (error) throw new Error(error.message);
-      
-      // Transform data
-      const attendance = data.map(record => ({
-        ...record,
-        student_name: record.student?.student_profiles?.[0]?.full_name || 'N/A',
-        student_number: record.student?.student_profiles?.[0]?.student_number || 'N/A',
-        verified_by_name: record.verified_by_user?.student_profiles?.[0]?.full_name || null
-      }));
-      
+
+      // Get deployment default date
+      const { data: depData } = await supabase
+        .from('deployments')
+        .select('deployment_start_date, deployment_batch_name, activity_title')
+        .eq('deployment_id', deploymentId)
+        .single();
+      const defaultDate = depData?.deployment_start_date ? depData.deployment_start_date.split('T')[0] : new Date().toISOString().split('T')[0];
+
+      // Transform logged attendance
+      const attendance = (data || []).map(record => {
+        const prof = record.student?.student_profiles?.[0] || {};
+        return {
+          ...record,
+          student_name: prof.full_name || 'N/A',
+          student_number: prof.student_number || 'N/A',
+          course: prof.course || 'N/A',
+          section: prof.section || '1',
+          year_level: prof.year_level || '1',
+          attendance_date: record.attendance_date || defaultDate,
+          verified_by_name: record.verified_by_user?.student_profiles?.[0]?.full_name || null
+        };
+      });
+
+      // Include all assigned students for this batch even if they haven't timed in yet
+      const { data: assignedStudents } = await supabase
+        .from('deployment_students')
+        .select(`
+          student_user_id,
+          student:users!deployment_students_student_user_id_fkey(
+            email,
+            student_profiles(full_name, student_number, course, section, year_level)
+          )
+        `)
+        .eq('deployment_id', deploymentId);
+
+      const loggedStudentIds = new Set((data || []).map(d => d.student_user_id));
+      if (assignedStudents && assignedStudents.length > 0) {
+        assignedStudents.forEach(as => {
+          if (!loggedStudentIds.has(as.student_user_id)) {
+            const prof = as.student?.student_profiles?.[0] || {};
+            attendance.push({
+              attendance_id: `pending-${as.student_user_id}`,
+              deployment_id: deploymentId,
+              student_user_id: as.student_user_id,
+              student_name: prof.full_name || 'Student Volunteer',
+              student_number: prof.student_number || 'N/A',
+              course: prof.course || 'BSIT',
+              section: prof.section || '1',
+              year_level: prof.year_level || '1',
+              attendance_date: defaultDate,
+              check_in_time: null,
+              check_out_time: null,
+              hours_rendered: 0,
+              attendance_status: 'not_logged',
+              verification_status: 'pending'
+            });
+          }
+        });
+      }
+
       res.json({
         success: true,
+        mode: 'batch_details',
         attendance
       });
     } catch (error) {

@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const name = p.full_name || s.full_name || 'Student';
     const num = p.student_number || s.student_number || 'N/A';
     const email = s.email || 'N/A';
-    const course = p.course || 'CWTS';
+    const course = p.course || 'BSIT';
     const yearSection = `${p.year_level || '1st Year'} • Section ${p.section || '1'}`;
 
     if (studentName) studentName.textContent = name;
