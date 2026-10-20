@@ -1,0 +1,204 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 990 740" width="990" height="740" style="background:#ffffff; font-family:'Inter', Arial, sans-serif;">
+  <defs>
+    <!-- Arrow marker -->
+    <marker id="dfd-arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#334155" />
+    </marker>
+    <!-- Double-ended arrow marker -->
+    <marker id="dfd-arrow-start" viewBox="0 0 10 10" refX="3" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 8 1.5 L 0 5 L 8 8.5 z" fill="#334155" />
+    </marker>
+    <filter id="dfd-shadow" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.1" />
+    </filter>
+  </defs>
+
+  <!-- Clean Plane Background -->
+  <rect width="990" height="740" fill="#ffffff" />
+
+
+  <!-- ==================== ROW 1: USER, FRONTEND, LOAD BALANCER / EDGE ==================== -->
+
+  <!-- 1. USER BOX (Top Left) -->
+  <g id="dfd_user" transform="translate(90, 80)" filter="url(#dfd-shadow)">
+    <rect width="190" height="135" rx="5" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <!-- User Silhouette Icon -->
+    <circle cx="95" cy="40" r="16" fill="#ffffff" />
+    <path d="M 72 74 C 72 58, 118 58, 118 74 Z" fill="#ffffff" />
+    <!-- Label -->
+    <text x="95" y="94" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff" letter-spacing="0.5">USER</text>
+    <text x="95" y="112" text-anchor="middle" font-size="9.5" font-weight="500" fill="#eff6ff">Student / Instructor / Admin</text>
+  </g>
+
+  <!-- Arrow: USER -> FRONTEND -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <line x1="280" y1="147" x2="388" y2="147" marker-end="url(#dfd-arrow)" />
+  </g>
+  <text x="335" y="124" text-anchor="middle" font-size="9.5" font-weight="600" fill="#334155">Uses UI / dashboards</text>
+  <text x="335" y="138" text-anchor="middle" font-size="9.5" font-weight="600" fill="#334155">/ terminals</text>
+
+  <!-- 2. FRONTEND BOX (Top Center) -->
+  <g id="dfd_frontend" transform="translate(390, 80)" filter="url(#dfd-shadow)">
+    <rect width="190" height="135" rx="5" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <!-- Browser Window Icon -->
+    <rect x="73" y="24" width="44" height="34" rx="3" fill="#ffffff" />
+    <rect x="73" y="24" width="44" height="9" rx="2" fill="#1e40af" />
+    <circle cx="78" cy="28.5" r="1.5" fill="#ffffff" />
+    <circle cx="83" cy="28.5" r="1.5" fill="#ffffff" />
+    <circle cx="88" cy="28.5" r="1.5" fill="#ffffff" />
+    <rect x="77" y="38" width="16" height="15" fill="#93c5fa" />
+    <rect x="97" y="38" width="15" height="6" fill="#bfdbfe" />
+    <rect x="97" y="47" width="15" height="6" fill="#bfdbfe" />
+    <!-- Label -->
+    <text x="95" y="85" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff" letter-spacing="0.5">FRONTEND</text>
+    <text x="95" y="102" text-anchor="middle" font-size="9.5" font-weight="500" fill="#eff6ff">Browser — HTTP(S) /</text>
+    <text x="95" y="115" text-anchor="middle" font-size="9.5" font-weight="500" fill="#eff6ff">WebSocket</text>
+  </g>
+
+  <!-- Arrow: FRONTEND -> EDGE -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <line x1="580" y1="147" x2="698" y2="147" marker-end="url(#dfd-arrow)" />
+  </g>
+  <text x="640" y="135" text-anchor="middle" font-size="10" font-weight="700" fill="#334155">HTTPS / WS</text>
+
+  <!-- 3. LOAD BALANCER / EDGE BOX (Top Right) -->
+  <g id="dfd_edge" transform="translate(700, 80)" filter="url(#dfd-shadow)">
+    <rect width="190" height="135" rx="5" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <!-- Server Stack Icon -->
+    <rect x="73" y="23" width="44" height="11" rx="2" fill="#ffffff" />
+    <rect x="73" y="37" width="44" height="11" rx="2" fill="#ffffff" />
+    <rect x="73" y="51" width="44" height="11" rx="2" fill="#ffffff" />
+    <circle cx="79" cy="28.5" r="1.5" fill="#1e40af" />
+    <circle cx="79" cy="42.5" r="1.5" fill="#1e40af" />
+    <circle cx="79" cy="56.5" r="1.5" fill="#1e40af" />
+    <!-- Label -->
+    <text x="95" y="80" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">Load Balancer / Edge</text>
+    <text x="95" y="97" text-anchor="middle" font-size="9.5" font-weight="600" fill="#eff6ff">(Caddy / NGINX) — TLS</text>
+    <text x="95" y="111" text-anchor="middle" font-size="9.5" font-weight="500" fill="#eff6ff">termination</text>
+  </g>
+
+
+  <!-- ==================== CONNECTORS TO BACKEND ==================== -->
+
+  <!-- FRONTEND -> BACKEND direct REST endpoints -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <line x1="485" y1="215" x2="485" y2="338" marker-end="url(#dfd-arrow)" />
+  </g>
+  <text x="500" y="270" text-anchor="start" font-size="9.5" font-weight="600" fill="#334155">REST &amp; WS endpoints /</text>
+  <text x="500" y="284" text-anchor="start" font-size="9.5" font-weight="600" fill="#334155">real-time updates</text>
+
+  <!-- EDGE -> BACKEND routed requests -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <path d="M 760 215 L 760 300 L 630 300 L 630 338" marker-end="url(#dfd-arrow)" />
+  </g>
+  <text x="765" y="260" text-anchor="start" font-size="9.5" font-weight="600" fill="#334155">Routes Request,</text>
+  <text x="765" y="274" text-anchor="start" font-size="9.5" font-weight="600" fill="#334155">TLS Termination</text>
+
+
+  <!-- ==================== CENTER: BACKEND CONTAINER ==================== -->
+  
+  <g id="dfd_backend" transform="translate(350, 340)" filter="url(#dfd-shadow)">
+    <!-- Main Backend Box -->
+    <rect width="340" height="270" rx="6" fill="#1e3a8a" stroke="#1d4ed8" stroke-width="2" />
+    
+    <!-- Code Icon & Title -->
+    <rect x="150" y="12" width="40" height="22" rx="3" fill="#ffffff" />
+    <text x="170" y="28" text-anchor="middle" font-size="13" font-weight="900" fill="#1e3a8a">&lt;/&gt;</text>
+    <text x="170" y="52" text-anchor="middle" font-size="14" font-weight="900" fill="#ffffff" letter-spacing="1">BACKEND</text>
+
+    <!-- Sub-components (Grid: 2 cols x 3 rows) -->
+    
+    <!-- Row 1, Col 1: API Gateway / Auth -->
+    <rect x="15" y="66" width="145" height="52" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="87" y="86" text-anchor="middle" font-size="10" font-weight="800" fill="#0f172a">API Gateway / Auth /</text>
+    <text x="87" y="101" text-anchor="middle" font-size="9" font-weight="600" fill="#64748b">Static Files</text>
+
+    <!-- Row 1, Col 2: DSS Matching Engine -->
+    <rect x="180" y="66" width="145" height="52" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="252" y="86" text-anchor="middle" font-size="10" font-weight="800" fill="#0f172a">DSS Matching Engine</text>
+    <text x="252" y="101" text-anchor="middle" font-size="9" font-weight="600" fill="#15803d">(Multi-Factor Scoring)</text>
+
+    <!-- Row 2, Col 1: CMO Compliance -->
+    <rect x="15" y="132" width="145" height="52" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="87" y="152" text-anchor="middle" font-size="10" font-weight="800" fill="#0f172a">CMO Compliance</text>
+    <text x="87" y="167" text-anchor="middle" font-size="9" font-weight="600" fill="#c2410c">(Verification Service)</text>
+
+    <!-- Row 2, Col 2: Admin & CRUD -->
+    <rect x="180" y="132" width="145" height="52" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="252" y="152" text-anchor="middle" font-size="10" font-weight="800" fill="#0f172a">Admin &amp; CRUD</text>
+    <text x="252" y="167" text-anchor="middle" font-size="9" font-weight="600" fill="#64748b">Services &amp; Requests</text>
+
+    <!-- Row 3, Col 1: Attendance & DTR -->
+    <rect x="15" y="198" width="145" height="52" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="87" y="218" text-anchor="middle" font-size="10" font-weight="800" fill="#0f172a">DTR Attendance Log</text>
+    <text x="87" y="233" text-anchor="middle" font-size="9" font-weight="600" fill="#7e22ce">(54-Hr Target Tracking)</text>
+
+    <!-- Row 3, Col 2: 360 Evaluation & Reports -->
+    <rect x="180" y="198" width="145" height="52" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="252" y="218" text-anchor="middle" font-size="10" font-weight="800" fill="#0f172a">360 Evaluation Service</text>
+    <text x="252" y="233" text-anchor="middle" font-size="9" font-weight="600" fill="#be185d">&amp; CHED CMO Reports</text>
+  </g>
+
+
+  <!-- ==================== RIGHT: DATABASE CYLINDER ==================== -->
+
+  <!-- Connector: BACKEND <-> DATABASE -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <line x1="690" y1="475" x2="768" y2="475" marker-end="url(#dfd-arrow)" marker-start="url(#dfd-arrow-start)" />
+  </g>
+  <text x="730" y="462" text-anchor="middle" font-size="9.5" font-weight="700" fill="#334155">CRUD / queries</text>
+
+  <!-- 3D Database Cylinder -->
+  <g id="dfd_db" transform="translate(770, 390)" filter="url(#dfd-shadow)">
+    <!-- Cylinder Body -->
+    <path d="M 0 30 L 0 135 A 65 24 0 0 0 130 135 L 130 30 Z" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <!-- Cylinder Bottom Rim -->
+    <ellipse cx="65" cy="135" rx="65" ry="24" fill="#2563eb" stroke="#2563eb" stroke-width="1.5" />
+    <!-- Cylinder Top Cap -->
+    <ellipse cx="65" cy="30" rx="65" ry="24" fill="#93c5fa" stroke="#2563eb" stroke-width="1.5" />
+    
+    <!-- Label -->
+    <text x="65" y="82" text-anchor="middle" font-size="14" font-weight="900" fill="#ffffff" letter-spacing="0.5">DATABASE</text>
+    <text x="65" y="100" text-anchor="middle" font-size="9" font-weight="600" fill="#eff6ff">Supabase — users,</text>
+    <text x="65" y="113" text-anchor="middle" font-size="9" font-weight="500" fill="#eff6ff">deployments, DTR, CMO</text>
+  </g>
+
+
+  <!-- ==================== LEFT: NOTIFICATION BOX ==================== -->
+
+  <!-- Connector: BACKEND -> NOTIFICATION -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <line x1="350" y1="440" x2="252" y2="440" marker-end="url(#dfd-arrow)" />
+  </g>
+  <text x="300" y="430" text-anchor="middle" font-size="9.5" font-weight="700" fill="#334155">Trigger Alerts</text>
+
+  <g id="dfd_notif" transform="translate(90, 390)" filter="url(#dfd-shadow)">
+    <rect width="160" height="105" rx="5" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <!-- Bell Icon -->
+    <path d="M 80 22 C 73 22 68 27 68 34 L 65 46 L 95 46 L 92 34 C 92 27 87 22 80 22 Z" fill="#ffffff" />
+    <circle cx="80" cy="50" r="3" fill="#ffffff" />
+    <!-- Label -->
+    <text x="80" y="70" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">NOTIFICATION</text>
+    <text x="80" y="86" text-anchor="middle" font-size="8.5" font-weight="500" fill="#eff6ff">(email / Slack / alerts)</text>
+  </g>
+
+
+  <!-- ==================== BOTTOM LEFT: CLOUDINARY STORAGE ==================== -->
+
+  <!-- Connector: CLOUDINARY -> BACKEND -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <path d="M 170 565 L 170 635 L 520 635 L 520 612" marker-end="url(#dfd-arrow)" />
+  </g>
+  <text x="345" y="626" text-anchor="middle" font-size="9.5" font-weight="700" fill="#334155">Log stream / events &amp; uploads</text>
+
+  <g id="dfd_cloud" transform="translate(90, 565)" filter="url(#dfd-shadow)">
+    <!-- Flag / Document shape with wavy top -->
+    <path d="M 0 0 C 40 -12, 120 12, 160 0 L 160 95 L 0 95 Z" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <!-- Cloud Icon -->
+    <path d="M 73 35 A 8 8 0 0 1 87 35 A 6 6 0 0 1 94 42 L 66 42 A 6 6 0 0 1 73 35 Z" fill="#ffffff" />
+    <!-- Label -->
+    <text x="80" y="60" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">Cloudinary Storage</text>
+    <text x="80" y="76" text-anchor="middle" font-size="8.5" font-weight="500" fill="#eff6ff">(CMO files / events)</text>
+  </g>
+
+</svg>

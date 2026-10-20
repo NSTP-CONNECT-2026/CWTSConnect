@@ -5,6 +5,7 @@ const {
   getNstpOfficialProfile,
   getAllStudents,
   getStudentById,
+  updateStudentStatus,
   getAllCommunityOfficials,
   addCommunityOfficial,
   updateCommunityOfficialStatus,
@@ -28,6 +29,9 @@ router.get('/students', getAllStudents);
 
 // GET /api/nstp/students/:userId - Get single student details
 router.get('/students/:userId', getStudentById);
+
+// PUT /api/nstp/students/:userId/status - Activate or deactivate student account
+router.put('/students/:userId/status', updateStudentStatus);
 
 // GET /api/nstp/community-officials - Get all community officials
 router.get('/community-officials', getAllCommunityOfficials);

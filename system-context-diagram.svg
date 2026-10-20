@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 750" width="1100" height="750" style="background:#ffffff; font-family:'Inter', Arial, sans-serif;">
+  <defs>
+    <!-- Arrow marker -->
+    <marker id="ctx-arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#334155" />
+    </marker>
+    <!-- Double-ended arrow marker start -->
+    <marker id="ctx-arrow-start" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 8 1.5 L 0 5 L 8 8.5 z" fill="#334155" />
+    </marker>
+    <!-- Subtle Box Shadow -->
+    <filter id="box-shadow" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.1" />
+    </filter>
+    <!-- Central Circle Gradient -->
+    <linearGradient id="center-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#0f2b5c" />
+    </linearGradient>
+  </defs>
+
+  <!-- Clean Plane Background -->
+  <rect width="1100" height="750" fill="#ffffff" />
+
+  <!-- ==================== CURVED CONNECTING BEZIER ARROWS ==================== -->
+  
+  <!-- 1. USERS (Top) -> CENTER HUB (Straight Down) -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <line x1="550" y1="170" x2="550" y2="280" marker-end="url(#ctx-arrow)" />
+  </g>
+  <text x="562" y="215" text-anchor="start" font-size="11" font-style="italic" font-weight="600" fill="#334155">user actions /</text>
+  <text x="562" y="230" text-anchor="start" font-size="11" font-style="italic" font-weight="600" fill="#334155">submissions</text>
+
+  <!-- 2. NOTIFICATIONS (Top-Left) <- CENTER HUB (Deep Sweeping Curve) -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <path d="M 475 340 C 390 340 310 280 260 215" marker-end="url(#ctx-arrow)" />
+  </g>
+  <text x="350" y="260" text-anchor="middle" font-size="11" font-style="italic" font-weight="600" fill="#334155">email/alerts</text>
+
+  <!-- 3. FRONTEND (Bottom-Left) <-> CENTER HUB (Deep Sweeping Curve) -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <path d="M 260 505 C 310 440 390 410 475 410" marker-end="url(#ctx-arrow)" marker-start="url(#ctx-arrow-start)" />
+  </g>
+  <text x="345" y="475" text-anchor="middle" font-size="11" font-style="italic" font-weight="600" fill="#334155">API requests /</text>
+  <text x="345" y="490" text-anchor="middle" font-size="11" font-style="italic" font-weight="600" fill="#334155">responses</text>
+
+  <!-- 4. DSS ENGINE (Bottom) -> CENTER HUB (Straight Up) -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <line x1="550" y1="580" x2="550" y2="470" marker-end="url(#ctx-arrow)" />
+  </g>
+  <text x="562" y="520" text-anchor="start" font-size="11" font-style="italic" font-weight="600" fill="#334155">telemetry /</text>
+  <text x="562" y="535" text-anchor="start" font-size="11" font-style="italic" font-weight="600" fill="#334155">events</text>
+
+  <!-- 5. AUTH (Bottom-Right) <-> CENTER HUB (Deep Sweeping Curve) -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <path d="M 625 410 C 710 410 790 440 840 505" marker-end="url(#ctx-arrow)" marker-start="url(#ctx-arrow-start)" />
+  </g>
+  <text x="755" y="475" text-anchor="middle" font-size="11" font-style="italic" font-weight="600" fill="#334155">auth tokens /</text>
+  <text x="755" y="490" text-anchor="middle" font-size="11" font-style="italic" font-weight="600" fill="#334155">validation</text>
+
+  <!-- 6. ACCOUNTS DB (Top-Right) <-> CENTER HUB (Deep Sweeping Curve) -->
+  <g stroke="#334155" stroke-width="1.5" fill="none">
+    <path d="M 625 340 C 710 340 790 280 840 215" marker-end="url(#ctx-arrow)" marker-start="url(#ctx-arrow-start)" />
+  </g>
+  <text x="750" y="260" text-anchor="middle" font-size="11" font-style="italic" font-weight="600" fill="#334155">account read/write</text>
+
+
+  <!-- ==================== RADIAL ENTITIES (CLASSIC BLUE BOXES) ==================== -->
+
+  <!-- ENTITY 1: USERS (Top Center) -->
+  <g id="entity_users" transform="translate(460, 75)" filter="url(#box-shadow)">
+    <rect width="180" height="95" rx="5" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <text x="90" y="54" text-anchor="middle" font-size="15" font-weight="800" fill="#ffffff" letter-spacing="0.5">USERS</text>
+  </g>
+
+  <!-- ENTITY 2: NOTIFICATIONS (Top-Left) -->
+  <g id="entity_notif" transform="translate(90, 150)" filter="url(#box-shadow)">
+    <rect width="170" height="90" rx="5" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <text x="85" y="52" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff" letter-spacing="0.5">NOTIFICATIONS</text>
+  </g>
+
+  <!-- ENTITY 3: FRONTEND (Bottom-Left) -->
+  <g id="entity_frontend" transform="translate(90, 480)" filter="url(#box-shadow)">
+    <rect width="170" height="90" rx="5" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <text x="85" y="52" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff" letter-spacing="0.5">FRONTEND</text>
+  </g>
+
+  <!-- ENTITY 4: DSS ENGINE (Bottom Center) -->
+  <g id="entity_dss" transform="translate(460, 580)" filter="url(#box-shadow)">
+    <rect width="180" height="95" rx="5" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <text x="90" y="54" text-anchor="middle" font-size="15" font-weight="800" fill="#ffffff" letter-spacing="0.5">DSS ENGINE</text>
+  </g>
+
+  <!-- ENTITY 5: AUTH (Bottom-Right) -->
+  <g id="entity_auth" transform="translate(840, 480)" filter="url(#box-shadow)">
+    <rect width="170" height="90" rx="5" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <text x="85" y="52" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff" letter-spacing="0.5">AUTH</text>
+  </g>
+
+  <!-- ENTITY 6: ACCOUNTS DB (Top-Right) -->
+  <g id="entity_db" transform="translate(840, 150)" filter="url(#box-shadow)">
+    <rect width="170" height="90" rx="5" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5" />
+    <text x="85" y="52" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff" letter-spacing="0.5">ACCOUNTS DB</text>
+  </g>
+
+
+  <!-- ==================== CENTRAL HUB (CWTSCONNECT) ==================== -->
+  <g id="center_hub" filter="url(#box-shadow)">
+    <circle cx="550" cy="375" r="95" fill="url(#center-grad)" stroke="#0f172a" stroke-width="2.5" />
+    <!-- Label -->
+    <text x="550" y="380" text-anchor="middle" font-size="16" font-weight="900" fill="#ffffff" letter-spacing="1">CWTSCONNECT</text>
+  </g>
+
+</svg>

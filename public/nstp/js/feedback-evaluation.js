@@ -24,6 +24,7 @@
   async function initializePage() {
     setupTabSwitcher();
     setupFilters();
+    setupModalListeners();
     showLoading();
     try {
       await loadRecords();
@@ -114,8 +115,25 @@
 
       if (result.success) {
         deployments = result.deployments || [];
-        feedbackRecords = result.feedback || [];
-        evaluationRecords = result.evaluations || [];
+        const rawFeedback = result.feedback || [];
+        const seenFb = new Set();
+        feedbackRecords = rawFeedback.filter(f => {
+          if (!f.student_user_id) return true;
+          const k = `${f.deployment_id}_${f.student_user_id}`;
+          if (seenFb.has(k)) return false;
+          seenFb.add(k);
+          return true;
+        });
+
+        const rawEval = result.evaluations || [];
+        const seenEv = new Set();
+        evaluationRecords = rawEval.filter(ev => {
+          if (!ev.student_user_id || !ev.deployment_id) return true;
+          const k = `${ev.deployment_id}_${ev.student_user_id}`;
+          if (seenEv.has(k)) return false;
+          seenEv.add(k);
+          return true;
+        });
 
         populateDeploymentFilters();
         filterAndRenderFeedback();
@@ -134,7 +152,10 @@
     const evalSelect = document.getElementById('evalDeploymentFilter');
 
     const optionsHtml = deployments.map(d => {
-      const label = `${d.deployment_batch_name} - ${d.activity_title || d.community_name || 'Activity'}`;
+      let label = d.deployment_batch_name || 'Deployment Batch';
+      if (d.activity_title && !label.includes(d.activity_title)) {
+        label += ` - ${d.activity_title}`;
+      }
       return `<option value="${d.deployment_id}">${escapeHtml(label)}</option>`;
     }).join('');
 
@@ -157,9 +178,16 @@
       filtered = filtered.filter(r => {
         const comm = (r.community_name || '').toLowerCase();
         const act = (r.activity_title || '').toLowerCase();
+        const batch = (r.deployment_batch_name || '').toLowerCase();
         const student = (r.target_student || r.student_name || '').toLowerCase();
         const comments = (r.comments || '').toLowerCase();
-        return comm.includes(currentFbSearch) || act.includes(currentFbSearch) || student.includes(currentFbSearch) || comments.includes(currentFbSearch);
+        const submitted = (r.submitted_by || '').toLowerCase();
+        return comm.includes(currentFbSearch) ||
+               act.includes(currentFbSearch) ||
+               batch.includes(currentFbSearch) ||
+               student.includes(currentFbSearch) ||
+               comments.includes(currentFbSearch) ||
+               submitted.includes(currentFbSearch);
       });
     }
 
@@ -180,9 +208,10 @@
       const submittedBy = escapeHtml(r.submitted_by || 'Community Official');
       const actTitle = escapeHtml(r.activity_title || 'Community Service Activity');
       const batchName = escapeHtml(r.deployment_batch_name || 'Deployment Batch');
-      const targetStudent = escapeHtml(r.target_student || r.student_name || (r.student_user_id ? 'Individual Student' : 'All Deployed Students'));
+      const targetStudent = escapeHtml(r.target_student || r.student_name || 'Student Volunteer');
       const rating = Number(r.rating || 5);
-      const comments = escapeHtml(r.comments || 'No remarks provided.');
+      const fullComments = (r.comments || '').trim() || 'No remarks provided.';
+      const displayComments = truncateText(fullComments, 50);
       const dateStr = escapeHtml(r.date_submitted || '---');
 
       return `
@@ -199,12 +228,12 @@
             <div style="font-size: 0.875rem; font-weight: 600;">${targetStudent}</div>
           </td>
           <td style="text-align: center;">
-            <span style="font-weight: 800; color: #F59E0B; font-size: 0.9375rem;">${rating} / 5 Stars</span>
+            <span style="font-weight: 800; color: #D97706; font-size: 0.9375rem;">${rating} / 5 Stars</span>
           </td>
-          <td style="font-size: 0.875rem; max-width: 320px; line-height: 1.5;">
-            "${comments}"
+          <td style="font-size: 0.8125rem; max-width: 200px; min-width: 150px; width: 180px; line-height: 1.4; word-break: break-word; overflow-wrap: anywhere; white-space: normal;" title="${escapeHtml(fullComments)}">
+            "${displayComments}"
           </td>
-          <td style="font-size: 0.8125rem;">
+          <td style="font-size: 0.8125rem; text-align: center; white-space: nowrap;">
             ${dateStr}
           </td>
         </tr>
@@ -225,7 +254,18 @@
         const num = (r.student_number || '').toLowerCase();
         const course = (r.course || '').toLowerCase();
         const comm = (r.community_name || '').toLowerCase();
-        return name.includes(currentEvalSearch) || num.includes(currentEvalSearch) || course.includes(currentEvalSearch) || comm.includes(currentEvalSearch);
+        const act = (r.activity_title || '').toLowerCase();
+        const batch = (r.deployment_batch_name || '').toLowerCase();
+        const remarks = (r.evaluator_remarks || '').toLowerCase();
+        const grade = (r.performance_grade || '').toLowerCase();
+        return name.includes(currentEvalSearch) ||
+               num.includes(currentEvalSearch) ||
+               course.includes(currentEvalSearch) ||
+               comm.includes(currentEvalSearch) ||
+               act.includes(currentEvalSearch) ||
+               batch.includes(currentEvalSearch) ||
+               remarks.includes(currentEvalSearch) ||
+               grade.includes(currentEvalSearch);
       });
     }
 
@@ -237,7 +277,7 @@
     if (!tbody) return;
 
     if (!records || records.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 24px; color: var(--text-muted);">No student evaluation records found matching criteria.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 24px; color: var(--text-muted);">No student evaluation records found matching criteria.</td></tr>';
       return;
     }
 
@@ -251,50 +291,147 @@
 
       const commName = escapeHtml(r.community_name || 'Partner Community');
       const actTitle = escapeHtml(r.activity_title || 'Community Activity');
+      const batchName = escapeHtml(r.deployment_batch_name || 'Deployment Batch');
+      const depSub = batchName !== 'Deployment Batch' && !actTitle.includes(batchName)
+        ? `${commName} • ${batchName}`
+        : commName;
+
       const score = Number(r.overall_score || 5).toFixed(2);
       const grade = escapeHtml(r.performance_grade || 'Outstanding');
-      const remarks = escapeHtml(r.evaluator_remarks || '');
+      const gradeBadgeHtml = getGradeBadgeHtml(r.performance_grade);
+      const fullRemarks = (r.evaluator_remarks || '').trim() || 'No remarks provided.';
+      const displayRemarks = truncateText(fullRemarks, 50);
       const dateStr = escapeHtml(r.evaluation_date || '---');
 
-      const crit = r.criteria || {};
-      const punct = crit.punctuality ? `${crit.punctuality.score || 5}.0` : '5.0';
-      const eng = crit.community_engagement ? `${crit.community_engagement.score || 5}.0` : '5.0';
-      const team = crit.teamwork ? `${crit.teamwork.score || 5}.0` : '5.0';
-      const att = crit.initiative_attitude ? `${crit.initiative_attitude.score || 5}.0` : '5.0';
-
       return `
-        <tr>
+        <tr class="clickable-eval-row" data-eval-id="${escapeHtml(r.evaluation_id)}" title="Click row to view 4-criteria rubric breakdown">
           <td>
             <div style="font-weight: 700; color: var(--cwts-primary-dark); font-size: 0.9375rem;">${name}</div>
             <div style="font-size: 0.75rem; color: var(--text-muted);">${num} • ${courseStr}</div>
           </td>
           <td>
             <div style="font-weight: 600; font-size: 0.875rem;">${actTitle}</div>
-            <div style="font-size: 0.75rem; color: var(--text-muted);">${commName}</div>
-          </td>
-          <td>
-            <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;">
-              <div>Punctuality: <strong style="color: var(--cwts-primary-dark);">${punct}</strong></div>
-              <div>Engagement: <strong style="color: var(--cwts-primary-dark);">${eng}</strong></div>
-              <div>Teamwork: <strong style="color: var(--cwts-primary-dark);">${team}</strong></div>
-              <div>Initiative: <strong style="color: var(--cwts-primary-dark);">${att}</strong></div>
-            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">${depSub}</div>
           </td>
           <td style="text-align: center;">
             <span style="font-weight: 800; color: var(--cwts-primary-dark); font-size: 1rem;">${score}</span>
           </td>
           <td style="text-align: center;">
-            <span class="badge badge-verified">${grade}</span>
+            ${gradeBadgeHtml}
           </td>
-          <td style="font-size: 0.875rem; max-width: 260px; line-height: 1.5;">
-            "${remarks}"
+          <td style="font-size: 0.8125rem; max-width: 240px; line-height: 1.4; word-break: break-word; overflow-wrap: anywhere; white-space: normal;" title="${escapeHtml(fullRemarks)}">
+            "${displayRemarks}"
           </td>
-          <td style="font-size: 0.8125rem;">
+          <td style="font-size: 0.8125rem; text-align: center; white-space: nowrap;">
             ${dateStr}
           </td>
         </tr>
       `;
     }).join('');
+
+    tbody.querySelectorAll('.clickable-eval-row').forEach(row => {
+      row.addEventListener('click', function () {
+        const id = this.getAttribute('data-eval-id');
+        const ev = evaluationRecords.find(e => String(e.evaluation_id) === String(id));
+        if (ev) {
+          openCriteriaModal(ev);
+        }
+      });
+    });
+  }
+
+  function formatScore(val) {
+    if (val === undefined || val === null || val === '') return '5.0';
+    const num = Number(val);
+    return isNaN(num) ? '5.0' : num.toFixed(1);
+  }
+
+  function getGradeBadgeHtml(grade) {
+    const g = String(grade || 'Outstanding').trim();
+    const lower = g.toLowerCase();
+    if (lower === 'outstanding') {
+      return `<span class="badge badge-verified">${escapeHtml(g)}</span>`;
+    }
+    if (lower === 'very satisfactory') {
+      return `<span class="badge" style="background: rgba(30, 58, 138, 0.12); color: #1E3A8A; border: 1px solid rgba(30, 58, 138, 0.25);">${escapeHtml(g)}</span>`;
+    }
+    if (lower === 'satisfactory') {
+      return `<span class="badge badge-pending">${escapeHtml(g)}</span>`;
+    }
+    return `<span class="badge badge-rejected">${escapeHtml(g || 'Needs Improvement')}</span>`;
+  }
+
+  function truncateText(str, maxLen = 50) {
+    if (!str) return '';
+    const trimmed = String(str).trim();
+    if (trimmed.length <= maxLen) return escapeHtml(trimmed);
+    return escapeHtml(trimmed.substring(0, maxLen)) + '...';
+  }
+
+  function openCriteriaModal(ev) {
+    const modal = document.getElementById('criteriaDetailsModal');
+    if (!modal) return;
+
+    const name = ev.student_name || 'Student Volunteer';
+    const num = ev.student_number || '---';
+    const course = ev.course || 'BSIT';
+    const sec = ev.section ? `Sec ${ev.section}` : '';
+    const yr = ev.year_level ? `(Yr ${ev.year_level})` : '';
+    const courseStr = `${course} ${sec} ${yr}`.trim();
+
+    setElText('modalStudentNameTitle', `${name} - Evaluation`);
+    setElText('modalDetailStudentName', name);
+    setElText('modalDetailStudentMeta', `${num} • ${courseStr}`);
+
+    setElText('modalDetailActivityTitle', ev.activity_title || 'Community Service Activity');
+    const batchName = ev.deployment_batch_name || 'Deployment Batch';
+    const commName = ev.community_name || 'Partner Community';
+    setElText('modalDetailCommunityMeta', `${commName} • ${batchName}`);
+
+    const evaluator = ev.evaluator_name || 'Community Official';
+    const evalDate = ev.evaluation_date || '---';
+    setElText('modalDetailEvaluatorMeta', `${evaluator} • ${evalDate}`);
+
+    const gradeBadge = document.getElementById('modalDetailGradeBadge');
+    if (gradeBadge) {
+      gradeBadge.innerHTML = getGradeBadgeHtml(ev.performance_grade);
+    }
+
+    const score = Number(ev.overall_score || 5).toFixed(2);
+    setElText('modalDetailOverallScore', `Score: ${score} / 5.00`);
+
+    const crit = ev.criteria || {};
+    setElText('modalCritPunctuality', `${formatScore(crit.punctuality?.score)} / 5.0`);
+    setElText('modalCritEngagement', `${formatScore(crit.community_engagement?.score)} / 5.0`);
+    setElText('modalCritTeamwork', `${formatScore(crit.teamwork?.score)} / 5.0`);
+    setElText('modalCritInitiative', `${formatScore(crit.initiative_attitude?.score)} / 5.0`);
+
+    const fullRemarks = (ev.evaluator_remarks || '').trim() || 'No remarks provided.';
+    setElText('modalDetailRemarks', `"${fullRemarks}"`);
+
+    modal.classList.add('active');
+  }
+
+  function closeCriteriaModal() {
+    const modal = document.getElementById('criteriaDetailsModal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function setupModalListeners() {
+    const closeBtn = document.getElementById('closeCriteriaModalBtn');
+    const footerCloseBtn = document.getElementById('closeCriteriaModalFooterBtn');
+    const modal = document.getElementById('criteriaDetailsModal');
+
+    if (closeBtn) closeBtn.addEventListener('click', closeCriteriaModal);
+    if (footerCloseBtn) footerCloseBtn.addEventListener('click', closeCriteriaModal);
+    if (modal) {
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeCriteriaModal();
+      });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeCriteriaModal();
+    });
   }
 
   function setElText(id, val) {

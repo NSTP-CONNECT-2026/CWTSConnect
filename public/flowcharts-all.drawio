@@ -1,0 +1,384 @@
+<mxfile host="app.diagrams.net" modified="2026-10-11T21:30:00.000Z" agent="Mozilla/5.0" version="21.0.0" type="device">
+  <!-- TAB 1: STUDENT PROCESS FLOW -->
+  <diagram id="diag_student" name="1. Student Process Flow">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+
+
+        <!-- Column 1 -->
+        <mxCell id="s_start" value="Start" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=12;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="90" y="130" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s_signup" value="Sign Up&#xa;(Student Number &amp; Info)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="80" y="210" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s_otp" value="Verify Email OTP" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="80" y="295" width="160" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="s_login" value="Login to Student Portal" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="80" y="375" width="160" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="s_b_out" value="B" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="141" y="460" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_1_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_start" target="s_signup" />
+        <mxCell id="e_1_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_signup" target="s_otp" />
+        <mxCell id="e_1_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_otp" target="s_login" />
+        <mxCell id="e_1_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_login" target="s_b_out" />
+
+        <!-- Column 2 -->
+        <mxCell id="s_b_in" value="B" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="391" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s_dash" value="Dashboard&#xa;(Status Overview &amp; Alerts)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="330" y="210" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s_profile" value="My Profile&#xa;(Personal Info, Map &amp; Skills)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="330" y="295" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s_cmo" value="CMO Requirements&#xa;(Upload Waiver, Medical, ID)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="330" y="380" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s_dec_cmo" value="Are documents&#xa;approved by&#xa;Coordinator?" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=10;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="330" y="465" width="160" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="s_reupload" value="Update / Re-upload&#xa;Documents" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=10;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="345" y="580" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s_c_out" value="C" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="391" y="655" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_2_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_b_in" target="s_dash" />
+        <mxCell id="e_2_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_dash" target="s_profile" />
+        <mxCell id="e_2_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_profile" target="s_cmo" />
+        <mxCell id="e_2_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_cmo" target="s_dec_cmo" />
+        <mxCell id="e_2_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;fontSize=11;fontStyle=1;" edge="1" parent="1" source="s_dec_cmo" target="s_reupload" />
+        <mxCell id="e_2_loop" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s_reupload" target="s_cmo">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="310" y="600" />
+              <mxPoint x="310" y="404" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_2_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;fontSize=11;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s_dec_cmo" target="s_c_out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="502" />
+              <mxPoint x="510" y="674" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Column 3 -->
+        <mxCell id="s_c_in" value="C" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="641" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s_dss" value="Wait for DSS&#xa;Auto-Matching" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="580" y="210" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s_deploy" value="Deployment &amp; Monitoring&#xa;(View Site &amp; Schedule)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="580" y="295" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s_fieldwork" value="Attend Community&#xa;Fieldwork Activities" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="580" y="380" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s_off_att" value="Community Official&#xa;Logs Attendance&#xa;(Time-In &amp; Time-Out)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="580" y="465" width="160" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="s_mon_hrs" value="Monitor Rendered Hours&#xa;&amp; Service Logs" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="580" y="555" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s_d_out" value="D" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="641" y="640" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_3_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_c_in" target="s_dss" />
+        <mxCell id="e_3_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_dss" target="s_deploy" />
+        <mxCell id="e_3_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_deploy" target="s_fieldwork" />
+        <mxCell id="e_3_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_fieldwork" target="s_off_att" />
+        <mxCell id="e_3_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_off_att" target="s_mon_hrs" />
+        <mxCell id="e_3_6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_mon_hrs" target="s_d_out" />
+
+        <!-- Column 4 -->
+        <mxCell id="s_d_in" value="D" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="891" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="s_eval" value="Feedback &amp; Evaluation&#xa;(Rate Site &amp; Supervisor)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="830" y="210" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s_hours" value="Track Rendered NOH&#xa;(Confirm 54 Hours Met)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="830" y="295" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s_edit_profile" value="Edit Profile &amp;&#xa;Account Settings" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="830" y="380" width="160" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="s_pw" value="Change Password" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="830" y="460" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s_logout" value="Logout" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="830" y="535" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s_end" value="End" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=12;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="840" y="615" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_4_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_d_in" target="s_eval" />
+        <mxCell id="e_4_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_eval" target="s_hours" />
+        <mxCell id="e_4_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_hours" target="s_edit_profile" />
+        <mxCell id="e_4_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_edit_profile" target="s_pw" />
+        <mxCell id="e_4_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_pw" target="s_logout" />
+        <mxCell id="e_4_6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="1" source="s_logout" target="s_end" />
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- TAB 2: COMMUNITY PARTNER PROCESS FLOW -->
+  <diagram id="diag_partner" name="2. Community Partner Process Flow">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="p_0" />
+        <mxCell id="p_1" parent="p_0" />
+
+
+
+        <!-- Column 1 -->
+        <mxCell id="p_start" value="Start" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=12;fontStyle=1;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="90" y="130" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p_creds" value="Receive Official&#xa;Credentials from CWTS" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="80" y="210" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="p_login" value="Login to Partner Portal" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="80" y="295" width="160" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="p_b_out" value="B" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="141" y="380" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pe_1_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_start" target="p_creds" />
+        <mxCell id="pe_1_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_creds" target="p_login" />
+        <mxCell id="pe_1_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_login" target="p_b_out" />
+
+        <!-- Column 2 (Main: Dashboard & Requests) -->
+        <mxCell id="p_b_in" value="B" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="391" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="p_dash" value="Dashboard&#xa;(Metrics &amp; Overview)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="330" y="210" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="p_req" value="Community Requests&#xa;(Create &amp; Submit Request)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="330" y="295" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="p_dec_req" value="Is request&#xa;approved by&#xa;Coordinator?" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=10;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="330" y="380" width="160" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p_revise" value="Revise Request Details&#xa;&amp; Resubmit" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=10;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="345" y="495" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p_c_out" value="C" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="391" y="580" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pe_2_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_b_in" target="p_dash" />
+        <mxCell id="pe_2_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_dash" target="p_req" />
+        <mxCell id="pe_2_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_req" target="p_dec_req" />
+        <mxCell id="pe_2_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;fontSize=11;fontStyle=1;" edge="1" parent="p_1" source="p_dec_req" target="p_revise" />
+        <mxCell id="pe_2_loop" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="p_1" source="p_revise" target="p_req">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="310" y="515" />
+              <mxPoint x="310" y="319" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pe_2_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;fontSize=11;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="p_1" source="p_dec_req" target="p_c_out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="417" />
+              <mxPoint x="510" y="599" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Column 3 (Monitoring: Deploy & DTR) -->
+        <mxCell id="p_c_in" value="C" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="641" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="p_deploy" value="Deployment &amp; Monitoring&#xa;(View Student Roster)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="580" y="210" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="p_supervise" value="Supervise On-site&#xa;Volunteer Activities" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="580" y="295" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="p_att" value="Attendance &amp; Hours&#xa;(Log Time-In &amp; Time-Out)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="580" y="380" width="160" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="p_d_out" value="D" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="641" y="475" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pe_3_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_c_in" target="p_deploy" />
+        <mxCell id="pe_3_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_deploy" target="p_supervise" />
+        <mxCell id="pe_3_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_supervise" target="p_att" />
+        <mxCell id="pe_3_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_att" target="p_d_out" />
+
+        <!-- Column 4 (Monitoring: Evaluation) -->
+        <mxCell id="p_d_in" value="D" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="891" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="p_eval" value="Feedback &amp; Evaluation&#xa;(Rate Students &amp; Remarks)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="830" y="210" width="160" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="p_logout" value="Logout (Sign Out)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="830" y="300" width="160" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="p_end" value="End" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=12;fontStyle=1;fontFamily=Arial;" vertex="1" parent="p_1">
+          <mxGeometry x="840" y="380" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pe_4_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_d_in" target="p_eval" />
+        <mxCell id="pe_4_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_eval" target="p_logout" />
+        <mxCell id="pe_4_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="p_1" source="p_logout" target="p_end" />
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- TAB 3: CWTS COORDINATOR PROCESS FLOW -->
+  <diagram id="diag_coordinator" name="3. CWTS Coordinator Process Flow">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="c_0" />
+        <mxCell id="c_1" parent="c_0" />
+
+
+
+        <!-- Column 1 -->
+        <mxCell id="c_start" value="Start" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=12;fontStyle=1;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="90" y="130" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="c_login" value="Login to Portal&#xa;(Coordinator Credentials)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="80" y="205" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_dash" value="Executive Dashboard&#xa;(KPI Stats &amp; Charts)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="80" y="285" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_b_out" value="B" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="141" y="370" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ce_1_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_start" target="c_login" />
+        <mxCell id="ce_1_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_login" target="c_dash" />
+        <mxCell id="ce_1_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_dash" target="c_b_out" />
+
+        <!-- Column 2 -->
+        <mxCell id="c_b_in" value="B" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="391" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="c_users" value="User Management&#xa;(Students &amp; Partners)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="330" y="205" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_cmo" value="CMO Compliance&#xa;(Audit Waivers &amp; Docs)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="330" y="285" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_dec_cmo" value="Are documents&#xa;approved?" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=10;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="330" y="365" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_flag" value="Flag with Remarks&#xa;for Resubmission" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=10;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="345" y="465" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="c_c_out" value="C" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="391" y="540" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ce_2_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_b_in" target="c_users" />
+        <mxCell id="ce_2_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_users" target="c_cmo" />
+        <mxCell id="ce_2_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_cmo" target="c_dec_cmo" />
+        <mxCell id="ce_2_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;fontSize=11;fontStyle=1;" edge="1" parent="c_1" source="c_dec_cmo" target="c_flag" />
+        <mxCell id="ce_2_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;fontSize=11;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="c_1" source="c_dec_cmo" target="c_c_out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="400" />
+              <mxPoint x="510" y="559" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Column 3 -->
+        <mxCell id="c_c_in" value="C" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="641" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="c_reqs" value="Community Requests&#xa;(Review Partner Proposals)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="580" y="205" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_dec_req" value="Is request&#xa;qualified?" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=10;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="580" y="280" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_rej" value="Reject / Request Revision" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=10;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="590" y="375" width="140" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="c_dss" value="DSS Matching Algorithm&#xa;(Proximity &amp; Skills)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="580" y="440" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_deploy_mgmt" value="Deployment Management&#xa;(Finalize &amp; Publish)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="580" y="520" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_d_out" value="D" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="641" y="605" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ce_3_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_c_in" target="c_reqs" />
+        <mxCell id="ce_3_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_reqs" target="c_dec_req" />
+        <mxCell id="ce_3_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;fontSize=11;fontStyle=1;" edge="1" parent="c_1" source="c_dec_req" target="c_rej" />
+        <mxCell id="ce_3_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;fontSize=11;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="c_1" source="c_dec_req" target="c_dss">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="315" />
+              <mxPoint x="760" y="464" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ce_3_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_dss" target="c_deploy_mgmt" />
+        <mxCell id="ce_3_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_deploy_mgmt" target="c_d_out" />
+
+        <!-- Column 4 -->
+        <mxCell id="c_d_in" value="D" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="891" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="c_att_logs" value="Attendance Logs&#xa;(Audit DTR &amp; Site Logs)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="830" y="205" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_rendered" value="Rendered Hours&#xa;(Validate 54-Hr Completion)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="830" y="285" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_eval" value="Feedback &amp; Evaluation&#xa;(Audit 360-Degree Ratings)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="830" y="365" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_rep" value="Report Generation&#xa;(CHED CMO Reports)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="830" y="445" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_logout" value="Logout" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="830" y="525" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="c_end" value="End" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=12;fontStyle=1;fontFamily=Arial;" vertex="1" parent="c_1">
+          <mxGeometry x="840" y="595" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ce_4_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_d_in" target="c_att_logs" />
+        <mxCell id="ce_4_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_att_logs" target="c_rendered" />
+        <mxCell id="ce_4_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_rendered" target="c_eval" />
+        <mxCell id="ce_4_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_eval" target="c_rep" />
+        <mxCell id="ce_4_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_rep" target="c_logout" />
+        <mxCell id="ce_4_6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;" edge="1" parent="c_1" source="c_logout" target="c_end" />
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

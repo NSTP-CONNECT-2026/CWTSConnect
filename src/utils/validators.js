@@ -131,10 +131,11 @@ function validateProfileData(profileData) {
     return { valid: false, message: 'NSTP Component must be either CWTS or LTS.' };
   }
 
-  // Validate contact number
+  // Validate contact number (allow spaces, hyphens, parentheses)
   const contactRegex = /^(\+63|0)[0-9]{10}$/;
-  if (!contactRegex.test(profileData.contact_number.replace(/\s+/g, ''))) {
-    return { valid: false, message: 'Please enter a valid Philippine contact number.' };
+  const cleanContact = profileData.contact_number ? profileData.contact_number.toString().replace(/[\s\-()]/g, '') : '';
+  if (!contactRegex.test(cleanContact)) {
+    return { valid: false, message: 'Please enter a valid Philippine contact number (e.g. 09XXXXXXXXX).' };
   }
 
   // Validate year level
@@ -149,20 +150,63 @@ function validateProfileData(profileData) {
   }
 
   // Validate birthdate if provided
-  if (profileData.birthdate) {
+  if (profileData.birthdate && profileData.birthdate.toString().trim() !== '') {
     const birthDate = new Date(profileData.birthdate);
-    const today = new Date();
-    const age = today.getFullYear() - birthDate.getFullYear();
-    
-    if (age < 15 || age > 100) {
+    if (isNaN(birthDate.getTime())) {
       return { valid: false, message: 'Please enter a valid birthdate.' };
+    }
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    if (age < 15 || age > 100) {
+      return { valid: false, message: 'Please enter a valid birthdate (must be at least 15 years old).' };
     }
   }
 
   // Validate emergency contact number if provided
-  if (profileData.emergency_contact_number) {
-    if (!contactRegex.test(profileData.emergency_contact_number.replace(/\s+/g, ''))) {
-      return { valid: false, message: 'Please enter a valid emergency contact number.' };
+  if (profileData.emergency_contact_number && profileData.emergency_contact_number.toString().trim() !== '') {
+    const cleanEmergency = profileData.emergency_contact_number.toString().replace(/[\s\-()]/g, '');
+    if (!contactRegex.test(cleanEmergency)) {
+      return { valid: false, message: 'Please enter a valid emergency contact number (e.g. 09XXXXXXXXX).' };
+    }
+  }
+
+  // Require coordinates (latitude & longitude or location string)
+  const hasLat = profileData.latitude !== undefined && profileData.latitude !== null && profileData.latitude.toString().trim() !== '';
+  const hasLng = profileData.longitude !== undefined && profileData.longitude !== null && profileData.longitude.toString().trim() !== '';
+  const hasLocation = profileData.location && typeof profileData.location === 'string' && profileData.location.includes(',');
+
+  if ((!hasLat || !hasLng) && !hasLocation) {
+    return { valid: false, message: 'Student location coordinates (latitude and longitude) are required. Please pin your location on the map.' };
+  }
+
+  // Validate coordinates (latitude and longitude or location string)
+  if (hasLat) {
+    const lat = parseFloat(profileData.latitude);
+    if (isNaN(lat) || lat < -90 || lat > 90) {
+      return { valid: false, message: 'Please provide a valid latitude coordinate (-90 to 90).' };
+    }
+  }
+
+  if (hasLng) {
+    const lng = parseFloat(profileData.longitude);
+    if (isNaN(lng) || lng < -180 || lng > 180) {
+      return { valid: false, message: 'Please provide a valid longitude coordinate (-180 to 180).' };
+    }
+  }
+
+  if (hasLocation) {
+    const parts = profileData.location.split(',');
+    if (parts.length !== 2 || isNaN(parts[0].trim()) || isNaN(parts[1].trim())) {
+      return { valid: false, message: 'Location coordinates must be formatted as "latitude,longitude".' };
+    }
+    const parsedLat = parseFloat(parts[0].trim());
+    const parsedLng = parseFloat(parts[1].trim());
+    if (parsedLat < -90 || parsedLat > 90 || parsedLng < -180 || parsedLng > 180) {
+      return { valid: false, message: 'Location coordinates must be valid geographic coordinates.' };
     }
   }
 

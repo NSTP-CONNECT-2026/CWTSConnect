@@ -1,0 +1,382 @@
+====================================================================================================
+                        CWTSCONNECT 2026 (CWTSCONNECT)
+                     PROPOSED FLOW CHART / PROCESS FLOW
+====================================================================================================
+
+Dokumento para sa Thesis / Capstone System Architecture:
+Ito ang opisyal at pinakabagong Process Flow para sa tatlong (3) uri ng users:
+  1. STUDENT PROCESS FLOW (CWTS Student Volunteer)
+  2. COMMUNITY PARTNER PROCESS FLOW (Barangay / NGO Official)
+  3. CWTS COORDINATOR PROCESS FLOW (Administrator / Unit Staff)
+
+Naka-istruktura sa multi-column layout gamit ang On-Page Circular Connectors (B, C, D)
+alinsunod sa standard thesis manuscript format na ipinakita sa reference images.
+
+Batay sa aktuwal na mga modules ng system:
+  STUDENT MODULES:
+    - Main: Dashboard, My Profile, CMO Requirements
+    - Monitoring: Deployment & Monitoring, Feedback & Evaluation
+    * Tandaan: Ang Community Official ang naglo-log ng attendance ng mga estudyante.
+    * Walang make-up duty module ang student.
+
+  COMMUNITY PARTNER MODULES:
+    - Main: Dashboard, Community Requests
+    - Monitoring: Deployment & Monitoring, Attendance & Hours, Feedback & Evaluation
+    * Tandaan: Ang Community Official ang naglo-log ng attendance (Time-In & Time-Out) at nag-e-evaluate ng estudyante.
+
+
+====================================================================================================
+1. STUDENT PROCESS FLOW
+====================================================================================================
+                                            STUDENT
+
+    [ COLUMN 1 ]                     [ COLUMN 2 ]                     [ COLUMN 3 ]                     [ COLUMN 4 ]
+ (Authentication & Setup)       (Profile & Requirements)        (Deployment & Monitoring)        (Evaluation & Completion)
+
+      +-------------+                  +-------------+                  +-------------+                  +-------------+
+      |    Start    |                  |     (B)     |                  |     (C)     |                  |     (D)     |
+      +------+------+                  +------+------+                  +------+------+                  +------+------+
+             |                                |                                |                                |
+             v                                v                                v                                v
+      +-------------+                  +-------------+                  +-------------+                  +-------------+
+      |   Sign Up   |                  |  Dashboard  |                  | Wait for    |                  |  Feedback   |
+      |  (Student   |                  |  (Overview  |                  | DSS Auto-   |                  |     and     |
+      |   Account)  |                  |  & Status)  |                  |  Matching   |                  | Evaluation  |
+      +------+------+                  +------+------+                  +------+------+                  +------+------+
+             |                                |                                |                                |
+             v                                v                                v                                v
+      +-------------+                  +-------------+                  +-------------+                  +-------------+
+      | Verify OTP  |                  | My Profile  |                  | Deployment  |                  | Track Final |
+      |  (Email     |                  | (Info, Map, |                  |     and     |                  | Rendered NOH|
+      | Verification|                  |  & Skills)  |                  | Monitoring  |                  |  (54 Hours) |
+      +------+------+                  +------+------+                  +------+------+                  +------+------+
+             |                                |                                |                                |
+             v                                v                                v                                v
+      +-------------+                  +-------------+                  +-------------+                  +-------------+
+      |    Login    |                  | Upload CMO  |                  |   Attend    |                  |    Edit     |
+      |  (Student   |                  | Requirements|                  |  Community  |                  |   Profile   |
+      | Portal Home)|                  | (Waiver, ID)|                  |  Fieldwork  |                  |  Settings   |
+      +------+------+                  +------+------+                  +------+------+                  +------+------+
+             |                                |                                |                                |
+             v                                v                                v                                v
+      +-------------+                        / \                        +-------------+                  +-------------+
+      |     (B)     |                       /   \                       |  Community  |                  |   Change    |
+      +-------------+                < Are documents >                  |Official Logs|                  |  Password   |
+                                            \approved?/                 | Attendance  |                  +------+------+
+                                             \       /                  +------+------+                         |
+                                              \     /                          |                                v
+                                               \   /                           v                         +-------------+
+                                                \ /                     +-------------+                  |   Logout    |
+                                                 |                      |   Monitor   |                  +------+------+
+                               +-----------------+---------------+      |Rendered Hrs |                         |
+                               |                                 |      |   and Logs  |                         v
+                          [No] |                            [Yes]|      +------+------+                  +-------------+
+                               v                                 v             |                         |     End     |
+                     +-------------------+                 +-----------+       v                         +-------------+
+                     | Re-upload / Update|                 |    (C)    | +-----------+
+                     | Requirements Docs |                 +-----------+ |    (D)    |
+                     +---------+---------+                               +-----------+
+                               |
+                               +----(Loops to Upload)
+
+
+----------------------------------------------------------------------------------------------------
+[STUDENT MERMAID CODE - FOR WORD / DRAW.IO / MERMAID VIEWER]
+----------------------------------------------------------------------------------------------------
+*Paalala: Gumamit ito ng Subgraphs at Column Constraints upang HINDI magkabaligtad ang pagkakaayos
+ng mga column (1 -> 2 -> 3 -> 4) sa Draw.io o Mermaid Live, at may classDef para hindi lumobo ang mga bilog.*
+
+```mermaid
+flowchart TB
+    %% ================= COLUMN 1 =================
+    subgraph Col1 ["1. Authentication & Setup"]
+        direction TB
+        Start([Start]) --> SignUp[Sign Up<br>Student Number & Info]
+        SignUp --> VerifyOTP[Verify Email OTP]
+        VerifyOTP --> Login[Login to Student Portal]
+        Login --> B_out((B))
+    end
+
+    %% ================= COLUMN 2 =================
+    subgraph Col2 ["2. Profile & Requirements"]
+        direction TB
+        B_in((B)) --> Dashboard[Dashboard<br>Status & Announcements]
+        Dashboard --> MyProfile[My Profile<br>Info, Map Location, & Skills]
+        MyProfile --> UploadCMO[CMO Requirements<br>Upload Waiver, Medical, Valid ID]
+        UploadCMO --> DecCMO{Are documents<br>approved by<br>Coordinator?}
+        DecCMO -- No --> ReuploadDocs[Update / Re-upload<br>Required Documents]
+        ReuploadDocs --> UploadCMO
+        DecCMO -- Yes --> C_out((C))
+    end
+
+    %% ================= COLUMN 3 =================
+    subgraph Col3 ["3. Deployment & Monitoring"]
+        direction TB
+        C_in((C)) --> WaitDSS[Wait for DSS<br>Auto-Matching]
+        WaitDSS --> ViewDeploy[Deployment & Monitoring<br>View Site & Schedule]
+        ViewDeploy --> AttendFieldwork[Attend Community<br>Fieldwork Activities]
+        AttendFieldwork --> OfficialLogs[Community Official<br>Logs Attendance<br>Time-In & Time-Out]
+        OfficialLogs --> MonitorHours[Monitor Rendered Hours<br>& Service Logs]
+        MonitorHours --> D_out((D))
+    end
+
+    %% ================= COLUMN 4 =================
+    subgraph Col4 ["4. Evaluation & Completion"]
+        direction TB
+        D_in((D)) --> FeedbackEval[Feedback & Evaluation<br>Rate Site & Supervisor]
+        FeedbackEval --> TrackHours[Track Rendered NOH<br>Confirm 54 Hours Met]
+        TrackHours --> EditProfile[Edit Profile & Settings]
+        EditProfile --> ChangePass[Change Password]
+        ChangePass --> Logout[Logout]
+        Logout --> EndStudent([End])
+    end
+
+    %% FORCE EXACT TOP HORIZONTAL ROW ALIGNMENT ACROSS ALL COLUMNS
+    Start ~~~ B_in
+    B_in ~~~ C_in
+    C_in ~~~ D_in
+
+    %% STRICT LEFT-TO-RIGHT COLUMN ORDER CONSTRAINTS
+    Col1 ~~~ Col2
+    Col2 ~~~ Col3
+    Col3 ~~~ Col4
+
+    %% STYLING TO KEEP CIRCLES AND BOXES CLEAN
+    classDef default fill:#ffffff,stroke:#0f172a,stroke-width:1.5px,font-family:Arial;
+    classDef connector fill:#f8fafc,stroke:#0f172a,stroke-width:1.5px,font-weight:bold;
+    class B_out,B_in,C_out,C_in,D_out,D_in connector;
+```
+
+
+====================================================================================================
+2. COMMUNITY PARTNER PROCESS FLOW
+====================================================================================================
+                                       COMMUNITY PARTNER
+
+    [ COLUMN 1 ]                     [ COLUMN 2 ]                     [ COLUMN 3 ]                     [ COLUMN 4 ]
+ (Authentication & Access)          (Main Modules)               (Monitoring: Deploy & DTR)       (Monitoring: Evaluation)
+
+      +-------------+                  +-------------+                  +-------------+                  +-------------+
+      |    Start    |                  |     (B)     |                  |     (C)     |                  |     (D)     |
+      +------+------+                  +------+------+                  +------+------+                  +------+------+
+             |                                |                                |                                |
+             v                                v                                v                                v
+      +-------------+                  +-------------+                  +-------------+                  +-------------+
+      |   Receive   |                  |  Dashboard  |                  | Deployment  |                  |  Feedback   |
+      |   Official  |                  |  (Metrics & |                  |     and     |                  |     and     |
+      | Credentials |                  |  Overview)  |                  | Monitoring  |                  | Evaluation  |
+      +------+------+                  +------+------+                  | (View Roster|                  | (Rate Stu & |
+             |                                |                         |  & Details) |                  | Commend)    |
+             v                                v                         +------+------+                  +------+------+
+      +-------------+                  +-------------+                         |                                |
+      |    Login    |                  |  Community  |                         v                                v
+      |  (Partner   |                  |  Requests   |                  +-------------+                  +-------------+
+      |   Portal)   |                  | (Create New |                  |  Supervise  |                  |   Logout    |
+      +------+------+                  |  Proposal)  |                  |   On-site   |                  | (Sign Out)  |
+             |                         +------+------+                  | Activities  |                  +------+------+
+             v                                |                         +------+------+                         |
+      +-------------+                         v                                |                                v
+      |     (B)     |                        / \                               v                         +-------------+
+      +-------------+                       /   \                       +-------------+                  |     End     |
+                                     <   Is request  >                  | Attendance  |                  +-------------+
+                                            \approved?/                 |  and Hours  |
+                                             \       /                  | (Log Time-In|
+                                              \     /                   | & Time-Out) |
+                                               \   /                    +------+------+
+                                                \ /                            |
+                                                 |                             v
+                               +-----------------+---------------+      +-------------+
+                               |                                 |      |     (D)     |
+                          [No] |                            [Yes]|      +-------------+
+                               v                                 v
+                     +-------------------+                 +-----------+
+                     |  Revise Request   |                 |    (C)    |
+                     | Details & Resubmit|                 +-----------+
+                     +---------+---------+
+                               |
+                               +----(Loops to Community Requests)
+
+
+----------------------------------------------------------------------------------------------------
+[COMMUNITY PARTNER MERMAID CODE - FOR WORD / DRAW.IO / MERMAID VIEWER]
+----------------------------------------------------------------------------------------------------
+```mermaid
+flowchart TB
+    %% ================= COLUMN 1 =================
+    subgraph Col1 ["1. Authentication & Access"]
+        direction TB
+        StartPartner([Start]) --> RecCredentials[Receive Official<br>Partner Credentials]
+        RecCredentials --> LoginPartner[Login to Partner Portal]
+        LoginPartner --> B_out((B))
+    end
+
+    %% ================= COLUMN 2 =================
+    subgraph Col2 ["2. Main Modules"]
+        direction TB
+        B_in((B)) --> DashboardPartner[Dashboard<br>Metrics, Projects & Overview]
+        DashboardPartner --> CommunityRequests[Community Requests<br>Create & Submit Project Request]
+        CommunityRequests --> DecReqApproval{Is request<br>approved by<br>Coordinator?}
+        DecReqApproval -- No --> ReviseReq[Revise Request Details<br>& Resubmit]
+        ReviseReq --> CommunityRequests
+        DecReqApproval -- Yes --> C_out((C))
+    end
+
+    %% ================= COLUMN 3 =================
+    subgraph Col3 ["3. Monitoring: Deploy & Attendance"]
+        direction TB
+        C_in((C)) --> DeployMonitoring[Deployment & Monitoring<br>View Matched Student Roster]
+        DeployMonitoring --> SuperviseFieldwork[Supervise On-site<br>Volunteer Activities]
+        SuperviseFieldwork --> LogAttendance[Attendance & Hours<br>Log Student Time-In & Time-Out]
+        LogAttendance --> D_out((D))
+    end
+
+    %% ================= COLUMN 4 =================
+    subgraph Col4 ["4. Monitoring: Evaluation & Completion"]
+        direction TB
+        D_in((D)) --> FeedbackEval[Feedback & Evaluation<br>Evaluate Student Performance & Remarks]
+        FeedbackEval --> LogoutPartner[Logout / Sign Out]
+        LogoutPartner --> EndPartner([End])
+    end
+
+    %% FORCE EXACT TOP HORIZONTAL ROW ALIGNMENT ACROSS ALL COLUMNS
+    StartPartner ~~~ B_in
+    B_in ~~~ C_in
+    C_in ~~~ D_in
+
+    %% STRICT LEFT-TO-RIGHT COLUMN ORDER CONSTRAINTS
+    Col1 ~~~ Col2
+    Col2 ~~~ Col3
+    Col3 ~~~ Col4
+
+    %% STYLING TO KEEP CIRCLES AND BOXES CLEAN
+    classDef default fill:#ffffff,stroke:#0f172a,stroke-width:1.5px,font-family:Arial;
+    classDef connector fill:#f8fafc,stroke:#0f172a,stroke-width:1.5px,font-weight:bold;
+    class B_out,B_in,C_out,C_in,D_out,D_in connector;
+```
+
+
+====================================================================================================
+3. CWTS COORDINATOR PROCESS FLOW
+====================================================================================================
+                                     CWTS COORDINATOR
+
+    [ COLUMN 1 ]                     [ COLUMN 2 ]                     [ COLUMN 3 ]                     [ COLUMN 4 ]
+ (Authentication & Overview)     (User & CMO Compliance)          (Requests & DSS Deployment)      (Audit, Reports & Wrap-up)
+
+      +-------------+                  +-------------+                  +-------------+                  +-------------+
+      |    Start    |                  |     (B)     |                  |     (C)     |                  |     (D)     |
+      +------+------+                  +------+------+                  +------+------+                  +------+------+
+             |                                |                                |                                |
+             v                                v                                v                                v
+      +-------------+                  +-------------+                  +-------------+                  +-------------+
+      |    Login    |                  |    User     |                  |  Community  |                  | Attendance  |
+      | (Coordinator|                  | Management  |                  |  Requests   |                  |    Logs     |
+      |   Account)  |                  | (Stu/Partn) |                  | (Review/App)|                  | (Audit DTR) |
+      +------+------+                  +------+------+                  +------+------+                  +------+------+
+             |                                |                                |                                |
+             v                                v                                v                                v
+      +-------------+                  +-------------+                         / \                       +-------------+
+      |    Main     |                  |     CMO     |                        /   \                      |  Rendered   |
+      |  Dashboard  |                  | Compliance  |                 <   Is request  >                 |    Hours    |
+      | (KPI Stats) |                  | (Audit Docs)|                        \qualified?/               | (Validation)|
+      +------+------+                  +------+------+                         \       /                 +------+------+
+             |                                |                                 \     /                         |
+             v                                v                                  \   /                          v
+      +-------------+                        / \                                  \ /                    +-------------+
+      |     (B)     |                       /   \                                  |                     |  Feedback   |
+      +-------------+                <  Are documents  >         +-----------------+---------------+     |     and     |
+                                            \approved?/          |                                 |     | Evaluation  |
+                                             \       /      [No] |                            [Yes]|     +------+------+
+                                              \     /            v                                 v            |
+                                               \   /       +-----------+                     +-----------+      v
+                                                \ /        | Reject or |                     |  Approve  | +-------------+
+                                                 |         | Request   |                     | Project & | | Report Gen. |
+                               +-----------------+         | Revision  |                     |  Slots    | | (CHED CMO)  |
+                               |                           +-----------+                     +-----+-----+ +------+------+
+                          [No] |                            [Yes]                                  |            |
+                               v                                 v                                 v            v
+                     +-------------------+                 +-----------+                     +-----------+ +-------------+
+                     | Flag with Remarks |                 | Mark Stu  |                     |    DSS    | |   Logout    |
+                     | for Resubmission  |                 | Compliant |                     | Matching  | +------+------+
+                     +-------------------+                 +-----+-----+                     | (Execute) |      |
+                                                                 |                           +-----+-----+      v
+                                                                 v                                 |       +-------------+
+                                                           +-----------+                           v       |     End     |
+                                                           |    (C)    |                     +-----------+ +-------------+
+                                                           +-----------+                     |Deployment |
+                                                                                             |Management |
+                                                                                             | (Batches) |
+                                                                                             +-----+-----+
+                                                                                                   |
+                                                                                                   v
+                                                                                             +-----------+
+                                                                                             |    (D)    |
+                                                                                             +-----------+
+
+
+----------------------------------------------------------------------------------------------------
+[CWTS COORDINATOR MERMAID CODE - FOR WORD / DRAW.IO / MERMAID VIEWER]
+----------------------------------------------------------------------------------------------------
+```mermaid
+flowchart TB
+    %% ================= COLUMN 1 =================
+    subgraph Col1 ["1. Authentication & Overview"]
+        direction TB
+        StartCoord([Start]) --> LoginCoord[Login to Coordinator Portal]
+        LoginCoord --> MainDashboard[Dashboard<br>KPI Stats, Charts & Realtime Overview]
+        MainDashboard --> B_out((B))
+    end
+
+    %% ================= COLUMN 2 =================
+    subgraph Col2 ["2. User & CMO Compliance"]
+        direction TB
+        B_in((B)) --> UserMgmt[User Management<br>Students & Community Partners]
+        UserMgmt --> CMOCompliance[CMO Compliance<br>Audit Waivers, Medicals, Valid IDs]
+        CMOCompliance --> DecCMO{Are documents<br>compliant and<br>approved?}
+        DecCMO -- No --> RejectCMO[Flag with Remarks<br>for Resubmission]
+        DecCMO -- Yes --> MarkCompliant[Mark Student Compliant<br>& Eligible for Deployment]
+        MarkCompliant --> C_out((C))
+    end
+
+    %% ================= COLUMN 3 =================
+    subgraph Col3 ["3. Requests & DSS Deployment"]
+        direction TB
+        C_in((C)) --> ReviewRequests[Community Requests<br>Review Partner Proposals]
+        ReviewRequests --> DecReq{Is project<br>request<br>qualified?}
+        DecReq -- No --> ReviseReqCoord[Reject or Request<br>Revisions to Partner]
+        DecReq -- Yes --> ApproveReqCoord[Approve Project &<br>Open Volunteer Slots]
+        ApproveReqCoord --> RunDSSCoord[DSS Matching Algorithm<br>Proximity, Skills & Schedule]
+        RunDSSCoord --> DeploymentMgmt[Deployment Management<br>Finalize & Publish Batches]
+        DeploymentMgmt --> D_out((D))
+    end
+
+    %% ================= COLUMN 4 =================
+    subgraph Col4 ["4. Audit & Report Generation"]
+        direction TB
+        D_in((D)) --> AuditAttendance[Attendance Logs<br>Audit DTR & Site Logs]
+        AuditAttendance --> RenderedHours[Rendered Hours<br>Validate 54-Hr Completion]
+        RenderedHours --> FeedbackEvalCoord[Feedback & Evaluation<br>Audit 360-Degree Ratings]
+        FeedbackEvalCoord --> ReportGen[Report Generation<br>Generate CHED CMO Reports]
+        ReportGen --> LogoutCoord[Logout]
+        LogoutCoord --> EndCoord([End])
+    end
+
+    %% FORCE EXACT TOP HORIZONTAL ROW ALIGNMENT ACROSS ALL COLUMNS
+    StartCoord ~~~ B_in
+    B_in ~~~ C_in
+    C_in ~~~ D_in
+
+    %% STRICT LEFT-TO-RIGHT COLUMN ORDER CONSTRAINTS
+    Col1 ~~~ Col2
+    Col2 ~~~ Col3
+    Col3 ~~~ Col4
+
+    %% STYLING TO KEEP CIRCLES AND BOXES CLEAN
+    classDef default fill:#ffffff,stroke:#0f172a,stroke-width:1.5px,font-family:Arial;
+    classDef connector fill:#f8fafc,stroke:#0f172a,stroke-width:1.5px,font-weight:bold;
+    class B_out,B_in,C_out,C_in,D_out,D_in connector;
+```
+
+====================================================================================================
+                                      END OF DOCUMENT
+====================================================================================================

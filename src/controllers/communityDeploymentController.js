@@ -11,6 +11,9 @@ const supabase = require('../config/supabaseClient');
  */
 async function getCommunityDeployments(req, res) {
   try {
+    const { syncDeploymentStatusesBySchedule } = require('../services/deploymentService');
+    await syncDeploymentStatusesBySchedule();
+
     const userId = req.session?.user?.user_id || req.user?.user_id;
 
     if (!userId) {
@@ -140,6 +143,15 @@ async function getCommunityDeploymentDetails(req, res) {
       .eq('request_id', deployment.request_id)
       .single();
 
+    if (request) {
+      if (!deployment.barangay && request.barangay) deployment.barangay = request.barangay;
+      if (!deployment.community_address && request.community_address) deployment.community_address = request.community_address;
+      if (!deployment.municipality && request.municipality) deployment.municipality = request.municipality;
+      if (!deployment.province && request.province) deployment.province = request.province;
+      if (!deployment.activity_type && request.activity_type) deployment.activity_type = request.activity_type;
+      if (!deployment.activity_title && request.activity_title) deployment.activity_title = request.activity_title;
+    }
+
     // 3. Fetch assigned students
     const { data: assignments, error: assignError } = await supabase
       .from('deployment_students')
@@ -162,7 +174,7 @@ async function getCommunityDeploymentDetails(req, res) {
 
       const { data: users } = await supabase
         .from('users')
-        .select('user_id, email, first_name, last_name, contact_number')
+        .select('user_id, email')
         .in('user_id', studentIds);
 
       const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
@@ -177,44 +189,86 @@ async function getCommunityDeploymentDetails(req, res) {
 
       const hoursMap = new Map((hoursSummary || []).map(h => [h.student_user_id, h]));
 
-      // Fetch attendance session counts
+      // Fetch attendance session counts and today's/latest session
       const { data: attendanceRecords } = await supabase
         .from('attendance_records')
-        .select('student_user_id, attendance_status, hours_rendered')
-        .eq('deployment_id', deploymentId);
+        .select('student_user_id, check_in_time, check_out_time, attendance_status, hours_rendered, attendance_date, student_remarks, verified_at, verified_by, created_at, updated_at')
+        .eq('deployment_id', deploymentId)
+        .order('attendance_date', { ascending: false })
+        .order('updated_at', { ascending: false });
+
+      const formatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Manila' });
+      const todayDate = formatter.format(new Date());
+      const targetDate = (req.query && req.query.date) ? req.query.date : todayDate;
 
       const attendanceStatsMap = new Map();
+      const latestAttMap = new Map();
+
       (attendanceRecords || []).forEach(att => {
-        const current = attendanceStatsMap.get(att.student_user_id) || { present: 0, totalHours: 0 };
+        const current = attendanceStatsMap.get(att.student_user_id) || { present: 0, totalHours: 0, verifiedHours: 0, verifiedCount: 0, unverifiedCount: 0 };
         if (att.attendance_status === 'present') current.present++;
-        current.totalHours += Number(att.hours_rendered || 0);
+
+        let h = Number(att.hours_rendered || 0);
+        if (att.student_remarks) {
+          const match = String(att.student_remarks).match(/\[CREDITED:([0-9.]+)\]/);
+          if (match) {
+            const val = parseFloat(match[1]);
+            if (!isNaN(val)) h = val;
+          }
+        }
+        current.totalHours += h;
+
+        const isAttVerified = Boolean(att.verified_at || att.verified_by || (att.student_remarks && /\[CREDITED:[0-9.]+\]/.test(att.student_remarks)));
+        if (isAttVerified) {
+          current.verifiedHours += h;
+          current.verifiedCount++;
+        } else {
+          current.unverifiedCount++;
+        }
         attendanceStatsMap.set(att.student_user_id, current);
+
+        // Store latest attendance record (prefer target/today record, or active ongoing session)
+        const existing = latestAttMap.get(att.student_user_id);
+        if (!existing) {
+          latestAttMap.set(att.student_user_id, att);
+        } else if (att.attendance_date === targetDate && existing.attendance_date !== targetDate) {
+          latestAttMap.set(att.student_user_id, att);
+        } else if (existing.attendance_date === att.attendance_date && existing.check_out_time && !att.check_out_time) {
+          latestAttMap.set(att.student_user_id, att);
+        }
       });
-
-      // Fetch today attendance session for each student
-      const todayDate = new Date().toISOString().split('T')[0];
-      const { data: todayAttendance } = await supabase
-        .from('attendance_records')
-        .select('student_user_id, check_in_time, check_out_time, attendance_status, hours_rendered, attendance_date')
-        .eq('deployment_id', deploymentId)
-        .eq('attendance_date', todayDate);
-
-      const todayAttMap = new Map((todayAttendance || []).map(t => [t.student_user_id, t]));
 
       students = assignments.map(a => {
         const prof = profileMap.get(a.student_user_id) || {};
         const usr = userMap.get(a.student_user_id) || {};
         const hrs = hoursMap.get(a.student_user_id) || {};
-        const attStats = attendanceStatsMap.get(a.student_user_id) || { present: 0, totalHours: 0 };
-        const todayAtt = todayAttMap.get(a.student_user_id) || null;
+        const attStats = attendanceStatsMap.get(a.student_user_id) || { present: 0, totalHours: 0, verifiedHours: 0, verifiedCount: 0, unverifiedCount: 0 };
+        const todayAtt = latestAttMap.get(a.student_user_id) || null;
 
-        const fullName = prof.first_name && prof.last_name 
-          ? `${prof.first_name} ${prof.last_name}` 
-          : usr.first_name && usr.last_name 
-            ? `${usr.first_name} ${usr.last_name}` 
-            : usr.email || 'Student Volunteer';
+        const fullName = prof.full_name 
+          || (prof.first_name && prof.last_name ? `${prof.first_name} ${prof.last_name}` : null)
+          || (usr.first_name && usr.last_name ? `${usr.first_name} ${usr.last_name}` : null)
+          || usr.email 
+          || 'Student Volunteer';
 
         const totalRendered = Number(hrs.total_hours_rendered || attStats.totalHours || 0);
+        const isSessionLive = Boolean(
+          todayAtt && 
+          todayAtt.check_in_time && 
+          todayAtt.check_in_time !== '---' && 
+          (!todayAtt.check_out_time || todayAtt.check_out_time === '---' || String(todayAtt.check_out_time).toUpperCase() === 'N/A' || String(todayAtt.check_out_time).toUpperCase() === 'N\\A')
+        );
+
+        const isCredited = Boolean(
+          !isSessionLive &&
+          totalRendered > 0 &&
+          (
+            (todayAtt && (todayAtt.verified_at || todayAtt.verified_by || (todayAtt.student_remarks && /\[CREDITED:[0-9.]+\]/.test(todayAtt.student_remarks)))) ||
+            (Number(hrs.total_hours_verified || 0) > 0 && Number(hrs.total_hours_verified || 0) >= totalRendered) ||
+            (attStats.verifiedCount > 0 && attStats.unverifiedCount === 0)
+          )
+        );
+        const creditStatus = isCredited ? 'credited' : 'pending';
 
         return {
           student_user_id: a.student_user_id,
@@ -229,6 +283,10 @@ async function getCommunityDeploymentDetails(req, res) {
           section: prof.section || '---',
           contact_number: prof.contact_number || usr.contact_number || '---',
           hours_rendered: totalRendered,
+          total_hours_rendered: totalRendered,
+          total_hours_verified: Number(hrs.total_hours_verified || attStats.verifiedHours || 0),
+          is_credited: isCredited,
+          credit_status: creditStatus,
           present_days: attStats.present,
           completion_percentage: Math.min(100, Math.round((totalRendered / 90.0) * 100)),
           today_attendance: todayAtt ? {
@@ -236,7 +294,12 @@ async function getCommunityDeploymentDetails(req, res) {
             check_in_time: todayAtt.check_in_time,
             check_out_time: todayAtt.check_out_time,
             attendance_status: todayAtt.attendance_status,
-            hours_rendered: todayAtt.hours_rendered
+            hours_rendered: todayAtt.hours_rendered,
+            verified_at: todayAtt.verified_at,
+            verified_by: todayAtt.verified_by,
+            student_remarks: todayAtt.student_remarks,
+            created_at: todayAtt.created_at,
+            updated_at: todayAtt.updated_at
           } : null
         };
       });
@@ -314,7 +377,7 @@ async function getCommunityAssignedStudents(req, res) {
 
     const { data: users } = await supabase
       .from('users')
-      .select('user_id, email, first_name, last_name, contact_number')
+      .select('user_id, email')
       .in('user_id', studentIds);
 
     const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
@@ -326,11 +389,11 @@ async function getCommunityAssignedStudents(req, res) {
       const usr = userMap.get(a.student_user_id) || {};
       const dep = depMap.get(a.deployment_id) || {};
 
-      const fullName = prof.first_name && prof.last_name 
-        ? `${prof.first_name} ${prof.last_name}` 
-        : usr.first_name && usr.last_name 
-          ? `${usr.first_name} ${usr.last_name}` 
-          : usr.email || 'Student Volunteer';
+      const fullName = prof.full_name 
+        || (prof.first_name && prof.last_name ? `${prof.first_name} ${prof.last_name}` : null)
+        || (usr.first_name && usr.last_name ? `${usr.first_name} ${usr.last_name}` : null)
+        || usr.email 
+        || 'Student Volunteer';
 
       return {
         student_user_id: a.student_user_id,

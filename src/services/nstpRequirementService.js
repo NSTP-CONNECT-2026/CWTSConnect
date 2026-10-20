@@ -57,35 +57,62 @@ async function getAllStudentsWithRequirements(filters = {}) {
       throw new Error('Failed to fetch students: ' + error.message);
     }
 
-    // Get requirement counts for each student
-    const studentsWithCounts = await Promise.all(
-      students.map(async (student) => {
-        const { data: requirements, error: reqError } = await supabase
-          .from('student_cmo_requirements')
-          .select('requirement_id, status, uploaded_at')
-          .eq('user_id', student.user_id);
+    if (!students || students.length === 0) {
+      return [];
+    }
 
-        if (reqError) {
-          console.error('Error fetching requirements for student:', student.user_id, reqError.message);
-          return {
-            ...student,
-            submitted_documents_count: 0,
-            last_submission_date: null
-          };
-        }
+    // Batch fetch all requirements for returned students in a single query (eliminates N+1 latency)
+    const studentIds = students.map(s => s.user_id);
+    const { data: allRequirements, error: reqError } = await supabase
+      .from('student_cmo_requirements')
+      .select('requirement_id, user_id, status, uploaded_at')
+      .in('user_id', studentIds);
 
-        const submittedCount = requirements.filter(req => req.status !== STATUS_TYPES.NOT_SUBMITTED).length;
-        const lastSubmission = requirements.length > 0 
-          ? Math.max(...requirements.map(req => new Date(req.uploaded_at).getTime()))
-          : null;
+    if (reqError) {
+      console.error('Error batch fetching requirements:', reqError.message);
+    }
 
-        return {
-          ...student,
-          submitted_documents_count: submittedCount,
-          last_submission_date: lastSubmission ? new Date(lastSubmission).toISOString() : null
-        };
-      })
-    );
+    const reqsByUser = new Map();
+    (allRequirements || []).forEach(req => {
+      if (!reqsByUser.has(req.user_id)) {
+        reqsByUser.set(req.user_id, []);
+      }
+      reqsByUser.get(req.user_id).push(req);
+    });
+
+    // Map requirement counts in memory
+    const studentsWithCounts = students.map((student) => {
+      const reqs = reqsByUser.get(student.user_id) || [];
+      const approvedCount = reqs.filter(req => req.status === STATUS_TYPES.APPROVED).length;
+      const pendingCount = reqs.filter(req => req.status === STATUS_TYPES.PENDING).length;
+      const rejectedCount = reqs.filter(req => req.status === STATUS_TYPES.REJECTED).length;
+      const submittedCount = reqs.filter(req => req.status && req.status !== STATUS_TYPES.NOT_SUBMITTED).length;
+      const lastSubmission = reqs.length > 0 
+        ? Math.max(...reqs.map(req => new Date(req.uploaded_at).getTime()))
+        : null;
+
+      let profileData = {};
+      if (Array.isArray(student.student_profiles)) {
+        profileData = student.student_profiles[0] || {};
+      } else if (student.student_profiles && typeof student.student_profiles === 'object') {
+        profileData = student.student_profiles;
+      }
+
+      const computedStatus = student.cmo_compliance_status || (approvedCount === 4 ? 'compliant' : (pendingCount > 0 ? 'pending_review' : 'incomplete'));
+
+      return {
+        ...student,
+        student_id: student.user_id,
+        profile: profileData,
+        compliance_status: computedStatus,
+        approved_count: approvedCount,
+        pending_count: pendingCount,
+        rejected_count: rejectedCount,
+        submitted_documents_count: submittedCount,
+        total_required: 4,
+        last_submission_date: lastSubmission ? new Date(lastSubmission).toISOString() : null
+      };
+    });
 
     return studentsWithCounts;
   } catch (error) {
@@ -249,6 +276,25 @@ async function reviewRequirement(requirementId, reviewerId, status, remarks = nu
     // Update overall compliance status for the student
     await updateStudentComplianceStatus(currentReq.user_id);
 
+    // Notify student about requirement review outcome
+    try {
+      const notificationService = require('./notificationService');
+      const isApproved = status === STATUS_TYPES.APPROVED;
+      const formattedType = (currentReq.requirement_type || 'requirement').replace(/_/g, ' ');
+      await notificationService.createNotification({
+        user_id: currentReq.user_id,
+        notification_type: isApproved ? 'requirement_approved' : 'requirement_rejected',
+        title: isApproved ? 'Requirement Verified' : 'Requirement Needs Attention',
+        message: isApproved
+          ? `Your CMO requirement (${formattedType}) has been verified and approved by the NSTP Coordinator.`
+          : `Your submitted CMO requirement (${formattedType}) was rejected. Remarks: ${remarks || 'Please re-upload valid document.'}`,
+        action_url: 'cmo-requirements.html',
+        action_label: 'View Requirements'
+      });
+    } catch (notifErr) {
+      console.warn('Failed to send requirement notification:', notifErr.message);
+    }
+
     return updatedReq;
   } catch (error) {
     throw new Error('Review service error: ' + error.message);
@@ -287,14 +333,31 @@ async function getComplianceSummaryStats() {
     const { data: students, error } = await supabase
       .from('users')
       .select('user_id, cmo_compliance_status')
-      .eq('role', 'student')
-      .not('cmo_compliance_status', 'is', null);
+      .eq('role', 'student');
 
     if (error) {
       throw new Error('Failed to fetch compliance data: ' + error.message);
     }
 
-    return getComplianceSummary(students);
+    const allStudents = students || [];
+    const totalStudents = allStudents.length;
+    const compliantCount = allStudents.filter(s => s.cmo_compliance_status === 'compliant').length;
+    const pendingCount = allStudents.filter(s => s.cmo_compliance_status === 'pending_review').length;
+    const nonCompliantCount = allStudents.filter(s => !s.cmo_compliance_status || s.cmo_compliance_status === 'incomplete' || s.cmo_compliance_status === 'non_compliant' || s.cmo_compliance_status === 'rejected').length;
+
+    const summary = getComplianceSummary(allStudents);
+
+    return {
+      ...summary,
+      total_students: totalStudents,
+      compliant_students: compliantCount,
+      pending_review: pendingCount,
+      non_compliant_students: nonCompliantCount,
+      totalStudentsWithSubmissions: totalStudents - nonCompliantCount,
+      compliantStudents: compliantCount,
+      pendingReview: pendingCount,
+      incompleteSubmissions: nonCompliantCount
+    };
   } catch (error) {
     throw new Error('Summary service error: ' + error.message);
   }
@@ -335,16 +398,22 @@ async function getRequirementFileUrl(requirementId, requesterId) {
       throw new Error('Access denied to this file');
     }
 
-    // Generate signed URL for file access
-    const { data: signedUrl, error: urlError } = await supabase.storage
-      .from('student-cmo-requirements')
-      .createSignedUrl(requirement.file_path, 3600); // 1 hour expiry
+    // If requirement already has a full HTTP/HTTPS URL (e.g. from Cloudinary or public storage), use it directly
+    let fileUrl = requirement.file_url;
 
-    if (urlError) {
-      console.error('Supabase Storage Error:', urlError);
-      console.error('File Path:', requirement.file_path);
-      console.error('Bucket:', 'student-cmo-requirements');
-      throw new Error('Failed to generate file URL: ' + urlError.message);
+    if (!fileUrl || !fileUrl.startsWith('http')) {
+      // Generate signed URL for file access from Supabase storage
+      const { data: signedUrl, error: urlError } = await supabase.storage
+        .from('student-cmo-requirements')
+        .createSignedUrl(requirement.file_path, 3600); // 1 hour expiry
+
+      if (urlError) {
+        console.error('Supabase Storage Error:', urlError);
+        console.error('File Path:', requirement.file_path);
+        console.error('Bucket:', 'student-cmo-requirements');
+        throw new Error('Failed to generate file URL: ' + urlError.message);
+      }
+      fileUrl = signedUrl.signedUrl;
     }
 
     return {
@@ -352,7 +421,7 @@ async function getRequirementFileUrl(requirementId, requesterId) {
       file_name: requirement.file_name,
       file_type: requirement.file_type,
       file_size: requirement.file_size,
-      file_url: signedUrl.signedUrl,
+      file_url: fileUrl,
       uploaded_at: requirement.uploaded_at
     };
   } catch (error) {

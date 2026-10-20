@@ -1,0 +1,191 @@
+[
+  {
+    "skill_id": "sk-008",
+    "name": "Community Organizing",
+    "category": "Social Services",
+    "description": "Mobilizing residents, community dialogue facilitation, and stakeholder engagement.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-004",
+    "name": "Computer Literacy",
+    "category": "Information Technology",
+    "description": "Basic computer operation, office software, internet navigation, and digital skills teaching.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-014",
+    "name": "Data Entry",
+    "category": "Administration",
+    "description": "Digitizing handwritten surveys, spreadsheet encoding, tallying, and record validation.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-006",
+    "name": "Documentation",
+    "category": "Administration",
+    "description": "Minutes taking, incident recording, activity reporting, and administrative filing.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-009",
+    "name": "Environmental Awareness",
+    "category": "Environment",
+    "description": "Solid waste segregation advocacy, tree caring, coastal cleanup guidance, and environmental education.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-005",
+    "name": "Event Management",
+    "category": "Management & Leadership",
+    "description": "Logistics preparation, stage and crowd management, registration handling, and event coordination.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-002",
+    "name": "First Aid",
+    "category": "Health & Safety",
+    "description": "Basic emergency first aid, CPR knowledge, vital signs monitoring, and safety assistance.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-010",
+    "name": "Health Education",
+    "category": "Health & Safety",
+    "description": "Handwashing and sanitation campaigns, basic nutrition advocacy, and healthy lifestyle talks.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-003",
+    "name": "Leadership",
+    "category": "Management & Leadership",
+    "description": "Team facilitation, group delegation, youth leadership, and peer mentoring.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-011",
+    "name": "Photography",
+    "category": "Media & Creative",
+    "description": "High-quality activity photo coverage, photo documentation, and project archiving.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-007",
+    "name": "Public Speaking",
+    "category": "Communication",
+    "description": "Program hosting, orientation delivery, community announcements, and seminar presentation.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-013",
+    "name": "Social Media Management",
+    "category": "Media & Creative",
+    "description": "Graphic poster creation, social page posting, announcement drafting, and outreach dissemination.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-015",
+    "name": "Survey Conducting",
+    "category": "Research & Assessment",
+    "description": "House-to-house interview administration, questionnaire distribution, and field data gathering.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "sk-001",
+    "name": "Teaching",
+    "category": "Education",
+    "description": "Tutoring, teaching basic literacy, math, and facilitating educational workshops.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  },
+  {
+    "skill_id": "51daac7e-ee94-4d31-9d58-c3676621d815",
+    "name": "TESTING SKILL 1",
+    "description": "AWDWAKDAWDAWKDKAWD",
+    "category": "General",
+    "is_active": true,
+    "created_at": "2026-09-20T19:11:02.112Z",
+    "updated_at": "2026-09-20T19:11:02.112Z"
+  },
+  {
+    "skill_id": "ea5f3625-429b-4c44-8250-99aa5569b6fa",
+    "name": "TESTING SKILL 2",
+    "description": "afafaefaefsefsefsef",
+    "category": "General",
+    "is_active": true,
+    "created_at": "2026-09-20T19:12:39.027Z",
+    "updated_at": "2026-09-20T19:12:39.027Z"
+  },
+  {
+    "skill_id": "5f63dc29-b054-4ba5-a093-72c195aca0c1",
+    "name": "TESTING SKILL 3",
+    "description": "WALA",
+    "category": "General",
+    "is_active": true,
+    "created_at": "2026-09-20T19:16:58.240Z",
+    "updated_at": "2026-09-20T19:16:58.240Z"
+  },
+  {
+    "skill_id": "bd7f65be-4cc2-46d9-83d7-748ca9eee7ae",
+    "name": "TESTING SKILL 4",
+    "description": "",
+    "category": "General",
+    "is_active": true,
+    "created_at": "2026-09-20T19:18:45.989Z",
+    "updated_at": "2026-09-20T19:18:45.989Z"
+  },
+  {
+    "skill_id": "749ca1c6-5d6b-49b0-852e-f095b3f9ad5c",
+    "name": "TESTING SKILL 5",
+    "description": "",
+    "category": "General",
+    "is_active": true,
+    "created_at": "2026-09-20T19:36:22.399Z",
+    "updated_at": "2026-09-20T19:36:22.399Z"
+  },
+  {
+    "skill_id": "c195a8ed-aecd-46ba-8305-3468dd5f53fb",
+    "name": "TESTING SKILL 6",
+    "description": "sfsfse",
+    "category": "General",
+    "is_active": true,
+    "created_at": "2026-09-20T19:36:32.345Z",
+    "updated_at": "2026-09-20T19:36:32.345Z"
+  },
+  {
+    "skill_id": "sk-012",
+    "name": "Video Editing",
+    "category": "Media & Creative",
+    "description": "Audio-visual production, documentary reel trimming, and recap video creation.",
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-01T08:00:00.000Z"
+  }
+]

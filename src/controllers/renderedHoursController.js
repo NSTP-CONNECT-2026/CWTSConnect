@@ -30,11 +30,19 @@ async function getRenderedHoursSummary(req, res) {
 /**
  * Gets student's hours summary
  * GET /api/student/rendered-hours/:deploymentId
+ * GET /api/rendered-hours/my-hours
  */
 async function getStudentHoursSummary(req, res) {
   try {
-    const { deploymentId } = req.params;
-    const studentId = req.session.user.user_id;
+    const deploymentId = req.params.deploymentId || req.query.deploymentId || req.query.deployment_id;
+    const studentId = req.params.studentId || req.session?.user?.user_id || req.user?.user_id;
+
+    if (!studentId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
 
     const summary = await renderedHoursService.getStudentHoursSummary(deploymentId, studentId);
     
@@ -150,9 +158,9 @@ module.exports = {
   getMyHours: getStudentHoursSummary,
   getStudentHours: async (req, res) => {
     try {
-      const { studentId } = req.params;
+      const studentId = req.params.studentId || req.session?.user?.user_id || req.user?.user_id;
       const summary = await renderedHoursService.getStudentHoursSummaryById(studentId);
-      res.json({ success: true, ...summary });
+      res.json({ success: true, data: summary, ...summary });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
     }

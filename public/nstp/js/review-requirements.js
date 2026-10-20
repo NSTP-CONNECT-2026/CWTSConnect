@@ -38,12 +38,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Standard 4 CMO Types
+  // Standard 4 CMO Types matching backend requirementTypes.js
   const REQUIRED_TYPES = [
-    { key: 'medical_clearance', name: 'Medical Clearance', desc: 'Physician physical fitness assessment per CMO guidelines' },
-    { key: 'parent_consent', name: 'Parent / Guardian Consent', desc: 'Signed consent form for NSTP CWTS community deployment' },
-    { key: 'waiver', name: 'Waiver of Liability', desc: 'Assumption of risk and institutional field activity waiver' },
-    { key: 'valid_id', name: 'Valid Government / School ID', desc: 'Official student ID or government identification copy' }
+    { key: 'medical_certificate', aliases: ['medical_clearance', 'medical_cert'], name: 'Medical Certificate', desc: 'Physician physical fitness assessment per CMO guidelines' },
+    { key: 'notarized_parent_waiver', aliases: ['waiver', 'parent_consent', 'parent_waiver'], name: 'Notarized Parent\'s Waiver', desc: 'Signed and notarized consent and waiver form for NSTP CWTS' },
+    { key: 'validated_student_id', aliases: ['valid_id', 'student_id'], name: 'Validated Student ID', desc: 'Official student ID copy validated for current semester' },
+    { key: 'valid_parent_id', aliases: ['parent_id', 'guardian_id'], name: 'Valid Parent ID', desc: 'Parent or legal guardian official government identification copy' }
   ];
 
   if (!studentId) {
@@ -118,7 +118,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Render 4 requirement cards
     const cardsHtml = REQUIRED_TYPES.map((typeDef, index) => {
-      const reqDoc = reqMap[typeDef.key] || reqMap[typeDef.name.toLowerCase().replace(/[\s/-]+/g, '_')];
+      let reqDoc = reqMap[typeDef.key];
+      if (!reqDoc && typeDef.aliases) {
+        for (const alias of typeDef.aliases) {
+          if (reqMap[alias]) {
+            reqDoc = reqMap[alias];
+            break;
+          }
+        }
+      }
+      if (!reqDoc) {
+        reqDoc = reqMap[typeDef.name.toLowerCase().replace(/[\s/-]+/g, '_')];
+      }
       const status = (reqDoc ? reqDoc.status || reqDoc.verification_status || 'pending' : 'not_submitted').toLowerCase();
 
       if (status === 'approved') approvedCount++;
@@ -165,13 +176,16 @@ document.addEventListener('DOMContentLoaded', function () {
                   </div>
                 </div>
                 ${fileUrl ? `
-                  <a href="${fileUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+                  <button type="button" 
+                          class="btn btn-secondary btn-sm"
+                          onclick="openDocumentViewer('${escapeHtml(fileUrl)}', '${escapeHtml(typeDef.title)}', '${escapeHtml(fileName)}', '${escapeHtml(status)}', '${escapeHtml(submittedAt)}')"
+                          title="Preview document in modal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                     </svg>
                     <span>View File</span>
-                  </a>
+                  </button>
                 ` : ''}
               </div>
 

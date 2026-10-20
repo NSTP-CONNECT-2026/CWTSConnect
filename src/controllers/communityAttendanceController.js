@@ -11,6 +11,9 @@ const supabase = require('../config/supabaseClient');
  */
 async function recordBatchAttendance(req, res) {
   try {
+    const { syncDeploymentStatusesBySchedule } = require('../services/deploymentService');
+    await syncDeploymentStatusesBySchedule();
+
     const userId = req.session?.user?.user_id || req.user?.user_id;
     const { deployment_id, attendance_date, records } = req.body;
 
@@ -25,21 +28,49 @@ async function recordBatchAttendance(req, res) {
       });
     }
 
+    // Enforce rule: Deployment must be active before community official can log attendance
+    const { data: deployment, error: depError } = await supabase
+      .from('deployments')
+      .select('deployment_id, deployment_status, deployment_start_date, deployment_end_date')
+      .eq('deployment_id', deployment_id)
+      .single();
+
+    if (depError || !deployment) {
+      return res.status(404).json({ success: false, message: 'Deployment not found.' });
+    }
+
+    const depStatus = (deployment.deployment_status || '').toLowerCase();
+    if (depStatus !== 'active' && depStatus !== 'ongoing') {
+      return res.status(400).json({
+        success: false,
+        message: `Attendance can only be logged for active deployments. This deployment is currently "${deployment.deployment_status}".`
+      });
+    }
+
     const savedRecords = [];
     const errors = [];
 
     for (const record of records) {
       try {
         const studentUserId = record.student_user_id;
-        const status = record.status || record.attendance_status || 'present';
-        const inTime = record.check_in_time || (status === 'present' ? '08:00:00' : null);
-        const outTime = record.check_out_time || (status === 'present' ? '12:00:00' : null);
-        
+        const inTime = record.check_in_time || null;
+        const outTime = record.check_out_time || null;
+
+        // Auto-calculate hours from Time In and Time Out if not explicitly passed
         let hours = 0;
-        if (status === 'present') {
-          hours = record.hours_rendered !== undefined ? Number(record.hours_rendered) : 4.0;
+        if (record.hours_rendered !== undefined && record.hours_rendered !== null) {
+          hours = Number(record.hours_rendered) || 0;
+        } else if (inTime && outTime) {
+          const parseMins = (t) => {
+            const p = String(t).split(':').map(Number);
+            return (p[0] || 0) * 60 + (p[1] || 0);
+          };
+          const diff = parseMins(outTime) - parseMins(inTime);
+          hours = diff > 0 ? Math.round((diff / 60) * 10) / 10 : 0;
         }
-        const remarks = record.remarks || '';
+
+        const status = record.status || (inTime ? 'present' : (hours > 0 ? 'present' : 'absent'));
+        const remarks = record.remarks || (outTime ? '' : 'Ongoing duty (Time Out: N/A)');
 
         // Upsert attendance record
         const { data: attendanceData, error: attError } = await supabase
@@ -53,8 +84,8 @@ async function recordBatchAttendance(req, res) {
             check_out_time: outTime,
             hours_rendered: hours,
             student_remarks: remarks,
-            verified_by: userId,
-            verified_at: new Date().toISOString(),
+            verified_by: null,
+            verified_at: null,
             updated_at: new Date().toISOString()
           }, {
             onConflict: 'deployment_id,student_user_id,attendance_date'
@@ -63,7 +94,11 @@ async function recordBatchAttendance(req, res) {
           .single();
 
         if (attError) {
-          errors.push(`Student ${studentUserId}: ${attError.message}`);
+          if (attError.message && attError.message.includes('extract(unknown, integer)')) {
+            errors.push('Database function needs update. Please run FIX_ATTENDANCE_HOURS_FUNCTION.sql in Supabase SQL Editor.');
+          } else {
+            errors.push(`Student ${studentUserId}: ${attError.message}`);
+          }
           continue;
         }
 
@@ -75,6 +110,14 @@ async function recordBatchAttendance(req, res) {
       } catch (err) {
         errors.push(`Error processing record: ${err.message}`);
       }
+    }
+
+    if (savedRecords.length === 0 && errors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: errors[0],
+        errors
+      });
     }
 
     res.json({
@@ -164,12 +207,12 @@ async function getCommunityAttendanceHistory(req, res) {
 
     const { data: profiles } = await supabase
       .from('student_profiles')
-      .select('user_id, first_name, last_name, student_number, course, section')
+      .select('user_id, full_name, student_number, course, section')
       .in('user_id', studentIds);
 
     const { data: users } = await supabase
       .from('users')
-      .select('user_id, email, first_name, last_name')
+      .select('user_id, email')
       .in('user_id', studentIds);
 
     const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
@@ -179,14 +222,24 @@ async function getCommunityAttendanceHistory(req, res) {
       const prof = profileMap.get(r.student_user_id) || {};
       const usr = userMap.get(r.student_user_id) || {};
 
-      const fullName = prof.first_name && prof.last_name
-        ? `${prof.first_name} ${prof.last_name}`
-        : usr.first_name && usr.last_name
-          ? `${usr.first_name} ${usr.last_name}`
-          : usr.email || 'Student Volunteer';
+      const fullName = prof.full_name
+        || (prof.first_name && prof.last_name ? `${prof.first_name} ${prof.last_name}` : null)
+        || (usr.first_name && usr.last_name ? `${usr.first_name} ${usr.last_name}` : null)
+        || usr.email
+        || 'Student Volunteer';
+
+      let effectiveHours = Number(r.hours_rendered || 0);
+      if (r.student_remarks) {
+        const match = String(r.student_remarks).match(/\[CREDITED:([0-9.]+)\]/);
+        if (match) {
+          const val = parseFloat(match[1]);
+          if (!isNaN(val)) effectiveHours = val;
+        }
+      }
 
       return {
         ...r,
+        hours_rendered: effectiveHours,
         student_name: fullName,
         student_number: prof.student_number || '---',
         course: prof.course || '---',
@@ -245,12 +298,12 @@ async function getSessionsForVerification(req, res) {
 
     const { data: profiles } = await supabase
       .from('student_profiles')
-      .select('user_id, first_name, last_name, student_number, course, section')
+      .select('user_id, full_name, student_number, course, section')
       .in('user_id', studentIds);
 
     const { data: users } = await supabase
       .from('users')
-      .select('user_id, email, first_name, last_name')
+      .select('user_id, email')
       .in('user_id', studentIds);
 
     const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
@@ -260,14 +313,22 @@ async function getSessionsForVerification(req, res) {
       const prof = profileMap.get(r.student_user_id) || {};
       const usr = userMap.get(r.student_user_id) || {};
 
-      const fullName = prof.first_name && prof.last_name
-        ? `${prof.first_name} ${prof.last_name}`
-        : usr.first_name && usr.last_name
-          ? `${usr.first_name} ${usr.last_name}`
-          : usr.email || 'Student Volunteer';
+      const fullName = prof.full_name
+        || (prof.first_name && prof.last_name ? `${prof.first_name} ${prof.last_name}` : null)
+        || (usr.first_name && usr.last_name ? `${usr.first_name} ${usr.last_name}` : null)
+        || usr.email
+        || 'Student Volunteer';
 
-      // Default calculate hours if not present
+      // Check if custom credited hours were saved in student_remarks
       let hours = Number(r.hours_rendered || 0);
+      if (r.student_remarks) {
+        const match = String(r.student_remarks).match(/\[CREDITED:([0-9.]+)\]/);
+        if (match) {
+          const val = parseFloat(match[1]);
+          if (!isNaN(val)) hours = val;
+        }
+      }
+
       if (hours === 0 && r.check_in_time && r.check_out_time && r.attendance_status === 'present') {
         const [inH, inM] = r.check_in_time.split(':').map(Number);
         const [outH, outM] = r.check_out_time.split(':').map(Number);
@@ -331,17 +392,39 @@ async function verifyAndCreditHours(req, res) {
     const affectedStudents = new Set();
     const deploymentIds = new Set();
 
+    const attIds = records.map(r => r.attendance_id).filter(Boolean);
+    const { data: existingRecords } = await supabase
+      .from('attendance_records')
+      .select('attendance_id, check_in_time, check_out_time')
+      .in('attendance_id', attIds);
+
+    const recMap = new Map((existingRecords || []).map(r => [r.attendance_id, r]));
+
     for (const record of records) {
       const { attendance_id, hours_rendered, remarks } = record;
       if (!attendance_id) continue;
 
-      const hours = Math.max(0, Number(hours_rendered || 0));
+      const existing = recMap.get(attendance_id);
+      let maxHours = 24.0;
+      if (existing && existing.check_in_time && existing.check_out_time) {
+        const inParts = existing.check_in_time.split(':').map(Number);
+        const outParts = existing.check_out_time.split(':').map(Number);
+        if (inParts.length >= 2 && outParts.length >= 2 && !isNaN(inParts[0]) && !isNaN(outParts[0])) {
+          const diffMin = (outParts[0] * 60 + outParts[1]) - (inParts[0] * 60 + inParts[1]);
+          if (diffMin > 0) maxHours = Math.round((diffMin / 60) * 10) / 10;
+        }
+      }
+
+      const hours = Math.min(maxHours, Math.max(0, Number(hours_rendered || 0)));
+      const creditedTag = `[CREDITED:${hours.toFixed(1)}]`;
+      const cleanRemarks = remarks ? String(remarks).replace(/\[CREDITED:[0-9.]+\]\s*/g, '').trim() : 'Verified & credited by Community Official';
+      const finalRemarks = `${creditedTag} ${cleanRemarks}`.trim();
 
       const { data: updatedRecord, error } = await supabase
         .from('attendance_records')
         .update({
           hours_rendered: hours,
-          student_remarks: remarks || undefined,
+          student_remarks: finalRemarks,
           verified_by: userId,
           verified_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
@@ -350,11 +433,20 @@ async function verifyAndCreditHours(req, res) {
         .select()
         .single();
 
-      if (!error && updatedRecord) {
+      if (error) {
+        console.error('verifyAndCreditHours record update error:', error);
+      } else if (updatedRecord) {
         updated.push(updatedRecord);
         affectedStudents.add(updatedRecord.student_user_id);
         deploymentIds.add(updatedRecord.deployment_id);
       }
+    }
+
+    if (updated.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Could not credit service hours. Please ensure valid session records are selected.'
+      });
     }
 
     // Recalculate summary for all affected students
@@ -362,6 +454,25 @@ async function verifyAndCreditHours(req, res) {
       for (const studentId of affectedStudents) {
         await updateStudentHoursSummary(depId, studentId);
       }
+    }
+
+    // Notify affected students that their attendance hours have been verified
+    try {
+      const notificationService = require('../services/notificationService');
+      const firstDepId = Array.from(deploymentIds)[0] || null;
+      for (const studentId of affectedStudents) {
+        await notificationService.createNotification({
+          user_id: studentId,
+          title: 'Attendance Hours Verified',
+          message: 'Your community service attendance hours have been officially verified and credited by the Community Official.',
+          notification_type: 'attendance_verified',
+          related_deployment_id: firstDepId,
+          action_url: 'my-hours.html',
+          action_label: 'View Rendered Hours'
+        });
+      }
+    } catch (notifErr) {
+      console.warn('Attendance verification notification warning:', notifErr.message);
     }
 
     res.json({
@@ -386,28 +497,40 @@ async function updateStudentHoursSummary(deploymentId, studentUserId) {
   try {
     const { data: records } = await supabase
       .from('attendance_records')
-      .select('hours_rendered, attendance_status')
+      .select('hours_rendered, attendance_status, verified_at, student_remarks')
       .eq('deployment_id', deploymentId)
       .eq('student_user_id', studentUserId);
 
     if (!records) return;
 
     let totalRendered = 0;
+    let totalVerified = 0;
     let presentCount = 0;
     let absentCount = 0;
     let lateCount = 0;
     let excusedCount = 0;
 
     records.forEach(r => {
-      totalRendered += Number(r.hours_rendered || 0);
+      let h = Number(r.hours_rendered || 0);
+      if (r.student_remarks) {
+        const match = String(r.student_remarks).match(/\[CREDITED:([0-9.]+)\]/);
+        if (match) {
+          const val = parseFloat(match[1]);
+          if (!isNaN(val)) h = val;
+        }
+      }
+      totalRendered += h;
+      if (r.verified_at) {
+        totalVerified += h;
+      }
       if (r.attendance_status === 'present') presentCount++;
       else if (r.attendance_status === 'absent') absentCount++;
       else if (r.attendance_status === 'late') lateCount++;
       else if (r.attendance_status === 'excused') excusedCount++;
     });
 
-    const completionPct = Math.min(100, Math.round((totalRendered / 90.0) * 100));
-    const completionStatus = totalRendered >= 90.0 ? 'completed' : 'in_progress';
+    const completionPct = Math.min(100, Math.round((totalVerified / 90.0) * 100));
+    const completionStatus = totalVerified >= 90.0 ? 'completed' : 'in_progress';
 
     await supabase
       .from('rendered_hours_summary')
@@ -416,7 +539,8 @@ async function updateStudentHoursSummary(deploymentId, studentUserId) {
         student_user_id: studentUserId,
         total_hours_required: 90.0,
         total_hours_rendered: totalRendered,
-        total_hours_verified: totalRendered,
+        total_hours_verified: totalVerified,
+        total_hours_pending: Math.max(0, totalRendered - totalVerified),
         total_sessions: records.length,
         present_count: presentCount,
         absent_count: absentCount,

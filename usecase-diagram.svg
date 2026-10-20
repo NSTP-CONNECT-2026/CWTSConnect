@@ -1,0 +1,482 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1520" height="980" viewBox="0 0 1520 980" style="background:#ffffff; font-family:'Inter', Arial, sans-serif;">
+  <defs>
+    <!-- Arrowhead markers -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#0f172a" />
+    </marker>
+    <marker id="open-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 1 2 L 8 5 L 1 8" fill="none" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+  </defs>
+
+  <!-- Clean Plain Background -->
+  <rect width="1520" height="980" fill="#ffffff" />
+
+  <!-- ==================== SYSTEM BOUNDARY ==================== -->
+  <rect x="220" y="40" width="1080" height="790" rx="8" fill="#fafafa" stroke="#334155" stroke-width="1.75" />
+  
+  <!-- System Boundary Label -->
+  <rect x="580" y="28" width="360" height="26" rx="4" fill="#ffffff" stroke="#334155" stroke-width="1.5" />
+  <text x="760" y="46" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a" letter-spacing="1">CWTSCONNECT — SYSTEM BOUNDARY</text>
+
+  <!-- ==================== ACTORS (OUTSIDE BOUNDARY) ==================== -->
+
+  <!-- ACTOR 1: STUDENT VOLUNTEER (Top Left) -->
+  <g id="actor_student" transform="translate(100, 185)">
+    <!-- Stick Figure -->
+    <circle cx="0" cy="0" r="15" fill="#ffffff" stroke="#0f172a" stroke-width="2" />
+    <line x1="0" y1="15" x2="0" y2="55" stroke="#0f172a" stroke-width="2" />
+    <line x1="-22" y1="28" x2="22" y2="28" stroke="#0f172a" stroke-width="2" />
+    <line x1="0" y1="55" x2="-18" y2="88" stroke="#0f172a" stroke-width="2" />
+    <line x1="0" y1="55" x2="18" y2="88" stroke="#0f172a" stroke-width="2" />
+    <!-- Label -->
+    <text x="0" y="110" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">Student Volunteer</text>
+    <text x="0" y="125" text-anchor="middle" font-size="10" font-weight="600" fill="#64748b">&lt;&lt;primary actor&gt;&gt;</text>
+  </g>
+
+  <!-- INTERNAL ACTOR 2: DSS MATCHING ENGINE (Mid-Left between actors) -->
+  <g id="actor_dss" transform="translate(20, 415)">
+    <rect x="0" y="0" width="170" height="42" rx="5" fill="#f8fafc" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4,2" />
+    <text x="85" y="17" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">&lt;&lt;internal system&gt;&gt;</text>
+    <text x="85" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">DSS Matching Engine</text>
+  </g>
+
+  <!-- ACTOR 3: COMMUNITY PARTNER (Bottom Left) -->
+  <g id="actor_partner" transform="translate(100, 560)">
+    <!-- Stick Figure -->
+    <circle cx="0" cy="0" r="15" fill="#ffffff" stroke="#0f172a" stroke-width="2" />
+    <line x1="0" y1="15" x2="0" y2="55" stroke="#0f172a" stroke-width="2" />
+    <line x1="-22" y1="28" x2="22" y2="28" stroke="#0f172a" stroke-width="2" />
+    <line x1="0" y1="55" x2="-18" y2="88" stroke="#0f172a" stroke-width="2" />
+    <line x1="0" y1="55" x2="18" y2="88" stroke="#0f172a" stroke-width="2" />
+    <!-- Label -->
+    <text x="0" y="110" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">Community Partner</text>
+    <text x="0" y="125" text-anchor="middle" font-size="10" font-weight="600" fill="#64748b">&lt;&lt;primary actor&gt;&gt;</text>
+  </g>
+
+  <!-- ACTOR 4: CWTS COORDINATOR (Right Side) -->
+  <g id="actor_coordinator" transform="translate(1415, 380)">
+    <!-- Stick Figure -->
+    <circle cx="0" cy="0" r="15" fill="#ffffff" stroke="#0f172a" stroke-width="2" />
+    <line x1="0" y1="15" x2="0" y2="55" stroke="#0f172a" stroke-width="2" />
+    <line x1="-22" y1="28" x2="22" y2="28" stroke="#0f172a" stroke-width="2" />
+    <line x1="0" y1="55" x2="-18" y2="88" stroke="#0f172a" stroke-width="2" />
+    <line x1="0" y1="55" x2="18" y2="88" stroke="#0f172a" stroke-width="2" />
+    <!-- Label -->
+    <text x="0" y="110" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">CWTS Coordinator</text>
+    <text x="0" y="125" text-anchor="middle" font-size="10" font-weight="600" fill="#64748b">&lt;&lt;administrator&gt;&gt;</text>
+  </g>
+
+  <!-- INTERNAL ACTOR 5: NOTIFICATION SERVICE (Right Side, below Coordinator) -->
+  <g id="actor_notif" transform="translate(1335, 620)">
+    <rect x="0" y="0" width="165" height="42" rx="5" fill="#f8fafc" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,2" />
+    <text x="82" y="17" text-anchor="middle" font-size="9" font-weight="700" fill="#64748b">&lt;&lt;internal service&gt;&gt;</text>
+    <text x="82" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Notification Service</text>
+  </g>
+
+
+  <!-- ==================== SMART ASSOCIATION LINES ==================== -->
+  
+  <!-- 1. Student Associations (Origin: 100, 200) -->
+  <g stroke="#334155" stroke-width="1.3">
+    <!-- To uc_signup (350, 95) -->
+    <line x1="120" y1="190" x2="260" y2="95" />
+    <!-- To uc_auth (710, 80) via clear top margin -->
+    <path d="M 115 175 Q 170 55 615 75" fill="none" />
+    <!-- To uc_profile (350, 155) -->
+    <line x1="120" y1="205" x2="260" y2="155" />
+    <!-- To uc_cmo_upload (350, 220) -->
+    <line x1="120" y1="220" x2="260" y2="220" />
+    <!-- To uc_view_match (350, 285) -->
+    <line x1="120" y1="235" x2="260" y2="285" />
+    <!-- To uc_view_site (350, 350) -->
+    <line x1="120" y1="250" x2="260" y2="350" />
+    <!-- To uc_hours (350, 710) via clean left margin -->
+    <path d="M 100 270 Q 140 500 210 710 L 260 710" fill="none" />
+    <!-- To uc_360_eval (710, 650) via middle corridor -->
+    <path d="M 105 260 Q 200 440 380 440 Q 520 440 615 635" fill="none" />
+  </g>
+
+  <!-- 2. Community Partner Associations (Origin: 100, 580) -->
+  <g stroke="#334155" stroke-width="1.3">
+    <!-- To uc_auth (710, 80) via outer left & top margin -->
+    <path d="M 90 550 Q 50 150 200 65 Q 400 55 615 75" fill="none" />
+    <!-- To uc_req_submit (350, 425) -->
+    <line x1="120" y1="565" x2="260" y2="425" />
+    <!-- To uc_org_profile (350, 490) -->
+    <line x1="120" y1="575" x2="260" y2="490" />
+    <!-- To uc_view_roster (350, 555) -->
+    <line x1="120" y1="585" x2="260" y2="555" />
+    <!-- To uc_log_dtr (350, 625) -->
+    <line x1="120" y1="595" x2="260" y2="625" />
+    <!-- To uc_360_eval (710, 650) -->
+    <line x1="120" y1="610" x2="615" y2="650" />
+  </g>
+
+  <!-- 3. Internal DSS Engine (190, 435) -->
+  <g stroke="#16a34a" stroke-width="1.3" stroke-dasharray="3,3">
+    <!-- DSS to uc_dss (710, 430) directly through corridor -->
+    <line x1="190" y1="435" x2="615" y2="430" />
+    <!-- DSS to uc_geo (710, 505) -->
+    <line x1="190" y1="445" x2="620" y2="505" />
+    <!-- DSS to uc_skill_fit (710, 575) -->
+    <path d="M 190 450 Q 420 530 620 575" fill="none" />
+  </g>
+
+  <!-- 4. Notification Service (1335, 640) -->
+  <g stroke="#475569" stroke-width="1.3" stroke-dasharray="3,3">
+    <!-- Notification to uc_notif (1070, 295) via clean right margin -->
+    <path d="M 1335 635 Q 1200 480 1160 305" fill="none" />
+  </g>
+
+  <!-- 5. CWTS Coordinator Associations (Origin: 1415, 410) -->
+  <g stroke="#334155" stroke-width="1.3">
+    <!-- To uc_auth (710, 80) via clear top margin -->
+    <path d="M 1400 370 Q 1250 80 805 75" fill="none" />
+    <!-- To uc_dash (1070, 80) -->
+    <line x1="1395" y1="380" x2="1160" y2="85" />
+    <!-- To uc_user_mgmt (1070, 150) -->
+    <line x1="1395" y1="390" x2="1160" y2="150" />
+    <!-- To uc_cmo_audit (710, 150) -->
+    <line x1="1395" y1="395" x2="800" y2="150" />
+    <!-- To uc_publish_deploy (1070, 220) -->
+    <line x1="1395" y1="400" x2="1165" y2="220" />
+    <!-- To uc_review_req (710, 285) -->
+    <line x1="1395" y1="405" x2="800" y2="285" />
+    <!-- To uc_audit_att (1070, 365) -->
+    <line x1="1395" y1="410" x2="1165" y2="365" />
+    <!-- To uc_dss (710, 430) -->
+    <line x1="1395" y1="415" x2="808" y2="430" />
+    <!-- To uc_val_hours (1070, 440) -->
+    <line x1="1395" y1="420" x2="1165" y2="440" />
+    <!-- To uc_reports (1070, 520) -->
+    <line x1="1395" y1="425" x2="1165" y2="520" />
+    <!-- To uc_audit_eval (710, 725) -->
+    <line x1="1395" y1="435" x2="800" y2="725" />
+    <!-- To uc_sys_config (1070, 670) -->
+    <line x1="1395" y1="445" x2="1165" y2="670" />
+  </g>
+
+
+  <!-- ==================== USE CASE RELATIONSHIPS (INCLUDE & EXTEND) ==================== -->
+
+  <!-- 1. Review CMO -> Flag for Resubmission (<<extend>>) -->
+  <line x1="710" y1="205" x2="710" y2="175" stroke="#0f172a" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#open-arrow)" />
+  <rect x="715" y="185" width="60" height="15" fill="#ffffff" rx="2" />
+  <text x="745" y="196" text-anchor="middle" font-size="9" font-weight="700" fill="#0f172a">&lt;&lt;extend&gt;&gt;</text>
+
+  <!-- 2. Review Request -> Request Revision (<<extend>>) -->
+  <line x1="710" y1="340" x2="710" y2="310" stroke="#0f172a" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#open-arrow)" />
+  <rect x="715" y="320" width="60" height="15" fill="#ffffff" rx="2" />
+  <text x="745" y="331" text-anchor="middle" font-size="9" font-weight="700" fill="#0f172a">&lt;&lt;extend&gt;&gt;</text>
+
+  <!-- 3. DSS Matching -> Compute Geospatial Proximity (<<include>>) -->
+  <line x1="710" y1="455" x2="710" y2="485" stroke="#0f172a" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#open-arrow)" />
+  <rect x="715" y="465" width="62" height="15" fill="#ffffff" rx="2" />
+  <text x="746" y="476" text-anchor="middle" font-size="9" font-weight="700" fill="#0f172a">&lt;&lt;include&gt;&gt;</text>
+
+  <!-- 4. DSS Matching -> Score Skill Fit (<<include>>) -->
+  <path d="M 640 445 Q 565 510 635 565" fill="none" stroke="#0f172a" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#open-arrow)" />
+  <rect x="548" y="500" width="62" height="15" fill="#ffffff" rx="2" />
+  <text x="579" y="511" text-anchor="middle" font-size="9" font-weight="700" fill="#0f172a">&lt;&lt;include&gt;&gt;</text>
+
+  <!-- 5. Publish Deployment -> Send Automated Alerts (<<include>>) -->
+  <line x1="1070" y1="245" x2="1070" y2="275" stroke="#0f172a" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#open-arrow)" />
+  <rect x="1075" y="255" width="62" height="15" fill="#ffffff" rx="2" />
+  <text x="1106" y="266" text-anchor="middle" font-size="9" font-weight="700" fill="#0f172a">&lt;&lt;include&gt;&gt;</text>
+
+  <!-- 6. Generate Reports -> Issue Certificates (<<include>>) -->
+  <line x1="1070" y1="545" x2="1070" y2="575" stroke="#0f172a" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#open-arrow)" />
+  <rect x="1075" y="555" width="62" height="15" fill="#ffffff" rx="2" />
+  <text x="1106" y="566" text-anchor="middle" font-size="9" font-weight="700" fill="#0f172a">&lt;&lt;include&gt;&gt;</text>
+
+  <!-- 7. Log DTR -> Track Rendered Hours (<<include>>) -->
+  <line x1="350" y1="650" x2="350" y2="685" stroke="#0f172a" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#open-arrow)" />
+  <rect x="355" y="662" width="62" height="15" fill="#ffffff" rx="2" />
+  <text x="386" y="673" text-anchor="middle" font-size="9" font-weight="700" fill="#0f172a">&lt;&lt;include&gt;&gt;</text>
+
+
+  <!-- ==================== USE CASES (OVALS & LABELS) ==================== -->
+
+  <!-- COLUMN 1: LEFT USE CASES (X center = 350) -->
+
+  <!-- UC: Sign Up & Verify OTP -->
+  <g id="uc_signup">
+    <ellipse cx="350" cy="95" rx="90" ry="24" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" />
+    <text x="350" y="99" text-anchor="middle" font-size="11" font-weight="700" fill="#1e3a8a">Register &amp; Verify OTP</text>
+  </g>
+
+  <!-- UC: Manage Student Profile & Skills -->
+  <g id="uc_profile">
+    <ellipse cx="350" cy="155" rx="92" ry="24" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5" />
+    <text x="350" y="153" text-anchor="middle" font-size="11" font-weight="700" fill="#312e81">Manage Student Profile</text>
+    <text x="350" y="167" text-anchor="middle" font-size="9.5" fill="#4338ca">(Skills, Map Location)</text>
+  </g>
+
+  <!-- UC: Upload CMO Requirements -->
+  <g id="uc_cmo_upload">
+    <ellipse cx="350" cy="220" rx="92" ry="24" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5" />
+    <text x="350" y="218" text-anchor="middle" font-size="11" font-weight="700" fill="#9a3412">Upload CMO Documents</text>
+    <text x="350" y="232" text-anchor="middle" font-size="9.5" fill="#c2410c">(Waiver, Medical, ID)</text>
+  </g>
+
+  <!-- UC: View Matched Deployment -->
+  <g id="uc_view_match">
+    <ellipse cx="350" cy="285" rx="90" ry="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5" />
+    <text x="350" y="283" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">View Assigned Deployment</text>
+    <text x="350" y="297" text-anchor="middle" font-size="9.5" fill="#15803d">(Auto-Matched Status)</text>
+  </g>
+
+  <!-- UC: View Partner Site & Details -->
+  <g id="uc_view_site">
+    <ellipse cx="350" cy="350" rx="92" ry="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5" />
+    <text x="350" y="348" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">View Fieldwork Site</text>
+    <text x="350" y="362" text-anchor="middle" font-size="9.5" fill="#15803d">&amp; Supervisor Schedule</text>
+  </g>
+
+  <!-- UC: Create Community Request -->
+  <g id="uc_req_submit">
+    <ellipse cx="350" cy="425" rx="92" ry="24" fill="#fefce8" stroke="#ca8a04" stroke-width="1.5" />
+    <text x="350" y="423" text-anchor="middle" font-size="11" font-weight="700" fill="#854d0e">Submit Community Request</text>
+    <text x="350" y="437" text-anchor="middle" font-size="9.5" fill="#a16207">(Skills &amp; Slots Needed)</text>
+  </g>
+
+  <!-- UC: Manage Partner Profile -->
+  <g id="uc_org_profile">
+    <ellipse cx="350" cy="490" rx="90" ry="24" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5" />
+    <text x="350" y="488" text-anchor="middle" font-size="11" font-weight="700" fill="#312e81">Manage Partner Profile</text>
+    <text x="350" y="502" text-anchor="middle" font-size="9.5" fill="#4338ca">(Org Info, Pinned Map)</text>
+  </g>
+
+  <!-- UC: View Volunteer Roster -->
+  <g id="uc_view_roster">
+    <ellipse cx="350" cy="555" rx="92" ry="24" fill="#faf5ff" stroke="#9333ea" stroke-width="1.5" />
+    <text x="350" y="553" text-anchor="middle" font-size="11" font-weight="700" fill="#581c87">View Deployed Roster</text>
+    <text x="350" y="567" text-anchor="middle" font-size="9.5" fill="#7e22ce">(Assigned Volunteers)</text>
+  </g>
+
+  <!-- UC: Log Student DTR Attendance -->
+  <g id="uc_log_dtr">
+    <ellipse cx="350" cy="625" rx="95" ry="25" fill="#faf5ff" stroke="#9333ea" stroke-width="1.5" />
+    <text x="350" y="623" text-anchor="middle" font-size="11" font-weight="700" fill="#581c87">Record DTR Attendance</text>
+    <text x="350" y="637" text-anchor="middle" font-size="9.5" fill="#7e22ce">(Official Time In / Out)</text>
+  </g>
+
+  <!-- UC: Track Rendered Hours (54h) -->
+  <g id="uc_hours">
+    <ellipse cx="350" cy="710" rx="92" ry="24" fill="#faf5ff" stroke="#9333ea" stroke-width="1.5" />
+    <text x="350" y="708" text-anchor="middle" font-size="11" font-weight="700" fill="#581c87">Track Rendered Hours</text>
+    <text x="350" y="722" text-anchor="middle" font-size="9.5" fill="#7e22ce">(54-Hour Target Metric)</text>
+  </g>
+
+
+  <!-- COLUMN 2: CENTER USE CASES (X center = 710) -->
+
+  <!-- UC: Authenticate User (Login) -->
+  <g id="uc_auth">
+    <ellipse cx="710" cy="80" rx="95" ry="25" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" />
+    <text x="710" y="78" text-anchor="middle" font-size="11.5" font-weight="800" fill="#1e3a8a">Authenticate User</text>
+    <text x="710" y="93" text-anchor="middle" font-size="9.5" fill="#1d4ed8">(Role-Based Login)</text>
+  </g>
+
+  <!-- UC: Audit CMO Compliance -->
+  <g id="uc_cmo_audit">
+    <ellipse cx="710" cy="150" rx="92" ry="24" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5" />
+    <text x="710" y="148" text-anchor="middle" font-size="11" font-weight="700" fill="#9a3412">Verify CMO Compliance</text>
+    <text x="710" y="162" text-anchor="middle" font-size="9.5" fill="#c2410c">(Audit Waivers &amp; Docs)</text>
+  </g>
+
+  <!-- UC: Flag for Resubmission (Extend) -->
+  <g id="uc_flag_resub">
+    <ellipse cx="710" cy="225" rx="92" ry="24" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5" stroke-dasharray="3,2" />
+    <text x="710" y="223" text-anchor="middle" font-size="11" font-weight="700" fill="#9a3412">Flag for Resubmission</text>
+    <text x="710" y="237" text-anchor="middle" font-size="9.5" fill="#c2410c">(Remarks on Deficiencies)</text>
+  </g>
+
+  <!-- UC: Review Community Proposal -->
+  <g id="uc_review_req">
+    <ellipse cx="710" cy="285" rx="92" ry="24" fill="#fefce8" stroke="#ca8a04" stroke-width="1.5" />
+    <text x="710" y="283" text-anchor="middle" font-size="11" font-weight="700" fill="#854d0e">Review Community Proposal</text>
+    <text x="710" y="297" text-anchor="middle" font-size="9.5" fill="#a16207">(Approve / Qualify)</text>
+  </g>
+
+  <!-- UC: Request Proposal Revision (Extend) -->
+  <g id="uc_req_rev">
+    <ellipse cx="710" cy="355" rx="90" ry="24" fill="#fefce8" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="3,2" />
+    <text x="710" y="353" text-anchor="middle" font-size="11" font-weight="700" fill="#854d0e">Request Proposal Revision</text>
+    <text x="710" y="367" text-anchor="middle" font-size="9.5" fill="#a16207">(Reject or Return)</text>
+  </g>
+
+  <!-- UC: Run DSS Matching Algorithm -->
+  <g id="uc_dss">
+    <ellipse cx="710" cy="430" rx="98" ry="25" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.75" />
+    <text x="710" y="428" text-anchor="middle" font-size="11.5" font-weight="800" fill="#14532d">Run DSS Multi-Factor</text>
+    <text x="710" y="443" text-anchor="middle" font-size="9.5" fill="#15803d">Matching Algorithm</text>
+  </g>
+
+  <!-- UC: Compute Geospatial Proximity (Include) -->
+  <g id="uc_geo">
+    <ellipse cx="710" cy="505" rx="92" ry="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="3,2" />
+    <text x="710" y="503" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">Calculate Proximity Score</text>
+    <text x="710" y="517" text-anchor="middle" font-size="9.5" fill="#15803d">(Haversine Distance)</text>
+  </g>
+
+  <!-- UC: Score Skill Compatibility (Include) -->
+  <g id="uc_skill_fit">
+    <ellipse cx="710" cy="575" rx="92" ry="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="3,2" />
+    <text x="710" y="573" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">Score Skill Fit</text>
+    <text x="710" y="587" text-anchor="middle" font-size="9.5" fill="#15803d">(Competency Compatibility)</text>
+  </g>
+
+  <!-- UC: Submit 360 Feedback & Rating -->
+  <g id="uc_360_eval">
+    <ellipse cx="710" cy="650" rx="100" ry="26" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5" />
+    <text x="710" y="647" text-anchor="middle" font-size="11" font-weight="700" fill="#831843">Submit 360 Feedback</text>
+    <text x="710" y="662" text-anchor="middle" font-size="9.5" fill="#9d174d">&amp; Evaluation Rating</text>
+  </g>
+
+  <!-- UC: Audit Evaluation Ratings -->
+  <g id="uc_audit_eval">
+    <ellipse cx="710" cy="725" rx="92" ry="24" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5" />
+    <text x="710" y="723" text-anchor="middle" font-size="11" font-weight="700" fill="#831843">Audit Evaluation Ratings</text>
+    <text x="710" y="737" text-anchor="middle" font-size="9.5" fill="#9d174d">(Monitor Overall Scores)</text>
+  </g>
+
+
+  <!-- COLUMN 3: RIGHT USE CASES (X center = 1070) -->
+
+  <!-- UC: View Executive Dashboard -->
+  <g id="uc_dash">
+    <ellipse cx="1070" cy="80" rx="92" ry="24" fill="#f8fafc" stroke="#475569" stroke-width="1.5" />
+    <text x="1070" y="78" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Executive Dashboard</text>
+    <text x="1070" y="92" text-anchor="middle" font-size="9.5" fill="#475569">(Real-Time KPI Charts)</text>
+  </g>
+
+  <!-- UC: Manage User Accounts -->
+  <g id="uc_user_mgmt">
+    <ellipse cx="1070" cy="150" rx="90" ry="24" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5" />
+    <text x="1070" y="148" text-anchor="middle" font-size="11" font-weight="700" fill="#312e81">Manage User Accounts</text>
+    <text x="1070" y="162" text-anchor="middle" font-size="9.5" fill="#4338ca">(Students &amp; Partners)</text>
+  </g>
+
+  <!-- UC: Publish Student Deployments -->
+  <g id="uc_publish_deploy">
+    <ellipse cx="1070" cy="220" rx="96" ry="25" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5" />
+    <text x="1070" y="218" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">Finalize &amp; Publish</text>
+    <text x="1070" y="232" text-anchor="middle" font-size="9.5" fill="#15803d">Student Deployments</text>
+  </g>
+
+  <!-- UC: Send Automated Alerts (Include) -->
+  <g id="uc_notif">
+    <ellipse cx="1070" cy="295" rx="92" ry="24" fill="#f8fafc" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,2" />
+    <text x="1070" y="293" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Send Automated Alerts</text>
+    <text x="1070" y="307" text-anchor="middle" font-size="9.5" fill="#475569">(Roster &amp; Status Notice)</text>
+  </g>
+
+  <!-- UC: Audit Attendance & DTR Logs -->
+  <g id="uc_audit_att">
+    <ellipse cx="1070" cy="365" rx="92" ry="24" fill="#faf5ff" stroke="#9333ea" stroke-width="1.5" />
+    <text x="1070" y="363" text-anchor="middle" font-size="11" font-weight="700" fill="#581c87">Audit DTR Logs</text>
+    <text x="1070" y="377" text-anchor="middle" font-size="9.5" fill="#7e22ce">&amp; Attendance Hours</text>
+  </g>
+
+  <!-- UC: Validate 54-Hr Completion -->
+  <g id="uc_val_hours">
+    <ellipse cx="1070" cy="440" rx="92" ry="24" fill="#faf5ff" stroke="#9333ea" stroke-width="1.5" />
+    <text x="1070" y="438" text-anchor="middle" font-size="11" font-weight="700" fill="#581c87">Validate 54-Hour Target</text>
+    <text x="1070" y="452" text-anchor="middle" font-size="9.5" fill="#7e22ce">(Completion Eligibility)</text>
+  </g>
+
+  <!-- UC: Generate CHED CMO Reports -->
+  <g id="uc_reports">
+    <ellipse cx="1070" cy="520" rx="95" ry="25" fill="#f8fafc" stroke="#475569" stroke-width="1.5" />
+    <text x="1070" y="518" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Generate Reports</text>
+    <text x="1070" y="532" text-anchor="middle" font-size="9.5" fill="#475569">(CHED CMO &amp; Masterlist)</text>
+  </g>
+
+  <!-- UC: Issue Certificates of Completion (Include) -->
+  <g id="uc_certs">
+    <ellipse cx="1070" cy="595" rx="95" ry="24" fill="#f8fafc" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,2" />
+    <text x="1070" y="593" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Issue Certificates</text>
+    <text x="1070" y="607" text-anchor="middle" font-size="9.5" fill="#475569">of CWTS Completion</text>
+  </g>
+
+  <!-- UC: Manage System Configuration -->
+  <g id="uc_sys_config">
+    <ellipse cx="1070" cy="670" rx="92" ry="24" fill="#f8fafc" stroke="#475569" stroke-width="1.5" />
+    <text x="1070" y="668" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">System Configuration</text>
+    <text x="1070" y="682" text-anchor="middle" font-size="9.5" fill="#475569">&amp; Skills Taxonomy</text>
+  </g>
+
+
+  <!-- ==================== LEGEND (BOTTOM) ==================== -->
+  <g id="legend_box" transform="translate(220, 850)">
+    <!-- Legend Container -->
+    <rect x="0" y="0" width="1080" height="98" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.25" />
+    <text x="540" y="19" text-anchor="middle" font-size="11" font-weight="800" fill="#334155" letter-spacing="0.5">USE CASE CATEGORY LEGEND</text>
+
+    <!-- Row 1 of Legend Items -->
+    <!-- 1. Authentication -->
+    <g transform="translate(30, 30)">
+      <rect x="0" y="0" width="120" height="24" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2" />
+      <text x="60" y="16" text-anchor="middle" font-size="10" font-weight="700" fill="#1e3a8a">Authentication</text>
+    </g>
+
+    <!-- 2. Profile Management -->
+    <g transform="translate(165, 30)">
+      <rect x="0" y="0" width="130" height="24" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.2" />
+      <text x="65" y="16" text-anchor="middle" font-size="10" font-weight="700" fill="#312e81">Profile &amp; Account</text>
+    </g>
+
+    <!-- 3. CMO Compliance -->
+    <g transform="translate(310, 30)">
+      <rect x="0" y="0" width="130" height="24" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="1.2" />
+      <text x="65" y="16" text-anchor="middle" font-size="10" font-weight="700" fill="#9a3412">CMO Compliance</text>
+    </g>
+
+    <!-- 4. Community Requests -->
+    <g transform="translate(455, 30)">
+      <rect x="0" y="0" width="140" height="24" rx="12" fill="#fefce8" stroke="#ca8a04" stroke-width="1.2" />
+      <text x="70" y="16" text-anchor="middle" font-size="10" font-weight="700" fill="#854d0e">Community Request</text>
+    </g>
+
+    <!-- 5. DSS & Deployment -->
+    <g transform="translate(610, 30)">
+      <rect x="0" y="0" width="140" height="24" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.2" />
+      <text x="70" y="16" text-anchor="middle" font-size="10" font-weight="700" fill="#14532d">DSS &amp; Deployment</text>
+    </g>
+
+    <!-- 6. Attendance & Hours -->
+    <g transform="translate(765, 30)">
+      <rect x="0" y="0" width="140" height="24" rx="12" fill="#faf5ff" stroke="#9333ea" stroke-width="1.2" />
+      <text x="70" y="16" text-anchor="middle" font-size="10" font-weight="700" fill="#581c87">Attendance &amp; Hours</text>
+    </g>
+
+    <!-- 7. Feedback & Evaluation -->
+    <g transform="translate(920, 30)">
+      <rect x="0" y="0" width="130" height="24" rx="12" fill="#fdf2f8" stroke="#db2777" stroke-width="1.2" />
+      <text x="65" y="16" text-anchor="middle" font-size="10" font-weight="700" fill="#831843">360 Evaluation</text>
+    </g>
+
+    <!-- Row 2 of Legend Items -->
+    <!-- 8. Reporting & Admin -->
+    <g transform="translate(240, 63)">
+      <rect x="0" y="0" width="150" height="24" rx="12" fill="#f8fafc" stroke="#475569" stroke-width="1.2" />
+      <text x="75" y="16" text-anchor="middle" font-size="10" font-weight="700" fill="#0f172a">Reports &amp; Admin</text>
+    </g>
+
+    <!-- 9. Include Relationship -->
+    <g transform="translate(425, 63)">
+      <line x1="0" y1="12" x2="40" y2="12" stroke="#0f172a" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#open-arrow)" />
+      <text x="48" y="16" font-size="10" font-weight="700" fill="#0f172a">&lt;&lt;include&gt;&gt; Dependency</text>
+    </g>
+
+    <!-- 10. Extend Relationship -->
+    <g transform="translate(650, 63)">
+      <line x1="0" y1="12" x2="40" y2="12" stroke="#0f172a" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#open-arrow)" />
+      <text x="48" y="16" font-size="10" font-weight="700" fill="#0f172a">&lt;&lt;extend&gt;&gt; Extension</text>
+    </g>
+
+  </g>
+
+</svg>

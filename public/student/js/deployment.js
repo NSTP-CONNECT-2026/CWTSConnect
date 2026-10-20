@@ -166,20 +166,37 @@ async function loadCurrentDeployment(userId) {
         setText('deployActivityTitle', req.activity_title || dep.deployment_batch_name || 'Community CWTS Activity');
         setText('deployBatchName', dep.deployment_batch_name || 'Batch Deployment');
         setText('deployCommunityName', req.community_name || 'Partner Community');
-        setText('deployActivityType', req.activity_type || 'CWTS Community Service');
+
+        // Parse custom activity type if present in special_instructions / notes
+        let activityType = req.activity_type || 'CWTS Community Service';
+        const notes = req.special_instructions || req.notes || '';
+        const customMatch = notes.match(/\[CUSTOM_REQUEST_TYPE:\s*([^\]]+)\]/i);
+        if (customMatch && customMatch[1]) {
+          activityType = customMatch[1].trim();
+        }
+        setText('deployActivityType', activityType);
 
         const locationStr = [req.barangay, req.municipality, req.province].filter(Boolean).join(', ') || 'Assigned Location';
         setText('deployLocation', locationStr);
 
-        const startStr = formatDate(dep.deployment_start_date);
-        const endStr = formatDate(dep.deployment_end_date);
-        setText('deployDateRange', `${startStr} to ${endStr}`);
+        const schedStr = dep.deployment_start_date ? formatDate(dep.deployment_start_date) : 'Scheduled';
+        setText('deployDateRange', schedStr);
+
+        // Schedule / Time
+        const schedVal = req.preferred_schedule || 'Flexible / As Scheduled';
+        setText('deploySchedule', schedVal);
 
         const statusBadge = document.getElementById('deployStatusBadge');
         if (statusBadge) {
           const st = json.data.deployment_student_status || dep.deployment_status || 'active';
           statusBadge.textContent = capitalize(st);
           statusBadge.className = `badge badge-${st === 'active' ? 'active' : st === 'completed' ? 'complete' : 'pending'}`;
+        }
+
+        const studentStatusEl = document.getElementById('deployStudentStatus');
+        if (studentStatusEl) {
+          const studentSt = json.data.deployment_student_status || dep.deployment_status || 'active';
+          studentStatusEl.textContent = capitalize(studentSt) + ' Volunteer';
         }
 
         return;
@@ -229,8 +246,15 @@ async function loadAttendanceData(userId) {
       const todayStr = new Date().toISOString().split('T')[0];
 
       records.forEach(r => {
-        if (r.verification_status === 'verified') verifiedCount++;
-        else if (r.verification_status === 'pending') pendingCount++;
+        const isVerified = Boolean(
+          r.verification_status === 'verified' ||
+          r.verified_at ||
+          r.verified_by ||
+          (r.student_remarks && /\[CREDITED:[0-9.]+\]/i.test(r.student_remarks))
+        );
+
+        if (isVerified) verifiedCount++;
+        else pendingCount++;
 
         // Check if currently checked in today without checkout
         if (r.attendance_date === todayStr && r.check_in_time && !r.check_out_time) {
@@ -261,15 +285,45 @@ async function loadAttendanceData(userId) {
             const dateStr = formatDate(r.attendance_date);
             const inTime = formatTime(r.check_in_time);
             const outTime = formatTime(r.check_out_time);
-            const duration = r.hours_rendered ? `${Number(r.hours_rendered).toFixed(1)} hrs` : (r.check_out_time ? 'Completed' : 'Ongoing');
+
+            // Parse [CREDITED:X.X] in remarks / student_remarks
+            const combinedRemarks = `${r.remarks || ''} ${r.student_remarks || ''}`;
+            const credMatch = combinedRemarks.match(/\[CREDITED:([0-9.]+)\]/i);
+            let durationHours = null;
+            if (credMatch && credMatch[1]) {
+              durationHours = parseFloat(credMatch[1]);
+            } else if (r.hours_rendered != null && !isNaN(parseFloat(r.hours_rendered))) {
+              durationHours = parseFloat(r.hours_rendered);
+            }
+
+            const durationStr = durationHours != null ? `${durationHours.toFixed(1)} hrs` : (r.check_out_time ? 'Completed' : 'Ongoing');
+
+            const isVerified = Boolean(
+              r.verification_status === 'verified' ||
+              r.verified_at ||
+              r.verified_by ||
+              credMatch
+            );
+            const badgeClass = isVerified ? 'badge-complete' : 'badge-pending';
+            const badgeLabel = isVerified ? 'Verified' : 'Pending';
+
+            let cleanRemarks = (r.remarks || r.student_remarks || 'Standard Session')
+              .replace(/\[CREDITED:[0-9.]+\]/gi, '')
+              .trim();
+            if (!cleanRemarks) cleanRemarks = isVerified ? 'Verified by Community Official' : 'Standard Session';
 
             return `
               <tr>
                 <td><strong>${dateStr}</strong></td>
                 <td>${inTime}</td>
                 <td>${outTime}</td>
-                <td><strong>${duration}</strong></td>
-                <td style="color: var(--text-muted); font-size: 0.8125rem;">${escapeHtml(r.remarks || 'Standard Session')}</td>
+                <td><strong>${durationStr}</strong></td>
+                <td>
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                    <span style="color: var(--text-muted); font-size: 0.8125rem;">${escapeHtml(cleanRemarks)}</span>
+                    <span class="badge ${badgeClass}" style="font-size: 0.7rem; padding: 2px 7px;">${badgeLabel}</span>
+                  </div>
+                </td>
               </tr>
             `;
           }).join('');
@@ -433,11 +487,7 @@ function setupCheckInOutActions() {
 async function loadServiceHoursData(userId) {
   const hoursBadge = document.getElementById('hoursCountBadge');
   const hoursBigNumber = document.getElementById('hoursCompletedNumber');
-  const hoursPercentBadge = document.getElementById('hoursPercentBadge');
-  const hoursProgressBarFill = document.getElementById('hoursProgressBarFill');
-  const hoursRemainingText = document.getElementById('hoursRemainingText');
-  const regularHoursVal = document.getElementById('regularHoursVal');
-  const makeupHoursVal = document.getElementById('makeupHoursVal');
+  const totalSessionsVal = document.getElementById('hoursTotalSessions');
   const tableBody = document.getElementById('serviceSessionsBody');
 
   try {
@@ -447,55 +497,56 @@ async function loadServiceHoursData(userId) {
     });
 
     let completedHours = 0;
-    let regularHours = 0;
-    let makeupHours = 0;
+    let totalSessions = 0;
     let sessions = [];
 
     if (res.ok) {
       const json = await res.json();
-      if (json.success) {
-        completedHours = Number(json.data?.total_completed_hours || json.data?.total_hours || 0);
-        regularHours = Number(json.data?.regular_hours || completedHours);
-        makeupHours = Number(json.data?.makeup_hours || 0);
-        sessions = json.data?.sessions || [];
+      if (json.success && json.data) {
+        completedHours = Number(
+          json.data.total_hours_rendered ??
+          json.data.total_hours_verified ??
+          json.data.total_completed_hours ??
+          json.data.total_hours ??
+          0
+        );
+        sessions = json.data.sessions || [];
+        totalSessions = Number(json.data.total_sessions || sessions.length);
       }
     }
 
-    const TARGET = 90.0;
-    const pct = Math.min(100, Math.round((completedHours / TARGET) * 100));
-    const remaining = Math.max(0, TARGET - completedHours);
-
     if (hoursBadge) hoursBadge.textContent = `${completedHours.toFixed(1)}h`;
     if (hoursBigNumber) hoursBigNumber.textContent = completedHours.toFixed(1);
-    if (hoursPercentBadge) hoursPercentBadge.textContent = `${pct}% Completed`;
-    if (hoursProgressBarFill) hoursProgressBarFill.style.width = `${pct}%`;
-    if (hoursRemainingText) {
-      hoursRemainingText.textContent = remaining > 0 
-        ? `${remaining.toFixed(1)} hours remaining to fulfill the 90.0 hours CWTS mandate.`
-        : `Congratulations! You have completed the 90.0 hours CWTS requirement.`;
-    }
-
-    if (regularHoursVal) regularHoursVal.textContent = `${regularHours.toFixed(1)} hrs`;
-    if (makeupHoursVal) makeupHoursVal.textContent = `${makeupHours.toFixed(1)} hrs`;
+    if (totalSessionsVal) totalSessionsVal.textContent = `${totalSessions} ${totalSessions === 1 ? 'Session' : 'Sessions'}`;
 
     if (tableBody) {
       if (sessions.length === 0) {
         tableBody.innerHTML = `
           <tr>
-            <td colspan="3" style="text-align: center; padding: 36px 20px;">
+            <td colspan="4" style="text-align: center; padding: 36px 20px;">
               <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">No Logged Service Sessions</div>
               <div style="font-size: 0.8125rem; color: var(--text-muted);">Hours rendered during community deployment activities will appear here.</div>
             </td>
           </tr>
         `;
       } else {
-        tableBody.innerHTML = sessions.map(s => `
-          <tr>
-            <td><strong>${formatDate(s.date || s.created_at)}</strong></td>
-            <td>${escapeHtml(s.activity_name || s.type || 'Regular Attendance')}</td>
-            <td><strong>${Number(s.hours || 0).toFixed(1)} hrs</strong></td>
-          </tr>
-        `).join('');
+        tableBody.innerHTML = sessions.map(s => {
+          const isVerified = s.is_verified !== false;
+          const badgeClass = isVerified ? 'badge-complete' : 'badge-pending';
+          const badgeLabel = isVerified ? 'Verified' : 'Pending';
+
+          return `
+            <tr>
+              <td><strong>${formatDate(s.date || s.created_at)}</strong></td>
+              <td>
+                <div style="font-weight: 600; color: var(--text-main);">${escapeHtml(s.activity_name || 'Community Service Session')}</div>
+                ${s.remarks ? `<div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">${escapeHtml(s.remarks)}</div>` : ''}
+              </td>
+              <td><strong>${Number(s.hours || 0).toFixed(1)} hrs</strong></td>
+              <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+            </tr>
+          `;
+        }).join('');
       }
     }
 
@@ -653,12 +704,31 @@ function formatDate(dateStr) {
   });
 }
 
-function formatTime(isoStr) {
-  if (!isoStr) return '--:--';
-  return new Date(isoStr).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+function formatTime(timeString) {
+  if (!timeString || timeString === '---' || String(timeString).toUpperCase() === 'N/A' || String(timeString).toUpperCase() === 'N\\A') {
+    return '---';
+  }
+  const trimmed = String(timeString).trim();
+  if (trimmed.includes('T')) {
+    const d = new Date(trimmed);
+    if (!isNaN(d.getTime())) {
+      let h = d.getHours();
+      const m = String(d.getMinutes()).padStart(2, '0');
+      const ap = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      return `${String(h).padStart(2, '0')}:${m} ${ap}`;
+    }
+  }
+  const match = trimmed.match(/^(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?\s*(AM|PM)?$/i);
+  if (!match) return trimmed;
+  let hours = parseInt(match[1], 10);
+  const minutes = String(parseInt(match[2], 10)).padStart(2, '0');
+  const modifier = match[4] ? match[4].toUpperCase() : null;
+  if (modifier === 'PM' && hours < 12) hours += 12;
+  if (modifier === 'AM' && hours === 12) hours = 0;
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  return `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
 }
 
 function escapeHtml(str) {

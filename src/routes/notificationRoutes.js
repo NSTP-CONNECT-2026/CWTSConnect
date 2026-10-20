@@ -5,11 +5,15 @@ const { authenticateToken } = require('../middlewares/authMiddleware');
 const { requireRole } = require('../middlewares/roleMiddleware');
 
 // All authenticated users - manage own notifications
+router.get('/', authenticateToken, notificationController.getMyNotifications);
 router.get('/my-notifications', authenticateToken, notificationController.getMyNotifications);
 router.get('/unread-count', authenticateToken, notificationController.getUnreadCount);
 router.put('/:id/read', authenticateToken, notificationController.markAsRead);
+router.put('/:notificationId/read', authenticateToken, notificationController.markAsRead);
 router.put('/mark-all-read', authenticateToken, notificationController.markAllAsRead);
+router.put('/read-all', authenticateToken, notificationController.markAllAsRead);
 router.delete('/:id', authenticateToken, notificationController.deleteNotification);
+router.delete('/:notificationId', authenticateToken, notificationController.deleteNotification);
 
 // All authenticated users - manage preferences
 router.get('/preferences', authenticateToken, notificationController.getPreferences);

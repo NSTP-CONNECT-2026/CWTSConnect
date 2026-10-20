@@ -15,8 +15,6 @@
 
 .dashboard-card {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
@@ -217,8 +215,6 @@
 
 .quick-card {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-md) var(--space-lg);

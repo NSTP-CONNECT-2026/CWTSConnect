@@ -1,0 +1,54 @@
+<mxfile host="app.diagrams.net" modified="2026-10-12T20:00:00.000Z" agent="Mozilla/5.0" version="21.0.0" type="device">
+  <diagram id="sys_context_diag" name="System Context Diagram">
+    <mxGraphModel dx="1400" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Central Hub -->
+        <mxCell id="hub" value="CWTSCONNECT" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=2.5;strokeColor=#0f172a;fillColor=#1e3a8a;fontSize=16;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="455" y="280" width="190" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- 1. USERS -->
+        <mxCell id="ent_users" value="USERS" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=15;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="460" y="75" width="180" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- 2. NOTIFICATIONS -->
+        <mxCell id="ent_notif" value="NOTIFICATIONS" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=14;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="90" y="150" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- 3. FRONTEND -->
+        <mxCell id="ent_frontend" value="FRONTEND" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=14;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="90" y="480" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- 4. DSS ENGINE -->
+        <mxCell id="ent_dss" value="DSS ENGINE" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=15;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="460" y="580" width="180" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- 5. AUTH -->
+        <mxCell id="ent_auth" value="AUTH" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=14;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="840" y="480" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- 6. ACCOUNTS DB -->
+        <mxCell id="ent_db" value="ACCOUNTS DB" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=14;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="840" y="150" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Edges with Curved Style -->
+        <mxCell id="e_users" value="user actions /&#xa;submissions" style="edgeStyle=straight;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;fontSize=11;fontStyle=2;fontColor=#334155;" edge="1" parent="1" source="ent_users" target="hub" />
+        <mxCell id="e_notif" value="email/alerts" style="edgeStyle=orthogonalEdgeStyle;curved=1;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;fontSize=11;fontStyle=2;fontColor=#334155;" edge="1" parent="1" source="hub" target="ent_notif" />
+        <mxCell id="e_front" value="API requests /&#xa;responses" style="edgeStyle=orthogonalEdgeStyle;curved=1;strokeColor=#334155;strokeWidth=1.5;startArrow=classic;endArrow=classic;fontSize=11;fontStyle=2;fontColor=#334155;" edge="1" parent="1" source="ent_frontend" target="hub" />
+        <mxCell id="e_dss" value="telemetry /&#xa;events" style="edgeStyle=straight;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;fontSize=11;fontStyle=2;fontColor=#334155;" edge="1" parent="1" source="ent_dss" target="hub" />
+        <mxCell id="e_auth" value="auth tokens /&#xa;validation" style="edgeStyle=orthogonalEdgeStyle;curved=1;strokeColor=#334155;strokeWidth=1.5;startArrow=classic;endArrow=classic;fontSize=11;fontStyle=2;fontColor=#334155;" edge="1" parent="1" source="hub" target="ent_auth" />
+        <mxCell id="e_db" value="account read/write" style="edgeStyle=orthogonalEdgeStyle;curved=1;strokeColor=#334155;strokeWidth=1.5;startArrow=classic;endArrow=classic;fontSize=11;fontStyle=2;fontColor=#334155;" edge="1" parent="1" source="hub" target="ent_db" />
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

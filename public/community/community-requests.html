@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../student/css/student-layout.css?v=20" />
-  <link rel="stylesheet" href="css/community-requests.css?v=20" />
+  <link rel="stylesheet" href="css/community-requests.css?v=43" />
 </head>
 <body>
   <div class="dashboard-layout">
@@ -53,17 +53,6 @@
               </svg>
             </span>
             <span>Community Requests</span>
-          </a>
-
-          <a href="create-request.html" class="sidebar-item">
-            <span class="sidebar-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="16"></line>
-                <line x1="8" y1="12" x2="16" y2="12"></line>
-              </svg>
-            </span>
-            <span>Create New Request</span>
           </a>
         </div>
 
@@ -149,94 +138,55 @@
       <!-- Page Content -->
       <main class="content-container">
 
-        <!-- Section 12 Full Page Skeleton Loading Container -->
+        <!-- Page Skeleton Loading Container -->
         <div id="requestsSkeleton" class="page-loading-skeleton">
-          <!-- 4 Stats Skeleton Tiles -->
-          <div class="stats-row">
-            <div class="skeleton-card" style="padding: 16px 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <div class="skeleton skeleton-text" style="width: 90px; height: 12px;"></div>
-                <div class="skeleton skeleton-icon" style="width: 28px; height: 28px; border-radius: 6px;"></div>
-              </div>
-              <div class="skeleton skeleton-title" style="width: 60px; height: 28px;"></div>
-            </div>
-            <div class="skeleton-card" style="padding: 16px 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <div class="skeleton skeleton-text" style="width: 90px; height: 12px;"></div>
-                <div class="skeleton skeleton-icon" style="width: 28px; height: 28px; border-radius: 6px;"></div>
-              </div>
-              <div class="skeleton skeleton-title" style="width: 60px; height: 28px;"></div>
-            </div>
-            <div class="skeleton-card" style="padding: 16px 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <div class="skeleton skeleton-text" style="width: 110px; height: 12px;"></div>
-                <div class="skeleton skeleton-icon" style="width: 28px; height: 28px; border-radius: 6px;"></div>
-              </div>
-              <div class="skeleton skeleton-title" style="width: 60px; height: 28px;"></div>
-            </div>
-            <div class="skeleton-card" style="padding: 16px 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <div class="skeleton skeleton-text" style="width: 120px; height: 12px;"></div>
-                <div class="skeleton skeleton-icon" style="width: 28px; height: 28px; border-radius: 6px;"></div>
-              </div>
-              <div class="skeleton skeleton-title" style="width: 60px; height: 28px;"></div>
-            </div>
-          </div>
-
-          <!-- Toolbar Skeleton -->
-          <div class="skeleton-card" style="padding: 16px 20px; margin-bottom: 24px; flex-direction: row; justify-content: space-between; align-items: center;">
-            <div style="display: flex; gap: 12px; flex: 1;">
-              <div class="skeleton skeleton-input" style="max-width: 280px; height: 38px;"></div>
-              <div class="skeleton skeleton-input" style="max-width: 180px; height: 38px;"></div>
-              <div class="skeleton skeleton-input" style="max-width: 140px; height: 38px;"></div>
-            </div>
-            <div class="skeleton skeleton-btn" style="width: 170px; height: 38px;"></div>
+          <!-- Standalone Search Bar Skeleton -->
+          <div class="skeleton-card" style="padding: 12px 18px; margin-bottom: var(--space-md);">
+            <div class="skeleton skeleton-input" style="width: 100%; height: 40px; border-radius: var(--radius-md);"></div>
           </div>
 
           <!-- Table Skeleton -->
-          <div class="table-card">
+          <div class="table-card" style="margin-bottom: var(--space-xl);">
+            <div class="table-card-toolbar" style="padding: 10px 18px; display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; gap: 8px;">
+                <div class="skeleton skeleton-btn" style="width: 65px; height: 28px; border-radius: var(--radius-sm);"></div>
+                <div class="skeleton skeleton-btn" style="width: 82px; height: 28px; border-radius: var(--radius-sm);"></div>
+                <div class="skeleton skeleton-btn" style="width: 88px; height: 28px; border-radius: var(--radius-sm);"></div>
+                <div class="skeleton skeleton-btn" style="width: 82px; height: 28px; border-radius: var(--radius-sm);"></div>
+              </div>
+              <div>
+                <div class="skeleton skeleton-btn" style="width: 120px; height: 28px; border-radius: var(--radius-sm);"></div>
+              </div>
+            </div>
             <div class="table-responsive">
-              <table class="neu-table">
+              <table class="neu-table" style="pointer-events: none; margin: 0;">
                 <thead>
                   <tr>
-                    <th>Community Request</th>
-                    <th>Request Type</th>
-                    <th>Location</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th style="padding: 13px 18px 13px 22px; width: 13%; min-width: 105px;"><div class="skeleton skeleton-text" style="width: 65px; height: 13px;"></div></th>
+                    <th style="padding: 13px 18px; width: 28%; min-width: 180px;"><div class="skeleton skeleton-text" style="width: 120px; height: 13px;"></div></th>
+                    <th style="padding: 13px 18px; width: 33%; min-width: 230px;"><div class="skeleton skeleton-text" style="width: 140px; height: 13px;"></div></th>
+                    <th style="padding: 13px 18px; width: 16%; min-width: 110px;"><div class="skeleton skeleton-text" style="width: 75px; height: 13px;"></div></th>
+                    <th style="padding: 13px 22px 13px 18px; text-align: center; width: 10%; min-width: 75px;"><div class="skeleton skeleton-text" style="width: 48px; height: 13px; margin: 0 auto;"></div></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><div class="skeleton skeleton-title" style="width: 180px; height: 16px;"></div><div class="skeleton skeleton-text" style="width: 120px; height: 10px; margin-top: 4px;"></div></td>
-                    <td><div class="skeleton skeleton-badge"></div></td>
-                    <td><div class="skeleton skeleton-text" style="width: 140px; height: 14px;"></div></td>
-                    <td><div class="skeleton skeleton-badge"></div></td>
-                    <td><div class="skeleton skeleton-btn" style="width: 80px; height: 30px;"></div></td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 85px; height: 13px;"></div></td>
+                    <td style="padding: 16px 20px;">
+                      <div class="skeleton skeleton-title" style="width: 180px; height: 15px;"></div>
+                    </td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 90px; height: 22px;"></div></td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 85px; height: 22px;"></div></td>
+                    <td style="padding: 16px 20px; text-align: center;"><div class="skeleton skeleton-btn" style="width: 32px; height: 32px; border-radius: var(--radius-sm); margin: 0 auto;"></div></td>
                   </tr>
                   <tr>
-                    <td><div class="skeleton skeleton-title" style="width: 160px; height: 16px;"></div><div class="skeleton skeleton-text" style="width: 100px; height: 10px; margin-top: 4px;"></div></td>
-                    <td><div class="skeleton skeleton-badge"></div></td>
-                    <td><div class="skeleton skeleton-text" style="width: 130px; height: 14px;"></div></td>
-                    <td><div class="skeleton skeleton-text" style="width: 70px; height: 14px;"></div></td>
-                    <td><div class="skeleton skeleton-badge"></div></td>
-                    <td><div class="skeleton skeleton-btn" style="width: 80px; height: 30px;"></div></td>
-                  </tr>
-                  <tr>
-                    <td><div class="skeleton skeleton-title" style="width: 200px; height: 16px;"></div><div class="skeleton skeleton-text" style="width: 140px; height: 10px; margin-top: 4px;"></div></td>
-                    <td><div class="skeleton skeleton-badge"></div></td>
-                    <td><div class="skeleton skeleton-text" style="width: 150px; height: 14px;"></div></td>
-                    <td><div class="skeleton skeleton-text" style="width: 90px; height: 14px;"></div></td>
-                    <td><div class="skeleton skeleton-badge"></div></td>
-                    <td><div class="skeleton skeleton-btn" style="width: 80px; height: 30px;"></div></td>
-                  </tr>
-                  <tr>
-                    <td><div class="skeleton skeleton-title" style="width: 170px; height: 16px;"></div><div class="skeleton skeleton-text" style="width: 110px; height: 10px; margin-top: 4px;"></div></td>
-                    <td><div class="skeleton skeleton-badge"></div></td>
-                    <td><div class="skeleton skeleton-text" style="width: 120px; height: 14px;"></div></td>
-                    <td><div class="skeleton skeleton-text" style="width: 80px; height: 14px;"></div></td>
-                    <td><div class="skeleton skeleton-badge"></div></td>
-                    <td><div class="skeleton skeleton-btn" style="width: 80px; height: 30px;"></div></td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 85px; height: 13px;"></div></td>
+                    <td style="padding: 16px 20px;">
+                      <div class="skeleton skeleton-title" style="width: 160px; height: 15px;"></div>
+                    </td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 80px; height: 22px;"></div></td>
+                    <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 85px; height: 22px;"></div></td>
+                    <td style="padding: 16px 20px; text-align: center;"><div class="skeleton skeleton-btn" style="width: 32px; height: 32px; border-radius: var(--radius-sm); margin: 0 auto;"></div></td>
                   </tr>
                 </tbody>
               </table>
@@ -247,118 +197,63 @@
         <!-- Real Content Container -->
         <div id="requestsContent" class="hidden">
 
-          <!-- 1. Stats Summary Tiles -->
-          <div class="stats-row">
-            <div class="stat-tile">
-              <div class="stat-tile-header">
-                <span class="stat-tile-label">Total Requests</span>
-                <div class="stat-tile-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                  </svg>
-                </div>
-              </div>
-              <div class="stat-tile-value" id="totalRequests">0</div>
-            </div>
-
-            <div class="stat-tile">
-              <div class="stat-tile-header">
-                <span class="stat-tile-label">Pending Review</span>
-                <div class="stat-tile-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                </div>
-              </div>
-              <div class="stat-tile-value" id="pendingRequests">0</div>
-            </div>
-
-            <div class="stat-tile">
-              <div class="stat-tile-header">
-                <span class="stat-tile-label">Approved & Queued</span>
-                <div class="stat-tile-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                  </svg>
-                </div>
-              </div>
-              <div class="stat-tile-value" id="approvedRequests">0</div>
-            </div>
-
-            <div class="stat-tile">
-              <div class="stat-tile-header">
-                <span class="stat-tile-label">Needs Revision / Rejected</span>
-                <div class="stat-tile-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="15" y1="9" x2="9" y2="15"></line>
-                    <line x1="9" y1="9" x2="15" y2="15"></line>
-                  </svg>
-                </div>
-              </div>
-              <div class="stat-tile-value" id="rejectedRequests">0</div>
+          <!-- Standalone Search Bar Card -->
+          <div class="search-card">
+            <div class="search-input-wrap">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="searchInput" class="toolbar-input" placeholder="Search by activity, community, or municipality..." />
             </div>
           </div>
 
-          <!-- 2. Search, Filter & Action Toolbar -->
-          <div class="toolbar-card">
-            <div class="toolbar-left">
-              <div class="search-input-wrap">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                <input type="text" id="searchInput" class="toolbar-input" placeholder="Search by activity, community, or municipality..." />
-              </div>
-
-              <select id="activityTypeFilter" class="toolbar-select">
-                <option value="all">All Activity Types</option>
-                <option value="Tree Planting">Tree Planting & Reforestation</option>
-                <option value="Health & Sanitation">Health, Hygiene & Sanitation</option>
-                <option value="Literacy & Tutoring">Literacy, Tutoring & Education</option>
-                <option value="Disaster Preparedness">Disaster Risk & Preparedness</option>
-                <option value="Elderly & Child Care">Elderly & Child Care Support</option>
-                <option value="Clean-up Drive">Coastal & Clean-up Drive</option>
-                <option value="Community Profiling">Community Survey & Profiling</option>
-                <option value="Livelihood Training">Livelihood & Skills Training</option>
-              </select>
-
-              <select id="statusFilter" class="toolbar-select">
-                <option value="all">All Statuses</option>
-                <option value="pending">Pending Review</option>
-                <option value="approved">Approved & Queued</option>
-                <option value="rejected">Rejected / Needs Revision</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-
-              <button type="button" id="clearFilterBtn" class="btn btn-secondary btn-sm">Clear Filters</button>
-            </div>
-
-            <div class="toolbar-right">
-              <a href="create-request.html" class="btn btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="8" x2="12" y2="16"></line>
-                  <line x1="8" y1="12" x2="16" y2="12"></line>
-                </svg>
-                <span>+ Create New Request</span>
-              </a>
-            </div>
-          </div>
-
-          <!-- 3. Real Data Table Container -->
+          <!-- Community Requests Data Table Card with Integrated Status Filter Buttons -->
           <div id="requestsTableCard" class="table-card">
+            <!-- Table Header Toolbar with Compact Status Filter Buttons & Action Button -->
+            <div class="table-card-toolbar">
+              <!-- Left Side: Status Filter Buttons -->
+              <div class="status-filter-pills" role="tablist" aria-label="Filter requests by status">
+                <button type="button" class="status-pill-btn active" data-status="all" id="btnFilterAll" role="tab" aria-selected="true">
+                  <span class="status-pill-label">All</span>
+                  <span class="status-pill-badge" id="countAll">0</span>
+                </button>
+                <button type="button" class="status-pill-btn" data-status="pending" id="btnFilterPending" role="tab" aria-selected="false">
+                  <span class="status-pill-label">Pending</span>
+                  <span class="status-pill-badge badge-count-pending" id="countPending">0</span>
+                </button>
+                <button type="button" class="status-pill-btn" data-status="approved" id="btnFilterApproved" role="tab" aria-selected="false">
+                  <span class="status-pill-label">Approved</span>
+                  <span class="status-pill-badge badge-count-approved" id="countApproved">0</span>
+                </button>
+                <button type="button" class="status-pill-btn" data-status="rejected" id="btnFilterRejected" role="tab" aria-selected="false">
+                  <span class="status-pill-label">Rejected</span>
+                  <span class="status-pill-badge badge-count-rejected" id="countRejected">0</span>
+                </button>
+              </div>
+
+              <!-- Right Side: + Create Request Action Button -->
+              <div class="table-toolbar-right">
+                <a href="create-request.html" class="table-action-btn primary" id="btnCreateRequest">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                  </svg>
+                  <span>+ Create Request</span>
+                </a>
+              </div>
+            </div>
+
             <div class="table-responsive">
               <table class="neu-table" id="requestsTable">
                 <thead>
                   <tr>
-                    <th>Community Request</th>
-                    <th>Request Type</th>
-                    <th>Location</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th style="width: 13%; min-width: 105px;">Date</th>
+                    <th style="width: 28%; min-width: 180px;">Title</th>
+                    <th style="width: 33%; min-width: 230px;">Type</th>
+                    <th style="width: 16%; min-width: 110px;">Status</th>
+                    <th style="width: 10%; min-width: 75px; text-align: center;">Actions</th>
                   </tr>
                 </thead>
                 <tbody id="requestsTableBody">
@@ -376,7 +271,7 @@
               </div>
               <div class="empty-state-title">No Community Requests Found</div>
               <div class="empty-state-desc">You have not submitted any community requests yet or no requests matched your search filters.</div>
-              <a href="create-request.html" class="btn btn-primary btn-sm">+ File First Request</a>
+              <a href="create-request.html" class="table-action-btn primary" style="margin-top: 12px; display: inline-flex;">+ File First Request</a>
             </div>
           </div>
 
@@ -398,8 +293,27 @@
     </div>
   </div>
 
+  <!-- Neumorphic Confirmation Modal (Strictly neutral edges, no colored borders) -->
+  <div id="confirmModal" class="neu-modal-backdrop" aria-hidden="true">
+    <div class="neu-modal-card" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+      <div class="neu-modal-icon-wrap warning" id="confirmModalIcon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <div class="neu-modal-content">
+        <h3 class="neu-modal-title" id="confirmModalTitle">Cancel Request</h3>
+        <p class="neu-modal-desc" id="confirmModalDesc">Cancel this community request?</p>
+      </div>
+      <div class="neu-modal-actions">
+        <button type="button" class="btn-neu-modal btn-neu-cancel" id="btnConfirmCancel">Keep Request</button>
+        <button type="button" class="btn-neu-modal btn-neu-confirm warning" id="btnConfirmProceed">Cancel Request</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
-  <script src="../student/js/student-layout.js?v=20"></script>
-  <script src="js/community-requests.js?v=20"></script>
+  <script src="../student/js/student-layout.js?v=21"></script>
+  <script src="js/community-requests.js?v=31"></script>
 </body>
 </html>

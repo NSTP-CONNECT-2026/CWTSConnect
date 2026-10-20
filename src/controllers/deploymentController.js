@@ -77,6 +77,7 @@ async function getDeployableRequests(req, res) {
 
 /**
  * Gets DSS recommendations for deployment assignment
+ * GET /api/nstp/deployments/recommendations/:requestId
  * GET /api/nstp/deployments/request/:requestId/recommendations
  */
 async function getDSSRecommendationsForDeployment(req, res) {
@@ -92,13 +93,13 @@ async function getDSSRecommendationsForDeployment(req, res) {
 
     const recommendations = await deploymentService.getDSSRecommendationsForDeployment(requestId);
     
+    // Provide both direct Array in data and wrapped object for maximum compatibility
     res.json({
       success: true,
-      data: {
-        request_id: requestId,
-        total_recommendations: recommendations.length,
-        recommendations: recommendations
-      }
+      data: recommendations,
+      recommendations: recommendations,
+      total_recommendations: recommendations.length,
+      request_id: requestId
     });
   } catch (error) {
     console.error('Get DSS Recommendations Error:', error.message);
@@ -111,17 +112,25 @@ async function getDSSRecommendationsForDeployment(req, res) {
 
 /**
  * Creates a new deployment assignment
+ * POST /api/nstp/deployments
  * POST /api/nstp/deployments/create
  */
 async function createDeployment(req, res) {
   try {
     const deploymentData = req.body;
-    const assignedBy = req.session.user.user_id;
+    const assignedBy = req.session?.user?.user_id || req.user?.user_id;
 
     if (!deploymentData) {
       return res.status(400).json({
         success: false,
         message: 'Deployment data is required'
+      });
+    }
+
+    if (!assignedBy) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized: Session user ID missing'
       });
     }
 
@@ -173,13 +182,14 @@ async function getDeploymentDetails(req, res) {
 
 /**
  * Updates deployment status
+ * PATCH /api/nstp/deployments/:deploymentId/status
  * PUT /api/nstp/deployments/:deploymentId/status
  */
 async function updateDeploymentStatus(req, res) {
   try {
     const { deploymentId } = req.params;
     const { status } = req.body;
-    const updatedBy = req.session.user.user_id;
+    const updatedBy = req.session?.user?.user_id || req.user?.user_id;
 
     if (!deploymentId) {
       return res.status(400).json({
@@ -260,13 +270,17 @@ async function checkStudentActiveDeployment(req, res) {
       });
     }
 
-    const hasActiveDeployment = await deploymentService.checkStudentActiveDeployment(studentId);
+    const targetDate = req.query.targetDate || req.query.date || req.query.deployment_start_date || null;
+    const targetSchedule = req.query.targetSchedule || req.query.schedule || req.query.preferred_schedule || '';
+    const hasActiveDeployment = await deploymentService.checkStudentActiveDeployment(studentId, targetDate, targetSchedule);
     
     res.json({
       success: true,
       data: {
         student_id: studentId,
-        has_active_deployment: hasActiveDeployment
+        has_active_deployment: hasActiveDeployment,
+        target_date: targetDate,
+        target_schedule: targetSchedule
       }
     });
   } catch (error) {

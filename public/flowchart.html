@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CWTSConnect — Official Process Flowcharts (Thesis Edition)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f1f5f9;
+      --bg-card: #ffffff;
+      --border-card: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #0b3d2e;
+      --primary-accent: #15803d;
+      --shape-stroke: #1e293b;
+      --shape-fill: #ffffff;
+      --shape-pill-fill: #f8fafc;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header Bar */
+    .top-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .title-group h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.02em;
+    }
+
+    .title-group p {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .tab-pills {
+      display: flex;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 8px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 8px 16px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    }
+
+    /* Actions Toolbar */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--border-card);
+      background: #ffffff;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .action-btn.primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .action-btn.primary:hover {
+      background: var(--primary-accent);
+      border-color: var(--primary-accent);
+    }
+
+    /* Diagram Canvas Container */
+    .diagram-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    svg.flowchart-svg {
+      display: inline-block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Drawio Code Modal or Helper */
+    .instructions-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+
+    .instructions-card h3 {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .instructions-card ul {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+
+    .instructions-card li {
+      margin-bottom: 4px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="title-group">
+        <h1>CWTSConnect 2026 — Process Flowcharts</h1>
+        <p>Publication-Ready Thesis &amp; Capstone Manuscript Process Diagrams</p>
+      </div>
+
+      <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+        <a href="/usecase.html" class="tab-btn" style="text-decoration:none; display:inline-block; border: 1px solid #cbd5e1; background:#ffffff; color:#0b3d2e;">Use Case Diagram &rarr;</a>
+        <a href="/architecture.html" class="tab-btn" style="text-decoration:none; display:inline-block; border: 1px solid #cbd5e1; background:#ffffff; color:#1e3a8a;">Architecture &amp; DFD &rarr;</a>
+        <a href="/data-dictionary.html" class="tab-btn" style="text-decoration:none; display:inline-block; border: 1px solid #cbd5e1; background:#ffffff; color:#000000;">Data Dictionary &rarr;</a>
+        <div class="tab-pills">
+          <button class="tab-btn active" onclick="switchTab('student', this)">1. Student Volunteer</button>
+          <button class="tab-btn" onclick="switchTab('partner', this)">2. Community Partner</button>
+          <button class="tab-btn" onclick="switchTab('coordinator', this)">3. CWTS Coordinator</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div style="font-size: 0.875rem; font-weight: 600; color: #475569;" id="currentRoleTitle">
+        Displaying: Student Process Flow
+      </div>
+
+      <div class="btn-group">
+        <button class="action-btn primary" onclick="downloadPNG()">Download PNG (High-Res 300 DPI)</button>
+        <button class="action-btn" onclick="downloadSVG()">Download Vector SVG</button>
+        <button class="action-btn" onclick="downloadDrawio()">Download .drawio File</button>
+        <button class="action-btn" onclick="openDrawioFile()">Open in Draw.io Web</button>
+      </div>
+    </div>
+
+    <!-- Diagram Display -->
+    <div class="diagram-card" id="canvasWrap">
+      
+      <!-- ==================== 1. STUDENT FLOWCHART ==================== -->
+      <div id="flow-student">
+        <svg id="svg-student" class="flowchart-svg" width="1040" height="590" viewBox="20 100 1040 590" xmlns="http://www.w3.org/2000/svg" style="background:#ffffff; font-family:'Inter', Arial, sans-serif;">
+
+          <!-- Markers for Arrowheads -->
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 8 5 L 0 9 z" fill="#0f172a" />
+            </marker>
+          </defs>
+
+          <!-- ==================== COLUMN 1 ==================== -->
+          <!-- Start -->
+          <rect x="75" y="130" width="140" height="42" rx="21" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="145" y="156" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Start</text>
+
+          <line x1="145" y1="172" x2="145" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Sign Up -->
+          <rect x="65" y="210" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="145" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Sign Up</text>
+          <text x="145" y="247" text-anchor="middle" font-size="10" fill="#475569">(Student Number &amp; Info)</text>
+
+          <line x1="145" y1="258" x2="145" y2="295" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Verify OTP -->
+          <rect x="65" y="295" width="160" height="45" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="145" y="322" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Verify Email OTP</text>
+
+          <line x1="145" y1="340" x2="145" y2="375" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Login -->
+          <rect x="65" y="375" width="160" height="45" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="145" y="402" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Login to Student Portal</text>
+
+          <line x1="145" y1="420" x2="145" y2="465" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Connector B Out -->
+          <circle cx="145" cy="485" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="145" y="490" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">B</text>
+
+          <!-- ==================== COLUMN 2 ==================== -->
+          <!-- Connector B In -->
+          <circle cx="410" cy="151" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="410" y="156" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">B</text>
+
+          <line x1="410" y1="169" x2="410" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Dashboard -->
+          <rect x="330" y="210" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="410" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Dashboard</text>
+          <text x="410" y="247" text-anchor="middle" font-size="10" fill="#475569">(Status Overview &amp; Alerts)</text>
+
+          <line x1="410" y1="258" x2="410" y2="295" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- My Profile -->
+          <rect x="330" y="295" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="410" y="316" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">My Profile</text>
+          <text x="410" y="332" text-anchor="middle" font-size="10" fill="#475569">(Info, Map Pin &amp; Skills)</text>
+
+          <line x1="410" y1="343" x2="410" y2="380" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- CMO Requirements -->
+          <rect x="330" y="380" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="410" y="401" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">CMO Requirements</text>
+          <text x="410" y="417" text-anchor="middle" font-size="10" fill="#475569">(Upload Waiver, Medical, ID)</text>
+
+          <line x1="410" y1="428" x2="410" y2="465" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Decision Diamond -->
+          <polygon points="410,465 490,505 410,545 330,505" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+          <text x="410" y="499" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0f172a">Are documents</text>
+          <text x="410" y="513" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0f172a">approved?</text>
+
+          <!-- Decision No Path -->
+          <line x1="410" y1="545" x2="410" y2="580" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="418" y="563" font-size="10" font-weight="700" fill="#0f172a">No</text>
+
+          <rect x="335" y="580" width="150" height="40" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="410" y="598" text-anchor="middle" font-size="10" font-weight="600" fill="#0f172a">Update / Re-upload</text>
+          <text x="410" y="612" text-anchor="middle" font-size="9.5" fill="#475569">Required Documents</text>
+
+          <!-- Loop Back Arrow to CMO Requirements -->
+          <path d="M 335 600 L 305 600 L 305 404 L 330 404" fill="none" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Decision Yes Path -->
+          <path d="M 490 505 L 515 505 L 515 658 L 430 658" fill="none" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="495" y="497" font-size="10" font-weight="700" fill="#0f172a">Yes</text>
+
+          <!-- Connector C Out -->
+          <circle cx="410" cy="658" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="410" y="663" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">C</text>
+
+          <!-- ==================== COLUMN 3 ==================== -->
+          <!-- Connector C In -->
+          <circle cx="670" cy="151" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="670" y="156" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">C</text>
+
+          <line x1="670" y1="169" x2="670" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Wait for DSS Matching -->
+          <rect x="590" y="210" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Wait for DSS</text>
+          <text x="670" y="247" text-anchor="middle" font-size="10" fill="#475569">Auto-Matching</text>
+
+          <line x1="670" y1="258" x2="670" y2="295" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Deployment & Monitoring -->
+          <rect x="590" y="295" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="316" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Deployment &amp; Monitoring</text>
+          <text x="670" y="332" text-anchor="middle" font-size="10" fill="#475569">(View Site &amp; Schedule)</text>
+
+          <line x1="670" y1="343" x2="670" y2="380" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Attend Fieldwork Activities -->
+          <rect x="590" y="380" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="401" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Attend Community</text>
+          <text x="670" y="417" text-anchor="middle" font-size="10" fill="#475569">Fieldwork Activities</text>
+
+          <line x1="670" y1="428" x2="670" y2="465" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Official Logs Attendance -->
+          <rect x="590" y="465" width="160" height="52" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="486" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0f172a">Community Official</text>
+          <text x="670" y="500" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0f172a">Logs Attendance</text>
+          <text x="670" y="513" text-anchor="middle" font-size="9" fill="#475569">(Time-In &amp; Time-Out)</text>
+
+          <line x1="670" y1="517" x2="670" y2="550" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Monitor Hours -->
+          <rect x="590" y="550" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="571" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Monitor Rendered Hours</text>
+          <text x="670" y="587" text-anchor="middle" font-size="10" fill="#475569">&amp; Service Logs</text>
+
+          <line x1="670" y1="598" x2="670" y2="640" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Connector D Out -->
+          <circle cx="670" cy="658" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="670" y="663" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">D</text>
+
+          <!-- ==================== COLUMN 4 ==================== -->
+          <!-- Connector D In -->
+          <circle cx="930" cy="151" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="930" y="156" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">D</text>
+
+          <line x1="930" y1="169" x2="930" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Feedback & Evaluation -->
+          <rect x="850" y="210" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Feedback &amp; Evaluation</text>
+          <text x="930" y="247" text-anchor="middle" font-size="10" fill="#475569">(Rate Site &amp; Supervisor)</text>
+
+          <line x1="930" y1="258" x2="930" y2="295" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Track Rendered Hours -->
+          <rect x="850" y="295" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="316" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Track Rendered NOH</text>
+          <text x="930" y="332" text-anchor="middle" font-size="10" fill="#475569">(Confirm 54 Hours Met)</text>
+
+          <line x1="930" y1="343" x2="930" y2="380" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Edit Profile & Settings -->
+          <rect x="850" y="380" width="160" height="45" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="401" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Edit Profile &amp;</text>
+          <text x="930" y="415" text-anchor="middle" font-size="10" fill="#475569">Account Settings</text>
+
+          <line x1="930" y1="425" x2="930" y2="460" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Change Password -->
+          <rect x="850" y="460" width="160" height="40" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="485" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Change Password</text>
+
+          <line x1="930" y1="500" x2="930" y2="535" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Logout -->
+          <rect x="850" y="535" width="160" height="40" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="560" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Logout</text>
+
+          <line x1="930" y1="575" x2="930" y2="615" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- End -->
+          <rect x="860" y="615" width="140" height="42" rx="21" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="930" y="641" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">End</text>
+
+        </svg>
+      </div>
+
+      <!-- ==================== 2. COMMUNITY PARTNER FLOWCHART ==================== -->
+      <div id="flow-partner" class="hidden">
+        <svg id="svg-partner" class="flowchart-svg" width="1040" height="540" viewBox="20 100 1040 540" xmlns="http://www.w3.org/2000/svg" style="background:#ffffff; font-family:'Inter', Arial, sans-serif;">
+
+          <!-- Column 1 -->
+          <rect x="75" y="130" width="140" height="42" rx="21" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="145" y="156" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Start</text>
+
+          <line x1="145" y1="172" x2="145" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="65" y="210" width="160" height="52" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="145" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Receive Official</text>
+          <text x="145" y="247" text-anchor="middle" font-size="10" fill="#475569">Credentials from CWTS</text>
+
+          <line x1="145" y1="262" x2="145" y2="305" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="65" y="305" width="160" height="45" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="145" y="332" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Login to Partner Portal</text>
+
+          <line x1="145" y1="350" x2="145" y2="400" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <circle cx="145" cy="420" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="145" y="425" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">B</text>
+
+          <!-- Column 2 (Main: Dashboard & Community Requests) -->
+          <circle cx="410" cy="151" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="410" y="156" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">B</text>
+
+          <line x1="410" y1="169" x2="410" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="330" y="210" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="410" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Dashboard</text>
+          <text x="410" y="247" text-anchor="middle" font-size="10" fill="#475569">(Metrics &amp; Overview)</text>
+
+          <line x1="410" y1="258" x2="410" y2="295" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="330" y="295" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="410" y="316" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Community Requests</text>
+          <text x="410" y="332" text-anchor="middle" font-size="10" fill="#475569">(Create &amp; Submit Request)</text>
+
+          <line x1="410" y1="343" x2="410" y2="385" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <polygon points="410,385 490,425 410,465 330,425" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+          <text x="410" y="419" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0f172a">Is request</text>
+          <text x="410" y="433" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0f172a">approved?</text>
+
+          <line x1="410" y1="465" x2="410" y2="505" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="418" y="488" font-size="10" font-weight="700" fill="#0f172a">No</text>
+
+          <rect x="335" y="505" width="150" height="40" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="410" y="523" text-anchor="middle" font-size="10" font-weight="600" fill="#0f172a">Revise Request Details</text>
+          <text x="410" y="537" text-anchor="middle" font-size="9.5" fill="#475569">&amp; Resubmit</text>
+
+          <path d="M 335 525 L 305 525 L 305 320 L 330 320" fill="none" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <path d="M 490 425 L 515 425 L 515 600 L 430 600" fill="none" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="495" y="417" font-size="10" font-weight="700" fill="#0f172a">Yes</text>
+
+          <circle cx="410" cy="600" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="410" y="605" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">C</text>
+
+          <!-- Column 3 (Monitoring: Deployments & Attendance) -->
+          <circle cx="670" cy="151" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="670" y="156" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">C</text>
+
+          <line x1="670" y1="169" x2="670" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="590" y="210" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Deployment &amp; Monitoring</text>
+          <text x="670" y="247" text-anchor="middle" font-size="10" fill="#475569">(View Student Roster)</text>
+
+          <line x1="670" y1="258" x2="670" y2="295" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="590" y="295" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="316" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Supervise On-site</text>
+          <text x="670" y="332" text-anchor="middle" font-size="10" fill="#475569">Volunteer Activities</text>
+
+          <line x1="670" y1="343" x2="670" y2="380" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="590" y="380" width="160" height="52" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="401" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Attendance &amp; Hours</text>
+          <text x="670" y="417" text-anchor="middle" font-size="10" fill="#475569">(Log Time-In &amp; Time-Out)</text>
+
+          <line x1="670" y1="432" x2="670" y2="480" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <circle cx="670" cy="500" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="670" y="505" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">D</text>
+
+          <!-- Column 4 (Monitoring: Feedback & Completion) -->
+          <circle cx="930" cy="151" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="930" y="156" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">D</text>
+
+          <line x1="930" y1="169" x2="930" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="850" y="210" width="160" height="52" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Feedback &amp; Evaluation</text>
+          <text x="930" y="247" text-anchor="middle" font-size="10" fill="#475569">(Rate Students &amp; Remarks)</text>
+
+          <line x1="930" y1="262" x2="930" y2="305" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="850" y="305" width="160" height="42" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="331" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Logout (Sign Out)</text>
+
+          <line x1="930" y1="347" x2="930" y2="390" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="860" y="390" width="140" height="42" rx="21" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="930" y="416" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">End</text>
+        </svg>
+      </div>
+
+      <!-- ==================== 3. CWTS COORDINATOR FLOWCHART ==================== -->
+      <div id="flow-coordinator" class="hidden">
+        <svg id="svg-coordinator" class="flowchart-svg" width="1040" height="595" viewBox="20 100 1040 595" xmlns="http://www.w3.org/2000/svg" style="background:#ffffff; font-family:'Inter', Arial, sans-serif;">
+
+          <!-- Column 1 -->
+          <rect x="75" y="130" width="140" height="42" rx="21" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="145" y="156" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Start</text>
+
+          <line x1="145" y1="172" x2="145" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="65" y="210" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="145" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Login to Portal</text>
+          <text x="145" y="247" text-anchor="middle" font-size="10" fill="#475569">(Coordinator Credentials)</text>
+
+          <line x1="145" y1="258" x2="145" y2="295" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="65" y="295" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="145" y="316" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Executive Dashboard</text>
+          <text x="145" y="332" text-anchor="middle" font-size="10" fill="#475569">(Stats, Real-time Charts)</text>
+
+          <line x1="145" y1="343" x2="145" y2="390" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <circle cx="145" cy="410" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="145" y="415" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">B</text>
+
+          <!-- Column 2 -->
+          <circle cx="410" cy="151" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="410" y="156" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">B</text>
+
+          <line x1="410" y1="169" x2="410" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="330" y="210" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="410" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">User Management</text>
+          <text x="410" y="247" text-anchor="middle" font-size="10" fill="#475569">(Students &amp; Partners)</text>
+
+          <line x1="410" y1="258" x2="410" y2="295" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="330" y="295" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="410" y="316" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">CMO Compliance</text>
+          <text x="410" y="332" text-anchor="middle" font-size="10" fill="#475569">(Audit Waivers &amp; Docs)</text>
+
+          <line x1="410" y1="343" x2="410" y2="380" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <polygon points="410,380 490,420 410,460 330,420" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+          <text x="410" y="415" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0f172a">Are documents</text>
+          <text x="410" y="429" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0f172a">approved?</text>
+
+          <line x1="410" y1="460" x2="410" y2="495" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="418" y="478" font-size="10" font-weight="700" fill="#0f172a">No</text>
+
+          <rect x="335" y="495" width="150" height="40" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="410" y="513" text-anchor="middle" font-size="10" font-weight="600" fill="#0f172a">Flag with Remarks</text>
+          <text x="410" y="527" text-anchor="middle" font-size="9.5" fill="#475569">for Resubmission</text>
+
+          <path d="M 490 420 L 515 420 L 515 575 L 430 575" fill="none" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="495" y="412" font-size="10" font-weight="700" fill="#0f172a">Yes</text>
+
+          <circle cx="410" cy="575" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="410" y="580" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">C</text>
+
+          <!-- Column 3 -->
+          <circle cx="670" cy="151" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="670" y="156" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">C</text>
+
+          <line x1="670" y1="169" x2="670" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="590" y="210" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Community Requests</text>
+          <text x="670" y="247" text-anchor="middle" font-size="10" fill="#475569">(Review Partner Proposals)</text>
+
+          <line x1="670" y1="258" x2="670" y2="290" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <polygon points="670,290 750,330 670,370 590,330" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+          <text x="670" y="325" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0f172a">Is request</text>
+          <text x="670" y="339" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0f172a">qualified?</text>
+
+          <line x1="670" y1="370" x2="670" y2="400" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="678" y="388" font-size="10" font-weight="700" fill="#0f172a">No</text>
+
+          <rect x="595" y="400" width="150" height="38" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="419" text-anchor="middle" font-size="10" font-weight="600" fill="#0f172a">Reject / Request Revision</text>
+
+          <path d="M 750 330 L 775 330 L 775 470 L 752 470" fill="none" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="755" y="322" font-size="10" font-weight="700" fill="#0f172a">Yes</text>
+
+          <rect x="590" y="450" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="471" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">DSS Matching</text>
+          <text x="670" y="487" text-anchor="middle" font-size="10" fill="#475569">(Proximity &amp; Skills Algo)</text>
+
+          <line x1="670" y1="498" x2="670" y2="530" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="590" y="530" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="670" y="551" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Deployment Management</text>
+          <text x="670" y="567" text-anchor="middle" font-size="10" fill="#475569">(Finalize &amp; Publish)</text>
+
+          <line x1="670" y1="578" x2="670" y2="615" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <circle cx="670" cy="635" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="670" y="640" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">D</text>
+
+          <!-- Column 4 -->
+          <circle cx="930" cy="151" r="18" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="930" y="156" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">D</text>
+
+          <line x1="930" y1="169" x2="930" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="850" y="210" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="231" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Attendance Logs</text>
+          <text x="930" y="247" text-anchor="middle" font-size="10" fill="#475569">(Audit DTR &amp; Site Logs)</text>
+
+          <line x1="930" y1="258" x2="930" y2="295" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="850" y="295" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="316" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Rendered Hours</text>
+          <text x="930" y="332" text-anchor="middle" font-size="10" fill="#475569">(Validate 54-Hr Completion)</text>
+
+          <line x1="930" y1="343" x2="930" y2="380" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="850" y="380" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="401" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Feedback &amp; Evaluation</text>
+          <text x="930" y="417" text-anchor="middle" font-size="10" fill="#475569">(Audit 360-Degree Ratings)</text>
+
+          <line x1="930" y1="428" x2="930" y2="465" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="850" y="465" width="160" height="48" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="486" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Report Generation</text>
+          <text x="930" y="502" text-anchor="middle" font-size="10" fill="#475569">(CHED CMO &amp; Certificates)</text>
+
+          <line x1="930" y1="513" x2="930" y2="550" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="850" y="550" width="160" height="40" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" rx="3" />
+          <text x="930" y="575" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Logout</text>
+
+          <line x1="930" y1="590" x2="930" y2="625" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="860" y="625" width="140" height="42" rx="21" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+          <text x="930" y="651" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">End</text>
+        </svg>
+      </div>
+
+    </div>
+
+    <!-- Instructions / Notes Card -->
+    <div class="instructions-card">
+      <h3>Paano gamitin para sa iyong Thesis / Capstone Manuscript:</h3>
+      <ul>
+        <li><strong>Download PNG (High-Res 300 DPI)</strong>: Direktang magda-download ng ultra-crisp, publication-ready PNG image (2700x1850 px) na rendered sa 300 DPI. Tamang-tama para i-insert nang malinaw sa Microsoft Word o Google Docs na walang pixelation o distortion.</li>
+        <li><strong>Download Vector SVG</strong>: Lossless vector diagram na puwedeng i-scale nang walang kabawas-bawas sa linaw.</li>
+        <li><strong>Download .drawio File</strong>: Direktang i-download ang native diagram file para sa napiling user role upang ma-edit nang direkta sa Draw.io.</li>
+        <li><strong>Open in Draw.io Web</strong>: Bubuksan ang Draw.io sa browser kung saan puwede mong i-drag and drop ang na-download na .drawio file.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    let currentRole = 'student';
+
+    function switchTab(role, btnElement) {
+      currentRole = role;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      if (btnElement) {
+        btnElement.classList.add('active');
+      } else {
+        const idx = role === 'student' ? 0 : (role === 'partner' ? 1 : 2);
+        const btns = document.querySelectorAll('.tab-btn');
+        if (btns[idx]) btns[idx].classList.add('active');
+      }
+
+      document.getElementById('flow-student').classList.add('hidden');
+      document.getElementById('flow-partner').classList.add('hidden');
+      document.getElementById('flow-coordinator').classList.add('hidden');
+
+      const labels = {
+        student: 'Student Process Flow',
+        partner: 'Community Partner Process Flow',
+        coordinator: 'CWTS Coordinator Process Flow'
+      };
+
+      document.getElementById('currentRoleTitle').innerText = 'Displaying: ' + labels[role];
+      document.getElementById('flow-' + role).classList.remove('hidden');
+    }
+
+    function downloadPNG() {
+      const files = {
+        student: { url: '/student-process-flow-300dpi.png', name: 'student-process-flow-300dpi.png' },
+        partner: { url: '/community-process-flow-300dpi.png', name: 'community-process-flow-300dpi.png' },
+        coordinator: { url: '/coordinator-process-flow-300dpi.png', name: 'coordinator-process-flow-300dpi.png' }
+      };
+
+      const file = files[currentRole] || files.student;
+      
+      const link = document.createElement('a');
+      link.href = file.url;
+      link.download = file.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function downloadSVG() {
+      const files = {
+        student: { url: '/student-process-flow.svg', name: 'student-process-flow.svg' },
+        partner: { url: '/community-process-flow.svg', name: 'community-process-flow.svg' },
+        coordinator: { url: '/coordinator-process-flow.svg', name: 'coordinator-process-flow.svg' }
+      };
+
+      const file = files[currentRole] || files.student;
+
+      const link = document.createElement('a');
+      link.href = file.url;
+      link.download = file.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function downloadDrawio() {
+      const files = {
+        student: { url: '/flowchart-student.drawio', name: 'flowchart-student.drawio' },
+        partner: { url: '/flowchart-community.drawio', name: 'flowchart-community.drawio' },
+        coordinator: { url: '/flowchart-coordinator.drawio', name: 'flowchart-coordinator.drawio' }
+      };
+
+      const file = files[currentRole] || files.student;
+
+      const link = document.createElement('a');
+      link.href = file.url;
+      link.download = file.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function openDrawioFile() {
+      window.open('https://app.diagrams.net/', '_blank');
+    }
+  </script>
+</body>
+</html>

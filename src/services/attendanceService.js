@@ -289,20 +289,35 @@ async function verifyAttendanceHours(attendanceId, verifiedBy) {
   }
 }
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isValidUUID(val) {
+  return typeof val === 'string' && UUID_REGEX.test(val.trim());
+}
+
 /**
- * Gets student's attendance records for a deployment
- * @param {string} deploymentId - Deployment ID
+ * Gets student's attendance records (with optional deployment filter)
+ * @param {string} [deploymentId] - Deployment ID (optional)
  * @param {string} studentId - Student user ID
  * @returns {Promise<Array>} Array of attendance records
  */
 async function getStudentAttendance(deploymentId, studentId) {
   try {
-    const { data: records, error } = await supabase
+    if (!isValidUUID(studentId)) {
+      return [];
+    }
+
+    let query = supabase
       .from('attendance_records')
       .select('*')
-      .eq('deployment_id', deploymentId)
       .eq('student_user_id', studentId)
       .order('attendance_date', { ascending: false });
+
+    if (isValidUUID(deploymentId)) {
+      query = query.eq('deployment_id', deploymentId);
+    }
+
+    const { data: records, error } = await query;
 
     if (error) {
       throw new Error('Failed to fetch student attendance: ' + error.message);
@@ -316,30 +331,35 @@ async function getStudentAttendance(deploymentId, studentId) {
 
 /**
  * Gets today's attendance status for a student
- * @param {string} deploymentId - Deployment ID
+ * @param {string} [deploymentId] - Deployment ID (optional)
  * @param {string} studentId - Student user ID
  * @returns {Promise<object|null>} Today's attendance record or null
  */
 async function getTodayAttendance(deploymentId, studentId) {
   try {
+    if (!isValidUUID(studentId)) {
+      return null;
+    }
+
     const today = new Date().toISOString().split('T')[0];
 
-    const { data: record, error } = await supabase
+    let query = supabase
       .from('attendance_records')
       .select('*')
-      .eq('deployment_id', deploymentId)
       .eq('student_user_id', studentId)
-      .eq('attendance_date', today)
-      .single();
+      .eq('attendance_date', today);
+
+    if (isValidUUID(deploymentId)) {
+      query = query.eq('deployment_id', deploymentId);
+    }
+
+    const { data: record, error } = await query.maybeSingle();
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        return null; // No record for today
-      }
       throw new Error('Failed to fetch today\'s attendance: ' + error.message);
     }
 
-    return record;
+    return record || null;
   } catch (error) {
     throw new Error('Service error: ' + error.message);
   }

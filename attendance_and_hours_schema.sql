@@ -175,7 +175,8 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION auto_calculate_attendance_hours()
 RETURNS TRIGGER AS $$
 BEGIN
-  IF NEW.check_out_time IS NOT NULL AND NEW.check_in_time IS NOT NULL THEN
+  -- Only auto-calculate if hours_rendered was not manually set
+  IF NEW.hours_rendered IS NULL AND NEW.check_out_time IS NOT NULL AND NEW.check_in_time IS NOT NULL THEN
     NEW.hours_rendered := calculate_rendered_hours(NEW.check_in_time, NEW.check_out_time);
   END IF;
   RETURN NEW;
@@ -208,7 +209,7 @@ DECLARE
 BEGIN
   -- Get deployment required hours (assuming 8 hours per day for deployment duration)
   SELECT 
-    EXTRACT(DAY FROM (deployment_end_date - deployment_start_date + 1)) * 8
+    (deployment_end_date - deployment_start_date + 1) * 8
   INTO required_hours
   FROM deployments
   WHERE deployment_id = target_deployment_id;

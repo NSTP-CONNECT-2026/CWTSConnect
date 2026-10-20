@@ -206,14 +206,7 @@ function renderDashboard(user) {
   const deploymentBadgeEl = document.getElementById('deploymentBadge');
   const deploymentNoteEl = document.getElementById('deploymentNote');
 
-  if (!isProfileComplete || cmoStatus !== 'compliant') {
-    deploymentValueEl.textContent = 'Locked';
-    deploymentBadgeEl.textContent = 'Requirements Needed';
-    deploymentBadgeEl.className = 'badge badge-locked';
-    deploymentNoteEl.textContent = 'Complete your profile and gain CMO compliance to unlock community deployment.';
-  } else {
-    loadDeploymentStatus(user.user_id, deploymentValueEl, deploymentBadgeEl, deploymentNoteEl);
-  }
+  loadDeploymentStatus(user.user_id, deploymentValueEl, deploymentBadgeEl, deploymentNoteEl, isProfileComplete, cmoStatus);
 }
 
 /**
@@ -234,8 +227,8 @@ async function loadDetailedProfile(user) {
 
     if (res.ok) {
       const data = await res.json();
-      if (data.success && data.profile) {
-        const p = data.profile;
+      const p = data.profile || data.data?.profile;
+      if (p) {
         if (fullNameEl) fullNameEl.textContent = p.full_name || 'Not specified';
         if (studentNumEl) studentNumEl.textContent = p.student_number || 'Not specified';
         if (courseSectionEl) {
@@ -268,7 +261,7 @@ async function loadDetailedProfile(user) {
 /**
  * Loads current deployment status for the student.
  */
-async function loadDeploymentStatus(userId, valueEl, badgeEl, noteEl) {
+async function loadDeploymentStatus(userId, valueEl, badgeEl, noteEl, isProfileComplete = true, cmoStatus = 'compliant') {
   try {
     const response = await fetch(`/api/nstp/deployments/student/${userId}/current`, {
       method: 'GET',
@@ -283,7 +276,7 @@ async function loadDeploymentStatus(userId, valueEl, badgeEl, noteEl) {
         const deploymentInfo = deployment.deployment || {};
         const communityInfo = deploymentInfo.community_request || {};
 
-        valueEl.textContent = deploymentInfo.deployment_batch_name || 'Assigned to Deployment';
+        valueEl.textContent = communityInfo.activity_title || deploymentInfo.deployment_batch_name || 'Assigned to Deployment';
 
         switch (deployment.deployment_student_status) {
           case 'assigned':
@@ -304,16 +297,35 @@ async function loadDeploymentStatus(userId, valueEl, badgeEl, noteEl) {
         }
 
         const communityName = communityInfo.community_name || 'Partner Community';
-        const activityTitle = communityInfo.activity_title || 'CWTS Community Project';
-        const startDate = formatDate(deploymentInfo.deployment_start_date);
-        const endDate = formatDate(deploymentInfo.deployment_end_date);
+        const activityTitle = communityInfo.activity_title || deploymentInfo.deployment_batch_name || 'CWTS Community Project';
+        const schedDate = formatDate(deploymentInfo.deployment_start_date);
+        const locationStr = [communityInfo.barangay, communityInfo.municipality].filter(Boolean).join(', ');
 
         noteEl.innerHTML = `
-          <strong>${activityTitle}</strong><br>
-          <span>${communityName} • ${startDate} to ${endDate}</span>
+          <strong>${escapeHtml(activityTitle)}</strong><br>
+          <span>${escapeHtml(communityName)}${locationStr ? ' • ' + escapeHtml(locationStr) : ''} • ${schedDate}</span>
         `;
+
+        const deploymentBtnEl = document.getElementById('deploymentBtn');
+        if (deploymentBtnEl) {
+          deploymentBtnEl.textContent = 'View Deployment & Monitoring';
+          deploymentBtnEl.href = 'deployment.html';
+        }
         return;
       }
+    }
+
+    if (!isProfileComplete || cmoStatus !== 'compliant') {
+      valueEl.textContent = 'Locked';
+      badgeEl.textContent = 'Requirements Needed';
+      badgeEl.className = 'badge badge-locked';
+      noteEl.textContent = 'Complete your profile and gain CMO compliance to unlock community deployment.';
+      const deploymentBtnEl = document.getElementById('deploymentBtn');
+      if (deploymentBtnEl) {
+        deploymentBtnEl.textContent = 'Open CMO Requirements';
+        deploymentBtnEl.href = 'cmo-requirements.html';
+      }
+      return;
     }
 
     // Eligible for matching but no active deployment assigned yet
@@ -321,6 +333,11 @@ async function loadDeploymentStatus(userId, valueEl, badgeEl, noteEl) {
     badgeEl.textContent = 'Available';
     badgeEl.className = 'badge badge-complete';
     noteEl.textContent = 'Your profile is active and ready. You will be notified once matched with a community project.';
+    const deploymentBtnEl = document.getElementById('deploymentBtn');
+    if (deploymentBtnEl) {
+      deploymentBtnEl.textContent = 'View Deployment & Monitoring';
+      deploymentBtnEl.href = 'deployment.html';
+    }
   } catch (error) {
     console.error('Failed to load deployment status:', error);
     valueEl.textContent = 'Eligible for Matching';
@@ -414,34 +431,7 @@ function formatDate(dateString) {
   });
 }
 
-// Sign Out button handler
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', async function () {
-    logoutBtn.disabled = true;
-    logoutBtn.classList.add('loading');
-
-    try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        window.location.href = '/login.html';
-      } else {
-        alert('Logout failed. Please try again.');
-        logoutBtn.disabled = false;
-        logoutBtn.classList.remove('loading');
-      }
-    } catch (error) {
-      alert('Unable to connect to the server. Please try again.');
-      logoutBtn.disabled = false;
-      logoutBtn.classList.remove('loading');
-    }
-  });
-}
+// Note: Sign Out confirmation and handling is managed centrally by student-layout.js
 
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {

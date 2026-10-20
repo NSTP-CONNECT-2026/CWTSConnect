@@ -1,0 +1,172 @@
+[
+  {
+    "type_id": "868029dc-dfe1-4cea-8e37-86692004fbe5",
+    "name": "DADAWDAWDAWDAD",
+    "description": "adawdawdawdawdawdawdaw",
+    "required_skills": [
+      "Leadership",
+      "Documentation",
+      "Event Management",
+      "Social Media Management"
+    ],
+    "is_active": true,
+    "created_by": "76dbbecd-4deb-4b6d-9c23-1f1e58df5916",
+    "created_at": "2026-10-05T02:33:27.997Z",
+    "updated_at": "2026-10-19T06:34:28.179Z"
+  },
+  {
+    "type_id": "f7121aad-c03b-4096-8f63-ba0e2014c97b",
+    "name": "TESTING REQUEST TYPE 1",
+    "description": "ADAWDWADADADADAWDAWD",
+    "required_skills": [
+      "TESTING SKILL 2",
+      "TESTING SKILL 3",
+      "TESTING SKILL 6"
+    ],
+    "is_active": true,
+    "created_by": "76dbbecd-4deb-4b6d-9c23-1f1e58df5916",
+    "created_at": "2026-09-20T19:37:10.430Z",
+    "updated_at": "2026-09-20T19:37:10.431Z"
+  },
+  {
+    "type_id": "rt-001",
+    "name": "Clean-up Drive & Environmental Sanitation",
+    "description": "Community-wide clean-up operations, coastal care, waste segregation drives, and waterway clearing led by student volunteers.",
+    "required_skills": [
+      "Community Organizing",
+      "Documentation"
+    ],
+    "is_active": true,
+    "created_at": "2026-09-01T08:00:00.000Z",
+    "updated_at": "2026-09-20T18:07:37.657Z"
+  },
+  {
+    "type_id": "rt-002",
+    "name": "Community Tree Planting & Urban Greening",
+    "description": "Reforestation, watershed protection, and urban greening activities to promote biodiversity and environmental resilience.",
+    "required_skills": [
+      "Environmental Awareness",
+      "Leadership",
+      "Documentation"
+    ],
+    "is_active": true,
+    "created_at": "2026-09-01T08:30:00.000Z",
+    "updated_at": "2026-09-01T08:30:00.000Z"
+  },
+  {
+    "type_id": "rt-003",
+    "name": "Literacy & Tutorial Outreach Program",
+    "description": "Basic reading, writing, mathematics, and storytelling sessions for elementary pupils and out-of-school children.",
+    "required_skills": [
+      "Teaching",
+      "Public Speaking",
+      "Community Organizing"
+    ],
+    "is_active": true,
+    "created_at": "2026-09-01T09:00:00.000Z",
+    "updated_at": "2026-09-01T09:00:00.000Z"
+  },
+  {
+    "type_id": "rt-004",
+    "name": "Computer Literacy & Basic IT Skills Training",
+    "description": "Hands-on digital literacy workshops for youth, barangay staff, and seniors covering computer basics, office tools, and internet safety.",
+    "required_skills": [
+      "Computer Literacy",
+      "Teaching",
+      "Documentation"
+    ],
+    "is_active": true,
+    "created_at": "2026-09-01T09:30:00.000Z",
+    "updated_at": "2026-09-01T09:30:00.000Z"
+  },
+  {
+    "type_id": "rt-005",
+    "name": "Community Health & First Aid Awareness Outreach",
+    "description": "Basic health education, vital signs monitoring assistance, emergency first aid demonstrations, and hygiene advocacy.",
+    "required_skills": [
+      "First Aid",
+      "Health Education",
+      "Public Speaking"
+    ],
+    "is_active": true,
+    "created_at": "2026-09-01T10:00:00.000Z",
+    "updated_at": "2026-09-01T10:00:00.000Z"
+  },
+  {
+    "type_id": "rt-006",
+    "name": "Disaster Risk Reduction & Emergency Preparedness Seminar",
+    "description": "Community drills, emergency grab-bag workshops, disaster mitigation mapping, and basic rescue preparedness training.",
+    "required_skills": [
+      "First Aid",
+      "Leadership",
+      "Community Organizing"
+    ],
+    "is_active": true,
+    "created_at": "2026-09-01T10:30:00.000Z",
+    "updated_at": "2026-09-01T10:30:00.000Z"
+  },
+  {
+    "type_id": "rt-007",
+    "name": "Nutritional Feeding & Health Advocacy Program",
+    "description": "Supplementary feeding drives for undernourished children accompanied by nutrition and dietary health education for parents.",
+    "required_skills": [
+      "Health Education",
+      "Community Organizing",
+      "Event Management"
+    ],
+    "is_active": true,
+    "created_at": "2026-09-01T11:00:00.000Z",
+    "updated_at": "2026-09-01T11:00:00.000Z"
+  },
+  {
+    "type_id": "rt-008",
+    "name": "Community Profiling & Needs Survey Assistance",
+    "description": "Household census support, community mapping, and socio-economic survey conducting for local government planning.",
+    "required_skills": [
+      "Survey Conducting",
+      "Data Entry",
+      "Documentation"
+    ],
+    "is_active": true,
+    "created_at": "2026-09-01T11:30:00.000Z",
+    "updated_at": "2026-09-01T11:30:00.000Z"
+  },
+  {
+    "type_id": "rt-009",
+    "name": "Youth Leadership & Skills Development Workshop",
+    "description": "Leadership training, values formation, team building, and life skills workshops for community youth.",
+    "required_skills": [
+      "Leadership",
+      "Public Speaking",
+      "Community Organizing"
+    ],
+    "is_active": true,
+    "created_at": "2026-09-01T12:00:00.000Z",
+    "updated_at": "2026-09-01T12:00:00.000Z"
+  },
+  {
+    "type_id": "rt-010",
+    "name": "Livelihood & Entrepreneurship Training Program",
+    "description": "Practical livelihood skills, basic entrepreneurship, craft-making, and financial literacy seminars for community families.",
+    "required_skills": [
+      "Community Organizing",
+      "Event Management",
+      "Documentation"
+    ],
+    "is_active": true,
+    "created_at": "2026-09-01T12:30:00.000Z",
+    "updated_at": "2026-09-01T12:30:00.000Z"
+  },
+  {
+    "type_id": "rt-011",
+    "name": "Others / Special Community Project",
+    "description": "Special civic welfare service, community event assistance, or custom community development activities tailored to local barangay needs.",
+    "required_skills": [
+      "Community Organizing",
+      "Leadership"
+    ],
+    "is_active": true,
+    "created_at": "2026-09-01T13:00:00.000Z",
+    "updated_at": "2026-09-01T13:00:00.000Z"
+  }
+]

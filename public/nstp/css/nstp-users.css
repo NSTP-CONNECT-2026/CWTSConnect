@@ -23,8 +23,6 @@
   align-items: center;
   gap: var(--space-sm);
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   padding: 6px 8px;
@@ -104,8 +102,6 @@
 
 .stat-box {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-md) var(--space-lg);
@@ -176,8 +172,6 @@
    -------------------------------------------------------------------------- */
 .toolbar-card {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-md) var(--space-lg);
@@ -265,12 +259,163 @@
 }
 
 /* --------------------------------------------------------------------------
+   3B. COLLAPSIBLE FILTER TOOLBAR
+   -------------------------------------------------------------------------- */
+.toolbar-card.filter-card-collapsible {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.toolbar-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.toolbar-top-row .search-input-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-filter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  background: rgba(248, 250, 252, 0.95);
+  border: 1px solid var(--cwts-glass-border);
+  color: var(--text-main);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-filter-toggle:hover {
+  background: #FFFFFF;
+  border-color: var(--cwts-accent-green);
+  color: var(--cwts-primary-dark);
+}
+
+.btn-filter-toggle.active {
+  background: var(--cwts-primary-dark);
+  color: #FFFFFF;
+  border-color: var(--cwts-primary-dark);
+  box-shadow: 0 2px 8px rgba(11, 61, 46, 0.25);
+}
+
+.btn-filter-toggle.active svg {
+  color: #FFFFFF;
+}
+
+.btn-filter-toggle .chevron-icon {
+  transition: transform 0.25s ease;
+  width: 14px;
+  height: 14px;
+}
+
+.btn-filter-toggle.active .chevron-icon {
+  transform: rotate(180deg);
+}
+
+.btn-filter-toggle .filter-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #F59E0B;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+}
+
+/* Expandable Filter Panel below Search Bar */
+.filter-expandable-panel {
+  width: 100%;
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, margin 0.25s ease;
+  margin-top: 0;
+}
+
+.filter-expandable-panel.open {
+  max-height: 500px;
+  opacity: 1;
+  visibility: visible;
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.filter-panel-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.filter-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 180px;
+}
+
+.filter-field-group.compact {
+  flex: 0.6;
+  min-width: 120px;
+}
+
+.filter-field-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.filter-field-group .toolbar-select {
+  width: 100%;
+}
+
+.filter-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .toolbar-top-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-field-group {
+    min-width: 100%;
+  }
+  .filter-field-group.compact {
+    min-width: calc(50% - 8px);
+    flex: 1;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
    4. DATA TABLES & ACTION BUTTONS
    -------------------------------------------------------------------------- */
 .table-card {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--neu-shadow-raised);
@@ -318,6 +463,14 @@
 
 .neu-table tbody tr:hover {
   background-color: rgba(248, 250, 252, 0.85);
+}
+
+.neu-table tbody tr.clickable-row {
+  cursor: pointer;
+}
+
+.neu-table tbody tr.clickable-row:hover {
+  background-color: rgba(236, 253, 245, 0.85);
 }
 
 .user-name-title {
@@ -518,17 +671,16 @@
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(11, 61, 46, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 200;
+  background: rgba(11, 61, 46, 0.7);
+  z-index: 1050;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-md);
+  padding: 24px 16px;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
 }
 
 .modal-backdrop.active {
@@ -549,6 +701,18 @@
   transform: translateY(16px);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  margin: auto;
+}
+
+/* Ensure forms inside modal-card maintain flex column layout so modal-body scrolls */
+.modal-card > form,
+.modal-card form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
 }
 
 .modal-backdrop.active .modal-card {
@@ -561,7 +725,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(248, 250, 252, 0.7);
+  background: rgba(248, 250, 252, 0.95);
+  flex-shrink: 0;
 }
 
 .modal-title {
@@ -573,7 +738,30 @@
 .modal-body {
   padding: var(--space-xl);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   flex: 1;
+  min-height: 0;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(11, 61, 46, 0.3) rgba(241, 245, 249, 0.7);
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 7px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.7);
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(11, 61, 46, 0.25);
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(11, 61, 46, 0.45);
 }
 
 .modal-footer {
@@ -583,7 +771,8 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--space-sm);
-  background: rgba(248, 250, 252, 0.7);
+  background: rgba(248, 250, 252, 0.95);
+  flex-shrink: 0;
 }
 
 .modal-close-btn {
@@ -631,7 +820,6 @@
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.4;
-  backdrop-filter: blur(16px);
 }
 
 .message-content.info {
@@ -690,4 +878,105 @@
   .form-grid-2 {
     grid-template-columns: 1fr;
   }
+}
+
+/* --------------------------------------------------------------------------
+   10. COMMUNITY OFFICIAL MODAL MAP STYLES
+   -------------------------------------------------------------------------- */
+.official-map-wrapper {
+  margin: 8px 0 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.official-map-container {
+  height: 290px;
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--cwts-glass-border);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 1;
+  background: #E2E8F0;
+}
+
+/* Ensure Leaflet tiles and labels are clear and crisp */
+.official-map-container .leaflet-tile-pane {
+  filter: contrast(1.05) saturate(1.05);
+}
+
+.official-map-container .leaflet-control-zoom a {
+  background-color: #FFFFFF !important;
+  color: #1E293B !important;
+  font-weight: bold;
+}
+
+.map-search-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.map-search-row .form-input {
+  flex: 1;
+}
+
+.map-coords-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(240, 253, 244, 0.9);
+  border: 1px solid #86efac;
+  color: #166534;
+  font-size: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   11. PASSWORD INPUT EYE TOGGLE BUTTON
+   -------------------------------------------------------------------------- */
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper .form-input {
+  width: 100%;
+  padding-right: 44px !important;
+}
+
+.btn-toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748B;
+  border-radius: var(--radius-sm, 4px);
+  transition: color 0.15s ease, background-color 0.15s ease;
+  z-index: 5;
+}
+
+.btn-toggle-password:hover {
+  color: var(--cwts-primary-dark, #0B3D2E);
+  background: rgba(11, 61, 46, 0.08);
+}
+
+.btn-toggle-password:focus-visible {
+  outline: 2px solid var(--cwts-primary, #10B981);
+  outline-offset: 1px;
 }

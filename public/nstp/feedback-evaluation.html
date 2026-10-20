@@ -9,6 +9,54 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../student/css/student-layout.css?v=20" />
   <link rel="stylesheet" href="css/nstp-coordinator.css?v=20" />
+  <style>
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 1050;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .clickable-eval-row {
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .clickable-eval-row:hover {
+      background-color: rgba(47, 125, 91, 0.08) !important;
+    }
+  </style>
 </head>
 <body>
   <div class="dashboard-layout">
@@ -256,12 +304,12 @@
                 <table class="neu-table" id="nstpFeedbackTable">
                   <thead>
                     <tr>
-                      <th>Partner Community</th>
-                      <th style="width: 220px;">Deployment Activity</th>
-                      <th style="width: 180px;">Target Student</th>
-                      <th style="width: 140px; text-align: center;">Rating Score</th>
-                      <th>Feedback Remarks</th>
-                      <th style="width: 120px;">Date Recorded</th>
+                      <th style="min-width: 170px;">Partner Community</th>
+                      <th style="min-width: 200px;">Deployment Activity</th>
+                      <th style="min-width: 180px;">Target Student</th>
+                      <th style="width: 130px; text-align: center;">Rating Score</th>
+                      <th style="width: 190px; max-width: 210px;">Feedback Remarks</th>
+                      <th style="width: 130px; text-align: center; white-space: nowrap;">Date Recorded</th>
                     </tr>
                   </thead>
                   <tbody id="nstpFeedbackBody">
@@ -297,25 +345,25 @@
 
             <!-- Evaluation Records Table Card -->
             <div class="table-card" style="margin-top: 24px;">
-              <div class="table-card-header">
+              <div class="table-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                 <h3 class="table-card-title">Student Performance Evaluation Records</h3>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Tip: Click any row to view 4-criteria rubric breakdown</span>
               </div>
               <div class="table-responsive">
                 <table class="neu-table" id="nstpEvalTable">
                   <thead>
                     <tr>
-                      <th>Student Volunteer</th>
-                      <th style="width: 200px;">Deployment & Community</th>
-                      <th style="width: 180px;">Criteria Breakdown</th>
-                      <th style="width: 120px; text-align: center;">Score</th>
+                      <th style="min-width: 180px;">Student Volunteer</th>
+                      <th style="min-width: 180px;">Deployment & Community</th>
+                      <th style="width: 110px; text-align: center;">Score</th>
                       <th style="width: 150px; text-align: center;">Performance Grade</th>
-                      <th>Supervisor Remarks</th>
-                      <th style="width: 120px;">Evaluation Date</th>
+                      <th style="min-width: 200px;">Supervisor Remarks</th>
+                      <th style="width: 130px; text-align: center; white-space: nowrap;">Evaluation Date</th>
                     </tr>
                   </thead>
                   <tbody id="nstpEvalBody">
                     <tr>
-                      <td colspan="7" style="text-align: center; padding: 24px; color: var(--text-muted);">Loading student evaluation records...</td>
+                      <td colspan="6" style="text-align: center; padding: 24px; color: var(--text-muted);">Loading student evaluation records...</td>
                     </tr>
                   </tbody>
                 </table>
@@ -331,11 +379,124 @@
     </div>
   </div>
 
+  <!-- Modal: Student Performance Evaluation & Criteria Breakdown Details -->
+  <div id="criteriaDetailsModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalStudentNameTitle">
+    <div class="modal-card" style="max-width: 640px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
+      
+      <!-- Modal Header -->
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid rgba(226, 232, 240, 0.8);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 34px; height: 34px; border-radius: 50%; background: rgba(11, 61, 46, 0.1); color: var(--cwts-primary-dark); display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 700; color: var(--cwts-primary-dark);" id="modalStudentNameTitle">Student Evaluation Breakdown</h3>
+            <span style="font-size: 0.75rem; color: var(--text-muted);" id="modalStudentSubTitle">Detailed criteria scoring and qualitative feedback</span>
+          </div>
+        </div>
+        <button type="button" class="btn-close-modal" id="closeCriteriaModalBtn" style="background: none; border: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--text-muted); padding: 4px;" aria-label="Close modal">&times;</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body" style="padding: 24px; overflow-y: auto; flex: 1;">
+        
+        <!-- Volunteer & Deployment Summary Card -->
+        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <span style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block;">Student Volunteer</span>
+              <strong style="font-size: 0.9375rem; color: var(--cwts-primary-dark);" id="modalDetailStudentName">---</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);" id="modalDetailStudentMeta">---</div>
+            </div>
+            <div>
+              <span style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block;">Deployment Activity</span>
+              <strong style="font-size: 0.9375rem; color: var(--text-main);" id="modalDetailActivityTitle">---</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);" id="modalDetailCommunityMeta">---</div>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; border-top: 1px solid #E2E8F0; padding-top: 10px;">
+            <div>
+              <span style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block;">Evaluated By / Date</span>
+              <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text-main);" id="modalDetailEvaluatorMeta">---</span>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block;">Performance Grade</span>
+              <div id="modalDetailGradeBadge">---</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overall Score Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h4 style="margin: 0; font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--cwts-primary-dark);">4-Criteria Rubric Breakdown</h4>
+          <span style="font-size: 0.875rem; font-weight: 800; color: var(--cwts-primary-dark);" id="modalDetailOverallScore">Score: 5.00 / 5.00</span>
+        </div>
+
+        <!-- Criteria Cards Grid -->
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+          
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong style="font-size: 0.875rem; color: var(--text-main); display: block;">Punctuality & Attendance</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Reporting on time, commitment, and presence during community duty</span>
+            </div>
+            <div style="font-size: 1.0625rem; font-weight: 800; color: var(--cwts-primary-dark); min-width: 65px; text-align: right;" id="modalCritPunctuality">5.0 / 5.0</div>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong style="font-size: 0.875rem; color: var(--text-main); display: block;">Community Engagement & Rapport</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Respectful communication, empathy, and positive relationship with residents</span>
+            </div>
+            <div style="font-size: 1.0625rem; font-weight: 800; color: var(--cwts-primary-dark); min-width: 65px; text-align: right;" id="modalCritEngagement">5.0 / 5.0</div>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong style="font-size: 0.875rem; color: var(--text-main); display: block;">Teamwork & Cooperation</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Collaboration with fellow volunteers, group synergy, and task sharing</span>
+            </div>
+            <div style="font-size: 1.0625rem; font-weight: 800; color: var(--cwts-primary-dark); min-width: 65px; text-align: right;" id="modalCritTeamwork">5.0 / 5.0</div>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong style="font-size: 0.875rem; color: var(--text-main); display: block;">Initiative & Work Attitude</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Proactivity, willingness to assist, problem-solving, and positive demeanor</span>
+            </div>
+            <div style="font-size: 1.0625rem; font-weight: 800; color: var(--cwts-primary-dark); min-width: 65px; text-align: right;" id="modalCritInitiative">5.0 / 5.0</div>
+          </div>
+
+        </div>
+
+        <!-- Supervisor Remarks Block -->
+        <div>
+          <label style="display:block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Supervisor Remarks & Feedback:</label>
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 14px 16px; font-size: 0.875rem; line-height: 1.5; color: var(--text-main); font-style: italic;" id="modalDetailRemarks">
+            "No remarks provided."
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; padding: 14px 24px; border-top: 1px solid rgba(226, 232, 240, 0.8); background: #F8FAFC;">
+        <button type="button" class="btn btn-secondary" id="closeCriteriaModalFooterBtn" style="padding: 8px 20px; font-weight: 600;">Close</button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Mobile Drawer Overlay -->
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <!-- Scripts -->
   <script src="../student/js/student-layout.js?v=20"></script>
-  <script src="js/feedback-evaluation.js?v=20"></script>
+  <script src="js/feedback-evaluation.js?v=26"></script>
 </body>
 </html>

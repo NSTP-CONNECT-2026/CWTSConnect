@@ -9,7 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../student/css/student-layout.css?v=20" />
   <link rel="stylesheet" href="css/nstp-coordinator.css?v=20" />
-  <link rel="stylesheet" href="css/nstp-requirements.css?v=20" />
+  <link rel="stylesheet" href="css/nstp-users.css?v=21" />
+  <link rel="stylesheet" href="css/nstp-requirements.css?v=23" />
 </head>
 <body>
   <div class="dashboard-layout">
@@ -234,12 +235,8 @@
           </div>
 
           <!-- 2. Search & Filters Toolbar Skeleton -->
-          <div class="skeleton-card" style="padding: 16px 20px; margin-bottom: 24px; flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 12px; flex: 1; flex-wrap: wrap;">
-              <div class="skeleton skeleton-input" style="width: 320px; height: 40px; border-radius: var(--radius-md);"></div>
-              <div class="skeleton skeleton-btn" style="width: 160px; height: 40px; border-radius: var(--radius-md);"></div>
-              <div class="skeleton skeleton-btn" style="width: 160px; height: 40px; border-radius: var(--radius-md);"></div>
-            </div>
+          <div class="skeleton-card" style="padding: 16px 20px; margin-bottom: 24px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px;">
+            <div class="skeleton skeleton-input" style="flex: 1; height: 40px; border-radius: var(--radius-md);"></div>
             <div class="skeleton skeleton-btn" style="width: 100px; height: 40px; border-radius: var(--radius-md);"></div>
           </div>
 
@@ -249,11 +246,11 @@
               <table class="neu-table" style="pointer-events: none; margin: 0;">
                 <thead>
                   <tr>
-                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 130px; height: 13px;"></div></th>
-                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 110px; height: 13px;"></div></th>
-                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 140px; height: 13px;"></div></th>
-                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 85px; height: 22px;"></div></th>
-                    <th style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 85px; height: 32px; margin-left: auto;"></div></th>
+                    <th style="padding: 16px 20px; width: 28%;"><div class="skeleton skeleton-text" style="width: 120px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px; width: 26%;"><div class="skeleton skeleton-text" style="width: 90px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px; width: 20%;"><div class="skeleton skeleton-text" style="width: 90px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px; width: 14%;"><div class="skeleton skeleton-badge" style="width: 75px; height: 16px;"></div></th>
+                    <th style="padding: 16px 20px; width: 12%; text-align: center;"><div class="skeleton skeleton-btn" style="width: 75px; height: 28px; margin: 0 auto;"></div></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -387,8 +384,8 @@
           </div>
 
           <!-- 2. Search & Filter Toolbar -->
-          <div class="toolbar-card">
-            <div class="toolbar-left">
+          <div class="toolbar-card filter-card-collapsible" id="complianceToolbarCard">
+            <div class="toolbar-top-row">
               <div class="search-input-wrap">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <circle cx="11" cy="11" r="8"></circle>
@@ -397,23 +394,86 @@
                 <input type="text" id="complianceSearchInput" class="toolbar-input" placeholder="Search by student name, number, or email..." />
               </div>
 
-              <select id="complianceStatusFilter" class="toolbar-select">
-                <option value="all">All Compliance Statuses</option>
-                <option value="compliant">Fully Compliant</option>
-                <option value="pending">Pending Document Review</option>
-                <option value="incomplete">Incomplete / Missing</option>
-              </select>
+              <button type="button" class="btn-filter-toggle" id="toggleComplianceFiltersBtn" aria-expanded="false" title="Show or hide filters">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+                <span>Filter</span>
+                <span class="filter-badge-dot" id="complianceFilterActiveDot" style="display: none;"></span>
+                <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+            </div>
 
-              <select id="complianceCourseFilter" class="toolbar-select">
-                <option value="all">All Academic Courses</option>
-                <option value="BSIT">BSIT</option>
-                <option value="BSCS">BSCS</option>
-                <option value="BSBA">BSBA</option>
-                <option value="BSED">BSED</option>
-                <option value="BSHM">BSHM</option>
-              </select>
+            <!-- Collapsible Filters Section (Hidden by Default) -->
+            <div class="filter-expandable-panel" id="complianceFilterPanel">
+              <div class="filter-panel-inner">
+                <div class="filter-field-group">
+                  <label for="complianceCourseFilter" class="filter-field-label">Academic Course</label>
+                  <select id="complianceCourseFilter" class="toolbar-select">
+                    <option value="all">All Academic Courses</option>
+                    <option value="BSA (Agri)" title="Bachelor of Science in Agriculture">BSA (Agri)</option>
+                    <option value="BSAB" title="Bachelor of Science in Agricultural Business">BSAB</option>
+                    <option value="BSPsych" title="Bachelor of Science in Psychology">BSPsych</option>
+                    <option value="BSOA" title="Bachelor of Science in Office Administration">BSOA</option>
+                    <option value="BSBA" title="Bachelor of Science in Business Administration">BSBA</option>
+                    <option value="BSA (Acct)" title="Bachelor of Science in Accountancy">BSA (Acct)</option>
+                    <option value="BSCS" title="Bachelor of Science in Computer Science">BSCS</option>
+                    <option value="BSIT" title="Bachelor of Science in Information Technology">BSIT</option>
+                    <option value="BSIS" title="Bachelor of Science in Information System">BSIS</option>
+                    <option value="BSCrim" title="Bachelor of Science in Criminology">BSCrim</option>
+                    <option value="BSABE" title="Bachelor of Science in Agricultural and Biosystems Engineering">BSABE</option>
+                    <option value="BSCpE" title="Bachelor of Science in Computer Engineering">BSCpE</option>
+                    <option value="BSME" title="Bachelor of Science in Mechanical Engineering">BSME</option>
+                    <option value="BSIndTech" title="Bachelor of Science in Industrial Technology">BSIndTech</option>
+                    <option value="BSHM" title="Bachelor of Science in Hospitality Management">BSHM</option>
+                    <option value="BSTM" title="Bachelor of Science in Tourism Management">BSTM</option>
+                    <option value="BSED" title="Bachelor of Secondary Education">BSED</option>
+                    <option value="BEED" title="Bachelor of Elementary Education">BEED</option>
+                    <option value="BECEd" title="Bachelor of Early Childhood Education">BECEd</option>
+                    <option value="BPEd" title="Bachelor of Physical Education">BPEd</option>
+                    <option value="BTVTEd" title="Bachelor of Technical - Vocational Teacher">BTVTEd</option>
+                    <option value="BTLEd" title="Bachelor of Technology and Livelihood Education">BTLEd</option>
+                  </select>
+                </div>
 
-              <button type="button" id="clearComplianceFiltersBtn" class="btn btn-secondary btn-sm">Clear Filters</button>
+                <div class="filter-field-group compact">
+                  <label for="complianceYearFilter" class="filter-field-label">Year</label>
+                  <select id="complianceYearFilter" class="toolbar-select">
+                    <option value="all">All Years</option>
+                    <option value="1">1st Year</option>
+                    <option value="2">2nd Year</option>
+                    <option value="3">3rd Year</option>
+                    <option value="4">4th Year</option>
+                  </select>
+                </div>
+
+                <div class="filter-field-group compact">
+                  <label for="complianceSectionFilter" class="filter-field-label">Section</label>
+                  <select id="complianceSectionFilter" class="toolbar-select">
+                    <option value="all">All Sections</option>
+                    <option value="A">Section A</option>
+                    <option value="B">Section B</option>
+                    <option value="C">Section C</option>
+                    <option value="D">Section D</option>
+                  </select>
+                </div>
+
+                <div class="filter-field-group">
+                  <label for="complianceStatusFilter" class="filter-field-label">Compliance Status</label>
+                  <select id="complianceStatusFilter" class="toolbar-select">
+                    <option value="all">All Compliance Statuses</option>
+                    <option value="compliant">Fully Compliant</option>
+                    <option value="pending">Pending Document Review</option>
+                    <option value="incomplete">Incomplete / Missing</option>
+                  </select>
+                </div>
+
+                <div class="filter-actions-group">
+                  <button type="button" id="clearComplianceFiltersBtn" class="btn btn-secondary btn-sm" style="height: 40px; padding: 0 16px;">Clear Filters</button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -423,11 +483,11 @@
               <table class="neu-table" id="complianceTable">
                 <thead>
                   <tr>
-                    <th>Student Information</th>
-                    <th>Course & Section</th>
-                    <th>Compliance Progress</th>
-                    <th>Overall Status</th>
-                    <th>Action</th>
+                    <th style="width: 28%; min-width: 200px;">NAME &amp; EMAIL</th>
+                    <th style="width: 26%; min-width: 190px;">PROGRAM</th>
+                    <th style="width: 20%; min-width: 160px;">PROGRESS</th>
+                    <th style="width: 14%; min-width: 130px;">STATUS</th>
+                    <th style="width: 12%; min-width: 100px; text-align: center;">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody id="complianceTableBody">
@@ -460,6 +520,6 @@
 
   <!-- Scripts -->
   <script src="../student/js/student-layout.js?v=20"></script>
-  <script src="js/requirement-compliance.js?v=20"></script>
+  <script src="js/requirement-compliance.js?v=26"></script>
 </body>
 </html>

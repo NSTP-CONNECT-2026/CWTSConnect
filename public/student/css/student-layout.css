@@ -43,33 +43,33 @@ body::-webkit-scrollbar {
   --cwts-dark-neutral: #1B1F23;
   --cwts-white: #FFFFFF;
 
-  /* Surfaces & Ambient Canvas (No beige in backgrounds) */
+  /* Surfaces & Ambient Canvas */
   --cwts-canvas-bg: #F3F7F5;
-  --cwts-glass-surface: rgba(255, 255, 255, 0.82);
-  --cwts-glass-surface-subtle: rgba(255, 255, 255, 0.65);
-  --cwts-glass-border: rgba(255, 255, 255, 0.9);
+  --cwts-glass-surface: #FFFFFF;
+  --cwts-glass-surface-subtle: rgba(255, 255, 255, 0.92);
+  --cwts-glass-border: rgba(226, 232, 240, 0.95);
   --cwts-glass-border-subtle: rgba(226, 232, 240, 0.8);
   --cwts-text-muted: #596773;
   --cwts-text-subtle: #8A99A8;
 
   /* Neumorphic Shadows */
-  --neu-shadow-raised: 8px 8px 20px rgba(163, 177, 198, 0.28), -8px -8px 20px rgba(255, 255, 255, 0.95);
-  --neu-shadow-raised-hover: 12px 12px 28px rgba(163, 177, 198, 0.38), -12px -12px 28px rgba(255, 255, 255, 1);
-  --neu-shadow-pill: 4px 4px 10px rgba(163, 177, 198, 0.25), -4px -4px 10px rgba(255, 255, 255, 0.9);
-  --neu-shadow-inset: inset 3px 3px 6px rgba(163, 177, 198, 0.28), inset -3px -3px 6px rgba(255, 255, 255, 0.9);
-  --neu-shadow-btn-primary: 5px 5px 14px rgba(47, 125, 91, 0.35), -4px -4px 12px rgba(255, 255, 255, 0.9);
-  --neu-shadow-btn-primary-active: inset 3px 3px 6px rgba(11, 61, 46, 0.4), inset -2px -2px 4px rgba(255, 255, 255, 0.2);
+  --neu-shadow-raised: 0 4px 16px rgba(163, 177, 198, 0.25), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --neu-shadow-raised-hover: 0 8px 24px rgba(163, 177, 198, 0.35), 0 2px 6px rgba(0, 0, 0, 0.06);
+  --neu-shadow-pill: 0 2px 8px rgba(163, 177, 198, 0.2);
+  --neu-shadow-inset: inset 2px 2px 4px rgba(163, 177, 198, 0.25);
+  --neu-shadow-btn-primary: 0 4px 12px rgba(47, 125, 91, 0.35);
+  --neu-shadow-btn-primary-active: inset 2px 2px 4px rgba(11, 61, 46, 0.4);
 
   /* Alert States */
-  --alert-error-bg: rgba(254, 242, 242, 0.9);
+  --alert-error-bg: #FEF2F2;
   --alert-error-text: #991B1B;
-  --alert-error-border: rgba(252, 165, 165, 0.7);
-  --alert-warning-bg: rgba(255, 251, 235, 0.9);
+  --alert-error-border: #FCA5A5;
+  --alert-warning-bg: #FFFBEB;
   --alert-warning-text: #92400E;
-  --alert-warning-border: rgba(252, 211, 77, 0.7);
-  --alert-success-bg: rgba(240, 253, 244, 0.9);
+  --alert-warning-border: #FCD34D;
+  --alert-success-bg: #F0FDF4;
   --alert-success-text: #145A3A;
-  --alert-success-border: rgba(134, 239, 172, 0.7);
+  --alert-success-border: #86EFAC;
 
   /* Typography */
   --font-primary: 'Inter', Arial, Helvetica, sans-serif;
@@ -96,10 +96,8 @@ body {
   font-family: var(--font-primary);
   background-color: var(--cwts-canvas-bg);
   background-image: 
-    radial-gradient(circle at 10% 10%, rgba(47, 125, 91, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(20, 90, 58, 0.06) 0%, transparent 45%),
-    radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.8) 0%, transparent 60%);
-  background-attachment: fixed;
+    radial-gradient(circle at 10% 10%, rgba(47, 125, 91, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(20, 90, 58, 0.04) 0%, transparent 45%);
   color: var(--cwts-dark-neutral);
   line-height: 1.5;
   min-height: 100vh;
@@ -117,13 +115,11 @@ body {
 }
 
 /* ==========================================================================
-   UNIFIED SIDEBAR (Glassmorphism Dark Emerald)
+   UNIFIED SIDEBAR (Solid Dark Emerald)
    ========================================================================== */
 .sidebar {
   width: var(--sidebar-width);
-  background: rgba(11, 61, 46, 0.92);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: #0B3D2E;
   color: var(--cwts-white);
   display: flex;
   flex-direction: column;
@@ -132,10 +128,11 @@ body {
   bottom: 0;
   left: 0;
   z-index: 100;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.25s ease;
   overflow-y: auto;
-  border-right: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 4px 0 24px rgba(11, 61, 46, 0.25);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 4px 0 20px rgba(11, 61, 46, 0.2);
+  transform: translateZ(0);
 }
 
 .sidebar-header {
@@ -259,7 +256,7 @@ body {
   justify-content: center;
   gap: var(--space-sm);
   padding: 10px 16px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--cwts-white);
   border-radius: var(--radius-md);
@@ -267,8 +264,7 @@ body {
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
-  backdrop-filter: blur(8px);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .sidebar-logout-btn:hover {
@@ -279,7 +275,7 @@ body {
 }
 
 /* ==========================================================================
-   UNIFIED HEADER (Glassmorphic Secondary Green)
+   UNIFIED HEADER (Solid Secondary Green)
    ========================================================================== */
 .main-wrapper {
   margin-left: var(--sidebar-width);
@@ -287,13 +283,12 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  transform: translateZ(0);
 }
 
 .header {
   height: var(--header-height);
-  background: rgba(20, 90, 58, 0.88);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: #145A3A;
   color: var(--cwts-white);
   padding: 0 var(--space-xl);
   display: flex;
@@ -303,7 +298,8 @@ body {
   top: 0;
   z-index: 90;
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 20px rgba(11, 61, 46, 0.18);
+  box-shadow: 0 2px 12px rgba(11, 61, 46, 0.18);
+  transform: translateZ(0);
 }
 
 .header-left {
@@ -339,9 +335,7 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.28);
   color: var(--cwts-white);
   display: flex;
@@ -349,7 +343,7 @@ body {
   justify-content: center;
   cursor: pointer;
   position: relative;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.2s ease, transform 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
@@ -395,36 +389,20 @@ body {
    12. SKELETON LOADING DESIGN SYSTEM (CWTSConnect Academic Standard)
    ========================================================================== */
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    #E8EFEA 0%,
-    rgba(255, 255, 255, 0.75) 50%,
-    #E8EFEA 100%
-  );
-  background-size: 200% 100%;
-  animation: skeletonShimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  background: #E8EFEA;
+  animation: skeletonPulse 1.4s ease-in-out infinite;
   display: inline-block;
   pointer-events: none;
   user-select: none;
+  will-change: opacity;
 }
 
-@keyframes skeletonShimmer {
-  0% {
-    background-position: 200% 0;
+@keyframes skeletonPulse {
+  0%, 100% {
+    opacity: 1;
   }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .skeleton {
-    animation: skeletonPulse 1.8s ease-in-out infinite;
-    background: #E8EFEA;
-  }
-  @keyframes skeletonPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+  50% {
+    opacity: 0.45;
   }
 }
 
@@ -473,8 +451,6 @@ body {
 
 .skeleton-card {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
@@ -612,7 +588,6 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
-  backdrop-filter: blur(12px);
   box-shadow: var(--neu-shadow-pill);
 }
 
@@ -651,9 +626,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(11, 61, 46, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background-color: rgba(11, 61, 46, 0.7);
   z-index: 95;
 }
 
@@ -671,9 +644,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(11, 61, 46, 0.45);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background-color: rgba(11, 61, 46, 0.65);
   z-index: 9998;
   opacity: 0;
   transition: opacity 0.25s ease;
@@ -691,14 +662,12 @@ body {
   bottom: 0;
   width: 410px;
   max-width: 92vw;
-  background: #F4F7F6;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: -10px 0 35px rgba(163, 177, 198, 0.35), inset 1px 0 0 rgba(255, 255, 255, 0.9);
-  border-left: 1px solid rgba(255, 255, 255, 0.9);
+  background: #FFFFFF;
+  box-shadow: -10px 0 35px rgba(163, 177, 198, 0.35);
+  border-left: 1px solid rgba(226, 232, 240, 0.9);
   z-index: 9999;
   transform: translateX(100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.25s ease;
   display: flex;
   flex-direction: column;
 }
@@ -990,4 +959,120 @@ body {
     padding: var(--space-md);
   }
 }
+
+/* --------------------------------------------------------------------------
+   Logout Confirmation Modal
+   -------------------------------------------------------------------------- */
+.logout-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.logout-modal-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.logout-modal-card {
+  background: #FFFFFF;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 18px;
+  padding: 28px 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  text-align: center;
+  transform: translateY(12px) scale(0.97);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logout-modal-backdrop.active .logout-modal-card {
+  transform: translateY(0) scale(1);
+}
+
+.logout-modal-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.logout-modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.logout-modal-desc {
+  font-size: 0.875rem;
+  color: #64748B;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.logout-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.logout-modal-btn {
+  flex: 1;
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+}
+
+.logout-modal-btn-cancel {
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #CBD5E1;
+}
+
+.logout-modal-btn-cancel:hover {
+  background: #E2E8F0;
+  color: #1E293B;
+}
+
+.logout-modal-btn-confirm {
+  background: #DC2626;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.logout-modal-btn-confirm:hover {
+  background: #B91C1C;
+}
+
+.logout-modal-btn-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 

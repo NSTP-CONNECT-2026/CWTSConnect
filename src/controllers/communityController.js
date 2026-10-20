@@ -26,6 +26,10 @@ async function getCommunityOfficialProfile(req, res) {
       });
     }
 
+    // Enrich with community official profile metadata including pinned map coordinates
+    const { getOfficialProfile } = require('../services/communityOfficialStore');
+    const meta = getOfficialProfile(user.user_id, user.email) || {};
+
     // Return user data (excluding sensitive information)
     res.json({
       success: true,
@@ -34,7 +38,18 @@ async function getCommunityOfficialProfile(req, res) {
         email: user.email,
         role: user.role,
         account_status: user.account_status,
-        profile_status: user.profile_status
+        profile_status: user.profile_status,
+        full_name: meta.full_name || meta.community_name || '',
+        position: meta.position || 'Community Official',
+        contact_number: meta.contact_number || '',
+        community_name: meta.community_name || '',
+        barangay: meta.barangay || '',
+        municipality: meta.municipality || '',
+        province: meta.province || 'Laguna',
+        latitude: meta.latitude || null,
+        longitude: meta.longitude || null,
+        location: meta.location || (meta.latitude && meta.longitude ? `${meta.latitude},${meta.longitude}` : ''),
+        coordinates: meta.coordinates || (meta.latitude && meta.longitude ? { lat: meta.latitude, lng: meta.longitude } : null)
       }
     });
 

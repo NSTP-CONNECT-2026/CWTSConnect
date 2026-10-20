@@ -24,8 +24,6 @@
   align-items: center;
   justify-content: space-between;
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-sm) var(--space-md);
@@ -145,8 +143,6 @@
 
 .request-select-card {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
@@ -175,8 +171,6 @@
 /* Selected Request Hero Banner */
 .active-request-hero {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-lg) var(--space-xl);
@@ -193,52 +187,259 @@
    3. SCREEN 22: ELIGIBILITY SCREENING CALLOUT & MATRIX
    -------------------------------------------------------------------------- */
 .eligibility-info-callout {
-  background: rgba(239, 246, 255, 0.9);
-  border: 1px solid #BFDBFE;
+  background: rgba(240, 253, 244, 0.95);
+  border: 1px solid rgba(47, 125, 91, 0.25);
+  border-left: 4px solid var(--cwts-accent-green);
   border-radius: var(--radius-md);
   padding: 14px 18px;
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
   display: flex;
   align-items: flex-start;
   gap: 12px;
   font-size: 0.8125rem;
-  color: #1E40AF;
-  line-height: 1.5;
+  color: var(--text-main);
+  line-height: 1.55;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .eligibility-info-callout svg {
   width: 20px;
   height: 20px;
-  color: #2563EB;
+  color: var(--cwts-accent-green);
   flex-shrink: 0;
   margin-top: 1px;
 }
 
-.eligibility-badge-eligible {
-  background: rgba(236, 253, 245, 0.95);
-  color: #065F46;
-  border: 1px solid #A7F3D0;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  font-size: 0.75rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+.eligibility-info-callout strong {
+  color: var(--cwts-primary-dark);
 }
 
-.eligibility-badge-ineligible {
-  background: rgba(254, 242, 242, 0.95);
-  color: #991B1B;
-  border: 1px solid #FECACA;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  font-size: 0.75rem;
-  display: inline-flex;
+/* Phase Navigation Footers (Hand-off between Pipeline steps) */
+.dss-phase-footer {
+  display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: var(--space-lg);
+  padding: 14px 22px;
+  background: var(--cwts-glass-surface);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--neu-shadow-raised);
+  position: relative;
+  overflow: hidden;
 }
+
+.dss-phase-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+  pointer-events: none;
+}
+
+.dss-phase-footer-summary {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .dss-phase-footer {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  .dss-phase-footer-summary {
+    justify-content: center;
+  }
+}
+
+/* Eligibility Table Column Widths */
+#eligibilityTable th:nth-child(1),
+#eligibilityTable td:nth-child(1) {
+  width: 25%;
+  min-width: 170px;
+}
+
+#eligibilityTable th:nth-child(2),
+#eligibilityTable td:nth-child(2) {
+  width: 17%;
+  min-width: 130px;
+}
+
+#eligibilityTable th:nth-child(3),
+#eligibilityTable td:nth-child(3) {
+  width: 20%;
+  min-width: 150px;
+}
+
+#eligibilityTable th:nth-child(4),
+#eligibilityTable td:nth-child(4) {
+  width: 19%;
+  min-width: 150px;
+}
+
+#eligibilityTable th:nth-child(5),
+#eligibilityTable td:nth-child(5) {
+  width: 19%;
+  min-width: 160px;
+}
+
+/* Phase 3 Math Tables Column Layout & Spacing */
+#quantificationTable th, #quantificationTable td,
+#normalizationTable th, #normalizationTable td,
+#sawComputationTable th, #sawComputationTable td {
+  white-space: normal;
+}
+
+#quantificationTable th:nth-child(1), #quantificationTable td:nth-child(1),
+#normalizationTable th:nth-child(1), #normalizationTable td:nth-child(1),
+#sawComputationTable th:nth-child(1), #sawComputationTable td:nth-child(1) {
+  width: 28%;
+  min-width: 180px;
+}
+
+#quantificationTable th:nth-child(2), #quantificationTable td:nth-child(2),
+#normalizationTable th:nth-child(2), #normalizationTable td:nth-child(2),
+#sawComputationTable th:nth-child(2), #sawComputationTable td:nth-child(2) {
+  width: 20%;
+  min-width: 130px;
+}
+
+#quantificationTable th:nth-child(3), #quantificationTable td:nth-child(3),
+#normalizationTable th:nth-child(3), #normalizationTable td:nth-child(3),
+#sawComputationTable th:nth-child(3), #sawComputationTable td:nth-child(3) {
+  width: 16%;
+  min-width: 110px;
+}
+
+#quantificationTable th:nth-child(4), #quantificationTable td:nth-child(4),
+#normalizationTable th:nth-child(4), #normalizationTable td:nth-child(4),
+#sawComputationTable th:nth-child(4), #sawComputationTable td:nth-child(4) {
+  width: 22%;
+  min-width: 140px;
+}
+
+#quantificationTable th:nth-child(5), #quantificationTable td:nth-child(5),
+#normalizationTable th:nth-child(5), #normalizationTable td:nth-child(5),
+#sawComputationTable th:nth-child(5), #sawComputationTable td:nth-child(5) {
+  width: 14%;
+  min-width: 100px;
+}
+
+/* Phase 4 Ranking Table Column Layout */
+#rankingTable {
+  width: 100%;
+  table-layout: fixed;
+}
+
+#rankingTable th, 
+#rankingTable td {
+  white-space: normal;
+  vertical-align: middle;
+  padding: 14px 16px;
+}
+
+#rankingTable th:nth-child(1), 
+#rankingTable td:nth-child(1),
+#rankingTable th.col-select {
+  width: 48px;
+  text-align: center;
+  padding: 14px 8px;
+}
+
+#rankingTable th:nth-child(2), 
+#rankingTable td:nth-child(2),
+#rankingTable th.col-rank {
+  width: 72px;
+  text-align: center;
+  padding: 14px 8px;
+}
+
+#rankingTable th:nth-child(3), 
+#rankingTable td:nth-child(3),
+#rankingTable th.col-student {
+  width: 30%;
+  min-width: 180px;
+  text-align: left;
+}
+
+#rankingTable th:nth-child(4), 
+#rankingTable td:nth-child(4),
+#rankingTable th.col-loc {
+  width: 20%;
+  min-width: 120px;
+  text-align: left;
+}
+
+#rankingTable th:nth-child(5), 
+#rankingTable td:nth-child(5),
+#rankingTable th.col-skill {
+  width: 20%;
+  min-width: 120px;
+  text-align: left;
+}
+
+#rankingTable th:nth-child(6), 
+#rankingTable td:nth-child(6),
+#rankingTable th.col-suit {
+  width: 16%;
+  min-width: 100px;
+  text-align: center;
+}
+
+#rankingTable th:nth-child(7), 
+#rankingTable td:nth-child(7),
+#rankingTable th.col-action {
+  width: 120px;
+  min-width: 115px;
+  text-align: center;
+  padding: 12px 10px;
+  white-space: nowrap;
+}
+
+#rankingTable .action-btn-view {
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 6px 14px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-sm) !important;
+  min-width: 86px !important;
+  box-sizing: border-box !important;
+  border: 1px solid var(--cwts-glass-border) !important;
+  background: #FFFFFF !important;
+  color: var(--text-main) !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+}
+
+#rankingTable .action-btn-view:hover {
+  border-color: var(--cwts-accent-green) !important;
+  color: var(--cwts-accent-green) !important;
+  background: rgba(47, 125, 91, 0.05) !important;
+  transform: translateY(-1px);
+}
+
+#rankingTable .action-btn-view span {
+  white-space: nowrap !important;
+}
+
+.rank-badge {
+  margin: 0 auto;
+}
+
 
 /* --------------------------------------------------------------------------
    4. SCREENS 23, 24, 25: MATHEMATICAL DSS CALCULATION INSPECTOR
@@ -357,6 +558,7 @@
   font-size: 1.125rem;
   font-weight: 800;
   color: var(--cwts-primary-dark);
+  white-space: nowrap;
 }
 
 /* Coordinator Decision Callout */
@@ -388,8 +590,6 @@
   align-items: center;
   justify-content: space-between;
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-lg) var(--space-xl);

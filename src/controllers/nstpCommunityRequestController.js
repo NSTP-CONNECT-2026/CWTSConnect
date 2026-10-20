@@ -36,6 +36,7 @@ async function getAllRequests(req, res) {
 
     res.json({
       success: true,
+      data: requests,
       requests: requests,
       message: 'Requests fetched successfully'
     });
@@ -67,6 +68,7 @@ async function getRequestById(req, res) {
 
     res.json({
       success: true,
+      data: request,
       request: request,
       message: 'Request fetched successfully'
     });
@@ -93,9 +95,9 @@ async function getRequestById(req, res) {
  */
 async function approveRequest(req, res) {
   try {
-    const nstpUserId = req.session.user.user_id;
+    const nstpUserId = req.session && req.session.user ? req.session.user.user_id : null;
     const { requestId } = req.params;
-    const { review_notes } = req.body;
+    const rawNotes = (req.body.review_notes || req.body.remarks || req.body.feedback || req.body.reason || '').trim();
 
     if (!requestId) {
       return res.status(400).json({
@@ -104,7 +106,7 @@ async function approveRequest(req, res) {
       });
     }
 
-    const updatedRequest = await approveCommunityRequest(requestId, nstpUserId, review_notes);
+    const updatedRequest = await approveCommunityRequest(requestId, nstpUserId, rawNotes || null);
 
     res.json({
       success: true,
@@ -126,21 +128,15 @@ async function approveRequest(req, res) {
  */
 async function rejectRequest(req, res) {
   try {
-    const nstpUserId = req.session.user.user_id;
+    const nstpUserId = req.session && req.session.user ? req.session.user.user_id : null;
     const { requestId } = req.params;
-    const { review_notes } = req.body;
+    const rawNotes = (req.body.review_notes || req.body.remarks || req.body.feedback || req.body.reason || '').trim();
+    const review_notes = rawNotes || 'Request reviewed and rejected by NSTP Coordinator.';
 
     if (!requestId) {
       return res.status(400).json({
         success: false,
         message: 'Request ID is required'
-      });
-    }
-
-    if (!review_notes || review_notes.trim() === '') {
-      return res.status(400).json({
-        success: false,
-        message: 'Review notes are required when rejecting a request'
       });
     }
 

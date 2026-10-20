@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CWTSConnect — Hierarchical Input Process Output (HIPO) Model</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1540px;
+      margin: 0 auto;
+    }
+
+    /* Top Navigation Header */
+    .top-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 18px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .title-group h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.02em;
+    }
+
+    .title-group p {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 8px;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      text-decoration: none;
+      padding: 8px 16px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+
+    .nav-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-btn.active {
+      color: #000000;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      font-weight: 700;
+    }
+
+    /* Action & Export Bar */
+    .action-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .export-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-export {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: #000000;
+      color: #ffffff;
+      border-color: #000000;
+    }
+
+    .btn-primary:hover {
+      background: #333333;
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: #000000;
+      border-color: #000000;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+    }
+
+    .zoom-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .zoom-btn {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 5px 12px;
+      font-size: 0.825rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #0f172a;
+    }
+
+    .zoom-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .zoom-level {
+      font-family: var(--font-mono);
+      font-size: 0.825rem;
+      min-width: 50px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* Diagram Canvas Container (Plain borderless background) */
+    .canvas-card {
+      background: #ffffff;
+      border: none;
+      padding: 16px 0;
+      margin-bottom: 24px;
+      overflow: auto;
+      min-height: 450px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .diagram-img-wrapper {
+      transform-origin: top center;
+      transition: transform 0.15s ease-out;
+      width: 100%;
+      max-width: 3120px;
+      text-align: center;
+    }
+
+    .diagram-img-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #ffffff;
+      /* Zero outer border on the image as requested */
+      border: none;
+    }
+
+    /* Module Breakdown Table (Academic Thesis Edition) */
+    .specs-card {
+      background: var(--bg-card);
+      border: 1px solid #000000;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 30px;
+    }
+
+    .specs-card h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #000000;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 2px solid #000000;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+
+    table.hipo-spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+      margin-bottom: 20px;
+      background: #ffffff;
+    }
+
+    table.hipo-spec-table th,
+    table.hipo-spec-table td {
+      border: 1px solid #000000;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.hipo-spec-table th {
+      background-color: #f5f5f5;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 8.5pt;
+      letter-spacing: 0.03em;
+    }
+
+    .mod-header-row td {
+      background-color: #f0f0f0;
+      font-weight: 800;
+      font-size: 9.5pt;
+      letter-spacing: 0.02em;
+    }
+
+    .code-id {
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: #ffffff;
+      }
+      .top-header,
+      .action-bar {
+        display: none !important;
+      }
+      .canvas-card {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Top Header Navigation -->
+    <header class="top-header">
+      <div class="title-group">
+        <h1>CWTSConnect — Hierarchical Input Process Output (HIPO) Model</h1>
+        <p>CWTSCONNECT: A WEB-BASED CWTS COMMUNITY NEEDS MATCHING AND STUDENT DEPLOYMENT SYSTEM USING A DECISION SUPPORT SYSTEM WITH MONITORING AND ANALYTICS</p>
+      </div>
+
+      <nav class="nav-links">
+        <a href="/flowchart.html" class="nav-btn">Flowcharts</a>
+        <a href="/usecase.html" class="nav-btn">Use Case</a>
+        <a href="/architecture.html" class="nav-btn">Architecture &amp; DFD</a>
+        <a href="/data-dictionary.html" class="nav-btn">Data Dictionary</a>
+        <a href="/hipo.html" class="nav-btn active">HIPO Model</a>
+      </nav>
+    </header>
+
+    <!-- Export & Controls Bar -->
+    <div class="action-bar">
+      <div class="export-btns">
+        <a href="/hipo-model-300dpi.png" download="CWTSConnect_HIPO_Model_300DPI.png" class="btn-export btn-primary">
+          Download 300 DPI PNG
+        </a>
+        <a href="/hipo-model.svg" download="CWTSConnect_HIPO_Model.svg" class="btn-export btn-secondary">
+          Download Vector SVG
+        </a>
+        <a href="/hipo-model.drawio" download="CWTSConnect_HIPO_Model.drawio" class="btn-export btn-secondary">
+          Download Draw.io XML
+        </a>
+      </div>
+
+      <div class="zoom-toolbar">
+        <button class="zoom-btn" onclick="zoomIn()">Zoom In (+)</button>
+        <span class="zoom-level" id="zoomLevel">100%</span>
+        <button class="zoom-btn" onclick="zoomOut()">Zoom Out (-)</button>
+        <button class="zoom-btn" onclick="resetZoom()">Reset</button>
+      </div>
+    </div>
+
+    <!-- Diagram Display Card (Plain white background, no outer borders) -->
+    <div class="canvas-card" style="border: none; box-shadow: none; padding: 0;">
+      <div class="diagram-img-wrapper" id="imgWrapper">
+        <img src="/hipo-model-300dpi.png" id="diagramImg" alt="" style="width: 100%; height: auto; display: block; border: none;">
+      </div>
+    </div>
+
+    <!-- Academic Specification Table -->
+    <div class="specs-card">
+      <h2>HIPO Architecture Functional Decomposition Specifications</h2>
+      <table class="hipo-spec-table">
+        <thead>
+          <tr>
+            <th style="width: 8%;">ID</th>
+            <th style="width: 24%;">Sub-Process Function</th>
+            <th style="width: 22%;">Input</th>
+            <th style="width: 24%;">Process</th>
+            <th style="width: 22%;">Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- MODULE 1.0 -->
+          <tr class="mod-header-row">
+            <td colspan="5">1.0 USER ACCOUNT &amp; PROFILE MANAGEMENT</td>
+          </tr>
+          <tr>
+            <td class="code-id">1.1</td>
+            <td>Account Registration &amp; OTP Verification</td>
+            <td>User Registration Data &amp; Email</td>
+            <td>Validate Credentials &amp; Verify 6-digit OTP</td>
+            <td>Verified Active User Account Record</td>
+          </tr>
+          <tr>
+            <td class="code-id">1.2</td>
+            <td>Student Profiling &amp; GIS Geotagging</td>
+            <td>Student Profile Info, Skills &amp; Address</td>
+            <td>Record Academic Info &amp; Geocode Coordinates</td>
+            <td>Geotagged Student Profile &amp; GIS Record</td>
+          </tr>
+          <tr>
+            <td class="code-id">1.3</td>
+            <td>Role-Based Access &amp; Session Control</td>
+            <td>Login Credentials &amp; User Role Type</td>
+            <td>Authenticate Credentials &amp; Issue Token</td>
+            <td>Authorized Active User Session</td>
+          </tr>
+
+          <!-- MODULE 2.0 -->
+          <tr class="mod-header-row">
+            <td colspan="5">2.0 CHED CMO COMPLIANCE VERIFICATION</td>
+          </tr>
+          <tr>
+            <td class="code-id">2.1</td>
+            <td>Legal Document Submission</td>
+            <td>Parent Waiver, Medical Cert &amp; Valid ID</td>
+            <td>Validate Formats &amp; Store Document Uploads</td>
+            <td>Student Compliance Document Records</td>
+          </tr>
+          <tr>
+            <td class="code-id">2.2</td>
+            <td>Coordinator Review &amp; Verification</td>
+            <td>Submitted Student Documents</td>
+            <td>Review Authenticity &amp; Verify Status</td>
+            <td>Approved Compliance Clearance Record</td>
+          </tr>
+          <tr>
+            <td class="code-id">2.3</td>
+            <td>Compliance Tracking &amp; Alerts</td>
+            <td>Verification Status &amp; Eligibility Updates</td>
+            <td>Evaluate Eligibility &amp; Trigger Status Alerts</td>
+            <td>Deployment Clearance Notification</td>
+          </tr>
+
+          <!-- MODULE 3.0 -->
+          <tr class="mod-header-row">
+            <td colspan="5">3.0 COMMUNITY OUTREACH REQUEST MANAGEMENT</td>
+          </tr>
+          <tr>
+            <td class="code-id">3.1</td>
+            <td>Barangay Proposal Submission</td>
+            <td>Community Request Details &amp; Coordinates</td>
+            <td>Validate Scope &amp; Log Community Needs</td>
+            <td>Pending Community Outreach Request</td>
+          </tr>
+          <tr>
+            <td class="code-id">3.2</td>
+            <td>Proposal Evaluation &amp; Approval</td>
+            <td>Pending Community Outreach Requests</td>
+            <td>Review Feasibility &amp; Endorse Proposal</td>
+            <td>Approved Community Outreach Project</td>
+          </tr>
+          <tr>
+            <td class="code-id">3.3</td>
+            <td>Service &amp; Skills Categorization</td>
+            <td>Standard Service Catalog &amp; Required Skills</td>
+            <td>Map Community Needs to Skill Categories</td>
+            <td>Target Criteria for DSS Matching</td>
+          </tr>
+
+          <!-- MODULE 4.0 -->
+          <tr class="mod-header-row">
+            <td colspan="5">4.0 DSS MATCHING &amp; VOLUNTEER DEPLOYMENT</td>
+          </tr>
+          <tr>
+            <td class="code-id">4.1</td>
+            <td>Candidate Matching &amp; Scoring (DSS)</td>
+            <td>Eligible Student Profiles &amp; Coordinates</td>
+            <td>Compute Skill Relevance &amp; Proximity Distance</td>
+            <td>Ranked Candidate DSS Matching Results</td>
+          </tr>
+          <tr>
+            <td class="code-id">4.2</td>
+            <td>Deployment Roster Formation</td>
+            <td>Ranked Student Matches &amp; Volunteer Quota</td>
+            <td>Assemble Optimal Volunteer Batch &amp; Assign</td>
+            <td>Official Deployment Roster Record</td>
+          </tr>
+          <tr>
+            <td class="code-id">4.3</td>
+            <td>Schedule &amp; Notice Dispatch</td>
+            <td>Approved Deployment Schedule &amp; Roster</td>
+            <td>Dispatch Schedules to Students &amp; Officials</td>
+            <td>Deployment Schedules &amp; Alert Notices</td>
+          </tr>
+
+          <!-- MODULE 5.0 -->
+          <tr class="mod-header-row">
+            <td colspan="5">5.0 FIELD ATTENDANCE &amp; MAKE-UP MANAGEMENT</td>
+          </tr>
+          <tr>
+            <td class="code-id">5.1</td>
+            <td>Field Attendance Logging (DTR)</td>
+            <td>Student Attendance Time Logs &amp; Photo Proof</td>
+            <td>Record Daily Attendance &amp; Geotag Verification</td>
+            <td>Verified Daily Field Attendance Log</td>
+          </tr>
+          <tr>
+            <td class="code-id">5.2</td>
+            <td>Community Official DTR Verification</td>
+            <td>Daily Student Attendance Logs</td>
+            <td>Review &amp; Validate Rendered Service Hours</td>
+            <td>Approved Rendered Hours Progress Record</td>
+          </tr>
+          <tr>
+            <td class="code-id">5.3</td>
+            <td>Make-Up Request Processing</td>
+            <td>Absence Excuse Letter &amp; Make-Up Petition</td>
+            <td>Review Make-Up Excuse &amp; Assign Replacement</td>
+            <td>Approved Make-Up Schedule &amp; Hours Log</td>
+          </tr>
+
+          <!-- MODULE 6.0 -->
+          <tr class="mod-header-row">
+            <td colspan="5">6.0 EVALUATION, AUDIT &amp; CERTIFICATION</td>
+          </tr>
+          <tr>
+            <td class="code-id">6.1</td>
+            <td>Student Performance Evaluation</td>
+            <td>Barangay Official Rating &amp; Rubrics</td>
+            <td>Calculate Student Performance Scores</td>
+            <td>Official Student Performance Evaluation</td>
+          </tr>
+          <tr>
+            <td class="code-id">6.2</td>
+            <td>54-Hour Curriculum Progress Audit</td>
+            <td>Total Rendered Hours &amp; Attendance Summary</td>
+            <td>Audit Mandatory 54-Hour CWTS Requirement</td>
+            <td>Curriculum Completion Clearance Record</td>
+          </tr>
+          <tr>
+            <td class="code-id">6.3</td>
+            <td>Certificate &amp; Summary Report Generation</td>
+            <td>Verified Completion Clearance &amp; Metrics</td>
+            <td>Compile Program Analytics &amp; Format Forms</td>
+            <td>Completion Certificates &amp; Summary Reports</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    let currentZoom = 1.0;
+    const imgWrapper = document.getElementById('imgWrapper');
+    const zoomLevelDisplay = document.getElementById('zoomLevel');
+
+    function updateZoom() {
+      imgWrapper.style.transform = `scale(${currentZoom})`;
+      zoomLevelDisplay.textContent = Math.round(currentZoom * 100) + '%';
+    }
+
+    function zoomIn() {
+      if (currentZoom < 3.0) {
+        currentZoom += 0.2;
+        updateZoom();
+      }
+    }
+
+    function zoomOut() {
+      if (currentZoom > 0.4) {
+        currentZoom -= 0.2;
+        updateZoom();
+      }
+    }
+
+    function resetZoom() {
+      currentZoom = 1.0;
+      updateZoom();
+    }
+  </script>
+</body>
+</html>

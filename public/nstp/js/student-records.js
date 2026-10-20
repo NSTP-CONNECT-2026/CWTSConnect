@@ -171,6 +171,16 @@ async function viewStudentDetails(userId) {
     
     const data = await response.json();
     const student = data.student;
+
+    let coordsDisplay = 'Not pinned';
+    if (student.latitude && student.longitude) {
+      coordsDisplay = `Lat: ${parseFloat(student.latitude).toFixed(6)}, Lng: ${parseFloat(student.longitude).toFixed(6)}`;
+    } else if (student.location && typeof student.location === 'string' && student.location.includes(',')) {
+      const parts = student.location.split(',');
+      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        coordsDisplay = `Lat: ${parseFloat(parts[0]).toFixed(6)}, Lng: ${parseFloat(parts[1]).toFixed(6)}`;
+      }
+    }
     
     // Render student details
     studentDetailsBody.innerHTML = `
@@ -248,6 +258,10 @@ async function viewStudentDetails(userId) {
             <div class="detail-item">
               <span class="detail-label">Province:</span>
               <span class="detail-value">${escapeHtml(student.province || 'N/A')}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Coordinates (GPS):</span>
+              <span class="detail-value" style="font-family: monospace; color: #047857; font-weight: 600;">${escapeHtml(coordsDisplay)}</span>
             </div>
           </div>
         </div>
@@ -392,17 +406,20 @@ function renderCMORequirements(requirements) {
                       src="${escapeHtml(req.file_url)}" 
                       alt="${escapeHtml(req.requirement_type)}"
                       style="max-width: 100%; max-height: 300px; border-radius: 4px; border: 1px solid #e5e7eb; cursor: pointer;"
-                      onclick="window.open('${escapeHtml(req.file_url)}', '_blank')"
+                      onclick="if (typeof openDocumentViewer === 'function') { openDocumentViewer('${escapeHtml(req.file_url)}', '${escapeHtml(getRequirementTypeName(req.requirement_type))}', '${escapeHtml(req.file_name || '')}', '${escapeHtml(req.status || '')}', '${escapeHtml(req.uploaded_at || '')}'); } else { window.open('${escapeHtml(req.file_url)}', '_blank'); }"
                     />
                   </div>
                 ` : ''}
-                <a href="${escapeHtml(req.file_url)}" target="_blank" class="nstp-btn nstp-btn-sm nstp-btn-outline" style="display: inline-block;">
+                <button type="button" 
+                        class="nstp-btn nstp-btn-sm nstp-btn-outline" 
+                        style="display: inline-block; cursor: pointer;"
+                        onclick="if (typeof openDocumentViewer === 'function') { openDocumentViewer('${escapeHtml(req.file_url)}', '${escapeHtml(getRequirementTypeName(req.requirement_type))}', '${escapeHtml(req.file_name || '')}', '${escapeHtml(req.status || '')}', '${escapeHtml(req.uploaded_at || '')}'); } else { window.open('${escapeHtml(req.file_url)}', '_blank'); }">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
                   </svg>
                   ${isImage ? 'View Full Image' : 'View Document'}
-                </a>
+                </button>
               </div>
             ` : ''}
             

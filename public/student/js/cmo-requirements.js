@@ -131,6 +131,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const canUpload = requirement.status !== 'approved';
     const hasFile = requirement.file_name && requirement.status !== 'not_submitted';
     const submissionDateText = hasFile ? formatDate(requirement.uploaded_at) : 'Not yet submitted';
+    const isImage = Boolean(
+      (requirement.file_type && requirement.file_type.startsWith('image/')) ||
+      /\.(png|jpe?g|webp)($|\?)/i.test(requirement.file_name || requirement.file_url || '')
+    );
 
     card.innerHTML = `
       <!-- 1. Required Document Header & 2. Current Submission State -->
@@ -171,13 +175,51 @@ document.addEventListener('DOMContentLoaded', function() {
         
         ${hasFile ? `
           <div class="file-meta-box">
-            <div class="file-meta-row">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-              </svg>
-              <span>${escapeHtml(requirement.file_name)}</span>
+            <div class="file-meta-row" style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(requirement.file_name)}</span>
+              </div>
+              ${requirement.file_url ? `
+                <button type="button" 
+                        class="btn-view-doc" 
+                        data-file-url="${escapeHtml(requirement.file_url)}"
+                        data-title="${escapeHtml(requirement.title)}"
+                        data-file-name="${escapeHtml(requirement.file_name || '')}"
+                        data-status="${escapeHtml(requirement.status || '')}"
+                        data-date="${escapeHtml(requirement.uploaded_at || '')}"
+                        style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #0284c7; background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 6px; cursor: pointer; flex-shrink: 0; transition: all 0.15s ease;" 
+                        title="View document in modal preview">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                  <span>View File</span>
+                </button>
+              ` : ''}
             </div>
+            ${isImage && requirement.file_url ? `
+              <div class="file-thumb-container" style="margin-top: 10px; display: flex; align-items: center; gap: 12px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <button type="button" 
+                        class="btn-thumb-preview"
+                        data-file-url="${escapeHtml(requirement.file_url)}"
+                        data-title="${escapeHtml(requirement.title)}"
+                        data-file-name="${escapeHtml(requirement.file_name || '')}"
+                        data-status="${escapeHtml(requirement.status || '')}"
+                        data-date="${escapeHtml(requirement.uploaded_at || '')}"
+                        style="display: block; border: none; background: transparent; padding: 0; cursor: pointer; flex-shrink: 0;" 
+                        title="Click to view full image in modal">
+                  <img src="${escapeHtml(requirement.file_url)}" alt="Preview" style="width: 52px; height: 52px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: transform 0.15s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
+                </button>
+                <div style="font-size: 11px; color: #64748b; line-height: 1.4;">
+                  <div style="font-weight: 600; color: #334155;">Image Document</div>
+                  <div>Stored securely in cloud storage • Click thumbnail to inspect</div>
+                </div>
+              </div>
+            ` : ''}
             <div class="file-meta-details">
               Submitted on ${formatDate(requirement.uploaded_at)}
               ${requirement.file_size ? ` • ${formatFileSize(requirement.file_size)}` : ''}
@@ -233,6 +275,25 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('change', function(e) {
       if (e.target.classList.contains('file-input')) {
         handleFileSelection(e.target);
+      }
+    });
+
+    // Document/Image View in Modal handlers
+    document.addEventListener('click', function(e) {
+      const viewBtn = e.target.closest('.btn-view-doc, .btn-thumb-preview');
+      if (viewBtn) {
+        e.preventDefault();
+        const fileUrl = viewBtn.getAttribute('data-file-url');
+        const title = viewBtn.getAttribute('data-title') || 'Document Preview';
+        const fileName = viewBtn.getAttribute('data-file-name') || '';
+        const status = viewBtn.getAttribute('data-status') || '';
+        const date = viewBtn.getAttribute('data-date') || '';
+
+        if (typeof window.openDocumentViewer === 'function') {
+          window.openDocumentViewer({ url: fileUrl, title, fileName, status, date });
+        } else {
+          window.open(fileUrl, '_blank');
+        }
       }
     });
 

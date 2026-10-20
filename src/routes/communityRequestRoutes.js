@@ -12,6 +12,7 @@ const {
   getRequestById,
   updateRequest,
   cancelRequest,
+  deleteRequest,
   getRequestSummaryStats
 } = require('../controllers/communityRequestController');
 
@@ -51,6 +52,12 @@ router.put('/requests/:requestId', updateRequest);
  * Cancel a community request
  */
 router.put('/requests/:requestId/cancel', cancelRequest);
+
+/**
+ * DELETE /api/community/requests/:requestId
+ * Permanently delete a cancelled community request
+ */
+router.delete('/requests/:requestId', deleteRequest);
 
 /**
  * GET /api/community/request-summary

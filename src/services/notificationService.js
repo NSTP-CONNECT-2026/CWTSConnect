@@ -59,16 +59,21 @@ async function getUserNotifications(userId, filters = {}) {
  */
 async function getUnreadCount(userId) {
   try {
-    const { data, error } = await supabase
-      .rpc('get_unread_notification_count', { target_user_id: userId });
+    const { count, error } = await supabase
+      .from('notifications')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .eq('is_read', false);
 
     if (error) {
-      throw new Error('Failed to get unread count: ' + error.message);
+      const { data } = await supabase.rpc('get_unread_notification_count', { target_user_id: userId });
+      return data || 0;
     }
 
-    return data || 0;
+    return count || 0;
   } catch (error) {
-    throw new Error('Service error: ' + error.message);
+    console.warn('getUnreadCount error:', error.message);
+    return 0;
   }
 }
 
@@ -89,7 +94,7 @@ async function markAsRead(notificationId, userId) {
       .eq('notification_id', notificationId)
       .eq('user_id', userId)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       throw new Error('Failed to mark notification as read: ' + error.message);
@@ -109,47 +114,111 @@ async function markAsRead(notificationId, userId) {
 async function markAllAsRead(userId) {
   try {
     const { data, error } = await supabase
-      .rpc('mark_all_notifications_read', { target_user_id: userId });
+      .from('notifications')
+      .update({
+        is_read: true,
+        read_at: new Date().toISOString()
+      })
+      .eq('user_id', userId)
+      .eq('is_read', false)
+      .select('notification_id');
 
     if (error) {
-      throw new Error('Failed to mark all as read: ' + error.message);
+      const { data: rpcData } = await supabase.rpc('mark_all_notifications_read', { target_user_id: userId });
+      return rpcData || 0;
     }
 
-    return data || 0;
+    return data?.length || 0;
   } catch (error) {
     throw new Error('Service error: ' + error.message);
   }
 }
 
 /**
- * Creates a notification
+ * Creates a notification safely
  * @param {object} notificationData - Notification data
  * @returns {Promise<object>} Created notification
  */
 async function createNotification(notificationData) {
   try {
-    const { data: notification, error } = await supabase
-      .rpc('create_notification', {
-        target_user_id: notificationData.user_id,
-        notif_type: notificationData.notification_type,
-        notif_title: notificationData.title,
-        notif_message: notificationData.message,
-        notif_priority: notificationData.priority || 'normal',
-        deployment_id: notificationData.related_deployment_id || null,
-        attendance_id: notificationData.related_attendance_id || null,
-        make_up_id: notificationData.related_make_up_id || null,
-        request_id: notificationData.related_request_id || null,
-        action_url: notificationData.action_url || null,
-        action_label: notificationData.action_label || null
-      });
+    if (!notificationData || !notificationData.user_id) return null;
+
+    const payload = {
+      user_id: notificationData.user_id,
+      notification_type: notificationData.notification_type || 'system_announcement',
+      title: notificationData.title || 'System Notification',
+      message: notificationData.message || '',
+      priority: notificationData.priority || 'normal',
+      related_deployment_id: notificationData.related_deployment_id || notificationData.related_id || null,
+      related_attendance_id: notificationData.related_attendance_id || null,
+      related_make_up_id: notificationData.related_make_up_id || null,
+      related_request_id: notificationData.related_request_id || null,
+      action_url: notificationData.action_url || null,
+      action_label: notificationData.action_label || null
+    };
+
+    const { data, error } = await supabase
+      .from('notifications')
+      .insert(payload)
+      .select()
+      .maybeSingle();
 
     if (error) {
-      throw new Error('Failed to create notification: ' + error.message);
+      console.warn('Direct notification insert failed, trying RPC:', error.message);
+      const { data: rpcData } = await supabase.rpc('create_notification', {
+        target_user_id: payload.user_id,
+        notif_type: payload.notification_type,
+        notif_title: payload.title,
+        notif_message: payload.message,
+        notif_priority: payload.priority,
+        deployment_id: payload.related_deployment_id,
+        attendance_id: payload.related_attendance_id,
+        make_up_id: payload.related_make_up_id,
+        request_id: payload.related_request_id,
+        action_url: payload.action_url,
+        action_label: payload.action_label
+      });
+      return rpcData || null;
     }
 
-    return notification;
+    return data;
   } catch (error) {
-    throw new Error('Service error: ' + error.message);
+    console.warn('createNotification service error:', error.message);
+    return null;
+  }
+}
+
+/**
+ * Sends notifications to all NSTP Coordinators
+ * @param {object} notificationData - Notification data
+ * @returns {Promise<Array>} Created notifications
+ */
+async function notifyCoordinators(notificationData) {
+  try {
+    const { data: coords, error } = await supabase
+      .from('users')
+      .select('user_id')
+      .eq('role', 'nstp_official');
+
+    if (error || !coords || coords.length === 0) return [];
+
+    const notifs = coords.map(c => ({
+      user_id: c.user_id,
+      notification_type: notificationData.notification_type || 'system_announcement',
+      title: notificationData.title,
+      message: notificationData.message,
+      priority: notificationData.priority || 'normal',
+      action_url: notificationData.action_url || null,
+      action_label: notificationData.action_label || null,
+      related_request_id: notificationData.related_request_id || null,
+      related_deployment_id: notificationData.related_deployment_id || null
+    }));
+
+    const { data } = await supabase.from('notifications').insert(notifs).select();
+    return data || [];
+  } catch (err) {
+    console.warn('notifyCoordinators error:', err.message);
+    return [];
   }
 }
 
@@ -357,5 +426,6 @@ module.exports = {
   notifyDeploymentAssignment,
   notifyAttendanceReminder,
   sendBulkNotifications,
-  cleanupOldNotifications
+  cleanupOldNotifications,
+  notifyCoordinators
 };

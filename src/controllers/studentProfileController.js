@@ -32,7 +32,8 @@ async function getProfile(req, res) {
 
     return res.status(200).json({
       success: true,
-      data: response
+      data: response,
+      profile: userData.student_profiles || null
     });
   } catch (error) {
     console.error('Get profile error:', error.message);
@@ -72,7 +73,7 @@ async function createProfile(req, res) {
   } catch (error) {
     console.error('Create profile error:', error.message);
     
-    if (error.message.includes('already exists')) {
+    if (error.message.includes('already exists') || error.message.toLowerCase().includes('skill') || error.message.toLowerCase().includes('coordinator')) {
       return res.status(400).json({
         success: false,
         message: error.message
@@ -115,7 +116,7 @@ async function updateProfile(req, res) {
   } catch (error) {
     console.error('Update profile error:', error.message);
     
-    if (error.message.includes('not found') || error.message.includes('already exists')) {
+    if (error.message.includes('not found') || error.message.includes('already exists') || error.message.toLowerCase().includes('skill') || error.message.toLowerCase().includes('coordinator')) {
       return res.status(400).json({
         success: false,
         message: error.message

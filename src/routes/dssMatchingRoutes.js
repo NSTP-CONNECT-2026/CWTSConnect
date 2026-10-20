@@ -33,6 +33,13 @@ router.get('/approved-requests', dssMatchingController.getApprovedRequests);
  */
 router.get('/eligible-students', dssMatchingController.getEligibleStudents);
 
+/**
+ * GET /api/nstp/dss/screening-students
+ * Get all students screened by Gatekeeper rules (Check 1: 4/4 Requirements, Check 2: Profile & Not Deployed)
+ */
+router.get('/screening-students', dssMatchingController.getScreeningStudents);
+
+
 // ─── DSS Matching Routes ─────────────────────────────────────────────────────
 
 /**

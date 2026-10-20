@@ -78,11 +78,10 @@ document.addEventListener('DOMContentLoaded', function () {
    */
   function renderDashboard(user, stats) {
     // 1. Submitted Requests Summary
-    const totalRequests = stats.total_requests || 0;
-    const pendingRequests = stats.pending_requests || 0;
-    const approvedRequests = stats.approved_requests || 0;
-    const rejectedRequests = stats.rejected_requests || 0;
-    const completedActivities = stats.completed_activities || 0;
+    const totalRequests = Number(stats.total_requests || 0);
+    const pendingRequests = Number(stats.pending_requests || 0);
+    const approvedRequests = Number(stats.approved_requests || 0);
+    const rejectedRequests = Number(stats.rejected_requests || 0);
 
     const totalEl = document.getElementById('totalRequestsVal');
     const pendingEl = document.getElementById('pendingRequestsVal');
@@ -109,32 +108,70 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 2. Active Deployments Summary
+    const ongoingDeployments = Number(stats.ongoing_deployments || 0);
+    const scheduledDeployments = Number(stats.scheduled_deployments || 0);
+    const completedProjects = Number(stats.completed_deployments ?? stats.completed_activities ?? 0);
+
     const ongoingEl = document.getElementById('ongoingDeploymentsVal');
     const scheduledEl = document.getElementById('scheduledActivitiesVal');
     const completedEl = document.getElementById('completedProjectsVal');
     const statusTextEl = document.getElementById('deploymentStatusText');
     const deploymentsBadge = document.getElementById('deploymentsBadge');
 
-    if (ongoingEl) ongoingEl.textContent = `${approvedRequests} In Progress`;
-    if (scheduledEl) scheduledEl.textContent = `${pendingRequests} In Review`;
-    if (completedEl) completedEl.textContent = `${completedActivities} Projects`;
+    if (ongoingEl) ongoingEl.textContent = `${ongoingDeployments} Active`;
+    if (scheduledEl) scheduledEl.textContent = `${scheduledDeployments} Scheduled`;
+    if (completedEl) completedEl.textContent = `${completedProjects} Projects`;
+
     if (statusTextEl) {
-      statusTextEl.textContent = approvedRequests > 0 ? 'Active Community Deployment' : 'Ready for Activities';
-    }
-    if (deploymentsBadge) {
-      deploymentsBadge.textContent = approvedRequests > 0 ? 'Active Operations' : 'Standing By';
-      deploymentsBadge.className = approvedRequests > 0 ? 'badge badge-complete' : 'badge badge-pending';
+      if (ongoingDeployments > 0) {
+        statusTextEl.textContent = 'Active Community Deployment';
+      } else if (scheduledDeployments > 0) {
+        statusTextEl.textContent = 'Upcoming Scheduled Deployment';
+      } else if (completedProjects > 0) {
+        statusTextEl.textContent = 'Completed Project Activities';
+      } else {
+        statusTextEl.textContent = 'Ready for Deployment';
+      }
     }
 
-    // 3. Assigned Students Summary
+    if (deploymentsBadge) {
+      if (ongoingDeployments > 0) {
+        deploymentsBadge.textContent = 'Active Operations';
+        deploymentsBadge.className = 'badge badge-complete';
+      } else if (scheduledDeployments > 0) {
+        deploymentsBadge.textContent = 'Scheduled';
+        deploymentsBadge.className = 'badge badge-pending';
+      } else if (completedProjects > 0) {
+        deploymentsBadge.textContent = 'Completed';
+        deploymentsBadge.className = 'badge badge-complete';
+      } else {
+        deploymentsBadge.textContent = 'Standing By';
+        deploymentsBadge.className = 'badge badge-pending';
+      }
+    }
+
+    // 3. Assigned Students Summary (Accurate Real Database Metrics)
+    const assignedStudents = Number(stats.assigned_students || 0);
+    const hoursRendered = Number(stats.total_hours_rendered || 0);
+    const verifiedAttCount = Number(stats.verified_attendance_count || 0);
+    const totalAttCount = Number(stats.attendance_records_count || 0);
+    const attRate = Number(stats.attendance_rate != null ? stats.attendance_rate : 100);
+
     const assignedStudentsEl = document.getElementById('assignedStudentsVal');
     const hoursEl = document.getElementById('renderedHoursVal');
     const attendanceEl = document.getElementById('attendanceRateVal');
 
-    const estimatedStudents = approvedRequests * 15; // Average CWTS team size estimate
-    if (assignedStudentsEl) assignedStudentsEl.textContent = `${estimatedStudents} Volunteers`;
-    if (hoursEl) hoursEl.textContent = `${completedActivities * 30}.0 Hours`;
-    if (attendanceEl) attendanceEl.textContent = '100% Monitored';
+    if (assignedStudentsEl) {
+      assignedStudentsEl.textContent = `${assignedStudents} ${assignedStudents === 1 ? 'Volunteer' : 'Volunteers'}`;
+    }
+    if (hoursEl) {
+      hoursEl.textContent = `${hoursRendered.toFixed(1)} Hrs`;
+    }
+    if (attendanceEl) {
+      attendanceEl.textContent = totalAttCount > 0 
+        ? `${attRate}% Rate (${verifiedAttCount}/${totalAttCount} Verified)` 
+        : '100% Rate';
+    }
 
     // 4. Update Notifications Feed
     updateNotificationFeed(user, stats);

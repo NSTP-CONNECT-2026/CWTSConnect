@@ -5,6 +5,31 @@
 
 const supabase = require('../config/supabaseClient');
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isValidUUID(val) {
+  return typeof val === 'string' && UUID_REGEX.test(val.trim());
+}
+
+function getDefaultHoursSummary(deploymentId, studentId) {
+  return {
+    deployment_id: isValidUUID(deploymentId) ? deploymentId : null,
+    student_user_id: isValidUUID(studentId) ? studentId : null,
+    total_hours_required: 0,
+    total_hours_rendered: 0,
+    total_hours_verified: 0,
+    total_hours_pending: 0,
+    total_sessions: 0,
+    present_count: 0,
+    absent_count: 0,
+    late_count: 0,
+    excused_count: 0,
+    make_up_count: 0,
+    completion_percentage: 0,
+    completion_status: 'in_progress'
+  };
+}
+
 /**
  * Gets rendered hours summary for a deployment
  * @param {string} deploymentId - Deployment ID
@@ -12,6 +37,10 @@ const supabase = require('../config/supabaseClient');
  */
 async function getRenderedHoursSummary(deploymentId) {
   try {
+    if (!isValidUUID(deploymentId)) {
+      return [];
+    }
+
     const { data: summaries, error } = await supabase
       .from('rendered_hours_summary')
       .select(`
@@ -65,47 +94,124 @@ async function getRenderedHoursSummary(deploymentId) {
 }
 
 /**
- * Gets student's rendered hours summary
- * @param {string} deploymentId - Deployment ID
+ * Gets student's rendered hours summary (optionally filtered by deployment)
+ * @param {string} [deploymentId] - Deployment ID (optional)
  * @param {string} studentId - Student user ID
  * @returns {Promise<object>} Hours summary
  */
 async function getStudentHoursSummary(deploymentId, studentId) {
   try {
-    const { data: summary, error } = await supabase
-      .from('rendered_hours_summary')
-      .select('*')
-      .eq('deployment_id', deploymentId)
-      .eq('student_user_id', studentId)
-      .single();
-
-    if (error) {
-      if (error.code === 'PGRST116') {
-        // No summary yet, return default
-        return {
-          deployment_id: deploymentId,
-          student_user_id: studentId,
-          total_hours_required: 0,
-          total_hours_rendered: 0,
-          total_hours_verified: 0,
-          total_hours_pending: 0,
-          total_sessions: 0,
-          present_count: 0,
-          absent_count: 0,
-          late_count: 0,
-          excused_count: 0,
-          make_up_count: 0,
-          completion_percentage: 0,
-          completion_status: 'in_progress'
-        };
-      }
-      throw new Error('Failed to fetch hours summary: ' + error.message);
+    if (!isValidUUID(studentId)) {
+      return {
+        ...getDefaultHoursSummary(deploymentId, studentId),
+        sessions: []
+      };
     }
 
-    return summary;
+    // 1. Fetch attendance records and their deployment/activity info
+    let attQuery = supabase
+      .from('attendance_records')
+      .select(`
+        attendance_id,
+        deployment_id,
+        attendance_date,
+        check_in_time,
+        check_out_time,
+        hours_rendered,
+        student_remarks,
+        attendance_status,
+        verified_at,
+        verified_by,
+        deployment:deployments(
+          deployment_batch_name,
+          community_requests(activity_title)
+        )
+      `)
+      .eq('student_user_id', studentId)
+      .order('attendance_date', { ascending: false });
+
+    if (isValidUUID(deploymentId)) {
+      attQuery = attQuery.eq('deployment_id', deploymentId);
+    }
+
+    const { data: attRecords, error: attError } = await attQuery;
+
+    let totalCreditedHours = 0;
+    let totalPendingHours = 0;
+    const sessions = (attRecords || []).map(att => {
+      const match = String(att.student_remarks || '').match(/\[CREDITED:([0-9.]+)\]/);
+      const isVerified = Boolean(att.verified_at || att.verified_by || (att.student_remarks && /\[CREDITED:[0-9.]+\]/.test(att.student_remarks)));
+      const credited = match ? parseFloat(match[1]) : (Number(att.hours_rendered) || 0);
+
+      if (isVerified) {
+        totalCreditedHours += credited;
+      } else {
+        totalPendingHours += credited;
+      }
+
+      const cleanRemarks = att.student_remarks ? String(att.student_remarks).replace(/\[CREDITED:[0-9.]+\]\s*/g, '').trim() : '';
+
+      return {
+        attendance_id: att.attendance_id,
+        date: att.attendance_date,
+        activity_name: att.deployment?.community_requests?.activity_title || att.deployment?.deployment_batch_name || 'Community Service Session',
+        hours: credited,
+        check_in_time: att.check_in_time,
+        check_out_time: att.check_out_time,
+        status: att.attendance_status,
+        is_verified: isVerified,
+        remarks: cleanRemarks || (isVerified ? 'Verified & credited by Community Official' : 'Pending Verification')
+      };
+    });
+
+    totalCreditedHours = Math.round(totalCreditedHours * 10) / 10;
+    totalPendingHours = Math.round(totalPendingHours * 10) / 10;
+
+    // 2. Fetch summary from rendered_hours_summary table if exists
+    let summaryQuery = supabase
+      .from('rendered_hours_summary')
+      .select('*')
+      .eq('student_user_id', studentId);
+
+    if (isValidUUID(deploymentId)) {
+      summaryQuery = summaryQuery.eq('deployment_id', deploymentId);
+    }
+
+    const { data: summaries } = await summaryQuery;
+    const baseSummary = (summaries && summaries.length > 0) ? summaries[0] : getDefaultHoursSummary(deploymentId, studentId);
+
+    // If attendance_records had sessions, use the accurate computed totals
+    const finalHours = (sessions.length > 0) ? totalCreditedHours : Number(baseSummary.total_hours_rendered || baseSummary.total_hours_verified || 0);
+    const finalPending = (sessions.length > 0) ? totalPendingHours : Number(baseSummary.total_hours_pending || 0);
+    const finalSessionsCount = (sessions.length > 0) ? sessions.length : Number(baseSummary.total_sessions || 0);
+
+    return {
+      deployment_id: isValidUUID(deploymentId) ? deploymentId : baseSummary.deployment_id,
+      student_user_id: studentId,
+      total_hours_rendered: finalHours,
+      total_hours_verified: finalHours,
+      total_completed_hours: finalHours,
+      total_hours: finalHours,
+      total_hours_pending: finalPending,
+      total_sessions: finalSessionsCount,
+      present_count: baseSummary.present_count || sessions.filter(s => s.status === 'present').length,
+      absent_count: baseSummary.absent_count || 0,
+      late_count: baseSummary.late_count || 0,
+      completion_status: baseSummary.completion_status || 'in_progress',
+      sessions: sessions
+    };
   } catch (error) {
     throw new Error('Service error: ' + error.message);
   }
+}
+
+/**
+ * Gets student's hours summary by student ID
+ * @param {string} studentId - Student user ID
+ * @returns {Promise<object>} Hours summary
+ */
+async function getStudentHoursSummaryById(studentId) {
+  return getStudentHoursSummary(null, studentId);
 }
 
 /**
@@ -137,6 +243,21 @@ async function refreshStudentHoursSummary(deploymentId, studentId) {
  */
 async function getDeploymentHoursStatistics(deploymentId) {
   try {
+    if (!isValidUUID(deploymentId)) {
+      return {
+        total_students: 0,
+        total_hours_required: 0,
+        total_hours_rendered: 0,
+        total_hours_verified: 0,
+        total_hours_pending: 0,
+        students_completed: 0,
+        students_in_progress: 0,
+        students_pending_verification: 0,
+        average_completion_percentage: 0,
+        completion_rate: 0
+      };
+    }
+
     const { data: stats, error } = await supabase
       .from('rendered_hours_summary')
       .select('*')
@@ -290,6 +411,7 @@ async function exportHoursSummaryCSV(deploymentId) {
 module.exports = {
   getRenderedHoursSummary,
   getStudentHoursSummary,
+  getStudentHoursSummaryById,
   refreshStudentHoursSummary,
   getDeploymentHoursStatistics,
   getStudentsNeedingVerification,

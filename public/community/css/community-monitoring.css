@@ -75,8 +75,6 @@
 /* Action Bars & Controls */
 .action-filter-bar {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border-radius: var(--radius-lg);
   border: 1px solid var(--cwts-glass-border);
   padding: 16px 20px;
@@ -147,3 +145,99 @@
   font-family: inherit;
   text-align: center;
 }
+
+/* Service Hours Crediting Table Alignment */
+#verifySessionsTable {
+  table-layout: fixed;
+  width: 100%;
+}
+
+#verifySessionsTable th,
+#verifySessionsTable td {
+  vertical-align: middle;
+}
+
+#verifySessionsTable .col-date {
+  width: 140px;
+  text-align: left;
+}
+
+#verifySessionsTable .col-student {
+  width: auto;
+  text-align: left;
+}
+
+#verifySessionsTable .col-time {
+  width: 130px;
+  text-align: center;
+}
+
+#verifySessionsTable .col-hours {
+  width: 190px;
+  text-align: center;
+}
+
+#verifySessionsTable .col-action {
+  width: 150px;
+  text-align: center;
+}
+
+.verify-hours-input {
+  width: 76px;
+  height: 36px;
+  padding: 4px 6px;
+  font-weight: 700;
+  color: var(--cwts-primary-dark, #0B3D2E);
+  font-size: 0.9375rem;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 6px;
+  text-align: center;
+  background: #FFFFFF;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.verify-hours-input:focus {
+  border-color: var(--cwts-primary-green, #145A3A);
+  box-shadow: 0 0 0 3px rgba(20, 90, 58, 0.15);
+  outline: none;
+}
+
+/* Live Counter & Dot Animation */
+@keyframes pulse-live {
+  0% { transform: scale(0.9); opacity: 0.75; }
+  50% { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.75; }
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  background: #10B981;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-live 1.8s infinite ease-in-out;
+}
+
+.live-counter-time {
+  font-family: monospace, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Read-only Activity Date Picker */
+#attDatePicker[readonly] {
+  background-color: var(--surface-hover, #F1F5F9) !important;
+  color: var(--text-main, #334155) !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+#attDatePicker[readonly]::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+

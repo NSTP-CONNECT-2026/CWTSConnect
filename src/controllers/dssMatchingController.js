@@ -53,7 +53,8 @@ async function getApprovedRequests(req, res) {
  */
 async function getEligibleStudents(req, res) {
   try {
-    const students = await dssMatchingService.getEligibleStudents();
+    const targetRequestId = req.query.request_id || req.query.requestId || null;
+    const students = await dssMatchingService.getEligibleStudents(targetRequestId);
     
     res.json({
       success: true,
@@ -61,6 +62,27 @@ async function getEligibleStudents(req, res) {
     });
   } catch (error) {
     console.error('Get Eligible Students Error:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
+
+/**
+ * Gets all students screened for eligibility (Check 1: Requirements, Check 2: Profile & Deployment)
+ * GET /api/nstp/dss/screening-students
+ */
+async function getScreeningStudents(req, res) {
+  try {
+    const targetRequestId = req.query.request_id || req.query.requestId || null;
+    const result = await dssMatchingService.getScreeningStudents(targetRequestId);
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    console.error('Get Screening Students Error:', error.message);
     res.status(500).json({
       success: false,
       message: error.message
@@ -185,6 +207,7 @@ module.exports = {
   getDashboardSummary,
   getApprovedRequests,
   getEligibleStudents,
+  getScreeningStudents,
   generateMatchRecommendations,
   getMatchResults,
   getStudentQuickView

@@ -11,7 +11,11 @@ const notificationService = require('../services/notificationService');
  */
 async function getUserNotifications(req, res) {
   try {
-    const userId = req.session.user.user_id;
+    const userId = req.session?.user?.user_id || req.user?.user_id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
     const filters = {
       is_read: req.query.is_read === 'true' ? true : req.query.is_read === 'false' ? false : undefined,
       notification_type: req.query.type,
@@ -40,7 +44,11 @@ async function getUserNotifications(req, res) {
  */
 async function getUnreadCount(req, res) {
   try {
-    const userId = req.session.user.user_id;
+    const userId = req.session?.user?.user_id || req.user?.user_id;
+    if (!userId) {
+      return res.json({ success: true, data: { unread_count: 0 } });
+    }
+
     const count = await notificationService.getUnreadCount(userId);
     
     res.json({
@@ -62,8 +70,11 @@ async function getUnreadCount(req, res) {
  */
 async function markAsRead(req, res) {
   try {
-    const { notificationId } = req.params;
-    const userId = req.session.user.user_id;
+    const notificationId = req.params.notificationId || req.params.id;
+    const userId = req.session?.user?.user_id || req.user?.user_id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
 
     const notification = await notificationService.markAsRead(notificationId, userId);
     
@@ -87,7 +98,11 @@ async function markAsRead(req, res) {
  */
 async function markAllAsRead(req, res) {
   try {
-    const userId = req.session.user.user_id;
+    const userId = req.session?.user?.user_id || req.user?.user_id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
     const count = await notificationService.markAllAsRead(userId);
     
     res.json({
@@ -110,8 +125,11 @@ async function markAllAsRead(req, res) {
  */
 async function deleteNotification(req, res) {
   try {
-    const { notificationId } = req.params;
-    const userId = req.session.user.user_id;
+    const notificationId = req.params.notificationId || req.params.id;
+    const userId = req.session?.user?.user_id || req.user?.user_id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
 
     await notificationService.deleteNotification(notificationId, userId);
     

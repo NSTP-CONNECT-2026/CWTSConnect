@@ -10,7 +10,8 @@ function isAuthenticated(req, res, next) {
   }
 
   // If it's an API request, return JSON error
-  if (req.path.startsWith('/api/')) {
+  const requestUrl = req.originalUrl || req.baseUrl || req.path || '';
+  if (requestUrl.startsWith('/api/')) {
     return res.status(401).json({ success: false, message: 'You are not logged in. Please log in to continue.' });
   }
 

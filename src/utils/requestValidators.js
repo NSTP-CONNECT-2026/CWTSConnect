@@ -78,92 +78,58 @@ const TARGET_BENEFICIARIES = [
 function validateCommunityRequest(requestData) {
   const errors = [];
 
-  // Community Information validation
-  if (!requestData.community_name || requestData.community_name.trim().length < 2) {
+  const activityTitle = (requestData.activity_title || '').trim();
+  const activityDescription = (requestData.activity_description || requestData.description || '').trim();
+  const activityType = (requestData.activity_type || requestData.request_type || '').trim();
+  const preferredStartDate = requestData.preferred_start_date || requestData.target_start_date || requestData.date;
+  const preferredEndDate = requestData.preferred_end_date || requestData.target_end_date || preferredStartDate;
+
+  // 1. Activity Title Validation
+  if (!activityTitle || activityTitle.length < 3) {
+    errors.push('Activity title must be at least 3 characters long');
+  }
+
+  // 2. Activity Type Validation (dynamic coordinator-created services or standard types)
+  if (!activityType || activityType.length < 2) {
+    errors.push('Please select a valid school-offered service or request type');
+  }
+
+  // 3. Date Validation
+  if (!preferredStartDate) {
+    errors.push('Target activity date is required');
+  } else {
+    const startDate = new Date(preferredStartDate);
+    if (isNaN(startDate.getTime())) {
+      errors.push('Invalid target activity date format');
+    }
+    if (preferredEndDate) {
+      const endDate = new Date(preferredEndDate);
+      if (!isNaN(endDate.getTime()) && endDate < startDate) {
+        errors.push('End date cannot be earlier than start date');
+      }
+    }
+  }
+
+  // 4. Description Validation
+  if (!activityDescription || activityDescription.length < 5) {
+    errors.push('Activity description must be at least 5 characters long');
+  }
+
+  // 5. Optional Community Profile Info (validated only if explicitly provided)
+  if (requestData.community_name && requestData.community_name.trim().length < 2) {
     errors.push('Community name must be at least 2 characters long');
   }
 
-  if (!requestData.community_address || requestData.community_address.trim().length < 5) {
-    errors.push('Community address must be at least 5 characters long');
+  if (requestData.community_address && requestData.community_address.trim().length < 3) {
+    errors.push('Community address must be at least 3 characters long');
   }
 
-  if (!requestData.barangay || requestData.barangay.trim().length < 2) {
-    errors.push('Barangay is required');
-  }
-
-  if (!requestData.municipality || requestData.municipality.trim().length < 2) {
-    errors.push('Municipality is required');
-  }
-
-  if (!requestData.province || requestData.province.trim().length < 2) {
-    errors.push('Province is required');
-  }
-
-  // Activity Information validation
-  if (!requestData.activity_title || requestData.activity_title.trim().length < 5) {
-    errors.push('Activity title must be at least 5 characters long');
-  }
-
-  if (!requestData.activity_description || requestData.activity_description.trim().length < 10) {
-    errors.push('Activity description must be at least 10 characters long');
-  }
-
-  if (!requestData.activity_type || !ACTIVITY_TYPES.includes(requestData.activity_type)) {
-    errors.push('Invalid activity type');
-  }
-
-  if (!requestData.preferred_nstp_component || !NSTP_COMPONENTS.includes(requestData.preferred_nstp_component)) {
-    errors.push('Invalid NSTP component');
-  }
-
-  if (!requestData.students_needed || requestData.students_needed < 1 || requestData.students_needed > 100) {
-    errors.push('Number of students needed must be between 1 and 100');
-  }
-
-  // Date validation
-  if (!requestData.preferred_start_date) {
-    errors.push('Preferred start date is required');
-  }
-
-  if (!requestData.preferred_end_date) {
-    errors.push('Preferred end date is required');
-  }
-
-  if (requestData.preferred_start_date && requestData.preferred_end_date) {
-    const startDate = new Date(requestData.preferred_start_date);
-    const endDate = new Date(requestData.preferred_end_date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (startDate < today) {
-      errors.push('Start date cannot be in the past');
-    }
-
-    if (endDate < startDate) {
-      errors.push('End date cannot be earlier than start date');
-    }
-  }
-
-  if (!requestData.preferred_schedule || requestData.preferred_schedule.trim().length < 3) {
-    errors.push('Preferred schedule is required');
-  }
-
-  if (!requestData.urgency_level || !URGENCY_LEVELS.includes(requestData.urgency_level)) {
-    errors.push('Invalid urgency level');
-  }
-
-  // Deployment Requirements validation
-  if (!requestData.target_beneficiaries || requestData.target_beneficiaries.trim().length < 2) {
-    errors.push('Target beneficiaries is required');
-  }
-
-  // Needed skills validation (optional but if provided, must be valid)
-  if (requestData.needed_skills && Array.isArray(requestData.needed_skills)) {
-    const invalidSkills = requestData.needed_skills.filter(skill => 
-      !AVAILABLE_SKILLS.includes(skill)
-    );
+  // 6. Optional Needed Skills Validation
+  const skills = requestData.needed_skills || requestData.skills_required;
+  if (skills && Array.isArray(skills)) {
+    const invalidSkills = skills.filter(skill => typeof skill !== 'string' || !skill.trim());
     if (invalidSkills.length > 0) {
-      errors.push(`Invalid skills: ${invalidSkills.join(', ')}`);
+      errors.push('Invalid skills specified: skills must be non-empty text');
     }
   }
 

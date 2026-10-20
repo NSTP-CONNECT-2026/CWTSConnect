@@ -17,8 +17,6 @@
 
 .stat-card {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   padding: var(--space-md) var(--space-lg);
@@ -92,8 +90,6 @@
 /* Overall Status Banner Card */
 .overall-status-card {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-md);
   padding: 10px var(--space-lg);
@@ -122,8 +118,6 @@
 
 .requirement-card {
   background: var(--cwts-glass-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -378,8 +372,6 @@
 .message-content {
   padding: 14px 18px;
   border-radius: var(--radius-md);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   box-shadow: var(--neu-shadow-raised);
   display: flex;
   align-items: center;
@@ -416,9 +408,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(11, 61, 46, 0.45);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background-color: rgba(11, 61, 46, 0.7);
   z-index: 1200;
   display: none;
   flex-direction: column;

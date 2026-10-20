@@ -43,6 +43,29 @@ document.addEventListener('DOMContentLoaded', function() {
   let marker;
   let selectedLocation = null;
 
+  function updateSelectedCoordinates(lat, lng) {
+    if (lat === null || lat === undefined || lng === null || lng === undefined) return;
+    const numLat = parseFloat(lat);
+    const numLng = parseFloat(lng);
+    if (isNaN(numLat) || isNaN(numLng)) return;
+
+    selectedLocation = { lat: numLat, lng: numLng };
+
+    if (latitudeField) latitudeField.value = numLat.toString();
+    if (longitudeField) longitudeField.value = numLng.toString();
+
+    const coordsDisplay = document.getElementById('coordsDisplayVal');
+    const statusBadge = document.getElementById('coordsStatusBadge');
+    if (coordsDisplay) {
+      coordsDisplay.textContent = `Lat: ${numLat.toFixed(6)}, Lng: ${numLng.toFixed(6)}`;
+    }
+    if (statusBadge) {
+      statusBadge.textContent = 'Coordinates Saved';
+      statusBadge.style.background = '#dcfce7';
+      statusBadge.style.color = '#15803d';
+    }
+  }
+
   // Load existing profile data
   loadProfileData();
 
@@ -50,11 +73,13 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeMapIntegration();
 
   // Event listeners
-  editProfileForm.addEventListener('submit', handleSubmit);
-  cancelBtn.addEventListener('click', function() {
-    window.location.href = '/student/dashboard.html';
-  });
-  messageClose.addEventListener('click', hideMessage);
+  if (editProfileForm) editProfileForm.addEventListener('submit', handleSubmit);
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', function() {
+      window.location.href = '/student/dashboard.html';
+    });
+  }
+  if (messageClose) messageClose.addEventListener('click', hideMessage);
 
   // Auto-hide messages after 5 seconds
   let messageTimeout;
@@ -64,28 +89,84 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeLeafletMap();
     
     // Use location button
-    useLocationBtn.addEventListener('click', getCurrentLocation);
+    if (useLocationBtn) useLocationBtn.addEventListener('click', getCurrentLocation);
     
     // Search location button
-    searchLocationBtn.addEventListener('click', searchLocation);
+    if (searchLocationBtn) searchLocationBtn.addEventListener('click', searchLocation);
     
+    // Allow searching on Enter key
+    const searchInput = document.getElementById('locationSearch');
+    if (searchInput) {
+      searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          searchLocation();
+        }
+      });
+    }
+
     // Confirm location button
-    confirmLocationBtn.addEventListener('click', confirmSelectedLocation);
+    if (confirmLocationBtn) confirmLocationBtn.addEventListener('click', confirmSelectedLocation);
+  }
+
+  function fixLeafletDefaultIcons() {
+    if (typeof L !== 'undefined' && L.Icon && L.Icon.Default) {
+      delete L.Icon.Default.prototype._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
+      });
+    }
   }
 
   function initializeLeafletMap() {
     try {
-      // Initialize map centered on Philippines
-      map = L.map('map').setView([14.5995, 120.9842], 6);
+      fixLeafletDefaultIcons();
 
-      // Add OpenStreetMap tiles
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
+      const initialCoords = selectedLocation ? [selectedLocation.lat, selectedLocation.lng] : [14.5995, 120.9842];
+      const initialZoom = selectedLocation ? 15 : 6;
+
+      // 1. Esri World Street Map (Primary - highly reliable, fast CDN, detailed street and barangay rendering, no 403 blocks)
+      const esriStreetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Street Map',
         maxZoom: 19
-      }).addTo(map);
+      });
+
+      // 2. Esri World Topo Map
+      const esriTopoLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Topo Map',
+        maxZoom: 19
+      });
+
+      // 3. Esri World Imagery (Satellite)
+      const esriSatLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Satellite',
+        maxZoom: 19
+      });
+
+      // Initialize map centered on initial coordinates with Esri Street as default
+      map = L.map('map', {
+        center: initialCoords,
+        zoom: initialZoom,
+        layers: [esriStreetLayer],
+        zoomControl: true,
+        scrollWheelZoom: true
+      });
+
+      // Layer switcher control
+      L.control.layers({
+        'Street Map (Esri)': esriStreetLayer,
+        'Topographic (Esri)': esriTopoLayer,
+        'Satellite View (Esri)': esriSatLayer
+      }, null, { position: 'topright' }).addTo(map);
+
+      setTimeout(() => {
+        if (map) map.invalidateSize();
+      }, 250);
 
       // Initialize marker
-      marker = L.marker([14.5995, 120.9842], {
+      marker = L.marker(initialCoords, {
         draggable: true
       }).addTo(map);
 
@@ -117,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         
-        selectedLocation = { lat, lng };
+        updateSelectedCoordinates(lat, lng);
         
         // Update map
         if (map && marker) {
@@ -199,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const lat = parseFloat(bestResult.lat);
           const lng = parseFloat(bestResult.lon);
           
-          selectedLocation = { lat, lng };
+          updateSelectedCoordinates(lat, lng);
           
           // Update map
           if (map && marker) {
@@ -255,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const lat = parseFloat(result.lat);
         const lng = parseFloat(result.lon);
         
-        selectedLocation = { lat, lng };
+        updateSelectedCoordinates(lat, lng);
         
         // Update map
         if (map && marker) {
@@ -285,10 +366,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const lat = e.latlng.lat;
     const lng = e.latlng.lng;
     
-    selectedLocation = { lat, lng };
+    updateSelectedCoordinates(lat, lng);
     
     // Update marker position
-    marker.setLatLng([lat, lng]);
+    if (marker) marker.setLatLng([lat, lng]);
     
     // Reverse geocode the clicked position
     reverseGeocode(lat, lng);
@@ -300,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const lat = position.lat;
     const lng = position.lng;
     
-    selectedLocation = { lat, lng };
+    updateSelectedCoordinates(lat, lng);
     
     // Reverse geocode the new position
     reverseGeocode(lat, lng);
@@ -380,8 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Store coordinates
     if (selectedLocation) {
-      latitudeField.value = selectedLocation.lat;
-      longitudeField.value = selectedLocation.lng;
+      updateSelectedCoordinates(selectedLocation.lat, selectedLocation.lng);
     }
 
     // Show a warning if important fields are missing
@@ -396,10 +476,17 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function confirmSelectedLocation() {
+    if (!selectedLocation && marker && marker.getLatLng()) {
+      const pos = marker.getLatLng();
+      updateSelectedCoordinates(pos.lat, pos.lng);
+    }
+
     if (!selectedLocation) {
       showLocationStatus('Please select a location first.', 'error');
       return;
     }
+
+    updateSelectedCoordinates(selectedLocation.lat, selectedLocation.lng);
 
     // Validate that required fields are filled
     if (!barangayField.value || !municipalityField.value || !provinceField.value) {
@@ -407,13 +494,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    showLocationStatus('Location confirmed! You can now save your profile changes.', 'success');
-    
-    // Scroll to form actions
-    const formActions = document.querySelector('.brutal-actions');
-    if (formActions) {
-      formActions.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    showLocationStatus('Location confirmed! Coordinates recorded.', 'success');
   }
 
   function showLocationStatus(message, type) {
@@ -471,54 +552,176 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function populateForm(profile) {
+    if (!profile) return;
+
     // Personal Information
-    document.getElementById('fullName').value = profile.full_name || '';
-    document.getElementById('studentNumber').value = profile.student_number || '';
-    document.getElementById('contactNumber').value = profile.contact_number || '';
-    document.getElementById('birthdate').value = profile.birthdate || '';
-    document.getElementById('sex').value = profile.sex || '';
+    const fullNameEl = document.getElementById('fullName');
+    if (fullNameEl) fullNameEl.value = profile.full_name || '';
+
+    const studentNumberEl = document.getElementById('studentNumber');
+    if (studentNumberEl) studentNumberEl.value = profile.student_number || '';
+
+    const contactNumberEl = document.getElementById('contactNumber');
+    if (contactNumberEl) contactNumberEl.value = profile.contact_number || '';
+
+    const birthdateEl = document.getElementById('birthdate');
+    if (birthdateEl) {
+      birthdateEl.value = profile.birthdate ? profile.birthdate.split('T')[0] : '';
+    }
+
+    const sexEl = document.getElementById('sex');
+    if (sexEl) sexEl.value = profile.sex || '';
 
     // Academic Information
-    document.getElementById('course').value = profile.course || '';
-    document.getElementById('yearLevel').value = profile.year_level || '';
-    document.getElementById('section').value = profile.section || '';
+    const courseEl = document.getElementById('course');
+    if (courseEl) courseEl.value = profile.course || '';
+
+    const yearLevelEl = document.getElementById('yearLevel');
+    if (yearLevelEl) yearLevelEl.value = profile.year_level || '';
+
+    const sectionEl = document.getElementById('section');
+    if (sectionEl) sectionEl.value = profile.section || '';
+
     const nstpCompEl = document.getElementById('nstpComponent');
-    if (nstpCompEl) nstpCompEl.value = 'CWTS';
+    if (nstpCompEl) nstpCompEl.value = profile.nstp_component || 'CWTS';
 
     // Location Information
-    document.getElementById('completeAddress').value = profile.complete_address || '';
-    document.getElementById('barangay').value = profile.barangay || '';
-    document.getElementById('municipality').value = profile.municipality || '';
-    document.getElementById('province').value = profile.province || '';
+    const completeAddressEl = document.getElementById('completeAddress');
+    if (completeAddressEl) completeAddressEl.value = profile.complete_address || profile.address || '';
 
-    // Coordinates (if available)
-    if (profile.latitude && profile.longitude) {
-      document.getElementById('latitude').value = profile.latitude;
-      document.getElementById('longitude').value = profile.longitude;
-      selectedLocation = { lat: parseFloat(profile.latitude), lng: parseFloat(profile.longitude) };
+    const barangayEl = document.getElementById('barangay');
+    if (barangayEl) barangayEl.value = profile.barangay || '';
+
+    const municipalityEl = document.getElementById('municipality');
+    if (municipalityEl) municipalityEl.value = profile.municipality || '';
+
+    const provinceEl = document.getElementById('province');
+    if (provinceEl) provinceEl.value = profile.province || '';
+
+    // Coordinates (support latitude/longitude or fallback location column)
+    let lat = profile.latitude;
+    let lng = profile.longitude;
+    if ((!lat || !lng) && profile.location && typeof profile.location === 'string' && profile.location.includes(',')) {
+      const parts = profile.location.split(',');
+      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        lat = parseFloat(parts[0].trim());
+        lng = parseFloat(parts[1].trim());
+      }
+    }
+
+    if (lat && lng) {
+      updateSelectedCoordinates(lat, lng);
       
-      // Show existing location on map if coordinates exist
-      if (map && marker && selectedLocation) {
+      // Show existing location on map
+      if (map && marker) {
         map.setView([selectedLocation.lat, selectedLocation.lng], 15);
         marker.setLatLng([selectedLocation.lat, selectedLocation.lng]);
+        showLocationStatus('Loaded location pinned on map.', 'info');
       }
     }
 
     // Skills
-    document.getElementById('skills').value = profile.skills || '';
+    const skillsEl = document.getElementById('skills');
+    if (skillsEl) skillsEl.value = profile.skills || '';
+    if (window.setStudentSkills) {
+      window.setStudentSkills(profile.skills || '');
+    }
 
     // Emergency Contact
-    document.getElementById('emergencyContactName').value = profile.emergency_contact_name || '';
-    document.getElementById('emergencyContactNumber').value = profile.emergency_contact_number || '';
-    document.getElementById('emergencyContactRelationship').value = profile.emergency_contact_relationship || '';
+    const emergencyNameEl = document.getElementById('emergencyContactName');
+    if (emergencyNameEl) emergencyNameEl.value = profile.emergency_contact_name || '';
+
+    const emergencyNumEl = document.getElementById('emergencyContactNumber');
+    if (emergencyNumEl) emergencyNumEl.value = profile.emergency_contact_number || '';
+
+    const emergencyRelEl = document.getElementById('emergencyContactRelationship');
+    if (emergencyRelEl) emergencyRelEl.value = profile.emergency_contact_relationship || '';
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    
-    // Disable submit button and show loading
+
+    // 1. Sync coordinates from selectedLocation, marker, or inputs
+    if (selectedLocation && selectedLocation.lat && selectedLocation.lng) {
+      updateSelectedCoordinates(selectedLocation.lat, selectedLocation.lng);
+    } else if (marker && marker.getLatLng()) {
+      const pos = marker.getLatLng();
+      updateSelectedCoordinates(pos.lat, pos.lng);
+    } else if (latitudeField && latitudeField.value && longitudeField && longitudeField.value) {
+      updateSelectedCoordinates(latitudeField.value, longitudeField.value);
+    }
+
+    // 2. Validate Step 1
+    if (!validateStep(1)) {
+      goToStep(1);
+      return;
+    }
+
+    // 3. Validate Step 2
+    if (!validateStep(2)) {
+      goToStep(2);
+      return;
+    }
+
+    // Check that coordinates are present
+    if (!latitudeField || !latitudeField.value || !longitudeField || !longitudeField.value) {
+      goToStep(2);
+      showMessage('Please pin your location on the map to save your coordinates.', 'error');
+      return;
+    }
+
+    // 4. Validate Step 3: Skills required
+    const skillsInput = document.getElementById('skills');
+    if (!skillsInput || !skillsInput.value.trim()) {
+      goToStep(3);
+      const dropdown = document.getElementById('skillSelectDropdown');
+      if (dropdown) {
+        dropdown.classList.add('invalid');
+        dropdown.focus();
+      } else {
+        const group = document.getElementById('skillsSelectorGroup');
+        if (group) group.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      showMessage('Please select at least one skill from the coordinator list before saving.', 'error');
+      return;
+    }
+
+    // 5. Validate Contact Numbers
+    const phoneRegex = /^(\+63|0)[0-9]{10}$/;
+    const contactInput = document.getElementById('contactNumber');
+    const cleanContact = contactInput?.value ? contactInput.value.replace(/[\s\-()]/g, '') : '';
+    if (!phoneRegex.test(cleanContact)) {
+      goToStep(1);
+      if (contactInput) {
+        contactInput.classList.add('invalid');
+        contactInput.focus();
+      }
+      showMessage('Please enter a valid Philippine contact number (e.g. 09XXXXXXXXX).', 'error');
+      return;
+    }
+
+    const emergencyNumInput = document.getElementById('emergencyContactNumber');
+    if (emergencyNumInput && emergencyNumInput.value.trim()) {
+      const cleanEmergency = emergencyNumInput.value.replace(/[\s\-()]/g, '');
+      if (!phoneRegex.test(cleanEmergency)) {
+        goToStep(3);
+        emergencyNumInput.classList.add('invalid');
+        emergencyNumInput.focus();
+        showMessage('Please enter a valid emergency contact number (e.g. 09XXXXXXXXX).', 'error');
+        return;
+      }
+    }
+
+    // Disable submit button with inline saving indicator
+    const originalBtnText = updateBtn.innerHTML;
     updateBtn.disabled = true;
-    showLoading();
+    updateBtn.innerHTML = `
+      <svg style="display:inline-block;width:16px;height:16px;margin-right:6px;vertical-align:middle;animation:spin 1s linear infinite;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" stroke-opacity="0.25"></circle>
+        <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
+      </svg>
+      <span>Saving Profile...</span>
+    `;
 
     try {
       // Collect form data
@@ -529,14 +732,17 @@ document.addEventListener('DOMContentLoaded', function() {
         profileData[key] = value.trim();
       }
 
-      // Remove empty optional fields
-      if (!profileData.birthdate) delete profileData.birthdate;
-      if (!profileData.sex) delete profileData.sex;
-      if (!profileData.emergency_contact_name) delete profileData.emergency_contact_name;
-      if (!profileData.emergency_contact_number) delete profileData.emergency_contact_number;
-      if (!profileData.emergency_contact_relationship) delete profileData.emergency_contact_relationship;
-      if (!profileData.latitude) delete profileData.latitude;
-      if (!profileData.longitude) delete profileData.longitude;
+      // Format coordinates
+      profileData.latitude = latitudeField.value;
+      profileData.longitude = longitudeField.value;
+      profileData.location = `${latitudeField.value},${longitudeField.value}`;
+
+      // Handle optional fields
+      if (!profileData.birthdate) profileData.birthdate = null;
+      if (!profileData.sex) profileData.sex = null;
+      if (!profileData.emergency_contact_name) profileData.emergency_contact_name = null;
+      if (!profileData.emergency_contact_number) profileData.emergency_contact_number = null;
+      if (!profileData.emergency_contact_relationship) profileData.emergency_contact_relationship = null;
       profileData.nstp_component = 'CWTS';
 
       // Update profile
@@ -545,6 +751,7 @@ document.addEventListener('DOMContentLoaded', function() {
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify(profileData)
       });
 
@@ -554,17 +761,17 @@ document.addEventListener('DOMContentLoaded', function() {
         showMessage('Profile updated successfully! Redirecting to dashboard...', 'success');
         setTimeout(() => {
           window.location.href = '/student/dashboard.html';
-        }, 2000);
+        }, 1500);
       } else {
         showMessage(data.message || 'Failed to update profile. Please try again.', 'error');
         updateBtn.disabled = false;
+        updateBtn.innerHTML = originalBtnText;
       }
     } catch (error) {
       console.error('Error updating profile:', error);
       showMessage('An error occurred. Please check your connection and try again.', 'error');
       updateBtn.disabled = false;
-    } finally {
-      hideLoading();
+      updateBtn.innerHTML = originalBtnText;
     }
   }
 
@@ -695,6 +902,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (currentStep === 2 && map) {
       setTimeout(() => {
         map.invalidateSize();
+        if (selectedLocation && selectedLocation.lat && selectedLocation.lng) {
+          map.setView([selectedLocation.lat, selectedLocation.lng], 15);
+          if (marker) marker.setLatLng([selectedLocation.lat, selectedLocation.lng]);
+        }
       }, 150);
     }
   }
@@ -726,7 +937,19 @@ document.addEventListener('DOMContentLoaded', function() {
           isValid = false;
         }
       }
-      if (!isValid) {
+
+      // Check coordinates
+      let hasCoords = (selectedLocation && selectedLocation.lat && selectedLocation.lng) ||
+                      (latitudeField && latitudeField.value && longitudeField && longitudeField.value);
+      if (!hasCoords && marker && marker.getLatLng()) {
+        const pos = marker.getLatLng();
+        updateSelectedCoordinates(pos.lat, pos.lng);
+        hasCoords = true;
+      }
+      if (!hasCoords) {
+        isValid = false;
+        showMessage('Please pin your location on the map to save your coordinates.', 'error');
+      } else if (!isValid) {
         showMessage('Please fill in your complete location details before proceeding.', 'error');
       }
     }

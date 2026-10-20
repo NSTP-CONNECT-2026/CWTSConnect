@@ -9,7 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../student/css/student-layout.css?v=20" />
   <link rel="stylesheet" href="css/nstp-coordinator.css?v=20" />
-  <link rel="stylesheet" href="css/nstp-requirements.css?v=20" />
+  <link rel="stylesheet" href="css/nstp-requirements.css?v=21" />
+  <link rel="stylesheet" href="../css/document-viewer-modal.css?v=2" />
 </head>
 <body>
   <div class="dashboard-layout">
@@ -170,9 +171,14 @@
           </button>
           <span class="header-title">Review Student CMO Requirements</span>
         </div>
+      </header>
 
-        <div class="header-right">
-          <a href="requirement-compliance.html" class="btn btn-secondary btn-sm">
+      <!-- Page Content -->
+      <main class="content-container">
+
+        <!-- Top Left Simple Back Text Link -->
+        <div class="subpage-back-nav">
+          <a href="requirement-compliance.html" class="subpage-back-link" title="Return to Compliance List">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
@@ -180,10 +186,6 @@
             <span>Back to Compliance List</span>
           </a>
         </div>
-      </header>
-
-      <!-- Page Content -->
-      <main class="content-container">
 
         <!-- Section 12 Skeleton Loading State -->
         <div id="reviewSkeleton" class="page-loading-skeleton">
@@ -324,6 +326,7 @@
 
   <!-- Scripts -->
   <script src="../student/js/student-layout.js?v=20"></script>
-  <script src="js/review-requirements.js?v=20"></script>
+  <script src="../js/document-viewer-modal.js?v=2"></script>
+  <script src="js/review-requirements.js?v=22"></script>
 </body>
 </html>

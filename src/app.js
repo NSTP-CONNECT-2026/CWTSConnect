@@ -21,8 +21,11 @@ const attendanceRoutes = require('./routes/attendanceRoutes');
 const renderedHoursRoutes = require('./routes/renderedHoursRoutes');
 const makeUpRequestRoutes = require('./routes/makeUpRequestRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const requestTypeRoutes = require('./routes/requestTypeRoutes');
+const skillRoutes = require('./routes/skillRoutes');
 const { isAuthenticated } = require('./middlewares/authMiddleware');
 const { roleMiddleware } = require('./middlewares/roleMiddleware');
+const FileSessionStore = require('./config/sessionStore');
 
 const app = express();
 
@@ -50,8 +53,12 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Favicon handler to avoid browser 404 noise
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 // ─── Session ──────────────────────────────────────────────────────────────────
 app.use(session({
+  store: new FileSessionStore(),
   secret: process.env.SESSION_SECRET || 'nstp-connect-session-secret-2024',
   resave: false,
   saveUninitialized: false,
@@ -217,10 +224,14 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/rendered-hours', renderedHoursRoutes);
 app.use('/api/make-up-requests', makeUpRequestRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/request-types', requestTypeRoutes);
+app.use('/api/nstp/request-types', requestTypeRoutes);
+app.use('/api/skills', skillRoutes);
+app.use('/api/nstp/skills', skillRoutes);
 
-// ─── Root Redirect ────────────────────────────────────────────────────────────
+// ─── Root Route (Landing Page) ───────────────────────────────────────────────
 app.get('/', (req, res) => {
-  res.redirect('/login.html');
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // ─── 404 Handler ──────────────────────────────────────────────────────────────

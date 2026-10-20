@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../student/css/student-layout.css?v=20" />
   <link rel="stylesheet" href="css/nstp-coordinator.css?v=20" />
-  <link rel="stylesheet" href="css/nstp-community-requests.css?v=20" />
+  <link rel="stylesheet" href="css/nstp-community-requests.css?v=30" />
 </head>
 <body>
   <div class="dashboard-layout">
@@ -187,63 +187,33 @@
 
         <!-- Section 12 Skeleton Loading Container -->
         <div id="requestsSkeleton" class="page-loading-skeleton">
-          <!-- 1. Stats Summary Tiles Skeleton -->
-          <div class="stats-row" style="margin-bottom: 24px;">
-            <div class="skeleton-card" style="padding: 18px 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <div class="skeleton skeleton-text" style="width: 100px; height: 13px;"></div>
-                <div class="skeleton skeleton-icon" style="width: 34px; height: 34px; border-radius: var(--radius-sm);"></div>
-              </div>
-              <div class="skeleton skeleton-title" style="width: 50px; height: 28px;"></div>
-            </div>
-
-            <div class="skeleton-card" style="padding: 18px 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <div class="skeleton skeleton-text" style="width: 110px; height: 13px;"></div>
-                <div class="skeleton skeleton-icon" style="width: 34px; height: 34px; border-radius: var(--radius-sm);"></div>
-              </div>
-              <div class="skeleton skeleton-title" style="width: 45px; height: 28px;"></div>
-            </div>
-
-            <div class="skeleton-card" style="padding: 18px 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <div class="skeleton skeleton-text" style="width: 130px; height: 13px;"></div>
-                <div class="skeleton skeleton-icon" style="width: 34px; height: 34px; border-radius: var(--radius-sm);"></div>
-              </div>
-              <div class="skeleton skeleton-title" style="width: 45px; height: 28px;"></div>
-            </div>
-
-            <div class="skeleton-card" style="padding: 18px 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <div class="skeleton skeleton-text" style="width: 120px; height: 13px;"></div>
-                <div class="skeleton skeleton-icon" style="width: 34px; height: 34px; border-radius: var(--radius-sm);"></div>
-              </div>
-              <div class="skeleton skeleton-title" style="width: 40px; height: 28px;"></div>
-            </div>
+          <!-- Search Bar Skeleton -->
+          <div class="skeleton-card" style="padding: 14px 18px; margin-bottom: 16px;">
+            <div class="skeleton skeleton-input" style="width: 100%; height: 40px; border-radius: var(--radius-md);"></div>
           </div>
 
-          <!-- 2. Search & Filter Toolbar Skeleton -->
-          <div class="skeleton-card" style="padding: 16px 20px; margin-bottom: 24px; flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 12px; flex: 1; flex-wrap: wrap;">
-              <div class="skeleton skeleton-input" style="width: 320px; height: 40px; border-radius: var(--radius-md);"></div>
-              <div class="skeleton skeleton-btn" style="width: 160px; height: 40px; border-radius: var(--radius-md);"></div>
-              <div class="skeleton skeleton-btn" style="width: 160px; height: 40px; border-radius: var(--radius-md);"></div>
-            </div>
-            <div class="skeleton skeleton-btn" style="width: 100px; height: 40px; border-radius: var(--radius-md);"></div>
-          </div>
-
-          <!-- 3. Community Requests Data Table Skeleton -->
+          <!-- Community Requests Data Table Skeleton -->
           <div class="table-card" style="padding: 0; overflow: hidden;">
+            <div style="padding: 10px 18px; border-bottom: 1px solid rgba(226, 232, 240, 0.8); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <div class="skeleton skeleton-btn" style="width: 52px; height: 28px; border-radius: var(--radius-sm);"></div>
+                <div class="skeleton skeleton-btn" style="width: 76px; height: 28px; border-radius: var(--radius-sm);"></div>
+                <div class="skeleton skeleton-btn" style="width: 82px; height: 28px; border-radius: var(--radius-sm);"></div>
+                <div class="skeleton skeleton-btn" style="width: 76px; height: 28px; border-radius: var(--radius-sm);"></div>
+              </div>
+              <div style="margin-left: auto;">
+                <div class="skeleton skeleton-btn" style="width: 110px; height: 28px; border-radius: var(--radius-sm);"></div>
+              </div>
+            </div>
             <div class="table-responsive">
               <table class="neu-table" style="pointer-events: none; margin: 0;">
                 <thead>
                   <tr>
-                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 130px; height: 13px;"></div></th>
-                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 160px; height: 13px;"></div></th>
-                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 90px; height: 13px;"></div></th>
-                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 120px; height: 13px;"></div></th>
-                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 100px; height: 13px;"></div></th>
-                    <th style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-text" style="width: 80px; height: 13px; margin-left: auto;"></div></th>
+                    <th style="padding: 16px 20px; width: 24%; min-width: 170px;"><div class="skeleton skeleton-text" style="width: 130px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px; width: 40%; min-width: 240px;"><div class="skeleton skeleton-text" style="width: 160px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px; width: 18%; min-width: 140px;"><div class="skeleton skeleton-text" style="width: 90px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px; width: 11%; min-width: 105px;"><div class="skeleton skeleton-text" style="width: 80px; height: 13px;"></div></th>
+                    <th style="padding: 16px 20px; text-align: center; width: 7%; min-width: 70px;"><div class="skeleton skeleton-text" style="width: 48px; height: 13px; margin: 0 auto;"></div></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -264,14 +234,8 @@
                       </div>
                     </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 110px; height: 13px;"></div></td>
-                    <td style="padding: 16px 20px;">
-                      <div style="display: flex; flex-direction: column; gap: 6px;">
-                        <div class="skeleton skeleton-text" style="width: 80px; height: 13px;"></div>
-                        <div class="skeleton skeleton-row" style="width: 100px; height: 6px; border-radius: 4px;"></div>
-                      </div>
-                    </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 90px; height: 22px;"></div></td>
-                    <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 90px; height: 32px; margin-left: auto;"></div></td>
+                    <td style="padding: 16px 20px; text-align: center;"><div class="skeleton skeleton-btn" style="width: 32px; height: 32px; border-radius: var(--radius-sm); margin: 0 auto;"></div></td>
                   </tr>
 
                   <tr>
@@ -291,14 +255,8 @@
                       </div>
                     </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 100px; height: 13px;"></div></td>
-                    <td style="padding: 16px 20px;">
-                      <div style="display: flex; flex-direction: column; gap: 6px;">
-                        <div class="skeleton skeleton-text" style="width: 70px; height: 13px;"></div>
-                        <div class="skeleton skeleton-row" style="width: 100px; height: 6px; border-radius: 4px;"></div>
-                      </div>
-                    </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 85px; height: 22px;"></div></td>
-                    <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 90px; height: 32px; margin-left: auto;"></div></td>
+                    <td style="padding: 16px 20px; text-align: center;"><div class="skeleton skeleton-btn" style="width: 32px; height: 32px; border-radius: var(--radius-sm); margin: 0 auto;"></div></td>
                   </tr>
 
                   <tr>
@@ -318,14 +276,8 @@
                       </div>
                     </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 115px; height: 13px;"></div></td>
-                    <td style="padding: 16px 20px;">
-                      <div style="display: flex; flex-direction: column; gap: 6px;">
-                        <div class="skeleton skeleton-text" style="width: 90px; height: 13px;"></div>
-                        <div class="skeleton skeleton-row" style="width: 100px; height: 6px; border-radius: 4px;"></div>
-                      </div>
-                    </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 95px; height: 22px;"></div></td>
-                    <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 90px; height: 32px; margin-left: auto;"></div></td>
+                    <td style="padding: 16px 20px; text-align: center;"><div class="skeleton skeleton-btn" style="width: 32px; height: 32px; border-radius: var(--radius-sm); margin: 0 auto;"></div></td>
                   </tr>
 
                   <tr>
@@ -345,14 +297,8 @@
                       </div>
                     </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 105px; height: 13px;"></div></td>
-                    <td style="padding: 16px 20px;">
-                      <div style="display: flex; flex-direction: column; gap: 6px;">
-                        <div class="skeleton skeleton-text" style="width: 75px; height: 13px;"></div>
-                        <div class="skeleton skeleton-row" style="width: 100px; height: 6px; border-radius: 4px;"></div>
-                      </div>
-                    </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 80px; height: 22px;"></div></td>
-                    <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 90px; height: 32px; margin-left: auto;"></div></td>
+                    <td style="padding: 16px 20px; text-align: center;"><div class="skeleton skeleton-btn" style="width: 32px; height: 32px; border-radius: var(--radius-sm); margin: 0 auto;"></div></td>
                   </tr>
 
                   <tr>
@@ -372,14 +318,8 @@
                       </div>
                     </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 95px; height: 13px;"></div></td>
-                    <td style="padding: 16px 20px;">
-                      <div style="display: flex; flex-direction: column; gap: 6px;">
-                        <div class="skeleton skeleton-text" style="width: 85px; height: 13px;"></div>
-                        <div class="skeleton skeleton-row" style="width: 100px; height: 6px; border-radius: 4px;"></div>
-                      </div>
-                    </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 90px; height: 22px;"></div></td>
-                    <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 90px; height: 32px; margin-left: auto;"></div></td>
+                    <td style="padding: 16px 20px; text-align: center;"><div class="skeleton skeleton-btn" style="width: 32px; height: 32px; border-radius: var(--radius-sm); margin: 0 auto;"></div></td>
                   </tr>
                 </tbody>
               </table>
@@ -387,55 +327,13 @@
           </div>
         </div>
 
-        <!-- Real Content Container -->
+          <!-- Real Content Container -->
         <div id="requestsContent" class="hidden">
 
-          <!-- 1. Stats Summary Tiles (4-Box Grid) -->
-          <div class="stats-row">
-            <div class="stat-tile">
-              <div class="stat-tile-header">
-                <span class="stat-tile-label">Total Requests</span>
-                <div class="stat-tile-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
-                </div>
-              </div>
-              <div class="stat-tile-value" id="statTotalRequests">0</div>
-            </div>
-
-            <div class="stat-tile">
-              <div class="stat-tile-header">
-                <span class="stat-tile-label">Pending Approval</span>
-                <div class="stat-tile-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                </div>
-              </div>
-              <div class="stat-tile-value" id="statPendingRequests" style="color: #D97706;">0</div>
-            </div>
-
-            <div class="stat-tile">
-              <div class="stat-tile-header">
-                <span class="stat-tile-label">Approved (DSS Ready)</span>
-                <div class="stat-tile-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
-              </div>
-              <div class="stat-tile-value" id="statApprovedRequests" style="color: #059669;">0</div>
-            </div>
-
-            <div class="stat-tile">
-              <div class="stat-tile-header">
-                <span class="stat-tile-label">Rejected / Cancelled</span>
-                <div class="stat-tile-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                </div>
-              </div>
-              <div class="stat-tile-value" id="statRejectedRequests" style="color: #DC2626;">0</div>
-            </div>
-          </div>
-
-          <!-- 2. Search & Filter Toolbar -->
-          <div class="toolbar-card">
-            <div class="toolbar-left">
+          <!-- Main View: Community Requests List Table -->
+          <div id="requestsMainView">
+            <!-- Standalone Search Bar Card -->
+            <div class="search-card">
               <div class="search-input-wrap">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <circle cx="11" cy="11" r="8"></circle>
@@ -443,57 +341,196 @@
                 </svg>
                 <input type="text" id="requestsSearchInput" class="toolbar-input" placeholder="Search by activity title, community, or barangay..." />
               </div>
+            </div>
 
-              <select id="requestsStatusFilter" class="toolbar-select">
-                <option value="all">All Request Statuses</option>
-                <option value="pending">Pending Approval</option>
-                <option value="approved">Approved (DSS Ready)</option>
-                <option value="rejected">Rejected</option>
-              </select>
+            <!-- Community Requests Data Table Card with Integrated Status Filter Buttons -->
+            <div class="table-card" id="requestsTableCard">
+              <!-- Table Header Toolbar with Compact Status Filter Buttons & Request Type Button -->
+              <div class="table-card-toolbar">
+                <!-- Left Side: Status Filter Buttons -->
+                <div class="status-filter-pills" role="tablist" aria-label="Filter requests by status">
+                  <button type="button" class="status-pill-btn active" data-status="all" id="btnFilterAll" role="tab" aria-selected="true">
+                    <span class="status-pill-label">All</span>
+                    <span class="status-pill-badge" id="countAll">0</span>
+                  </button>
+                  <button type="button" class="status-pill-btn" data-status="pending" id="btnFilterPending" role="tab" aria-selected="false">
+                    <span class="status-pill-label">Pending</span>
+                    <span class="status-pill-badge badge-count-pending" id="countPending">0</span>
+                  </button>
+                  <button type="button" class="status-pill-btn" data-status="approved" id="btnFilterApproved" role="tab" aria-selected="false">
+                    <span class="status-pill-label">Approved</span>
+                    <span class="status-pill-badge badge-count-approved" id="countApproved">0</span>
+                  </button>
+                  <button type="button" class="status-pill-btn" data-status="rejected" id="btnFilterRejected" role="tab" aria-selected="false">
+                    <span class="status-pill-label">Rejected</span>
+                    <span class="status-pill-badge badge-count-rejected" id="countRejected">0</span>
+                  </button>
+                </div>
 
-              <select id="requestsTypeFilter" class="toolbar-select">
-                <option value="all">All Activity Types</option>
-                <option value="health">Health & Sanitation</option>
-                <option value="education">Literacy & Education</option>
-                <option value="environment">Environmental / Clean-up</option>
-                <option value="drrm">Disaster Preparedness</option>
-                <option value="livelihood">Livelihood & Skills</option>
-              </select>
+                <!-- Right Side: Request Type Button (Opens Sub-page) -->
+                <div class="table-toolbar-right">
+                  <button type="button" class="table-action-btn" id="btnRequestType">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    </svg>
+                    <span>Request Type</span>
+                  </button>
+                </div>
+              </div>
 
-              <button type="button" id="clearRequestsFiltersBtn" class="btn btn-secondary btn-sm">Clear Filters</button>
+              <div class="table-responsive">
+                <table class="neu-table" id="requestsTable">
+                  <thead>
+                    <tr>
+                      <th style="width: 24%; min-width: 170px;">Community</th>
+                      <th style="width: 40%; min-width: 240px;">Activity</th>
+                      <th style="width: 18%; min-width: 140px;">Location</th>
+                      <th style="width: 11%; min-width: 105px;">Status</th>
+                      <th style="width: 7%; min-width: 70px; text-align: center;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="requestsTableBody">
+                    <!-- Populated dynamically by community-requests.js -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Empty State -->
+              <div id="requestsEmptyState" class="empty-table-state hidden">
+                <div class="empty-state-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  </svg>
+                </div>
+                <div class="empty-state-title">No Community Requests Found</div>
+                <div class="empty-state-desc">No community requests match your current search and filter settings.</div>
+              </div>
             </div>
           </div>
 
-          <!-- 3. Community Requests Data Table -->
-          <div class="table-card" id="requestsTableCard">
-            <div class="table-responsive">
-              <table class="neu-table" id="requestsTable">
-                <thead>
-                  <tr>
-                    <th>Community Partner</th>
-                    <th>Activity Title & Category</th>
-                    <th>Location</th>
-                    <th>Volunteers Needed</th>
-                    <th>Request Status</th>
-                    <th>Review Action</th>
-                  </tr>
-                </thead>
-                <tbody id="requestsTableBody">
-                  <!-- Populated dynamically by community-requests.js -->
-                </tbody>
-              </table>
+          <!-- Sub-Page View: School-Offered Services & Request Types Management -->
+          <div id="requestTypesSubpageView" class="hidden">
+            <!-- Standalone Search Bar Card with Aligned Less-than Back Button -->
+            <div class="search-card subpage-search-card">
+              <button type="button" class="btn-subpage-back" id="btnBackToRequests" title="Back to Community Requests" aria-label="Back to Community Requests">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+                </svg>
+              </button>
+
+              <div class="search-input-wrap" id="wrapSearchRequestTypes">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="searchRequestTypesInput" class="toolbar-input" placeholder="Search service name, skill, or scope..." />
+              </div>
+
+              <div class="search-input-wrap hidden" id="wrapSearchSkills">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="searchSkillsInput" class="toolbar-input" placeholder="Search skill name or description..." />
+              </div>
             </div>
 
-            <!-- Empty State -->
-            <div id="requestsEmptyState" class="empty-table-state hidden">
-              <div class="empty-state-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                </svg>
+            <!-- Subpage Data Table Card -->
+            <div class="table-card" id="subpageTableCard">
+              <!-- Table Header Toolbar with Request Types & Skills Tabs on Left, Add Action on Right -->
+              <div class="table-card-toolbar">
+                <!-- Left Side: Tabs Switcher (Request Types & Skills Masterlist) -->
+                <div class="status-filter-pills" role="tablist" aria-label="Switch between request types and skills masterlist">
+                  <button type="button" class="status-pill-btn active" id="subtabRequestTypes" data-tab="types" role="tab" aria-selected="true">
+                    <span class="status-pill-label">Request Types</span>
+                    <span class="status-pill-badge badge-count-approved" id="countRequestTypes">0</span>
+                  </button>
+                  <button type="button" class="status-pill-btn" id="subtabSkills" data-tab="skills" role="tab" aria-selected="false">
+                    <span class="status-pill-label">Skills Masterlist</span>
+                    <span class="status-pill-badge" id="countSkillsBadge">0</span>
+                  </button>
+                </div>
+
+                <!-- Right Side: Context-aware Add Action Button -->
+                <div class="table-toolbar-right">
+                  <button type="button" class="table-action-btn primary-action-btn" id="btnOpenAddTypeModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Add Request Type</span>
+                  </button>
+
+                  <button type="button" class="table-action-btn primary-action-btn hidden" id="btnOpenAddSkillModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Add Skill</span>
+                  </button>
+                </div>
               </div>
-              <div class="empty-state-title">No Community Requests Found</div>
-              <div class="empty-state-desc">No community requests match your current search and filter settings.</div>
+
+              <!-- View 1: Request Types Table -->
+              <div id="requestTypesSectionView">
+                <div class="table-responsive">
+                  <table class="neu-table" id="requestTypesTable">
+                    <thead>
+                      <tr>
+                        <th style="width: 25%;">Service Name</th>
+                        <th style="width: 35%;">Description & Scope</th>
+                        <th style="width: 26%;">Required Student Skills</th>
+                        <th style="width: 14%; text-align: right;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="requestTypesTableBody">
+                      <!-- Populated dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Empty State -->
+                <div id="requestTypesEmptyState" class="empty-table-state hidden">
+                  <div class="empty-state-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                  </div>
+                  <div class="empty-state-title">No Request Types Found</div>
+                  <div class="empty-state-desc">No services match your search or none have been added yet. Click "+ Add Request Type" to create one.</div>
+                </div>
+              </div>
+
+              <!-- View 2: Skills Masterlist Table -->
+              <div id="skillsSectionView" class="hidden">
+                <div class="table-responsive">
+                  <table class="neu-table" id="skillsTable">
+                    <thead>
+                      <tr>
+                        <th style="width: 35%;">Skill Name</th>
+                        <th style="width: 51%;">Description</th>
+                        <th style="width: 14%; text-align: right;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="skillsTableBody">
+                      <!-- Populated dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Empty State -->
+                <div id="skillsEmptyState" class="empty-table-state hidden">
+                  <div class="empty-state-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                  </div>
+                  <div class="empty-state-title">No Skills Found</div>
+                  <div class="empty-state-desc">No skills match your search. Click "+ Add Skill" to register a new skill.</div>
+                </div>
+              </div>
             </div>
+
           </div>
 
         </div>
@@ -510,15 +547,172 @@
     <div class="modal-card">
       <div class="modal-header">
         <h3 class="modal-title">Community Request Inspection & Review</h3>
-        <button type="button" class="modal-close-btn" onclick="closeInspectModal()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <button type="button" class="modal-close-btn" id="btnCloseInspectModal" data-modal-dismiss="true" onclick="closeInspectModal()" aria-label="Close modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
       <div class="modal-body" id="inspectModalBody">
         <!-- Dynamically rendered -->
       </div>
       <div class="modal-footer" id="inspectModalFooter">
-        <button type="button" class="btn btn-secondary" onclick="closeInspectModal()">Close</button>
+        <button type="button" class="btn btn-secondary" data-modal-dismiss="true" onclick="closeInspectModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       ADD / EDIT REQUEST TYPE MODAL
+       ==================================================================== -->
+  <div id="requestTypeModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="requestTypeModalTitle">Add New Request Type</h3>
+        <button type="button" class="modal-close-btn" id="btnCloseRequestTypeModal" data-modal-dismiss="true" onclick="closeRequestTypeModal()" aria-label="Close modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="requestTypeForm" novalidate>
+        <input type="hidden" id="editingTypeId" value="" />
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px; padding: 20px 24px;">
+          <div class="form-group">
+            <label class="form-label" for="inputTypeName">
+              <span>Service / Request Name <span class="required" style="color: #dc2626;">*</span></span>
+            </label>
+            <input type="text" id="inputTypeName" class="form-input" placeholder="e.g. Coastal & Clean-up Drive" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="inputTypeDesc">
+              <span>Service Description & Scope of Work <span class="required" style="color: #dc2626;">*</span></span>
+            </label>
+            <textarea id="inputTypeDesc" class="form-textarea" rows="4" placeholder="Describe the service objectives, volunteer activities, and expected community outcomes..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <span>Required Student Skills (One or Many) <span class="required" style="color: #dc2626;">*</span></span>
+            </label>
+            <!-- Dropdown to pick skills -->
+            <div class="skill-picker-wrap">
+              <select id="selectSkillDropdown" class="form-select" style="margin-bottom: 8px;">
+                <option value="">-- Choose skill to add (one or many) --</option>
+                <!-- Populated dynamically with AVAILABLE_SKILLS -->
+              </select>
+              <div id="selectedSkillsBadgeList" class="selected-skills-container">
+                <!-- Selected skill tags rendered here with remove button -->
+              </div>
+              <div class="helper-text" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">
+                Choose one or multiple skills needed from the students for this community service.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; padding: 14px 24px;">
+          <button type="button" class="btn btn-secondary" id="btnCancelRequestTypeModal" data-modal-dismiss="true" onclick="closeRequestTypeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveRequestType">
+            <span id="btnSaveRequestTypeText">Save Request Type</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       DELETE REQUEST TYPE CONFIRMATION MODAL
+       ==================================================================== -->
+  <div id="deleteTypeModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #dc2626;">Delete Request Type</h3>
+        <button type="button" class="modal-close-btn" id="btnCloseDeleteTypeModal" data-modal-dismiss="true" onclick="closeDeleteTypeModal()" aria-label="Close modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 20px 24px;">
+        <p style="font-size: 0.875rem; color: var(--text-main); margin-bottom: 8px;">Are you sure you want to delete this school service request type?</p>
+        <div style="font-weight: 700; color: var(--cwts-primary-dark); font-size: 0.9375rem; padding: 10px; background: rgba(0,0,0,0.04); border-radius: 6px; border: 1px solid rgba(226, 232, 240, 0.8);" id="deleteTypeNameTarget"></div>
+        <p style="font-size: 0.75rem; color: #dc2626; margin-top: 10px;">Warning: Partner communities will no longer be able to select this service for new deployment requests.</p>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; padding: 14px 24px;">
+        <button type="button" class="btn btn-secondary" id="btnCancelDeleteTypeModal" data-modal-dismiss="true" onclick="closeDeleteTypeModal()">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmDeleteType" style="background: #dc2626; color: #fff; border: none; padding: 0 16px; height: 38px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer;">
+          <span>Delete Service</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       ADD / EDIT SKILL MODAL
+       ==================================================================== -->
+  <div id="skillModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="skillModalTitle">Add New Skill</h3>
+        <button type="button" class="modal-close-btn" id="btnCloseSkillModal" data-modal-dismiss="true" onclick="closeSkillModal()" aria-label="Close modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="skillForm" novalidate>
+        <input type="hidden" id="editingSkillId" value="" />
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px; padding: 20px 24px;">
+          <div class="form-group">
+            <label class="form-label" for="inputSkillName">
+              <span>Skill Name <span class="required" style="color: #dc2626;">*</span></span>
+            </label>
+            <input type="text" id="inputSkillName" class="form-input" placeholder="e.g. Basic Carpentry, Water Sanitation" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="inputSkillDesc">
+              <span>Description / Competency Details</span>
+            </label>
+            <textarea id="inputSkillDesc" class="form-textarea" rows="3" placeholder="Brief summary of tasks or abilities involved in this skill..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; padding: 14px 24px;">
+          <button type="button" class="btn btn-secondary" id="btnCancelSkillModal" data-modal-dismiss="true" onclick="closeSkillModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveSkill">
+            <span id="btnSaveSkillText">Save Skill</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       DELETE SKILL CONFIRMATION MODAL
+       ==================================================================== -->
+  <div id="deleteSkillModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #dc2626;">Delete Skill</h3>
+        <button type="button" class="modal-close-btn" id="btnCloseDeleteSkillModal" data-modal-dismiss="true" onclick="closeDeleteSkillModal()" aria-label="Close modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 20px 24px;">
+        <p style="font-size: 0.875rem; color: var(--text-main); margin-bottom: 8px;">Are you sure you want to delete this skill?</p>
+        <div style="font-weight: 700; color: var(--cwts-primary-dark); font-size: 0.9375rem; padding: 10px; background: rgba(0,0,0,0.04); border-radius: 6px; border: 1px solid rgba(226, 232, 240, 0.8);" id="deleteSkillNameTarget"></div>
+        <p style="font-size: 0.75rem; color: #dc2626; margin-top: 10px;">Notice: This skill will be removed from future selection across all institutional services.</p>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; padding: 14px 24px;">
+        <button type="button" class="btn btn-secondary" id="btnCancelDeleteSkillModal" data-modal-dismiss="true" onclick="closeDeleteSkillModal()">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmDeleteSkill" style="background: #dc2626; color: #fff; border: none; padding: 0 16px; height: 38px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer;">
+          <span>Delete Skill</span>
+        </button>
       </div>
     </div>
   </div>
@@ -536,6 +730,6 @@
 
   <!-- Scripts -->
   <script src="../student/js/student-layout.js?v=20"></script>
-  <script src="js/community-requests.js?v=20"></script>
+  <script src="js/community-requests.js?v=34"></script>
 </body>
 </html>

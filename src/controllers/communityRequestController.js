@@ -9,6 +9,7 @@ const {
   getCommunityRequestById,
   updateCommunityRequest,
   cancelCommunityRequest,
+  deleteCommunityRequest,
   getRequestSummary
 } = require('../services/communityRequestService');
 
@@ -237,11 +238,58 @@ async function getRequestSummaryStats(req, res) {
   }
 }
 
+/**
+ * DELETE /api/community/requests/:requestId
+ * Permanently deletes a cancelled community request
+ */
+async function deleteRequest(req, res) {
+  try {
+    const { requestId } = req.params;
+    const userId = req.session.user.user_id;
+
+    if (!requestId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Request ID is required'
+      });
+    }
+
+    await deleteCommunityRequest(requestId, userId);
+
+    res.json({
+      success: true,
+      message: 'Cancelled request deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete request error:', error.message);
+
+    if (error.message.includes('Only cancelled requests')) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+
+    if (error.message.includes('not found') || error.message.includes('access denied')) {
+      return res.status(404).json({
+        success: false,
+        message: error.message
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete request: ' + error.message
+    });
+  }
+}
+
 module.exports = {
   createRequest,
   getRequests,
   getRequestById,
   updateRequest,
   cancelRequest,
+  deleteRequest,
   getRequestSummaryStats
 };

@@ -19,11 +19,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const filterCourse = document.getElementById('filterCourse');
   const filterSection = document.getElementById('filterSection');
   const filterStatus = document.getElementById('filterStatus');
-  const filterSemester = document.getElementById('filterSemester');
+  const filterDateFrom = document.getElementById('filterDateFrom');
+  const filterDateTo = document.getElementById('filterDateTo');
   
-  const generateReportBtn = document.getElementById('generateReportBtn');
   const resetFiltersBtn = document.getElementById('resetFiltersBtn');
-  const exportCsvBtn = document.getElementById('exportCsvBtn');
   const printReportBtn = document.getElementById('printReportBtn');
 
   const reportSkeleton = document.getElementById('reportSkeleton');
@@ -55,12 +54,14 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    // Generate & Preview Button
-    if (generateReportBtn) {
-      generateReportBtn.addEventListener('click', () => {
-        fetchAndRenderReport();
-      });
-    }
+    // Dynamic Filter Change Triggers (Real-time Filtering)
+    [filterCourse, filterSection, filterStatus, filterDateFrom, filterDateTo].forEach(ctrl => {
+      if (ctrl) {
+        ctrl.addEventListener('change', () => {
+          fetchAndRenderReport();
+        });
+      }
+    });
 
     // Reset Filters Button
     if (resetFiltersBtn) {
@@ -68,6 +69,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filterCourse) filterCourse.value = 'ALL';
         if (filterSection) filterSection.value = 'ALL';
         if (filterStatus) filterStatus.value = 'ALL';
+        if (filterDateFrom) filterDateFrom.value = '';
+        if (filterDateTo) filterDateTo.value = '';
         fetchAndRenderReport();
       });
     }
@@ -76,13 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (printReportBtn) {
       printReportBtn.addEventListener('click', () => {
         window.print();
-      });
-    }
-
-    // Export CSV Button
-    if (exportCsvBtn) {
-      exportCsvBtn.addEventListener('click', () => {
-        exportCurrentReportToCSV();
       });
     }
   }
@@ -97,9 +93,19 @@ document.addEventListener('DOMContentLoaded', function () {
       const course = filterCourse ? filterCourse.value : 'ALL';
       const section = filterSection ? filterSection.value : 'ALL';
       const status = filterStatus ? filterStatus.value : 'ALL';
-      const semester = filterSemester ? filterSemester.options[filterSemester.selectedIndex].text : '2nd Sem, A.Y. 2025–2026';
+      const dateFrom = filterDateFrom ? filterDateFrom.value.trim() : '';
+      const dateTo = filterDateTo ? filterDateTo.value.trim() : '';
 
-      const url = `/api/nstp/reports/generate?type=${encodeURIComponent(currentType)}&course=${encodeURIComponent(course)}&section=${encodeURIComponent(section)}&status=${encodeURIComponent(status)}`;
+      const queryParams = new URLSearchParams({
+        type: currentType,
+        course,
+        section,
+        status,
+        dateFrom,
+        dateTo
+      });
+
+      const url = `/api/nstp/reports/generate?${queryParams.toString()}`;
 
       const res = await fetch(url, {
         method: 'GET',
@@ -114,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const result = await res.json();
       if (result.success && result.report) {
         currentReportData = result.report;
-        renderReportPreview(result.report, semester);
+        renderReportPreview(result.report, dateFrom, dateTo);
       }
     } catch (err) {
       console.error('Error loading report:', err);
@@ -126,31 +132,44 @@ document.addEventListener('DOMContentLoaded', function () {
   /**
    * Renders the institutional table and metadata
    */
-  function renderReportPreview(report, semesterText) {
+  function renderReportPreview(report, dateFrom, dateTo) {
     if (!report) return;
 
     // 1. Header Titles & Metadata
-    if (previewReportTitle) previewReportTitle.textContent = report.title || 'Official NSTP Report';
+    if (previewReportTitle) previewReportTitle.textContent = report.title || 'Official CWTS Report';
     if (previewReportMeta) {
       const now = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      previewReportMeta.textContent = `${semesterText} • Generated on ${now}`;
+      let rangeText = 'All-Time Records';
+
+      const formatD = (dStr) => {
+        try {
+          const parts = dStr.split('-');
+          if (parts.length === 3) {
+            const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+            return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+          }
+          return dStr;
+        } catch (e) {
+          return dStr;
+        }
+      };
+
+      if (dateFrom && dateTo) {
+        rangeText = `Period: ${formatD(dateFrom)} – ${formatD(dateTo)}`;
+      } else if (dateFrom) {
+        rangeText = `Starting from: ${formatD(dateFrom)}`;
+      } else if (dateTo) {
+        rangeText = `Up to: ${formatD(dateTo)}`;
+      }
+
+      previewReportMeta.textContent = `${rangeText} • Generated on ${now}`;
     }
 
-    // 2. Summary Metric Strip
+    // 2. Summary Metric Strip (Removed across all reports)
     if (previewSummaryStrip) {
-      const metrics = report.summaryMetrics || {};
-      const metricEntries = Object.entries(metrics);
-      if (metricEntries.length > 0) {
-        previewSummaryStrip.innerHTML = metricEntries.map(([key, val]) => `
-          <div class="summary-strip-item">
-            <span class="summary-strip-label">${formatMetricLabel(key)}</span>
-            <span class="summary-strip-val">${escapeHtml(String(val))}</span>
-          </div>
-        `).join('');
-        previewSummaryStrip.style.display = 'flex';
-      } else {
-        previewSummaryStrip.style.display = 'none';
-      }
+      previewSummaryStrip.innerHTML = '';
+      previewSummaryStrip.style.display = 'none';
+      previewSummaryStrip.classList.add('is-empty');
     }
 
     // 3. Table Header Columns
@@ -158,8 +177,11 @@ document.addEventListener('DOMContentLoaded', function () {
       const columns = report.columns || [];
       reportTableHead.innerHTML = `
         <tr>
-          <th style="width: 40px; text-align: center;">#</th>
-          ${columns.map(col => `<th>${escapeHtml(col.label)}</th>`).join('')}
+          <th style="width: 4%; text-align: center;">#</th>
+          ${columns.map(col => {
+            const { align, widthStyle } = getColumnStyle(currentType, col.key);
+            return `<th style="${align} ${widthStyle}">${escapeHtml(col.label)}</th>`;
+          }).join('')}
         </tr>
       `;
     }
@@ -185,11 +207,109 @@ document.addEventListener('DOMContentLoaded', function () {
           <td style="text-align: center; font-weight: 600; color: #64748B;">${idx + 1}</td>
           ${columns.map(col => {
             const cellVal = row[col.key] || '—';
-            return `<td>${formatTableCell(cellVal, col.key)}</td>`;
+            const { align } = getColumnStyle(currentType, col.key);
+            return `<td style="${align}">${formatTableCell(cellVal, col.key)}</td>`;
           }).join('')}
         </tr>
       `).join('');
     }
+  }
+
+  /**
+   * Provides proportional percentage widths totaling 96% (+ 4% for # col = 100%)
+   * Keeps compact columns (course, section, status) small while giving ample room to names and numbers
+   */
+  function getColumnStyle(reportType, key) {
+    const centeredKeys = [
+      'course', 'section', 'contact_number', 'status', 'overall_status',
+      'request_id', 'target_date', 'batch_code', 'schedule', 'assigned_volunteers',
+      'date', 'time_in', 'time_out', 'hours_rendered', 'total_rendered',
+      'target_hours', 'progress', 'rating', 'punctuality', 'engagement',
+      'teamwork', 'initiative', 'overall_score', 'grade', 'medical_cert',
+      'parent_consent', 'waiver'
+    ];
+
+    const isCentered = centeredKeys.includes(key) || key.includes('status');
+    const align = isCentered ? 'text-align: center;' : 'text-align: left;';
+
+    const percentages = {
+      student_records: {
+        student_number: '15%',
+        full_name: '28%',
+        course: '8%',
+        section: '12%',
+        contact_number: '16%',
+        status: '17%'
+      },
+      requirement_compliance: {
+        student_number: '12%',
+        student_name: '21%',
+        course: '8%',
+        medical_cert: '14%',
+        parent_consent: '13%',
+        waiver: '13%',
+        overall_status: '15%'
+      },
+      community_requests: {
+        request_id: '11%',
+        barangay: '21%',
+        activity_type: '25%',
+        target_date: '12%',
+        requested_by: '14%',
+        status: '13%'
+      },
+      deployment_records: {
+        batch_code: '12%',
+        project_name: '24%',
+        partner_community: '18%',
+        assigned_volunteers: '11%',
+        schedule: '14%',
+        status: '17%'
+      },
+      attendance_logs: {
+        date: '11%',
+        student_name: '20%',
+        course: '8%',
+        community: '17%',
+        time_in: '9%',
+        time_out: '9%',
+        hours_rendered: '10%',
+        status: '12%'
+      },
+      rendered_hours: {
+        student_number: '12%',
+        student_name: '22%',
+        course: '8%',
+        total_rendered: '13%',
+        target_hours: '12%',
+        progress: '13%',
+        status: '16%'
+      },
+      community_feedback: {
+        date: '11%',
+        community: '21%',
+        official_name: '16%',
+        rating: '16%',
+        feedback_comment: '32%'
+      },
+      evaluation_records: {
+        student_number: '10%',
+        student_name: '21%',
+        course: '7%',
+        punctuality: '9%',
+        engagement: '9%',
+        teamwork: '9%',
+        initiative: '9%',
+        overall_score: '10%',
+        grade: '12%'
+      }
+    };
+
+    const typeConfig = percentages[reportType] || {};
+    const width = typeConfig[key] || '';
+    const widthStyle = width ? `width: ${width};` : '';
+
+    return { align, widthStyle };
   }
 
   function formatTableCell(val, key) {
@@ -207,6 +327,10 @@ document.addEventListener('DOMContentLoaded', function () {
       return `<span class="badge badge-verified">${escapeHtml(str)}</span>`;
     }
 
+    if (str === 'Cancelled' || str === 'Rejected' || str === 'Incomplete' || str === 'Missing') {
+      return `<span class="badge badge-inactive">${escapeHtml(str)}</span>`;
+    }
+
     if (key === 'grade' && str.includes('Outstanding')) {
       return `<strong style="color: var(--cwts-primary-dark);">${escapeHtml(str)}</strong>`;
     }
@@ -219,46 +343,6 @@ document.addEventListener('DOMContentLoaded', function () {
       .replace(/([A-Z])/g, ' $1')
       .replace(/_/g, ' ')
       .toUpperCase();
-  }
-
-  /**
-   * Generates and downloads a clean CSV file
-   */
-  function exportCurrentReportToCSV() {
-    if (!currentReportData || !currentReportData.rows || currentReportData.rows.length === 0) {
-      alert('No data available to export.');
-      return;
-    }
-
-    const columns = currentReportData.columns || [];
-    const rows = currentReportData.rows || [];
-
-    const headers = ['#', ...columns.map(c => `"${c.label}"`)].join(',');
-    const csvRows = rows.map((r, i) => {
-      const values = columns.map(c => {
-        let val = r[c.key] || '';
-        val = String(val).replace(/"/g, '""');
-        return `"${val}"`;
-      });
-      return [i + 1, ...values].join(',');
-    });
-
-    const csvContent = [
-      `"${currentReportData.title || 'Official Report'}"`,
-      `"Generated: ${new Date().toLocaleString()}"`,
-      '',
-      headers,
-      ...csvRows
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `${currentType}_report_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   }
 
   function showLoading() {

@@ -1,0 +1,75 @@
+<mxfile host="app.diagrams.net" modified="2026-10-12T20:00:00.000Z" agent="Mozilla/5.0" version="21.0.0" type="device">
+  <diagram id="data_flow_diag" name="Data Flow Diagram">
+    <mxGraphModel dx="1400" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- USER -->
+        <mxCell id="d_user" value="USER&#xa;(Student / Instructor / Admin)" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=13;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="90" y="80" width="190" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- FRONTEND -->
+        <mxCell id="d_front" value="FRONTEND&#xa;Browser — HTTP(S) / WebSocket" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=13;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="390" y="80" width="190" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- LOAD BALANCER / EDGE -->
+        <mxCell id="d_edge" value="Load Balancer / Edge&#xa;(Caddy / NGINX) — TLS termination" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=13;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="700" y="80" width="190" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- BACKEND CONTAINER -->
+        <mxCell id="d_backend" value="BACKEND" style="swimlane;whiteSpace=wrap;html=1;startSize=55;strokeWidth=2;strokeColor=#1d4ed8;fillColor=#1e3a8a;fontSize=14;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="350" y="340" width="340" height="270" as="geometry" />
+        </mxCell>
+
+        <!-- Backend Modules -->
+        <mxCell id="m_api" value="API Gateway / Auth /&#xa;Static Files" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#cbd5e1;fillColor=#ffffff;fontSize=10;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="d_backend">
+          <mxGeometry x="15" y="66" width="145" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="m_dss" value="DSS Matching Engine&#xa;(Multi-Factor Scoring)" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#cbd5e1;fillColor=#ffffff;fontSize=10;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="d_backend">
+          <mxGeometry x="180" y="66" width="145" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="m_cmo" value="CMO Compliance&#xa;(Verification Service)" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#cbd5e1;fillColor=#ffffff;fontSize=10;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="d_backend">
+          <mxGeometry x="15" y="132" width="145" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="m_req" value="Admin &amp; CRUD&#xa;Services &amp; Requests" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#cbd5e1;fillColor=#ffffff;fontSize=10;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="d_backend">
+          <mxGeometry x="180" y="132" width="145" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="m_att" value="DTR Attendance Log&#xa;(54-Hr Target Tracking)" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#cbd5e1;fillColor=#ffffff;fontSize=10;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="d_backend">
+          <mxGeometry x="15" y="198" width="145" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="m_eval" value="360 Evaluation Service&#xa;&amp; CHED CMO Reports" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#cbd5e1;fillColor=#ffffff;fontSize=10;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="d_backend">
+          <mxGeometry x="180" y="198" width="145" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- DATABASE CYLINDER -->
+        <mxCell id="d_db" value="DATABASE&#xa;Supabase — users,&#xa;deployments, DTR, CMO" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=12;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="770" y="390" width="130" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- NOTIFICATION -->
+        <mxCell id="d_notif" value="NOTIFICATION&#xa;(email / Slack / alerts)" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=12;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="90" y="390" width="160" height="105" as="geometry" />
+        </mxCell>
+
+        <!-- CLOUDINARY -->
+        <mxCell id="d_cloud" value="Cloudinary Storage&#xa;(CMO files / events)" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563eb;fillColor=#3b82f6;fontSize=12;fontStyle=1;fontFamily=Arial;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="90" y="565" width="160" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="de_u_f" value="Uses UI / dashboards" style="edgeStyle=straight;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;fontSize=10;fontStyle=1;fontColor=#334155;" edge="1" parent="1" source="d_user" target="d_front" />
+        <mxCell id="de_f_e" value="HTTPS/WS" style="edgeStyle=straight;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;fontSize=10;fontStyle=1;fontColor=#334155;" edge="1" parent="1" source="d_front" target="d_edge" />
+        <mxCell id="de_f_b" value="REST &amp; WS endpoints" style="edgeStyle=straight;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;fontSize=10;fontStyle=1;fontColor=#334155;" edge="1" parent="1" source="d_front" target="d_backend" />
+        <mxCell id="de_e_b" value="Routes Request" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;fontSize=10;fontStyle=1;fontColor=#334155;" edge="1" parent="1" source="d_edge" target="d_backend" />
+        <mxCell id="de_b_db" value="CRUD / queries" style="edgeStyle=straight;strokeColor=#334155;strokeWidth=1.5;startArrow=classic;endArrow=classic;fontSize=10;fontStyle=1;fontColor=#334155;" edge="1" parent="1" source="d_backend" target="d_db" />
+        <mxCell id="de_b_notif" value="Trigger Alerts" style="edgeStyle=straight;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;fontSize=10;fontStyle=1;fontColor=#334155;" edge="1" parent="1" source="d_backend" target="d_notif" />
+        <mxCell id="de_cloud_b" value="Log stream / events" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#334155;strokeWidth=1.5;endArrow=classic;fontSize=10;fontStyle=1;fontColor=#334155;" edge="1" parent="1" source="d_cloud" target="d_backend" />
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

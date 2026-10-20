@@ -1,9 +1,7 @@
 /**
  * CWTSConnect — View Community Request Details Controller
- * Manages:
- *  - Fetching single request by ID
- *  - Rendering 2x2 Info Grid + Processing Status Timeline + Mini Map
- *  - Actions: Edit & Cancel (for pending requests)
+ * Clean, accurate request details view showing only user-submitted inputs,
+ * live status, coordinator feedback (if any), and community map.
  */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -23,33 +21,37 @@ document.addEventListener('DOMContentLoaded', function () {
   const detailsContent = document.getElementById('detailsContent');
   const editBtn = document.getElementById('editRequestBtn');
   const cancelBtn = document.getElementById('cancelRequestBtn');
+  const deleteBtn = document.getElementById('deleteRequestBtn');
 
-  // Fields
+  // Hero Fields
   const activityTitleEl = document.getElementById('activityTitle');
-  const requestCodeEl = document.getElementById('requestCode');
-  const createdAtEl = document.getElementById('createdAt');
-  const communitySiteSnippetEl = document.getElementById('communitySiteSnippet');
   const statusBadgeContainer = document.getElementById('statusBadgeContainer');
-
-  const activityTypeEl = document.getElementById('activityType');
-  const nstpComponentEl = document.getElementById('nstpComponent');
+  const activityTypeBadge = document.getElementById('activityTypeBadge');
+  const createdAtEl = document.getElementById('createdAt');
   const targetScheduleEl = document.getElementById('targetSchedule');
-  const estimatedHoursEl = document.getElementById('estimatedHours');
-  const beneficiariesEl = document.getElementById('beneficiaries');
-  const activityDescEl = document.getElementById('activityDescription');
 
+  // Remarks
+  const remarksBanner = document.getElementById('remarksBanner');
+  const nstpRemarksText = document.getElementById('nstpRemarksText');
+
+  // Activity Details
+  const activityDescEl = document.getElementById('activityDescription');
+  const skillsTagContainer = document.getElementById('skillsTagContainer');
+  const noSkillsMessage = document.getElementById('noSkillsMessage');
+
+  // Location Details
   const communityNameEl = document.getElementById('communityName');
   const completeAddressEl = document.getElementById('completeAddress');
-  const locationDetailsEl = document.getElementById('locationDetails');
-  const coordinatesTextEl = document.getElementById('coordinatesText');
-
-  const studentsNeededEl = document.getElementById('studentsNeeded');
-  const skillsTagContainer = document.getElementById('skillsTagContainer');
 
   // Timeline Step Elements
-  const step2 = document.getElementById('timelineStep2');
-  const step3 = document.getElementById('timelineStep3');
-  const step4 = document.getElementById('timelineStep4');
+  const timelineStep1 = document.getElementById('timelineStep1');
+  const timelineStep1Desc = document.getElementById('timelineStep1Desc');
+  const timelineStep2 = document.getElementById('timelineStep2');
+  const timelineStep2Title = document.getElementById('timelineStep2Title');
+  const timelineStep2Desc = document.getElementById('timelineStep2Desc');
+  const timelineStep3 = document.getElementById('timelineStep3');
+  const timelineStep3Title = document.getElementById('timelineStep3Title');
+  const timelineStep3Desc = document.getElementById('timelineStep3Desc');
 
   // Toast message elements
   const messageContainer = document.getElementById('messageContainer');
@@ -62,6 +64,8 @@ document.addEventListener('DOMContentLoaded', function () {
       messageContainer.style.display = 'none';
     });
   }
+
+  let mapInstance = null;
 
   // Load Request Data
   loadRequestData(requestId);
@@ -80,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      const result = await res.json();
+      const result = await res.json().catch(() => ({}));
 
       if (res.ok && result.success && result.data) {
         renderDetails(result.data);
@@ -97,74 +101,96 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function renderDetails(data) {
     const title = data.activity_title || 'Untitled Community Activity';
-    const reqCode = String(data.request_id || data.id || '').substring(0, 8);
-    const status = data.request_status || 'pending';
+    const status = (data.request_status || 'pending').toLowerCase();
     const isPending = status === 'pending';
+    const canEdit = isPending || status === 'rejected' || status === 'needs_revision';
 
-    // 1. Header Area
+    // 1. Hero Summary Information
     if (activityTitleEl) activityTitleEl.textContent = title;
-    if (requestCodeEl) requestCodeEl.textContent = reqCode ? `REQ-${reqCode.toUpperCase()}` : '---';
-    if (createdAtEl) createdAtEl.textContent = formatDate(data.created_at);
-    if (communitySiteSnippetEl) communitySiteSnippetEl.textContent = `${data.community_name || ''} (${data.municipality || ''})`;
-
     if (statusBadgeContainer) {
       statusBadgeContainer.innerHTML = getStatusBadge(status);
     }
-
-    // 2. Activity Overview Card
-    if (activityTypeEl) activityTypeEl.textContent = data.activity_type || 'CWTS Community Project';
-    if (nstpComponentEl) nstpComponentEl.textContent = data.preferred_nstp_component || 'CWTS';
+    if (activityTypeBadge) {
+      activityTypeBadge.textContent = data.activity_type || 'CWTS Project';
+    }
+    if (createdAtEl) {
+      createdAtEl.textContent = formatDate(data.created_at);
+    }
     if (targetScheduleEl) {
-      const start = formatDate(data.target_start_date);
-      const end = data.target_end_date ? formatDate(data.target_end_date) : 'Open Schedule';
-      targetScheduleEl.textContent = `${start} – ${end}`;
-    }
-    if (estimatedHoursEl) estimatedHoursEl.textContent = `${data.estimated_hours || 30}.0 Hours Total`;
-    if (beneficiariesEl) beneficiariesEl.textContent = data.beneficiaries_description || 'Community Residents & Youth';
-    if (activityDescEl) activityDescEl.textContent = data.description || 'No detailed scope of work provided.';
-
-    // 3. Location Card
-    if (communityNameEl) communityNameEl.textContent = data.community_name || 'Community Center';
-    if (completeAddressEl) completeAddressEl.textContent = data.complete_address || 'Not Specified';
-    if (locationDetailsEl) {
-      locationDetailsEl.textContent = `${data.barangay || ''}, ${data.municipality || ''}, ${data.province || ''}`.replace(/^,\s*/, '');
+      const scheduleDate = data.preferred_start_date || data.target_start_date || data.date;
+      targetScheduleEl.textContent = formatDate(scheduleDate);
     }
 
-    const lat = parseFloat(data.latitude) || 14.5995;
-    const lng = parseFloat(data.longitude) || 120.9842;
-    if (coordinatesTextEl) coordinatesTextEl.textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-
-    // Render Map
-    initViewMap(lat, lng, title);
-
-    // 4. Quota & Skills Card
-    if (studentsNeededEl) {
-      studentsNeededEl.textContent = `${data.students_needed || data.required_students || 15} CWTS Student Volunteers`;
+    // 2. Remarks / Coordinator Feedback Banner
+    if (remarksBanner && nstpRemarksText) {
+      if (data.nstp_remarks && data.nstp_remarks.trim()) {
+        nstpRemarksText.textContent = data.nstp_remarks.trim();
+        remarksBanner.classList.remove('hidden');
+        if (status === 'rejected' || status === 'needs_revision') {
+          remarksBanner.className = 'remarks-banner rejected';
+        } else if (status === 'approved') {
+          remarksBanner.className = 'remarks-banner approved';
+        } else {
+          remarksBanner.className = 'remarks-banner';
+        }
+      } else {
+        remarksBanner.classList.add('hidden');
+      }
     }
 
+    // 3. Activity Description & Scope of Work
+    if (activityDescEl) {
+      const desc = data.activity_description || data.description;
+      activityDescEl.textContent = desc && desc.trim() ? desc.trim() : 'No detailed description provided.';
+    }
+
+    // 4. Required Skills Tags
     if (skillsTagContainer) {
       let skills = [];
-      if (Array.isArray(data.skills_required)) {
-        skills = data.skills_required;
-      } else if (typeof data.skills_required === 'string' && data.skills_required) {
-        skills = data.skills_required.split(',').map(s => s.trim()).filter(Boolean);
+      const rawSkills = data.needed_skills || data.skills_required;
+      if (Array.isArray(rawSkills)) {
+        skills = rawSkills;
+      } else if (typeof rawSkills === 'string' && rawSkills.trim()) {
+        skills = rawSkills.split(',').map(s => s.trim()).filter(Boolean);
       }
 
-      if (skills.length === 0) {
-        skills = ['Community Engagement', 'General Volunteering', 'CWTS Civic Service'];
+      if (skills.length > 0) {
+        skillsTagContainer.innerHTML = skills.map(skill => `
+          <span class="skill-tag">${escapeHtml(skill)}</span>
+        `).join('');
+        skillsTagContainer.style.display = 'flex';
+        if (noSkillsMessage) noSkillsMessage.classList.add('hidden');
+      } else {
+        skillsTagContainer.innerHTML = '';
+        skillsTagContainer.style.display = 'none';
+        if (noSkillsMessage) noSkillsMessage.classList.remove('hidden');
       }
-
-      skillsTagContainer.innerHTML = skills.map(skill => `
-        <span class="skill-tag" style="cursor: default;">${escapeHtml(skill)}</span>
-      `).join('');
     }
 
-    // 5. Timeline States
-    updateTimeline(status);
+    // 5. Community Location & Interactive Map
+    const commName = data.community_name || 'Community Center';
+    const addressParts = [
+      data.complete_address || data.community_address || '',
+      data.barangay ? `Brgy. ${data.barangay}` : '',
+      data.municipality || '',
+      data.province || ''
+    ].filter(Boolean);
 
-    // 6. Action Buttons
+    if (communityNameEl) communityNameEl.textContent = commName;
+    if (completeAddressEl) {
+      completeAddressEl.textContent = addressParts.length > 0 ? addressParts.join(', ') : 'Not Specified';
+    }
+
+    const lat = parseFloat(data.latitude) || 14.2780;
+    const lng = parseFloat(data.longitude) || 121.4170;
+    initViewMap(lat, lng, title);
+
+    // 6. Realistic 3-Step Progress Timeline
+    updateTimeline(status, data.created_at);
+
+    // 7. Action Buttons
     if (editBtn) {
-      if (isPending) {
+      if (canEdit) {
         editBtn.href = `create-request.html?id=${encodeURIComponent(data.request_id || data.id)}`;
         editBtn.classList.remove('hidden');
       } else {
@@ -180,33 +206,69 @@ document.addEventListener('DOMContentLoaded', function () {
         cancelBtn.classList.add('hidden');
       }
     }
+
+    if (deleteBtn) {
+      if (status === 'cancelled') {
+        deleteBtn.classList.remove('hidden');
+        deleteBtn.onclick = () => deleteRequest(data.request_id || data.id);
+      } else {
+        deleteBtn.classList.add('hidden');
+      }
+    }
   }
 
-  function updateTimeline(status) {
-    if (step2) step2.className = 'timeline-item';
-    if (step3) step3.className = 'timeline-item';
-    if (step4) step4.className = 'timeline-item';
+  function updateTimeline(status, createdAt) {
+    if (timelineStep1Desc) {
+      timelineStep1Desc.textContent = createdAt ? `Submitted on ${formatDate(createdAt)}.` : 'Request successfully submitted.';
+    }
 
     if (status === 'pending') {
-      if (step2) step2.className = 'timeline-item current';
+      if (timelineStep1) timelineStep1.className = 'timeline-item completed';
+      if (timelineStep2) {
+        timelineStep2.className = 'timeline-item current';
+        if (timelineStep2Title) timelineStep2Title.textContent = '2. Under Coordinator Review';
+        if (timelineStep2Desc) timelineStep2Desc.textContent = 'NSTP coordinator is evaluating the activity request.';
+      }
+      if (timelineStep3) {
+        timelineStep3.className = 'timeline-item';
+        if (timelineStep3Title) timelineStep3Title.textContent = '3. Pending Decision';
+        if (timelineStep3Desc) timelineStep3Desc.textContent = 'Awaiting coordinator approval decision.';
+      }
     } else if (status === 'approved') {
-      if (step2) step2.className = 'timeline-item completed';
-      if (step3) step3.className = 'timeline-item current';
-    } else if (status === 'completed') {
-      if (step2) step2.className = 'timeline-item completed';
-      if (step3) step3.className = 'timeline-item completed';
-      if (step4) step4.className = 'timeline-item completed';
-    } else if (status === 'rejected') {
-      if (step2) {
-        step2.className = 'timeline-item';
-        const titleEl = step2.querySelector('.timeline-item-title');
-        if (titleEl) titleEl.textContent = '2. Returned / Needs Revision';
+      if (timelineStep1) timelineStep1.className = 'timeline-item completed';
+      if (timelineStep2) {
+        timelineStep2.className = 'timeline-item completed';
+        if (timelineStep2Title) timelineStep2Title.textContent = '2. Reviewed & Approved';
+        if (timelineStep2Desc) timelineStep2Desc.textContent = 'Coordinator approved the community request.';
+      }
+      if (timelineStep3) {
+        timelineStep3.className = 'timeline-item completed';
+        if (timelineStep3Title) timelineStep3Title.textContent = '3. Approved & Queued for Deployment';
+        if (timelineStep3Desc) timelineStep3Desc.textContent = 'Ready for student volunteer matching.';
+      }
+    } else if (status === 'rejected' || status === 'needs_revision') {
+      if (timelineStep1) timelineStep1.className = 'timeline-item completed';
+      if (timelineStep2) {
+        timelineStep2.className = 'timeline-item rejected';
+        if (timelineStep2Title) timelineStep2Title.textContent = '2. Returned / Needs Revision';
+        if (timelineStep2Desc) timelineStep2Desc.textContent = 'Coordinator requested revisions before approval.';
+      }
+      if (timelineStep3) {
+        timelineStep3.className = 'timeline-item';
+        if (timelineStep3Title) timelineStep3Title.textContent = '3. Action Required';
+        if (timelineStep3Desc) timelineStep3Desc.textContent = 'Please edit and resubmit request.';
       }
     } else if (status === 'cancelled') {
-      if (step2) {
-        step2.className = 'timeline-item';
-        const titleEl = step2.querySelector('.timeline-item-title');
-        if (titleEl) titleEl.textContent = '2. Request Cancelled by Official';
+      if (timelineStep1) timelineStep1.className = 'timeline-item completed';
+      if (timelineStep2) {
+        timelineStep2.className = 'timeline-item cancelled';
+        if (timelineStep2Title) timelineStep2Title.textContent = '2. Request Cancelled';
+        if (timelineStep2Desc) timelineStep2Desc.textContent = 'Cancelled by community official.';
+      }
+      if (timelineStep3) {
+        timelineStep3.className = 'timeline-item';
+        if (timelineStep3Title) timelineStep3Title.textContent = '3. Inactive';
+        if (timelineStep3Desc) timelineStep3Desc.textContent = 'No further action required.';
       }
     }
   }
@@ -217,53 +279,49 @@ document.addEventListener('DOMContentLoaded', function () {
       const mapEl = document.getElementById('viewMap');
       if (!mapEl) return;
 
-      const map = L.map('viewMap').setView([lat, lng], 14);
+      if (mapInstance) {
+        mapInstance.remove();
+        mapInstance = null;
+      }
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
+      mapInstance = L.map('viewMap', {
+        zoomControl: false,
+        attributionControl: false
+      }).setView([lat, lng], 14);
 
-      L.marker([lat, lng]).addTo(map).bindPopup(`<strong>${escapeHtml(title)}</strong>`).openPopup();
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: 'Tiles &copy; Esri &mdash; Street Map'
+      }).addTo(mapInstance);
+
+      L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+
+      setTimeout(() => {
+        if (mapInstance) mapInstance.invalidateSize();
+      }, 250);
+
+      // Add pin cleanly without automatically opening truncated popup
+      L.marker([lat, lng]).addTo(mapInstance).bindPopup(`<strong>${escapeHtml(title)}</strong>`);
     } catch (err) {
       console.warn('View map render error:', err);
     }
   }
 
-  async function cancelRequest(id) {
-    if (!confirm('Are you sure you want to cancel this community request?')) return;
-
-    try {
-      const res = await fetch(`/api/community/requests/${encodeURIComponent(id)}/cancel`, {
-        method: 'PUT',
-        credentials: 'include'
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        showMessage('Request has been cancelled.', 'success');
-        loadRequestData(id);
-      } else {
-        showMessage(data.message || 'Unable to cancel request.', 'error');
-      }
-    } catch (err) {
-      showMessage('Network error while cancelling request.', 'error');
-    }
-  }
-
   function getStatusBadge(status) {
-    switch (status) {
+    const s = (status || 'pending').toLowerCase();
+    switch (s) {
       case 'approved':
-        return '<span class="badge badge-approved">Approved & Queued</span>';
+        return '<span class="badge badge-approved">Approved</span>';
       case 'rejected':
-        return '<span class="badge badge-rejected">Rejected / Needs Revision</span>';
+      case 'needs_revision':
+        return '<span class="badge badge-rejected">Rejected</span>';
       case 'cancelled':
-        return '<span class="badge badge-incomplete">Cancelled</span>';
+        return '<span class="badge badge-cancelled">Cancelled</span>';
       case 'completed':
         return '<span class="badge badge-approved">Completed</span>';
       case 'pending':
       default:
-        return '<span class="badge badge-pending">Pending Review</span>';
+        return '<span class="badge badge-pending">Pending</span>';
     }
   }
 
@@ -288,8 +346,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function formatDate(dateStr) {
-    if (!dateStr) return 'N/A';
+    if (!dateStr) return 'Not Specified';
     const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return String(dateStr);
     return d.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -305,6 +364,168 @@ document.addEventListener('DOMContentLoaded', function () {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+
+  /**
+   * Simple Neumorphic Confirmation Modal
+   * Clean neutral edges, soft neumorphic elevation, simple wordings.
+   */
+  function showConfirmModal({
+    title = 'Confirm Action',
+    message = 'Are you sure you want to proceed?',
+    confirmText = 'Confirm',
+    cancelText = 'Cancel',
+    type = 'danger'
+  } = {}) {
+    return new Promise((resolve) => {
+      let modal = document.getElementById('confirmModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'confirmModal';
+        modal.className = 'neu-modal-backdrop';
+        modal.setAttribute('aria-hidden', 'true');
+        modal.innerHTML = `
+          <div class="neu-modal-card" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+            <div class="neu-modal-icon-wrap danger" id="confirmModalIcon"></div>
+            <div class="neu-modal-content">
+              <h3 class="neu-modal-title" id="confirmModalTitle"></h3>
+              <p class="neu-modal-desc" id="confirmModalDesc"></p>
+            </div>
+            <div class="neu-modal-actions">
+              <button type="button" class="btn-neu-modal btn-neu-cancel" id="btnConfirmCancel"></button>
+              <button type="button" class="btn-neu-modal btn-neu-confirm" id="btnConfirmProceed"></button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+
+      const titleEl = modal.querySelector('#confirmModalTitle');
+      const descEl = modal.querySelector('#confirmModalDesc');
+      const cancelBtn = modal.querySelector('#btnConfirmCancel');
+      const proceedBtn = modal.querySelector('#btnConfirmProceed');
+      const iconWrap = modal.querySelector('#confirmModalIcon');
+
+      if (titleEl) titleEl.textContent = title;
+      if (descEl) descEl.textContent = message;
+      if (cancelBtn) cancelBtn.textContent = cancelText;
+      if (proceedBtn) {
+        proceedBtn.textContent = confirmText;
+        proceedBtn.className = `btn-neu-modal btn-neu-confirm ${type}`;
+      }
+
+      if (iconWrap) {
+        iconWrap.className = `neu-modal-icon-wrap ${type}`;
+        if (type === 'danger') {
+          iconWrap.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          `;
+        } else {
+          iconWrap.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          `;
+        }
+      }
+
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+
+      function cleanup(result) {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        cancelBtn.removeEventListener('click', onCancel);
+        proceedBtn.removeEventListener('click', onProceed);
+        modal.removeEventListener('click', onBackdrop);
+        document.removeEventListener('keydown', onKey);
+        resolve(result);
+      }
+
+      function onCancel() { cleanup(false); }
+      function onProceed() { cleanup(true); }
+      function onBackdrop(e) { if (e.target === modal) cleanup(false); }
+      function onKey(e) { if (e.key === 'Escape') cleanup(false); }
+
+      cancelBtn.addEventListener('click', onCancel);
+      proceedBtn.addEventListener('click', onProceed);
+      modal.addEventListener('click', onBackdrop);
+      document.addEventListener('keydown', onKey);
+
+      if (cancelBtn) cancelBtn.focus();
+    });
+  }
+
+  async function cancelRequest(requestId) {
+    const confirmed = await showConfirmModal({
+      title: 'Cancel Request',
+      message: 'Cancel this community request?',
+      confirmText: 'Cancel Request',
+      cancelText: 'Keep Request',
+      type: 'warning'
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/community/requests/${encodeURIComponent(requestId)}/cancel`, {
+        method: 'PUT',
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        showMessage('Request has been cancelled successfully.', 'success');
+        setTimeout(() => {
+          loadRequestDetails(requestId);
+        }, 800);
+      } else {
+        throw new Error(data.message || 'Failed to cancel request.');
+      }
+    } catch (err) {
+      console.error('Error cancelling request:', err);
+      showMessage(err.message || 'Error cancelling request.', 'error');
+    }
+  }
+
+  async function deleteRequest(requestId) {
+    const confirmed = await showConfirmModal({
+      title: 'Delete Request',
+      message: 'Delete this cancelled request permanently?',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      type: 'danger'
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/community/requests/${encodeURIComponent(requestId)}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        showMessage('Cancelled request has been deleted successfully.', 'success');
+        setTimeout(() => {
+          window.location.href = 'community-requests.html';
+        }, 1000);
+      } else {
+        throw new Error(data.message || 'Failed to delete request.');
+      }
+    } catch (err) {
+      console.error('Error deleting request:', err);
+      showMessage(err.message || 'Error deleting request.', 'error');
+    }
   }
 
 });

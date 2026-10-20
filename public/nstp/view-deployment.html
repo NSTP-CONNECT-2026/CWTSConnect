@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../student/css/student-layout.css?v=20" />
   <link rel="stylesheet" href="../student/css/student-deployment.css?v=20" />
-  <link rel="stylesheet" href="css/nstp-coordinator.css?v=20" />
+  <link rel="stylesheet" href="css/nstp-coordinator.css?v=27" />
 </head>
 <body>
   <div class="dashboard-layout">
@@ -175,7 +175,7 @@
       <main class="content-container">
 
         <!-- Action Bar: Back & Status Controls -->
-        <div class="action-filter-bar" style="justify-content: space-between; margin-bottom: 20px;">
+        <div class="action-filter-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
           <div class="filter-group">
             <a href="deployment-management.html" class="btn btn-secondary btn-sm">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -185,8 +185,18 @@
             </a>
           </div>
 
-          <div class="filter-group" id="statusControlGroup">
-            <!-- Dynamic Status Actions injected via JS -->
+          <div class="filter-group" style="display: flex; align-items: center; gap: 8px;">
+            <div id="statusControlGroup">
+              <!-- Dynamic Status Actions injected via JS -->
+            </div>
+            <button type="button" id="refreshDeploymentBtn" class="btn btn-secondary btn-sm" title="Refresh deployment details" style="display: inline-flex; align-items: center; gap: 6px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path d="M23 4v6h-6"></path>
+                <path d="M1 20v-6h6"></path>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+              <span>Refresh</span>
+            </button>
           </div>
         </div>
 
@@ -249,21 +259,20 @@
               </div>
             </div>
 
-            <div class="table-responsive">
-              <table class="neu-table" id="studentsTable">
+            <div class="table-responsive" style="border-radius: 8px; border: 1px solid rgba(226, 232, 240, 0.8); overflow-x: auto;">
+              <table class="neu-table" id="studentsTable" style="margin: 0; width: 100%; border-collapse: separate; border-spacing: 0;">
                 <thead>
                   <tr>
-                    <th>Student Volunteer</th>
-                    <th style="width: 180px;">Course & Section</th>
-                    <th style="width: 140px;">Contact Number</th>
-                    <th style="width: 150px;">Total Rendered</th>
-                    <th style="width: 140px;">Assignment Date</th>
-                    <th style="width: 120px;">Status</th>
+                    <th style="min-width: 240px; text-align: left; padding: 14px 18px;">Student Volunteer</th>
+                    <th style="width: 190px; min-width: 160px; text-align: left; padding: 14px 18px;">Course & Section</th>
+                    <th style="width: 170px; min-width: 140px; text-align: left; padding: 14px 18px;">Contact Number</th>
+                    <th style="width: 250px; min-width: 230px; text-align: left; padding: 14px 18px;">Total Rendered</th>
+                    <th style="width: 140px; min-width: 120px; text-align: center; padding: 14px 18px;">Credited</th>
                   </tr>
                 </thead>
                 <tbody id="studentsTableBody">
                   <tr>
-                    <td colspan="6" style="text-align: center; padding: 36px 20px; color: var(--text-muted);">Loading students roster...</td>
+                    <td colspan="5" style="text-align: center; padding: 36px 20px; color: var(--text-muted);">Loading students roster...</td>
                   </tr>
                 </tbody>
               </table>
@@ -281,7 +290,7 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <!-- Scripts -->
-  <script src="../student/js/student-layout.js?v=20"></script>
-  <script src="js/view-deployment.js?v=20"></script>
+  <script src="../student/js/student-layout.js?v=33"></script>
+  <script src="js/view-deployment.js?v=33"></script>
 </body>
 </html>

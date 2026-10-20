@@ -53,43 +53,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 0. Total Registered Users (Students + Community Partners)
     const users = summary.users || {};
-    const totalUsers = users.total || 16;
-    const studentCount = users.students || 12;
-    const partnerCount = users.communityPartners || 4;
+    const totalUsers = users.total ?? 0;
+    const studentCount = users.students ?? 0;
+    const partnerCount = users.communityPartners ?? 0;
     setText('kpiTotalUsers', `${totalUsers} Users`);
     setText('kpiUserStudents', studentCount);
     setText('kpiUserCommunityPartners', partnerCount);
 
     // 1. CMO Compliance
     const comp = summary.compliance || {};
-    setText('kpiComplianceRate', comp.rate || '83.3%');
-    setText('kpiCompliantCount', comp.compliant || 10);
-    setText('kpiTotalStudents', comp.total || 12);
+    setText('kpiComplianceRate', comp.rate ?? '0.0%');
+    setText('kpiCompliantCount', comp.compliant ?? 0);
+    setText('kpiTotalStudents', comp.total ?? 0);
 
     // 2. Community Requests
     const reqs = summary.requests || {};
-    setText('kpiTotalRequests', reqs.total || 8);
-    setText('kpiApprovedRequests', reqs.approved || 5);
-    setText('kpiPendingRequests', reqs.pending || 2);
+    setText('kpiTotalRequests', reqs.total ?? 0);
+    setText('kpiApprovedRequests', reqs.approved ?? 0);
+    setText('kpiPendingRequests', reqs.pending ?? 0);
 
     // 3. Deployments
     const deps = summary.deployments || {};
-    setText('kpiTotalBatches', `${deps.totalBatches || 4} Batches`);
-    setText('kpiDeployedStudents', deps.studentsDeployed || 12);
+    setText('kpiTotalBatches', `${deps.totalBatches ?? 0} Batches`);
+    setText('kpiDeployedStudents', deps.studentsDeployed ?? 0);
 
     // 4. Rendered Hours & Attendance
     const hours = summary.hours || {};
     const att = summary.attendance || {};
-    setText('kpiTotalHours', `${Number(hours.totalRendered || 480).toFixed(1)}h`);
-    setText('kpiAvgHours', `${Number(hours.averageHours || 40).toFixed(1)}h`);
-    setText('kpiTotalLogs', att.totalLogs || 24);
+    setText('kpiTotalHours', `${Number(hours.totalRendered ?? 0).toFixed(1)}h`);
+    setText('kpiAvgHours', `${Number(hours.averageHours ?? 0).toFixed(1)}h`);
+    setText('kpiTotalLogs', att.totalLogs ?? 0);
 
     // 5. Feedback & Evaluations
     const fb = summary.feedback || {};
     const ev = summary.evaluations || {};
-    setText('kpiAvgRating', `${Number(fb.averageRating || 4.9).toFixed(1)} / 5.0`);
-    setText('kpiTotalEvals', ev.totalEvaluated || 12);
-    setText('kpiAvgScore', Number(ev.averageScore || 4.85).toFixed(2));
+    setText('kpiAvgRating', `${Number(fb.averageRating ?? 0).toFixed(1)} / 5.0`);
+    setText('kpiTotalEvals', ev.totalEvaluated ?? 0);
+    setText('kpiAvgScore', Number(ev.averageScore ?? 0).toFixed(2));
   }
 
   function initializeCharts(charts) {
@@ -106,11 +106,11 @@ document.addEventListener('DOMContentLoaded', function () {
       chartInstances.timeline = new Chart(timelineCtx, {
         type: 'line',
         data: {
-          labels: charts.timeline.labels || ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+          labels: charts.timeline?.labels && charts.timeline.labels.length > 0 ? charts.timeline.labels : ['No data'],
           datasets: [
             {
               label: 'Cumulative Hours Credited (h)',
-              data: charts.timeline.hours || [48, 112, 196, 280, 384, 480],
+              data: charts.timeline?.hours || [0],
               borderColor: '#2F7D5B',
               backgroundColor: 'rgba(47, 125, 91, 0.1)',
               fill: true,
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             {
               label: 'Attendance Sessions Logged',
-              data: charts.timeline.attendance || [12, 24, 36, 48, 60, 72],
+              data: charts.timeline?.attendance || [0],
               borderColor: '#3B82F6',
               backgroundColor: 'transparent',
               borderDash: [5, 5],
@@ -182,24 +182,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const courseCtx = document.getElementById('courseHoursChart')?.getContext('2d');
     if (courseCtx) {
       if (chartInstances.course) chartInstances.course.destroy();
+      const courseLabels = charts.courseHours?.labels || ['BSIT', 'BSBA', 'BSED', 'BSHM', 'BS Crim'];
+      const courseRendered = charts.courseHours?.rendered || [0, 0, 0, 0, 0];
+
       chartInstances.course = new Chart(courseCtx, {
         type: 'bar',
         data: {
-          labels: charts.courseHours.labels || ['BSIT', 'BSBA', 'BSED', 'BS Crim', 'BSHM'],
+          labels: courseLabels,
           datasets: [
             {
-              label: 'Rendered Hours',
-              data: charts.courseHours.rendered || [148, 124, 96, 72, 40],
+              label: 'Total Hours Rendered',
+              data: courseRendered,
               backgroundColor: '#0B3D2E',
-              borderRadius: 4,
-              barThickness: 16
-            },
-            {
-              label: 'Remaining to 180h Target',
-              data: [32, 56, 84, 108, 140],
-              backgroundColor: 'rgba(203, 191, 166, 0.35)',
-              borderRadius: 4,
-              barThickness: 16
+              borderRadius: 6,
+              barThickness: 22
             }
           ]
         },
@@ -208,29 +204,31 @@ document.addEventListener('DOMContentLoaded', function () {
           maintainAspectRatio: false,
           scales: {
             x: {
-              stacked: true,
               grid: { display: false },
-              ticks: { font: { size: 11 } }
+              ticks: { font: { size: 11, weight: 600 } }
             },
             y: {
-              stacked: true,
+              beginAtZero: true,
               grid: { color: 'rgba(226, 232, 240, 0.6)' },
-              max: 180,
               ticks: { font: { size: 10 } },
-              title: { display: true, text: 'Total Hours (180h Max)', font: { weight: 600, size: 10 } }
+              title: { display: true, text: 'Total Hours Rendered (hrs)', font: { weight: 600, size: 10 } }
             }
           },
           plugins: {
             legend: {
-              position: 'top',
-              labels: { boxWidth: 10, font: { weight: 600, size: 11 }, padding: 8 }
+              display: false
             },
             tooltip: {
               backgroundColor: '#0B3D2E',
               padding: 8,
               cornerRadius: 6,
               titleFont: { size: 11 },
-              bodyFont: { size: 11 }
+              bodyFont: { size: 11 },
+              callbacks: {
+                label: function(ctx) {
+                  return `Total Hours: ${ctx.parsed.y} hrs`;
+                }
+              }
             }
           }
         }
@@ -244,10 +242,10 @@ document.addEventListener('DOMContentLoaded', function () {
       chartInstances.criteria = new Chart(criteriaCtx, {
         type: 'bar',
         data: {
-          labels: ['Punctuality', 'Engagement', 'Teamwork', 'Initiative'],
+          labels: charts.evaluationCriteria?.labels || ['Punctuality', 'Engagement', 'Teamwork', 'Initiative'],
           datasets: [{
             label: 'Average Score (out of 5.0)',
-            data: charts.evaluationCriteria?.scores || [4.9, 4.8, 4.9, 4.7],
+            data: charts.evaluationCriteria?.scores || [0, 0, 0, 0],
             backgroundColor: '#145A3A',
             borderRadius: 6,
             barThickness: 20
@@ -259,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function () {
           indexAxis: 'y',
           scales: {
             x: {
-              min: 3.0,
+              min: 0,
               max: 5.0,
               grid: { color: 'rgba(226, 232, 240, 0.6)' }
             },
@@ -286,10 +284,10 @@ document.addEventListener('DOMContentLoaded', function () {
       chartInstances.reqDoughnut = new Chart(reqDoughnutCtx, {
         type: 'doughnut',
         data: {
-          labels: charts.requestsDistribution.labels || ['Approved', 'Pending', 'Completed', 'Matched'],
+          labels: charts.requestsDistribution?.labels || ['Approved & Deployed', 'Approved (Available)', 'Pending Review', 'Completed'],
           datasets: [{
-            data: charts.requestsDistribution.data || [5, 2, 1, 3],
-            backgroundColor: ['#2F7D5B', '#F59E0B', '#0B3D2E', '#3B82F6'],
+            data: charts.requestsDistribution?.data || [0, 0, 0, 0],
+            backgroundColor: ['#2F7D5B', '#3B82F6', '#F59E0B', '#0B3D2E'],
             borderWidth: 2,
             borderColor: '#FFFFFF'
           }]
@@ -315,9 +313,9 @@ document.addEventListener('DOMContentLoaded', function () {
       chartInstances.gradesDoughnut = new Chart(gradesDoughnutCtx, {
         type: 'doughnut',
         data: {
-          labels: ['Outstanding', 'Very Satisfactory', 'Satisfactory'],
+          labels: charts.gradesDistribution?.labels || ['Outstanding (4.75 - 5.0)', 'Very Satisfactory (4.0 - 4.74)', 'Satisfactory (3.0 - 3.99)'],
           datasets: [{
-            data: charts.gradesDistribution?.data || [10, 2, 0],
+            data: charts.gradesDistribution?.data || [0, 0, 0],
             backgroundColor: ['#0B3D2E', '#2F7D5B', '#F59E0B'],
             borderWidth: 2,
             borderColor: '#FFFFFF'

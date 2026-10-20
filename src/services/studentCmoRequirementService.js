@@ -138,6 +138,17 @@ async function uploadCmoRequirement(userId, requirementType, file) {
       result = data;
     }
 
+    // Synchronize overall CMO compliance status in users table
+    try {
+      const statusSummary = await getCmoRequirementsStatus(userId);
+      await supabase
+        .from('users')
+        .update({ cmo_compliance_status: statusSummary.overall_status })
+        .eq('user_id', userId);
+    } catch (statusSyncError) {
+      console.warn('Could not sync user cmo_compliance_status:', statusSyncError.message);
+    }
+
     return result;
   } catch (error) {
     throw new Error('Upload service error: ' + error.message);

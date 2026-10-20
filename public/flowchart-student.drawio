@@ -1,0 +1,213 @@
+<mxfile host="app.diagrams.net" modified="2026-10-11T21:30:00.000Z" agent="Mozilla/5.0" version="21.0.0" type="device">
+  <diagram id="student-flow" name="Student Process Flow">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+
+
+
+        <!-- ==================== COLUMN 1 ==================== -->
+        <!-- Start -->
+        <mxCell id="s_start" value="Start" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=12;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="90" y="130" width="140" height="40" as="geometry" />
+        </mxCell>
+        <!-- Sign Up -->
+        <mxCell id="s_signup" value="Sign Up&#xa;(Student Number &amp; Info)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="80" y="210" width="160" height="48" as="geometry" />
+        </mxCell>
+        <!-- Verify OTP -->
+        <mxCell id="s_otp" value="Verify Email OTP" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="80" y="295" width="160" height="45" as="geometry" />
+        </mxCell>
+        <!-- Login -->
+        <mxCell id="s_login" value="Login to Student Portal" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="80" y="375" width="160" height="45" as="geometry" />
+        </mxCell>
+        <!-- Connector B (Out) -->
+        <mxCell id="s_b_out" value="B" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="141" y="460" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <!-- Edges Col 1 -->
+        <mxCell id="e_1_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_start" target="s_signup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_1_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_signup" target="s_otp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_1_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_otp" target="s_login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_1_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_login" target="s_b_out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== COLUMN 2 ==================== -->
+        <!-- Connector B (In) -->
+        <mxCell id="s_b_in" value="B" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="391" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <!-- Dashboard -->
+        <mxCell id="s_dash" value="Dashboard&#xa;(Status Overview &amp; Alerts)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="330" y="210" width="160" height="48" as="geometry" />
+        </mxCell>
+        <!-- My Profile -->
+        <mxCell id="s_profile" value="My Profile&#xa;(Personal Info, Map &amp; Skills)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="330" y="295" width="160" height="48" as="geometry" />
+        </mxCell>
+        <!-- CMO Requirements -->
+        <mxCell id="s_cmo" value="CMO Requirements&#xa;(Upload Waiver, Medical, ID)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="330" y="380" width="160" height="48" as="geometry" />
+        </mxCell>
+        <!-- Decision -->
+        <mxCell id="s_dec_cmo" value="Are documents&#xa;approved by&#xa;Coordinator?" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=10;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="330" y="465" width="160" height="75" as="geometry" />
+        </mxCell>
+        <!-- Update Docs -->
+        <mxCell id="s_reupload" value="Update / Re-upload&#xa;Documents" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=10;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="345" y="580" width="130" height="40" as="geometry" />
+        </mxCell>
+        <!-- Connector C (Out) -->
+        <mxCell id="s_c_out" value="C" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="391" y="665" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <!-- Edges Col 2 -->
+        <mxCell id="e_2_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_b_in" target="s_dash">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_2_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_dash" target="s_profile">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_2_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_profile" target="s_cmo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_2_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_cmo" target="s_dec_cmo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_2_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;fontSize=11;fontStyle=1;" edge="1" parent="1" source="s_dec_cmo" target="s_reupload">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_2_loop" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s_reupload" target="s_cmo">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="310" y="600" />
+              <mxPoint x="310" y="404" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_2_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;fontSize=11;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s_dec_cmo" target="s_c_out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="502" />
+              <mxPoint x="510" y="684" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== COLUMN 3 ==================== -->
+        <!-- Connector C (In) -->
+        <mxCell id="s_c_in" value="C" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="641" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <!-- Wait for DSS -->
+        <mxCell id="s_dss" value="Wait for DSS&#xa;Auto-Matching" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="580" y="210" width="160" height="48" as="geometry" />
+        </mxCell>
+        <!-- Deployment & Monitoring -->
+        <mxCell id="s_deploy" value="Deployment &amp; Monitoring&#xa;(View Site &amp; Schedule)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="580" y="295" width="160" height="48" as="geometry" />
+        </mxCell>
+        <!-- Attend Fieldwork -->
+        <mxCell id="s_fieldwork" value="Attend Community&#xa;Fieldwork Activities" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="580" y="380" width="160" height="48" as="geometry" />
+        </mxCell>
+        <!-- Official Logs Attendance -->
+        <mxCell id="s_off_att" value="Community Official&#xa;Logs Attendance&#xa;(Time-In &amp; Time-Out)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="580" y="465" width="160" height="52" as="geometry" />
+        </mxCell>
+        <!-- Monitor Hours -->
+        <mxCell id="s_mon_hrs" value="Monitor Rendered Hours&#xa;&amp; Service Logs" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="580" y="555" width="160" height="48" as="geometry" />
+        </mxCell>
+        <!-- Connector D (Out) -->
+        <mxCell id="s_d_out" value="D" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="641" y="640" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <!-- Edges Col 3 -->
+        <mxCell id="e_3_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_c_in" target="s_dss">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_3_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_dss" target="s_deploy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_3_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_deploy" target="s_fieldwork">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_3_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_fieldwork" target="s_off_att">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_3_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_off_att" target="s_mon_hrs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_3_6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_mon_hrs" target="s_d_out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== COLUMN 4 ==================== -->
+        <!-- Connector D (In) -->
+        <mxCell id="s_d_in" value="D" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=13;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="891" y="131" width="38" height="38" as="geometry" />
+        </mxCell>
+        <!-- Feedback & Evaluation -->
+        <mxCell id="s_eval" value="Feedback &amp; Evaluation&#xa;(Rate Site &amp; Supervisor)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="830" y="210" width="160" height="48" as="geometry" />
+        </mxCell>
+        <!-- Track Final Hours -->
+        <mxCell id="s_hours" value="Track Rendered NOH&#xa;(Confirm 54 Hours Met)" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="830" y="295" width="160" height="48" as="geometry" />
+        </mxCell>
+        <!-- Edit Profile -->
+        <mxCell id="s_edit_profile" value="Edit Profile &amp;&#xa;Account Settings" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="830" y="380" width="160" height="45" as="geometry" />
+        </mxCell>
+        <!-- Change Password -->
+        <mxCell id="s_pw" value="Change Password" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="830" y="460" width="160" height="40" as="geometry" />
+        </mxCell>
+        <!-- Logout -->
+        <mxCell id="s_logout" value="Logout" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#ffffff;fontSize=11;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="830" y="535" width="160" height="40" as="geometry" />
+        </mxCell>
+        <!-- End -->
+        <mxCell id="s_end" value="End" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#0f172a;fillColor=#f8fafc;fontSize=12;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="840" y="615" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Edges Col 4 -->
+        <mxCell id="e_4_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_d_in" target="s_eval">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_4_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_eval" target="s_hours">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_4_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_hours" target="s_edit_profile">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_4_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_edit_profile" target="s_pw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_4_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_pw" target="s_logout">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_4_6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0f172a;endArrow=classic;endFill=1;" edge="1" parent="1" source="s_logout" target="s_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

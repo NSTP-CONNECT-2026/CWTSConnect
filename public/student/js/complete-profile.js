@@ -43,22 +43,43 @@ document.addEventListener('DOMContentLoaded', function() {
   let marker;
   let selectedLocation = null;
 
+  function updateSelectedCoordinates(lat, lng) {
+    if (lat === null || lat === undefined || lng === null || lng === undefined) return;
+    const numLat = parseFloat(lat);
+    const numLng = parseFloat(lng);
+    if (isNaN(numLat) || isNaN(numLng)) return;
+
+    selectedLocation = { lat: numLat, lng: numLng };
+
+    if (latitudeField) latitudeField.value = numLat.toString();
+    if (longitudeField) longitudeField.value = numLng.toString();
+
+    const coordsDisplay = document.getElementById('coordsDisplayVal');
+    const statusBadge = document.getElementById('coordsStatusBadge');
+    if (coordsDisplay) {
+      coordsDisplay.textContent = `Lat: ${numLat.toFixed(6)}, Lng: ${numLng.toFixed(6)}`;
+    }
+    if (statusBadge) {
+      statusBadge.textContent = 'Recorded';
+      statusBadge.style.background = '#dcfce7';
+      statusBadge.style.color = '#15803d';
+    }
+  }
+
   // Check if user has existing profile
   checkExistingProfile();
 
   // Initialize map integration
   initializeMapIntegration();
 
-  // Form submission
-  profileForm.addEventListener('submit', handleSubmit);
-
-  // Back button
-  backBtn.addEventListener('click', function() {
-    window.location.href = '/student/dashboard.html';
-  });
-
-  // Message close button
-  messageClose.addEventListener('click', hideMessage);
+  // Event listeners
+  if (profileForm) profileForm.addEventListener('submit', handleSubmit);
+  if (backBtn) {
+    backBtn.addEventListener('click', function() {
+      window.location.href = '/student/dashboard.html';
+    });
+  }
+  if (messageClose) messageClose.addEventListener('click', hideMessage);
 
   // Auto-hide messages after 5 seconds
   let messageTimeout;
@@ -68,28 +89,84 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeLeafletMap();
     
     // Use location button
-    useLocationBtn.addEventListener('click', getCurrentLocation);
+    if (useLocationBtn) useLocationBtn.addEventListener('click', getCurrentLocation);
     
     // Search location button
-    searchLocationBtn.addEventListener('click', searchLocation);
+    if (searchLocationBtn) searchLocationBtn.addEventListener('click', searchLocation);
+
+    // Allow searching on Enter key
+    const searchInput = document.getElementById('locationSearch');
+    if (searchInput) {
+      searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          searchLocation();
+        }
+      });
+    }
     
     // Confirm location button
-    confirmLocationBtn.addEventListener('click', confirmSelectedLocation);
+    if (confirmLocationBtn) confirmLocationBtn.addEventListener('click', confirmSelectedLocation);
+  }
+
+  function fixLeafletDefaultIcons() {
+    if (typeof L !== 'undefined' && L.Icon && L.Icon.Default) {
+      delete L.Icon.Default.prototype._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
+      });
+    }
   }
 
   function initializeLeafletMap() {
     try {
-      // Initialize map centered on Philippines
-      map = L.map('map').setView([14.5995, 120.9842], 6);
+      fixLeafletDefaultIcons();
 
-      // Add OpenStreetMap tiles
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
+      const initialCoords = selectedLocation ? [selectedLocation.lat, selectedLocation.lng] : [14.5995, 120.9842];
+      const initialZoom = selectedLocation ? 15 : 6;
+
+      // 1. Esri World Street Map (Primary - highly reliable, fast CDN, detailed street and barangay rendering, no 403 blocks)
+      const esriStreetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Street Map',
         maxZoom: 19
-      }).addTo(map);
+      });
+
+      // 2. Esri World Topo Map
+      const esriTopoLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Topo Map',
+        maxZoom: 19
+      });
+
+      // 3. Esri World Imagery (Satellite)
+      const esriSatLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Satellite',
+        maxZoom: 19
+      });
+
+      // Initialize map centered on Philippines or selected location with Esri Street as default
+      map = L.map('map', {
+        center: initialCoords,
+        zoom: initialZoom,
+        layers: [esriStreetLayer],
+        zoomControl: true,
+        scrollWheelZoom: true
+      });
+
+      // Layer switcher control
+      L.control.layers({
+        'Street Map (Esri)': esriStreetLayer,
+        'Topographic (Esri)': esriTopoLayer,
+        'Satellite View (Esri)': esriSatLayer
+      }, null, { position: 'topright' }).addTo(map);
+
+      setTimeout(() => {
+        if (map) map.invalidateSize();
+      }, 250);
 
       // Initialize marker
-      marker = L.marker([14.5995, 120.9842], {
+      marker = L.marker(initialCoords, {
         draggable: true
       }).addTo(map);
 
@@ -121,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         
-        selectedLocation = { lat, lng };
+        updateSelectedCoordinates(lat, lng);
         
         // Update map
         if (map && marker) {
@@ -259,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const lat = parseFloat(result.lat);
         const lng = parseFloat(result.lon);
         
-        selectedLocation = { lat, lng };
+        updateSelectedCoordinates(lat, lng);
         
         // Update map
         if (map && marker) {
@@ -289,7 +366,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const lat = e.latlng.lat;
     const lng = e.latlng.lng;
     
-    selectedLocation = { lat, lng };
+    updateSelectedCoordinates(lat, lng);
     
     // Update marker position
     marker.setLatLng([lat, lng]);
@@ -304,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const lat = position.lat;
     const lng = position.lng;
     
-    selectedLocation = { lat, lng };
+    updateSelectedCoordinates(lat, lng);
     
     // Reverse geocode the new position
     reverseGeocode(lat, lng);
@@ -384,8 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Store coordinates
     if (selectedLocation) {
-      latitudeField.value = selectedLocation.lat;
-      longitudeField.value = selectedLocation.lng;
+      updateSelectedCoordinates(selectedLocation.lat, selectedLocation.lng);
     }
 
     // Show a warning if important fields are missing
@@ -400,10 +476,17 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function confirmSelectedLocation() {
+    if (!selectedLocation && marker && marker.getLatLng()) {
+      const pos = marker.getLatLng();
+      updateSelectedCoordinates(pos.lat, pos.lng);
+    }
+
     if (!selectedLocation) {
-      showLocationStatus('Please select a location first.', 'error');
+      showLocationStatus('Please select a location on the map first.', 'error');
       return;
     }
+
+    updateSelectedCoordinates(selectedLocation.lat, selectedLocation.lng);
 
     // Validate that required fields are filled
     if (!barangayField.value || !municipalityField.value || !provinceField.value) {
@@ -411,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    showLocationStatus('Location confirmed! You can now complete the rest of your profile.', 'success');
+    showLocationStatus('Location confirmed! Coordinates recorded.', 'success');
     
     // Scroll to next section
     const skillsSection = document.querySelector('#skills').closest('.brutal-section');
@@ -449,19 +532,50 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function checkExistingProfile() {
+    showLoading();
+
     try {
-      const response = await fetch('/api/student/profile');
+      const response = await fetch('/api/student/profile', {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      if (response.status === 401 || response.status === 403) {
+        window.location.href = '/login.html';
+        return;
+      }
+
       const data = await response.json();
 
-      if (response.ok && data.success && data.data.profile) {
-        // Profile exists, redirect to view profile
-        showMessage('You already have a profile. Redirecting to profile view...', 'success');
-        setTimeout(() => {
-          window.location.href = '/student/edit-profile.html';
-        }, 2000);
+      if (response.ok && data.success && data.data) {
+        if (data.data.profile) {
+          // Profile exists, redirect to edit profile
+          showMessage('You already have a profile. Redirecting to profile view...', 'info');
+          setTimeout(() => {
+            window.location.href = '/student/edit-profile.html';
+          }, 1500);
+          return;
+        }
+
+        // Student has no profile yet (incomplete).
+        // Populate user info in topbar / sidebar if available
+        if (data.data.user) {
+          const user = data.data.user;
+          const email = user.email || '';
+          const emailPrefix = email.split('@')[0];
+          const topbarEmail = document.getElementById('topbarEmail');
+          const sidebarUserName = document.getElementById('sidebarUserName');
+          const sidebarAvatar = document.getElementById('sidebarAvatar');
+
+          if (topbarEmail && email) topbarEmail.textContent = email;
+          if (sidebarUserName && emailPrefix) sidebarUserName.textContent = emailPrefix;
+          if (sidebarAvatar && emailPrefix) sidebarAvatar.textContent = emailPrefix.substring(0, 2).toUpperCase();
+        }
       }
     } catch (error) {
       console.error('Error checking existing profile:', error);
+    } finally {
+      hideLoading();
     }
   }
 
@@ -487,9 +601,51 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!profileData.emergency_contact_name) delete profileData.emergency_contact_name;
       if (!profileData.emergency_contact_number) delete profileData.emergency_contact_number;
       if (!profileData.emergency_contact_relationship) delete profileData.emergency_contact_relationship;
-      if (!profileData.latitude) delete profileData.latitude;
-      if (!profileData.longitude) delete profileData.longitude;
       profileData.nstp_component = 'CWTS';
+
+      // Ensure at least one coordinator skill is selected
+      if (!profileData.skills || !profileData.skills.trim()) {
+        showMessage('Please select at least one skill from the coordinator list before saving.', 'error');
+        goToStep(3);
+        const dropdown = document.getElementById('skillSelectDropdown');
+        if (dropdown) {
+          dropdown.focus();
+        } else {
+          const group = document.getElementById('skillsSelectorGroup');
+          if (group) group.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        submitBtn.disabled = false;
+        hideLoading();
+        return;
+      }
+
+      // Ensure coordinates (latitude, longitude, and location) are strictly resolved
+      let lat = null;
+      let lng = null;
+
+      if (selectedLocation && selectedLocation.lat && selectedLocation.lng) {
+        lat = selectedLocation.lat;
+        lng = selectedLocation.lng;
+      } else if (latitudeField && latitudeField.value && longitudeField && longitudeField.value) {
+        lat = parseFloat(latitudeField.value);
+        lng = parseFloat(longitudeField.value);
+      } else if (marker && marker.getLatLng()) {
+        const pos = marker.getLatLng();
+        lat = pos.lat;
+        lng = pos.lng;
+      }
+
+      if (lat !== null && !isNaN(lat) && lng !== null && !isNaN(lng)) {
+        profileData.latitude = lat.toString();
+        profileData.longitude = lng.toString();
+        profileData.location = `${lat},${lng}`;
+      } else {
+        showMessage('Please pin your home location on the map in Step 2 to record your coordinates.', 'error');
+        if (typeof goToStep === 'function') goToStep(2);
+        submitBtn.disabled = false;
+        hideLoading();
+        return;
+      }
 
       // Submit profile
       const response = await fetch('/api/student/profile', {
@@ -644,9 +800,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Invalidate Leaflet Map Size so it immediately renders clearly on Step 2
-    if (currentStep === 2 && map) {
+    if (currentStep === 2) {
+      if (!map) {
+        initializeLeafletMap();
+      }
       setTimeout(() => {
-        map.invalidateSize();
+        if (map) map.invalidateSize();
       }, 150);
     }
   }
@@ -680,6 +839,20 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       if (!isValid) {
         showMessage('Please fill in your complete location details before proceeding.', 'error');
+      }
+
+      // Check that coordinates are recorded
+      let hasCoords = (selectedLocation && selectedLocation.lat && selectedLocation.lng) ||
+                      (latitudeField && latitudeField.value && longitudeField && longitudeField.value);
+      if (!hasCoords && marker && marker.getLatLng()) {
+        const pos = marker.getLatLng();
+        updateSelectedCoordinates(pos.lat, pos.lng);
+        hasCoords = true;
+      }
+
+      if (!hasCoords) {
+        showMessage('Please click or pin your location on the map to set your coordinates before proceeding.', 'error');
+        isValid = false;
       }
     }
 

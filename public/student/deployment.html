@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/student-layout.css?v=12" />
-  <link rel="stylesheet" href="css/student-deployment.css?v=1" />
+  <link rel="stylesheet" href="css/student-deployment.css?v=2" />
 </head>
 <body>
   <div class="dashboard-layout">
@@ -247,13 +247,13 @@
                 </div>
 
                 <div class="detail-item-box">
-                  <span class="detail-item-label">Deployment Period</span>
-                  <span class="detail-item-value" id="deployDateRange">--- to ---</span>
+                  <span class="detail-item-label">Deployment Date</span>
+                  <span class="detail-item-value" id="deployDateRange">---</span>
                 </div>
 
                 <div class="detail-item-box">
-                  <span class="detail-item-label">Required Target Hours</span>
-                  <span class="detail-item-value" id="deployTargetHours">90.0 Hours Total</span>
+                  <span class="detail-item-label">Schedule / Time</span>
+                  <span class="detail-item-value" id="deploySchedule">Flexible / As Scheduled</span>
                 </div>
 
                 <div class="detail-item-box">
@@ -376,33 +376,25 @@
                ==================================================================== -->
           <div class="deployment-tab-pane" id="paneHours" role="tabpanel">
             
-            <!-- Service Hours Overview (Linear Progress + Target Stats) -->
+            <!-- Total Rendered Hours Summary Card (No Target Hours) -->
             <div class="hours-overview-grid">
-              
-              <!-- Progress Card -->
-              <div class="hours-progress-card">
-                <div>
-                  <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 0.8125rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">Completed Service Hours</span>
-                    <span class="badge badge-complete" id="hoursPercentBadge">0% Completed</span>
+              <div class="hours-summary-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                  <div>
+                    <span style="font-size: 0.8125rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Total Rendered Service Hours</span>
+                    <div class="hours-metric-headline" style="margin: 8px 0 0 0;">
+                      <span class="hours-big-number" id="hoursCompletedNumber">0.0</span>
+                      <span style="font-size: 1.125rem; font-weight: 600; color: var(--text-muted); margin-left: 6px;">Hours Rendered</span>
+                    </div>
                   </div>
-
-                  <div class="hours-metric-headline">
-                    <span class="hours-big-number" id="hoursCompletedNumber">0.0</span>
-                    <span class="hours-target-text">/ 90.0 Hours Required</span>
-                  </div>
-
-                  <!-- Progress Bar -->
-                  <div class="progress-track">
-                    <div class="progress-bar-fill" id="hoursProgressBarFill" style="width: 0%;"></div>
-                  </div>
-                  
-                  <div style="font-size: 0.8125rem; color: var(--text-muted);" id="hoursRemainingText">
-                    90.0 hours remaining to fulfill the CWTS 2 community service mandate.
+                  <div style="display: flex; gap: 14px;">
+                    <div class="detail-item-box" style="padding: 12px 20px; background: rgba(255, 255, 255, 0.85); min-width: 150px;">
+                      <span class="detail-item-label">Verified Sessions</span>
+                      <span class="detail-item-value highlight" id="hoursTotalSessions" style="font-size: 1.15rem;">0 Sessions</span>
+                    </div>
                   </div>
                 </div>
               </div>
-
             </div>
 
             <!-- Service Sessions Breakdown Table -->
@@ -429,6 +421,7 @@
                       <th>Service Date</th>
                       <th>Source / Activity Type</th>
                       <th>Hours Rendered</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody id="serviceSessionsBody">
@@ -459,7 +452,7 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <!-- Scripts -->
-  <script src="js/student-layout.js?v=14"></script>
-  <script src="js/deployment.js?v=14"></script>
+  <script src="js/student-layout.js?v=16"></script>
+  <script src="js/deployment.js?v=16"></script>
 </body>
 </html>

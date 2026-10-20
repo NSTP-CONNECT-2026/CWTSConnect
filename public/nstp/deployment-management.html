@@ -173,8 +173,8 @@
       <!-- Main Content -->
       <main class="content-container">
 
-        <!-- Toast Feedback Notification -->
-        <div id="toastMessage" style="display: none; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; font-size: 0.875rem;"></div>
+        <!-- Toast Feedback Notification (Positioned below the 64px header) -->
+        <div id="toastMessage" style="display: none; position: fixed; top: 82px; right: 24px; z-index: 99999; padding: 14px 22px; border-radius: 10px; font-weight: 600; font-size: 0.875rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.18), 0 4px 10px -2px rgba(0,0,0,0.08); min-width: 280px; max-width: 480px; transition: all 0.3s ease;"></div>
 
         <!-- Section 12 Skeleton Loading Container -->
         <div id="deploymentsSkeleton" class="page-loading-skeleton">
@@ -255,9 +255,9 @@
                   <thead>
                     <tr>
                       <th>Community / Barangay</th>
-                      <th>Activity Title</th>
-                      <th style="width: 200px;">Activity Type</th>
-                      <th style="width: 170px; text-align: center;">Action</th>
+                      <th>Activity Details</th>
+                      <th style="width: 180px;">Type & Component</th>
+                      <th style="width: 180px; text-align: center;">Action</th>
                     </tr>
                   </thead>
                   <tbody id="requestsTableBody">
@@ -270,17 +270,17 @@
             </div>
 
             <!-- SECTION 2: STUDENT ASSIGNMENT & DEPLOYMENT CREATION (POPULATED ON SELECT) -->
-            <div class="table-card hidden" id="assignmentSection" style="margin-bottom: 32px;">
-              <div class="table-card-header">
+            <div class="table-card hidden" id="assignmentSection" style="margin-bottom: 32px; border: 2px solid rgba(47, 125, 91, 0.35);">
+              <div class="table-card-header" style="background: rgba(47, 125, 91, 0.05); padding: 18px 24px;">
                 <div class="table-card-title-group">
-                  <div class="table-card-icon">
+                  <div class="table-card-icon" style="background: var(--cwts-primary-dark); color: #FFFFFF;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                   </div>
                   <div>
-                    <h3 class="table-card-title">Assign Students & Create Deployment</h3>
-                    <div id="assignmentInfo" style="font-size: 0.8125rem; color: var(--cwts-primary-dark); font-weight: 600; margin-top: 2px;"></div>
+                    <h3 class="table-card-title" style="color: var(--cwts-primary-dark);">Assign Students & Create Deployment</h3>
+                    <div id="assignmentInfo" style="font-size: 0.8125rem; color: var(--cwts-accent-green); font-weight: 600; margin-top: 2px;"></div>
                   </div>
                 </div>
 
@@ -291,29 +291,45 @@
 
               <div style="padding: 24px;">
                 <!-- Deployment Form Details -->
-                <form id="deploymentForm" style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgba(226, 232, 240, 0.8); display: flex; flex-direction: column; gap: 16px;" novalidate>
-                  <div class="form-group">
-                    <label for="deploymentBatchName" class="form-label"><span>Deployment Batch Name <span class="required">*</span></span></label>
-                    <input type="text" id="deploymentBatchName" name="deployment_batch_name" class="form-input" placeholder="e.g., CWTS Batch A - Barangay Poblacion Clean-Up" required />
+                <form id="deploymentForm" style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgba(226, 232, 240, 0.8);" novalidate>
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                    <div class="form-group">
+                      <label for="deploymentBatchName" class="form-label"><span>Deployment Batch Name <span class="required" style="color: #DC2626;">*</span></span></label>
+                      <input type="text" id="deploymentBatchName" name="deployment_batch_name" class="form-input" placeholder="e.g., CWTS Batch A - Barangay Poblacion Clean-Up" required />
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label"><span>Deployment Schedule</span></label>
+                      <div id="autofillScheduleDisplay" style="padding: 10px 14px; background: rgba(47, 125, 91, 0.08); border: 1px solid rgba(47, 125, 91, 0.25); border-radius: 8px; font-weight: 700; color: var(--cwts-primary-dark); font-size: 0.875rem; display: flex; align-items: center; gap: 10px; min-height: 42px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color: var(--cwts-accent-green); flex-shrink: 0;">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                          <line x1="16" y1="2" x2="16" y2="6"></line>
+                          <line x1="8" y1="2" x2="8" y2="6"></line>
+                          <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span id="autofillScheduleText">Schedule retrieved from request</span>
+                      </div>
+                      <!-- Hidden inputs to preserve form payload compatibility -->
+                      <input type="hidden" id="deploymentStartDate" name="deployment_start_date" />
+                      <input type="hidden" id="deploymentEndDate" name="deployment_end_date" />
+                    </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="deploymentNotes" class="form-label"><span>Deployment Notes & Instructions (Optional)</span></label>
-                    <textarea id="deploymentNotes" name="notes" class="form-textarea" rows="2" placeholder="Special guidance, student preparation tips, or barangay contact reminders..."></textarea>
+                    <label for="deploymentNotes" class="form-label"><span>Deployment Notes (Optional)</span></label>
+                    <textarea id="deploymentNotes" name="notes" class="form-textarea" rows="2" placeholder="Instructions or reminders..."></textarea>
                   </div>
                 </form>
 
                 <!-- Recommended / Selected Students Header -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
                   <div>
-                    <h4 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--cwts-primary-dark, #0B3D2E);">Recommended Students (DSS Ranking)</h4>
-                    <p style="margin: 2px 0 0 0; font-size: 0.8125rem; color: var(--text-muted);">Select the student volunteers to officially assign to this deployment.</p>
+                    <h4 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--cwts-primary-dark, #0B3D2E);">Recommended Students</h4>
                   </div>
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <span class="badge badge-verified" id="selectionCountBadge" style="font-size: 0.8125rem; padding: 6px 12px;">
+                  <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span class="badge badge-pending" id="selectionCountBadge" style="font-size: 0.8125rem; padding: 6px 12px;">
                       <span id="selectionCount">0</span> Students Selected
                     </span>
-                    <button type="button" class="btn btn-secondary btn-sm" id="selectAllRecommendedBtn">Select Top 15 Recommended</button>
                   </div>
                 </div>
 
@@ -327,24 +343,33 @@
                         </th>
                         <th style="width: 70px;">Rank</th>
                         <th>Student Name</th>
-                        <th style="width: 180px;">Course</th>
-                        <th style="width: 140px;">Match Score</th>
+                        <th style="width: 170px;">Course & Section</th>
+                        <th>Location & Skills</th>
+                        <th style="width: 150px; text-align: center;">Suitability Score</th>
                       </tr>
                     </thead>
                     <tbody id="studentsTableBody">
                       <tr>
-                        <td colspan="5" style="text-align: center; padding: 36px 20px; color: var(--text-muted);">Select an approved request above to load DSS student recommendations.</td>
+                        <td colspan="6" style="text-align: center; padding: 36px 20px; color: var(--text-muted);">Select a request to view recommended students.</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
 
+                <!-- Inline Assignment Alert -->
+                <div id="assignmentAlert" style="display: none; padding: 12px 16px; border-radius: 8px; margin-top: 20px; font-size: 0.875rem; font-weight: 600;"></div>
+
                 <!-- Deployment Action Submission Bar -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(226, 232, 240, 0.8); flex-wrap: wrap; gap: 14px;">
-                  <div style="font-size: 0.8125rem; color: var(--text-muted);">
-                    Note: Assigned students will immediately receive deployment schedules on their student portal.
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 18px; border-top: 1px solid rgba(226, 232, 240, 0.8); flex-wrap: wrap; gap: 14px;">
+                  <div style="font-size: 0.8125rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color: var(--cwts-accent-green);">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span>Assigned students will receive this deployment on their portal.</span>
                   </div>
-                  <button type="button" class="btn btn-primary" id="createDeploymentBtn" disabled>
+                  <button type="button" class="btn btn-primary" id="createDeploymentBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
@@ -371,12 +396,14 @@
                     </svg>
                   </div>
                   <div>
-                    <h3 class="table-card-title">Existing Deployments & Status</h3>
+                    <h3 class="table-card-title">Existing Deployments</h3>
                   </div>
                 </div>
 
-                <div class="table-card-actions" style="display: flex; align-items: center; gap: 12px;">
-                  <select id="deploymentStatusFilter" class="control-input" style="min-width: 150px; padding: 6px 12px;">
+                <div class="table-card-actions" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                  <input type="text" id="deploymentSearchInput" class="control-input" placeholder="Search batch name or community..." style="min-width: 220px; padding: 6px 12px;" />
+
+                  <select id="deploymentStatusFilter" class="control-input" style="min-width: 140px; padding: 6px 12px;">
                     <option value="all">All Statuses</option>
                     <option value="pending">Pending</option>
                     <option value="active">Active</option>
@@ -402,10 +429,10 @@
                     <tr>
                       <th>Batch Name</th>
                       <th>Community & Activity</th>
-                      <th style="width: 150px;">Deployment Date</th>
-                      <th style="width: 120px;">Assigned Students</th>
-                      <th style="width: 130px;">Status</th>
-                      <th style="width: 180px; text-align: center;">Actions</th>
+                      <th style="width: 160px;">Schedule</th>
+                      <th style="width: 130px; text-align: center;">Assigned</th>
+                      <th style="width: 120px; text-align: center;">Status</th>
+                      <th style="width: 200px; text-align: center;">Actions</th>
                     </tr>
                   </thead>
                   <tbody id="deploymentsTableBody">
@@ -430,7 +457,7 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <!-- Scripts -->
-  <script src="../student/js/student-layout.js?v=20"></script>
-  <script src="js/deployment-management.js?v=20"></script>
+  <script src="../student/js/student-layout.js?v=27"></script>
+  <script src="js/deployment-management.js?v=28"></script>
 </body>
 </html>

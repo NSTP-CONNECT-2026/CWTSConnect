@@ -9,7 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../student/css/student-layout.css?v=20" />
   <link rel="stylesheet" href="css/nstp-coordinator.css?v=20" />
-  <link rel="stylesheet" href="css/nstp-users.css?v=20" />
+  <link rel="stylesheet" href="css/nstp-users.css?v=24" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
   <div class="dashboard-layout">
@@ -250,7 +251,6 @@
             <div style="display: flex; align-items: center; gap: 12px; flex: 1; flex-wrap: wrap;">
               <div class="skeleton skeleton-input" style="width: 300px; height: 40px; border-radius: var(--radius-md);"></div>
               <div class="skeleton skeleton-btn" style="width: 130px; height: 40px; border-radius: var(--radius-md);"></div>
-              <div class="skeleton skeleton-btn" style="width: 160px; height: 40px; border-radius: var(--radius-md);"></div>
               <div class="skeleton skeleton-btn" style="width: 150px; height: 40px; border-radius: var(--radius-md);"></div>
             </div>
             <div class="skeleton skeleton-btn" style="width: 80px; height: 40px; border-radius: var(--radius-md);"></div>
@@ -265,7 +265,6 @@
                     <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 130px; height: 13px;"></div></th>
                     <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 110px; height: 13px;"></div></th>
                     <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 80px; height: 13px;"></div></th>
-                    <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 140px; height: 13px;"></div></th>
                     <th style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 70px; height: 13px;"></div></th>
                     <th style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-text" style="width: 60px; height: 13px; margin-left: auto;"></div></th>
                   </tr>
@@ -288,12 +287,6 @@
                       </div>
                     </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 95px; height: 13px;"></div></td>
-                    <td style="padding: 16px 20px;">
-                      <div style="display: flex; gap: 6px;">
-                        <div class="skeleton skeleton-badge" style="width: 60px; height: 20px;"></div>
-                        <div class="skeleton skeleton-badge" style="width: 55px; height: 20px;"></div>
-                      </div>
-                    </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 75px; height: 22px;"></div></td>
                     <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 80px; height: 32px; margin-left: auto;"></div></td>
                   </tr>
@@ -315,12 +308,6 @@
                       </div>
                     </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 110px; height: 13px;"></div></td>
-                    <td style="padding: 16px 20px;">
-                      <div style="display: flex; gap: 6px;">
-                        <div class="skeleton skeleton-badge" style="width: 70px; height: 20px;"></div>
-                        <div class="skeleton skeleton-badge" style="width: 60px; height: 20px;"></div>
-                      </div>
-                    </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 80px; height: 22px;"></div></td>
                     <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 80px; height: 32px; margin-left: auto;"></div></td>
                   </tr>
@@ -342,12 +329,6 @@
                       </div>
                     </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 85px; height: 13px;"></div></td>
-                    <td style="padding: 16px 20px;">
-                      <div style="display: flex; gap: 6px;">
-                        <div class="skeleton skeleton-badge" style="width: 65px; height: 20px;"></div>
-                        <div class="skeleton skeleton-badge" style="width: 75px; height: 20px;"></div>
-                      </div>
-                    </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 70px; height: 22px;"></div></td>
                     <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 80px; height: 32px; margin-left: auto;"></div></td>
                   </tr>
@@ -369,11 +350,6 @@
                       </div>
                     </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 105px; height: 13px;"></div></td>
-                    <td style="padding: 16px 20px;">
-                      <div style="display: flex; gap: 6px;">
-                        <div class="skeleton skeleton-badge" style="width: 80px; height: 20px;"></div>
-                      </div>
-                    </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 75px; height: 22px;"></div></td>
                     <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 80px; height: 32px; margin-left: auto;"></div></td>
                   </tr>
@@ -395,12 +371,6 @@
                       </div>
                     </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-text" style="width: 90px; height: 13px;"></div></td>
-                    <td style="padding: 16px 20px;">
-                      <div style="display: flex; gap: 6px;">
-                        <div class="skeleton skeleton-badge" style="width: 55px; height: 20px;"></div>
-                        <div class="skeleton skeleton-badge" style="width: 65px; height: 20px;"></div>
-                      </div>
-                    </td>
                     <td style="padding: 16px 20px;"><div class="skeleton skeleton-badge" style="width: 80px; height: 22px;"></div></td>
                     <td style="padding: 16px 20px; text-align: right;"><div class="skeleton skeleton-btn" style="width: 80px; height: 32px; margin-left: auto;"></div></td>
                   </tr>
@@ -462,8 +432,8 @@
             </div>
 
             <!-- 2. Search & Filters Toolbar -->
-            <div class="toolbar-card">
-              <div class="toolbar-left">
+            <div class="toolbar-card filter-card-collapsible" id="studentToolbarCard">
+              <div class="toolbar-top-row">
                 <div class="search-input-wrap">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -472,28 +442,85 @@
                   <input type="text" id="studentSearchInput" class="toolbar-input" placeholder="Search by name, student number, or email..." />
                 </div>
 
-                <select id="studentCourseFilter" class="toolbar-select">
-                  <option value="all">All Courses</option>
-                  <option value="BSIT">BSIT</option>
-                  <option value="BSCS">BSCS</option>
-                  <option value="BSBA">BSBA</option>
-                  <option value="BSED">BSED</option>
-                  <option value="BSHM">BSHM</option>
-                </select>
+                <button type="button" class="btn-filter-toggle" id="toggleStudentFiltersBtn" aria-expanded="false" title="Show or hide filters">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                  </svg>
+                  <span>Filter</span>
+                  <span class="filter-badge-dot" id="studentFilterActiveDot" style="display: none;"></span>
+                  <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+              </div>
 
-                <select id="studentProfileFilter" class="toolbar-select">
-                  <option value="all">All Profile Statuses</option>
-                  <option value="completed">Profile Completed</option>
-                  <option value="pending">Profile Incomplete</option>
-                </select>
+              <!-- Collapsible Filters Section (Hidden by Default) -->
+              <div class="filter-expandable-panel" id="studentFilterPanel">
+                <div class="filter-panel-inner">
+                  <div class="filter-field-group">
+                    <label for="studentCourseFilter" class="filter-field-label">Course</label>
+                    <select id="studentCourseFilter" class="toolbar-select">
+                      <option value="all">All Courses</option>
+                      <option value="BSA (Agri)" title="Bachelor of Science in Agriculture">BSA (Agri)</option>
+                      <option value="BSAB" title="Bachelor of Science in Agricultural Business">BSAB</option>
+                      <option value="BSPsych" title="Bachelor of Science in Psychology">BSPsych</option>
+                      <option value="BSOA" title="Bachelor of Science in Office Administration">BSOA</option>
+                      <option value="BSBA" title="Bachelor of Science in Business Administration">BSBA</option>
+                      <option value="BSA (Acct)" title="Bachelor of Science in Accountancy">BSA (Acct)</option>
+                      <option value="BSCS" title="Bachelor of Science in Computer Science">BSCS</option>
+                      <option value="BSIT" title="Bachelor of Science in Information Technology">BSIT</option>
+                      <option value="BSIS" title="Bachelor of Science in Information System">BSIS</option>
+                      <option value="BSCrim" title="Bachelor of Science in Criminology">BSCrim</option>
+                      <option value="BSABE" title="Bachelor of Science in Agricultural and Biosystems Engineering">BSABE</option>
+                      <option value="BSCpE" title="Bachelor of Science in Computer Engineering">BSCpE</option>
+                      <option value="BSME" title="Bachelor of Science in Mechanical Engineering">BSME</option>
+                      <option value="BSIndTech" title="Bachelor of Science in Industrial Technology">BSIndTech</option>
+                      <option value="BSHM" title="Bachelor of Science in Hospitality Management">BSHM</option>
+                      <option value="BSTM" title="Bachelor of Science in Tourism Management">BSTM</option>
+                      <option value="BSED" title="Bachelor of Secondary Education">BSED</option>
+                      <option value="BEED" title="Bachelor of Elementary Education">BEED</option>
+                      <option value="BECEd" title="Bachelor of Early Childhood Education">BECEd</option>
+                      <option value="BPEd" title="Bachelor of Physical Education">BPEd</option>
+                      <option value="BTVTEd" title="Bachelor of Technical - Vocational Teacher">BTVTEd</option>
+                      <option value="BTLEd" title="Bachelor of Technology and Livelihood Education">BTLEd</option>
+                    </select>
+                  </div>
 
-                <select id="studentAccountFilter" class="toolbar-select">
-                  <option value="all">All Account Statuses</option>
-                  <option value="active">Active Accounts</option>
-                  <option value="inactive">Inactive</option>
-                </select>
+                  <div class="filter-field-group compact">
+                    <label for="studentYearFilter" class="filter-field-label">Year</label>
+                    <select id="studentYearFilter" class="toolbar-select">
+                      <option value="all">All Years</option>
+                      <option value="1">1st Year</option>
+                      <option value="2">2nd Year</option>
+                      <option value="3">3rd Year</option>
+                      <option value="4">4th Year</option>
+                    </select>
+                  </div>
 
-                <button type="button" id="clearStudentFiltersBtn" class="btn btn-secondary btn-sm">Clear</button>
+                  <div class="filter-field-group compact">
+                    <label for="studentSectionFilter" class="filter-field-label">Section</label>
+                    <select id="studentSectionFilter" class="toolbar-select">
+                      <option value="all">All Sections</option>
+                      <option value="A">Section A</option>
+                      <option value="B">Section B</option>
+                      <option value="C">Section C</option>
+                      <option value="D">Section D</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-field-group">
+                    <label for="studentAccountFilter" class="filter-field-label">Account Status</label>
+                    <select id="studentAccountFilter" class="toolbar-select">
+                      <option value="all">All Account Statuses</option>
+                      <option value="active">Active Accounts</option>
+                      <option value="inactive">Inactive</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-actions-group">
+                    <button type="button" id="clearStudentFiltersBtn" class="btn btn-secondary btn-sm" style="height: 40px; padding: 0 16px;">Clear Filters</button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -506,7 +533,6 @@
                       <th>Student Information</th>
                       <th>Course & Section</th>
                       <th>Location</th>
-                      <th>Skills Competencies</th>
                       <th>Status</th>
                       <th>Actions</th>
                     </tr>
@@ -581,8 +607,8 @@
             </div>
 
             <!-- 2. Action & Filter Toolbar -->
-            <div class="toolbar-card">
-              <div class="toolbar-left">
+            <div class="toolbar-card filter-card-collapsible" id="officialToolbarCard">
+              <div class="toolbar-top-row">
                 <div class="search-input-wrap">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -591,24 +617,45 @@
                   <input type="text" id="officialSearchInput" class="toolbar-input" placeholder="Search by official name, community, or email..." />
                 </div>
 
-                <select id="officialStatusFilter" class="toolbar-select">
-                  <option value="all">All Account Statuses</option>
-                  <option value="active">Active Only</option>
-                  <option value="inactive">Inactive Only</option>
-                </select>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <button type="button" class="btn-filter-toggle" id="toggleOfficialFiltersBtn" aria-expanded="false" title="Show or hide filters">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    <span>Filter</span>
+                    <span class="filter-badge-dot" id="officialFilterActiveDot" style="display: none;"></span>
+                    <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
 
-                <button type="button" id="clearOfficialFiltersBtn" class="btn btn-secondary btn-sm">Clear</button>
+                  <button type="button" id="openCreateOfficialModalBtn" class="btn btn-primary" style="height: 40px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="16"></line>
+                      <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    <span>+ Create Community Account</span>
+                  </button>
+                </div>
               </div>
 
-              <div class="toolbar-right">
-                <button type="button" id="openCreateOfficialModalBtn" class="btn btn-primary">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="16"></line>
-                    <line x1="8" y1="12" x2="16" y2="12"></line>
-                  </svg>
-                  <span>+ Create Community Account</span>
-                </button>
+              <!-- Collapsible Filters Section (Hidden by Default) -->
+              <div class="filter-expandable-panel" id="officialFilterPanel">
+                <div class="filter-panel-inner">
+                  <div class="filter-field-group">
+                    <label for="officialStatusFilter" class="filter-field-label">Account Status</label>
+                    <select id="officialStatusFilter" class="toolbar-select">
+                      <option value="all">All Account Statuses</option>
+                      <option value="active">Active Only</option>
+                      <option value="inactive">Inactive Only</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-actions-group">
+                    <button type="button" id="clearOfficialFiltersBtn" class="btn btn-secondary btn-sm" style="height: 40px; padding: 0 16px;">Clear Filters</button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -678,21 +725,16 @@
        MODAL 2: CREATE COMMUNITY OFFICIAL ACCOUNT
        ==================================================================== -->
   <div id="createOfficialModal" class="modal-backdrop">
-    <div class="modal-card">
-      <div class="modal-header">
+    <div class="modal-card" style="max-width: 740px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;">
+      <div class="modal-header" style="flex-shrink: 0;">
         <h3 class="modal-title">Create Community Official Account</h3>
         <button type="button" class="modal-close-btn" onclick="closeCreateOfficialModal()">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
-      <form id="createOfficialForm">
-        <div class="modal-body">
+      <form id="createOfficialForm" style="display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; margin: 0;">
+        <div class="modal-body" style="overflow-y: auto; flex: 1; min-height: 0; padding: 20px 24px;">
           <div class="form-grid-2">
-            <div class="form-group full-width">
-              <label class="form-label"><span>Full Name <span class="required">*</span></span></label>
-              <input type="text" id="newOfficialName" class="form-input" placeholder="e.g. Captain Juan Dela Cruz" required />
-            </div>
-
             <div class="form-group">
               <label class="form-label"><span>Email Address <span class="required">*</span></span></label>
               <input type="email" id="newOfficialEmail" class="form-input" placeholder="e.g. brgy.sanantonio@pasig.gov.ph" required />
@@ -700,21 +742,65 @@
 
             <div class="form-group">
               <label class="form-label"><span>Temporary Password <span class="required">*</span></span></label>
-              <input type="password" id="newOfficialPassword" class="form-input" placeholder="Minimum 6 characters" minlength="6" required />
+              <div class="password-input-wrapper">
+                <input type="password" id="newOfficialPassword" class="form-input" placeholder="Minimum 6 characters" minlength="6" required />
+                <button type="button" class="btn-toggle-password" aria-label="Show password" data-target="newOfficialPassword" tabindex="-1" title="Show/hide password">
+                  <svg class="eye-icon eye-show" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg class="eye-icon eye-hide" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group full-width">
               <label class="form-label"><span>Contact Number</span></label>
               <input type="tel" id="newOfficialContact" class="form-input" placeholder="09XXXXXXXXX" />
             </div>
 
-            <div class="form-group">
-              <label class="form-label"><span>Position / Title <span class="required">*</span></span></label>
-              <input type="text" id="newOfficialPosition" class="form-input" placeholder="e.g. Barangay Captain / NGO Director" required />
+            <!-- Map Picker Section for Community Location -->
+            <div class="form-group full-width" style="margin-top: 6px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6px;">
+                <div>
+                  <label class="form-label" style="font-weight: 700; color: var(--cwts-primary-dark); font-size: 0.8125rem;">Select Community Location on Map <span class="required">*</span></label>
+                  <p style="font-size: 0.75rem; color: var(--text-muted); margin: 2px 0 0 0;">Click on the map or search to pin the exact community location. Location fields and coordinates will auto-fill.</p>
+                </div>
+              </div>
+
+              <!-- Map Search Controls -->
+              <div class="map-search-row">
+                <input type="text" id="officialLocationSearch" class="form-input" placeholder="Search address, barangay, or municipality (e.g. San Antonio, Pasig / Santa Cruz, Laguna)" />
+                <button type="button" id="btnOfficialSearchMap" class="btn btn-secondary btn-sm" style="height: 40px; padding: 0 14px; white-space: nowrap;">Search</button>
+                <button type="button" id="btnOfficialLocateMe" class="btn btn-secondary btn-sm" style="height: 40px; padding: 0 14px; white-space: nowrap;" title="Use my current GPS position">Locate</button>
+              </div>
+
+              <!-- Leaflet Map Container -->
+              <div class="official-map-wrapper">
+                <div id="officialMap" class="official-map-container"></div>
+                <div class="map-coords-badge" id="officialCoordsBadge">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                      <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Coordinates: <strong id="officialCoordsText" style="font-family: monospace;">Click or search on map to pin location</strong></span>
+                  </div>
+                  <span id="officialCoordsStatus" style="font-size: 0.6875rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: #FEF3C7; color: #92400E;">Pending Pin</span>
+                </div>
+              </div>
+
+              <!-- Hidden Coordinates for Database Calculation -->
+              <input type="hidden" id="newOfficialLatitude" />
+              <input type="hidden" id="newOfficialLongitude" />
             </div>
 
+            <!-- Auto-filled Location Details from Map -->
             <div class="form-group full-width">
-              <label class="form-label"><span>Community / Barangay / Partner Name <span class="required">*</span></span></label>
+              <label class="form-label"><span>Community / Barangay <span class="required">*</span></span> <small style="font-size: 0.75rem; color: var(--cwts-primary); font-weight: normal;">(Auto-filled from Map)</small></label>
               <input type="text" id="newOfficialCommunity" class="form-input" placeholder="e.g. Barangay San Antonio Pasig" required />
             </div>
 
@@ -742,6 +828,87 @@
     </div>
   </div>
 
+  <!-- ====================================================================
+       MODAL 3: EDIT COMMUNITY OFFICIAL ACCOUNT
+       ==================================================================== -->
+  <div id="editOfficialModal" class="modal-backdrop">
+    <div class="modal-card" style="max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;">
+      <div class="modal-header" style="flex-shrink: 0;">
+        <h3 class="modal-title">Edit Community Official Details</h3>
+        <button type="button" class="modal-close-btn" onclick="closeEditOfficialModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <form id="editOfficialForm" style="display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; margin: 0;">
+        <input type="hidden" id="editOfficialUserId" />
+        <div class="modal-body" style="overflow-y: auto; flex: 1; min-height: 0; padding: 20px 24px;">
+          <div class="form-grid-2">
+            <div class="form-group full-width">
+              <label class="form-label"><span>Full Name <span class="required">*</span></span></label>
+              <input type="text" id="editOfficialName" class="form-input" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span>Email Address <span class="required">*</span></span></label>
+              <input type="email" id="editOfficialEmail" class="form-input" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span>New Password (Leave blank to keep unchanged)</span></label>
+              <div class="password-input-wrapper">
+                <input type="password" id="editOfficialPassword" class="form-input" placeholder="Min. 6 characters if changing" minlength="6" />
+                <button type="button" class="btn-toggle-password" aria-label="Show password" data-target="editOfficialPassword" tabindex="-1" title="Show/hide password">
+                  <svg class="eye-icon eye-show" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg class="eye-icon eye-hide" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span>Contact Number</span></label>
+              <input type="tel" id="editOfficialContact" class="form-input" placeholder="09XXXXXXXXX" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span>Position / Title <span class="required">*</span></span></label>
+              <input type="text" id="editOfficialPosition" class="form-input" required />
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label"><span>Community / Barangay / Partner Name <span class="required">*</span></span></label>
+              <input type="text" id="editOfficialCommunity" class="form-input" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span>Barangay <span class="required">*</span></span></label>
+              <input type="text" id="editOfficialBarangay" class="form-input" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span>Municipality / City <span class="required">*</span></span></label>
+              <input type="text" id="editOfficialMunicipality" class="form-input" required />
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label"><span>Province <span class="required">*</span></span></label>
+              <input type="text" id="editOfficialProvince" class="form-input" required />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeEditOfficialModal()">Cancel</button>
+          <button type="submit" id="btnSaveEditOfficial" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Notification Message Container -->
   <div id="messageContainer" class="message-container" style="display: none;">
     <div id="messageContent" class="message-content info">
@@ -754,7 +921,8 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="../student/js/student-layout.js?v=20"></script>
-  <script src="js/user-management.js?v=20"></script>
+  <script src="js/user-management.js?v=33"></script>
 </body>
 </html>

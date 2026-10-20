@@ -132,8 +132,30 @@ function formatDate(dateString) {
 }
 
 function formatTime(timeString) {
-  if (!timeString) return 'N/A';
-  return timeString.substring(0, 5);
+  if (!timeString || timeString === '---' || String(timeString).toUpperCase() === 'N/A' || String(timeString).toUpperCase() === 'N\\A') {
+    return '---';
+  }
+  const trimmed = String(timeString).trim();
+  if (trimmed.includes('T')) {
+    const d = new Date(trimmed);
+    if (!isNaN(d.getTime())) {
+      let h = d.getHours();
+      const m = String(d.getMinutes()).padStart(2, '0');
+      const ap = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      return `${String(h).padStart(2, '0')}:${m} ${ap}`;
+    }
+  }
+  const match = trimmed.match(/^(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?\s*(AM|PM)?$/i);
+  if (!match) return trimmed;
+  let hours = parseInt(match[1], 10);
+  const minutes = String(parseInt(match[2], 10)).padStart(2, '0');
+  const modifier = match[4] ? match[4].toUpperCase() : null;
+  if (modifier === 'PM' && hours < 12) hours += 12;
+  if (modifier === 'AM' && hours === 12) hours = 0;
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  return `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
 }
 
 function showLoading() {

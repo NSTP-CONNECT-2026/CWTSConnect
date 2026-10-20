@@ -1,0 +1,394 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3120 1320" width="3120" height="1320">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="3120" height="1320" fill="#ffffff" stroke="none" />
+  <!-- ROOT LEVEL 0 (OFFICIAL SYSTEM TITLE) -->
+  <rect x="970.0" y="40" width="1180" height="76" rx="4" fill="#ffffff" stroke="#000000" stroke-width="2.2" />
+  <text x="1560" y="64" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#000000" text-anchor="middle" letter-spacing="0.4">CWTSCONNECT: A WEB-BASED CWTS COMMUNITY NEEDS MATCHING AND STUDENT DEPLOYMENT SYSTEM</text>
+  <text x="1560" y="84" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#000000" text-anchor="middle" letter-spacing="0.4">USING A DECISION SUPPORT SYSTEM WITH MONITORING AND ANALYTICS</text>
+  <text x="1560" y="104" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#444444" text-anchor="middle" letter-spacing="1">HIERARCHICAL INPUT PROCESS OUTPUT (HIPO) MODEL</text>
+  <!-- HIERARCHY TREE CONNECTIONS -->
+  <line x1="1560" y1="116" x2="1560" y2="144" stroke="#000000" stroke-width="2" />
+  <line x1="540" y1="144" x2="2580" y2="144" stroke="#000000" stroke-width="2" />
+  <line x1="540" y1="144" x2="540" y2="175" stroke="#000000" stroke-width="2" />
+  <line x1="1560" y1="144" x2="1560" y2="175" stroke="#000000" stroke-width="2" />
+  <line x1="2580" y1="144" x2="2580" y2="175" stroke="#000000" stroke-width="2" />
+  <!-- ROW 2 BUS FEEDERS -->
+  <line x1="1050" y1="144" x2="1050" y2="745" stroke="#000000" stroke-width="2" />
+  <line x1="2070" y1="144" x2="2070" y2="745" stroke="#000000" stroke-width="2" />
+  <line x1="540" y1="745" x2="2580" y2="745" stroke="#000000" stroke-width="2" />
+  <line x1="540" y1="745" x2="540" y2="780" stroke="#000000" stroke-width="2" />
+  <line x1="1560" y1="745" x2="1560" y2="780" stroke="#000000" stroke-width="2" />
+  <line x1="2580" y1="745" x2="2580" y2="780" stroke="#000000" stroke-width="2" />
+
+  <!-- MODULE 1.0 -->
+  <rect x="250.0" y="175" width="580" height="46" rx="3" fill="#f5f5f5" stroke="#000000" stroke-width="1.8" />
+  <text x="540" y="203" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#000000" text-anchor="middle" letter-spacing="0.5">1.0 USER ACCOUNT &amp; PROFILE MANAGEMENT</text>
+  <line x1="540" y1="221" x2="540" y2="245" stroke="#000000" stroke-width="1.5" />
+  <line x1="225" y1="245" x2="855" y2="245" stroke="#000000" stroke-width="1.5" />
+  <line x1="225" y1="245" x2="225" y2="267" stroke="#000000" stroke-width="1.5" />
+  <rect x="84.0" y="267" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="225" y="287" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">1.1</text>
+  <text x="225" y="305" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Account Registration &amp; OTP Verification</text>
+  <line x1="225" y1="319" x2="225" y2="337" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="84.0" y="337" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="225" y="355" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="225" y="376" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">User Registration Data &amp; Email</text>
+  <line x1="225" y1="397" x2="225" y2="415" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="84.0" y="415" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="225" y="433" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="225" y="448" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Validate Credentials &amp; Verify</text>
+  <text x="225" y="463" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">6-digit OTP</text>
+  <line x1="225" y1="475" x2="225" y2="493" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="84.0" y="493" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="225" y="511" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="225" y="526" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Verified Active User Account</text>
+  <text x="225" y="541" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Record</text>
+  <line x1="540" y1="245" x2="540" y2="267" stroke="#000000" stroke-width="1.5" />
+  <rect x="399.0" y="267" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="540" y="287" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">1.2</text>
+  <text x="540" y="305" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Student Profiling &amp; GIS Geotagging</text>
+  <line x1="540" y1="319" x2="540" y2="337" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="399.0" y="337" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="540" y="355" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="540" y="370" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Student Profile Info, Skills &amp;</text>
+  <text x="540" y="385" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Address</text>
+  <line x1="540" y1="397" x2="540" y2="415" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="399.0" y="415" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="540" y="433" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="540" y="448" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Record Academic Info &amp; Geocode</text>
+  <text x="540" y="463" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Coordinates</text>
+  <line x1="540" y1="475" x2="540" y2="493" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="399.0" y="493" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="540" y="511" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="540" y="526" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Geotagged Student Profile &amp; GIS</text>
+  <text x="540" y="541" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Record</text>
+  <line x1="855" y1="245" x2="855" y2="267" stroke="#000000" stroke-width="1.5" />
+  <rect x="714.0" y="267" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="855" y="287" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">1.3</text>
+  <text x="855" y="305" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Role-Based Access &amp; Session Control</text>
+  <line x1="855" y1="319" x2="855" y2="337" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="714.0" y="337" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="855" y="355" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="855" y="376" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Login Credentials &amp; User Role Type</text>
+  <line x1="855" y1="397" x2="855" y2="415" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="714.0" y="415" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="855" y="433" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="855" y="448" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Authenticate Credentials &amp; Issue</text>
+  <text x="855" y="463" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Token</text>
+  <line x1="855" y1="475" x2="855" y2="493" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="714.0" y="493" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="855" y="511" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="855" y="532" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Authorized Active User Session</text>
+
+  <!-- MODULE 2.0 -->
+  <rect x="1270.0" y="175" width="580" height="46" rx="3" fill="#f5f5f5" stroke="#000000" stroke-width="1.8" />
+  <text x="1560" y="203" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#000000" text-anchor="middle" letter-spacing="0.5">2.0 CHED CMO COMPLIANCE VERIFICATION</text>
+  <line x1="1560" y1="221" x2="1560" y2="245" stroke="#000000" stroke-width="1.5" />
+  <line x1="1245" y1="245" x2="1875" y2="245" stroke="#000000" stroke-width="1.5" />
+  <line x1="1245" y1="245" x2="1245" y2="267" stroke="#000000" stroke-width="1.5" />
+  <rect x="1104.0" y="267" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="1245" y="287" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">2.1</text>
+  <text x="1245" y="305" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Legal Document Submission</text>
+  <line x1="1245" y1="319" x2="1245" y2="337" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1104.0" y="337" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1245" y="355" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="1245" y="370" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Parent Waiver, Medical Cert &amp;</text>
+  <text x="1245" y="385" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Valid ID</text>
+  <line x1="1245" y1="397" x2="1245" y2="415" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1104.0" y="415" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1245" y="433" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="1245" y="448" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Validate Formats &amp; Store Document</text>
+  <text x="1245" y="463" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Uploads</text>
+  <line x1="1245" y1="475" x2="1245" y2="493" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1104.0" y="493" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1245" y="511" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="1245" y="526" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Student Compliance Document</text>
+  <text x="1245" y="541" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Records</text>
+  <line x1="1560" y1="245" x2="1560" y2="267" stroke="#000000" stroke-width="1.5" />
+  <rect x="1419.0" y="267" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="1560" y="287" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">2.2</text>
+  <text x="1560" y="305" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Coordinator Review &amp; Verification</text>
+  <line x1="1560" y1="319" x2="1560" y2="337" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1419.0" y="337" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1560" y="355" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="1560" y="376" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Submitted Student Documents</text>
+  <line x1="1560" y1="397" x2="1560" y2="415" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1419.0" y="415" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1560" y="433" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="1560" y="448" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Review Authenticity &amp; Verify</text>
+  <text x="1560" y="463" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Status</text>
+  <line x1="1560" y1="475" x2="1560" y2="493" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1419.0" y="493" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1560" y="511" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="1560" y="526" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Approved Compliance Clearance</text>
+  <text x="1560" y="541" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Record</text>
+  <line x1="1875" y1="245" x2="1875" y2="267" stroke="#000000" stroke-width="1.5" />
+  <rect x="1734.0" y="267" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="1875" y="287" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">2.3</text>
+  <text x="1875" y="305" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Compliance Tracking &amp; Alerts</text>
+  <line x1="1875" y1="319" x2="1875" y2="337" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1734.0" y="337" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1875" y="355" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="1875" y="370" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Verification Status &amp; Eligibility</text>
+  <text x="1875" y="385" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Updates</text>
+  <line x1="1875" y1="397" x2="1875" y2="415" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1734.0" y="415" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1875" y="433" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="1875" y="448" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Evaluate Eligibility &amp; Trigger</text>
+  <text x="1875" y="463" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Status Alerts</text>
+  <line x1="1875" y1="475" x2="1875" y2="493" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1734.0" y="493" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1875" y="511" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="1875" y="532" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Deployment Clearance Notification</text>
+
+  <!-- MODULE 3.0 -->
+  <rect x="2290.0" y="175" width="580" height="46" rx="3" fill="#f5f5f5" stroke="#000000" stroke-width="1.8" />
+  <text x="2580" y="203" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#000000" text-anchor="middle" letter-spacing="0.5">3.0 COMMUNITY OUTREACH REQUEST MANAGEMENT</text>
+  <line x1="2580" y1="221" x2="2580" y2="245" stroke="#000000" stroke-width="1.5" />
+  <line x1="2265" y1="245" x2="2895" y2="245" stroke="#000000" stroke-width="1.5" />
+  <line x1="2265" y1="245" x2="2265" y2="267" stroke="#000000" stroke-width="1.5" />
+  <rect x="2124.0" y="267" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="2265" y="287" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">3.1</text>
+  <text x="2265" y="305" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Barangay Proposal Submission</text>
+  <line x1="2265" y1="319" x2="2265" y2="337" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2124.0" y="337" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2265" y="355" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="2265" y="370" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Community Request Details &amp;</text>
+  <text x="2265" y="385" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Coordinates</text>
+  <line x1="2265" y1="397" x2="2265" y2="415" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2124.0" y="415" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2265" y="433" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="2265" y="448" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Validate Scope &amp; Log Community</text>
+  <text x="2265" y="463" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Needs</text>
+  <line x1="2265" y1="475" x2="2265" y2="493" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2124.0" y="493" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2265" y="511" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="2265" y="532" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Pending Community Outreach Request</text>
+  <line x1="2580" y1="245" x2="2580" y2="267" stroke="#000000" stroke-width="1.5" />
+  <rect x="2439.0" y="267" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="2580" y="287" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">3.2</text>
+  <text x="2580" y="305" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Proposal Evaluation &amp; Approval</text>
+  <line x1="2580" y1="319" x2="2580" y2="337" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2439.0" y="337" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2580" y="355" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="2580" y="370" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Pending Community Outreach</text>
+  <text x="2580" y="385" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Requests</text>
+  <line x1="2580" y1="397" x2="2580" y2="415" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2439.0" y="415" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2580" y="433" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="2580" y="448" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Review Feasibility &amp; Endorse</text>
+  <text x="2580" y="463" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Proposal</text>
+  <line x1="2580" y1="475" x2="2580" y2="493" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2439.0" y="493" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2580" y="511" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="2580" y="526" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Approved Community Outreach</text>
+  <text x="2580" y="541" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Project</text>
+  <line x1="2895" y1="245" x2="2895" y2="267" stroke="#000000" stroke-width="1.5" />
+  <rect x="2754.0" y="267" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="2895" y="287" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">3.3</text>
+  <text x="2895" y="305" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Service &amp; Skills Categorization</text>
+  <line x1="2895" y1="319" x2="2895" y2="337" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2754.0" y="337" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2895" y="355" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="2895" y="370" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Standard Service Catalog &amp;</text>
+  <text x="2895" y="385" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Required Skills</text>
+  <line x1="2895" y1="397" x2="2895" y2="415" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2754.0" y="415" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2895" y="433" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="2895" y="448" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Map Community Needs to Skill</text>
+  <text x="2895" y="463" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Categories</text>
+  <line x1="2895" y1="475" x2="2895" y2="493" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2754.0" y="493" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2895" y="511" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="2895" y="532" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Target Criteria for DSS Matching</text>
+
+  <!-- MODULE 4.0 -->
+  <rect x="250.0" y="780" width="580" height="46" rx="3" fill="#f5f5f5" stroke="#000000" stroke-width="1.8" />
+  <text x="540" y="808" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#000000" text-anchor="middle" letter-spacing="0.5">4.0 DSS MATCHING &amp; VOLUNTEER DEPLOYMENT</text>
+  <line x1="540" y1="826" x2="540" y2="850" stroke="#000000" stroke-width="1.5" />
+  <line x1="225" y1="850" x2="855" y2="850" stroke="#000000" stroke-width="1.5" />
+  <line x1="225" y1="850" x2="225" y2="872" stroke="#000000" stroke-width="1.5" />
+  <rect x="84.0" y="872" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="225" y="892" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">4.1</text>
+  <text x="225" y="910" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Candidate Matching &amp; Scoring (DSS)</text>
+  <line x1="225" y1="924" x2="225" y2="942" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="84.0" y="942" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="225" y="960" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="225" y="975" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Eligible Student Profiles &amp;</text>
+  <text x="225" y="990" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Coordinates</text>
+  <line x1="225" y1="1002" x2="225" y2="1020" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="84.0" y="1020" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="225" y="1038" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="225" y="1053" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Compute Skill Relevance &amp;</text>
+  <text x="225" y="1068" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Proximity Distance</text>
+  <line x1="225" y1="1080" x2="225" y2="1098" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="84.0" y="1098" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="225" y="1116" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="225" y="1131" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Ranked Candidate DSS Matching</text>
+  <text x="225" y="1146" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Results</text>
+  <line x1="540" y1="850" x2="540" y2="872" stroke="#000000" stroke-width="1.5" />
+  <rect x="399.0" y="872" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="540" y="892" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">4.2</text>
+  <text x="540" y="910" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Deployment Roster Formation</text>
+  <line x1="540" y1="924" x2="540" y2="942" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="399.0" y="942" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="540" y="960" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="540" y="975" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Ranked Student Matches &amp; Volunteer</text>
+  <text x="540" y="990" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Quota</text>
+  <line x1="540" y1="1002" x2="540" y2="1020" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="399.0" y="1020" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="540" y="1038" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="540" y="1053" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Assemble Optimal Volunteer Batch &amp;</text>
+  <text x="540" y="1068" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Assign</text>
+  <line x1="540" y1="1080" x2="540" y2="1098" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="399.0" y="1098" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="540" y="1116" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="540" y="1137" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Official Deployment Roster Record</text>
+  <line x1="855" y1="850" x2="855" y2="872" stroke="#000000" stroke-width="1.5" />
+  <rect x="714.0" y="872" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="855" y="892" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">4.3</text>
+  <text x="855" y="910" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Schedule &amp; Notice Dispatch</text>
+  <line x1="855" y1="924" x2="855" y2="942" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="714.0" y="942" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="855" y="960" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="855" y="975" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Approved Deployment Schedule &amp;</text>
+  <text x="855" y="990" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Roster</text>
+  <line x1="855" y1="1002" x2="855" y2="1020" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="714.0" y="1020" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="855" y="1038" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="855" y="1053" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Dispatch Schedules to Students &amp;</text>
+  <text x="855" y="1068" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Officials</text>
+  <line x1="855" y1="1080" x2="855" y2="1098" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="714.0" y="1098" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="855" y="1116" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="855" y="1131" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Deployment Schedules &amp; Alert</text>
+  <text x="855" y="1146" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Notices</text>
+
+  <!-- MODULE 5.0 -->
+  <rect x="1270.0" y="780" width="580" height="46" rx="3" fill="#f5f5f5" stroke="#000000" stroke-width="1.8" />
+  <text x="1560" y="808" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#000000" text-anchor="middle" letter-spacing="0.5">5.0 FIELD ATTENDANCE &amp; MAKE-UP MANAGEMENT</text>
+  <line x1="1560" y1="826" x2="1560" y2="850" stroke="#000000" stroke-width="1.5" />
+  <line x1="1245" y1="850" x2="1875" y2="850" stroke="#000000" stroke-width="1.5" />
+  <line x1="1245" y1="850" x2="1245" y2="872" stroke="#000000" stroke-width="1.5" />
+  <rect x="1104.0" y="872" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="1245" y="892" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">5.1</text>
+  <text x="1245" y="910" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Field Attendance Logging (DTR)</text>
+  <line x1="1245" y1="924" x2="1245" y2="942" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1104.0" y="942" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1245" y="960" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="1245" y="975" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Student Attendance Time Logs &amp;</text>
+  <text x="1245" y="990" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Photo Proof</text>
+  <line x1="1245" y1="1002" x2="1245" y2="1020" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1104.0" y="1020" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1245" y="1038" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="1245" y="1053" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Record Daily Attendance &amp; Geotag</text>
+  <text x="1245" y="1068" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Verification</text>
+  <line x1="1245" y1="1080" x2="1245" y2="1098" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1104.0" y="1098" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1245" y="1116" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="1245" y="1131" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Verified Daily Field Attendance</text>
+  <text x="1245" y="1146" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Log</text>
+  <line x1="1560" y1="850" x2="1560" y2="872" stroke="#000000" stroke-width="1.5" />
+  <rect x="1419.0" y="872" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="1560" y="892" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">5.2</text>
+  <text x="1560" y="910" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Community Official DTR Verification</text>
+  <line x1="1560" y1="924" x2="1560" y2="942" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1419.0" y="942" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1560" y="960" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="1560" y="981" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Daily Student Attendance Logs</text>
+  <line x1="1560" y1="1002" x2="1560" y2="1020" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1419.0" y="1020" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1560" y="1038" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="1560" y="1053" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Review &amp; Validate Rendered Service</text>
+  <text x="1560" y="1068" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Hours</text>
+  <line x1="1560" y1="1080" x2="1560" y2="1098" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1419.0" y="1098" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1560" y="1116" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="1560" y="1131" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Approved Rendered Hours Progress</text>
+  <text x="1560" y="1146" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Record</text>
+  <line x1="1875" y1="850" x2="1875" y2="872" stroke="#000000" stroke-width="1.5" />
+  <rect x="1734.0" y="872" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="1875" y="892" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">5.3</text>
+  <text x="1875" y="910" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Make-Up Request Processing</text>
+  <line x1="1875" y1="924" x2="1875" y2="942" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1734.0" y="942" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1875" y="960" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="1875" y="975" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Absence Excuse Letter &amp; Make-Up</text>
+  <text x="1875" y="990" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Petition</text>
+  <line x1="1875" y1="1002" x2="1875" y2="1020" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1734.0" y="1020" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1875" y="1038" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="1875" y="1053" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Review Make-Up Excuse &amp; Assign</text>
+  <text x="1875" y="1068" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Replacement</text>
+  <line x1="1875" y1="1080" x2="1875" y2="1098" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="1734.0" y="1098" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="1875" y="1116" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="1875" y="1131" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Approved Make-Up Schedule &amp; Hours</text>
+  <text x="1875" y="1146" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Log</text>
+
+  <!-- MODULE 6.0 -->
+  <rect x="2290.0" y="780" width="580" height="46" rx="3" fill="#f5f5f5" stroke="#000000" stroke-width="1.8" />
+  <text x="2580" y="808" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#000000" text-anchor="middle" letter-spacing="0.5">6.0 EVALUATION, AUDIT &amp; CERTIFICATION</text>
+  <line x1="2580" y1="826" x2="2580" y2="850" stroke="#000000" stroke-width="1.5" />
+  <line x1="2265" y1="850" x2="2895" y2="850" stroke="#000000" stroke-width="1.5" />
+  <line x1="2265" y1="850" x2="2265" y2="872" stroke="#000000" stroke-width="1.5" />
+  <rect x="2124.0" y="872" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="2265" y="892" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">6.1</text>
+  <text x="2265" y="910" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Student Performance Evaluation</text>
+  <line x1="2265" y1="924" x2="2265" y2="942" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2124.0" y="942" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2265" y="960" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="2265" y="981" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Barangay Official Rating &amp; Rubrics</text>
+  <line x1="2265" y1="1002" x2="2265" y2="1020" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2124.0" y="1020" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2265" y="1038" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="2265" y="1053" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Calculate Student Performance</text>
+  <text x="2265" y="1068" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Scores</text>
+  <line x1="2265" y1="1080" x2="2265" y2="1098" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2124.0" y="1098" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2265" y="1116" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="2265" y="1131" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Official Student Performance</text>
+  <text x="2265" y="1146" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Evaluation</text>
+  <line x1="2580" y1="850" x2="2580" y2="872" stroke="#000000" stroke-width="1.5" />
+  <rect x="2439.0" y="872" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="2580" y="892" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">6.2</text>
+  <text x="2580" y="910" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">54-Hour Curriculum Progress Audit</text>
+  <line x1="2580" y1="924" x2="2580" y2="942" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2439.0" y="942" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2580" y="960" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="2580" y="975" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Total Rendered Hours &amp; Attendance</text>
+  <text x="2580" y="990" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Summary</text>
+  <line x1="2580" y1="1002" x2="2580" y2="1020" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2439.0" y="1020" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2580" y="1038" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="2580" y="1053" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Audit Mandatory 54-Hour CWTS</text>
+  <text x="2580" y="1068" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Requirement</text>
+  <line x1="2580" y1="1080" x2="2580" y2="1098" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2439.0" y="1098" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2580" y="1116" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="2580" y="1131" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Curriculum Completion Clearance</text>
+  <text x="2580" y="1146" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Record</text>
+  <line x1="2895" y1="850" x2="2895" y2="872" stroke="#000000" stroke-width="1.5" />
+  <rect x="2754.0" y="872" width="282" height="52" rx="3" fill="#fafafa" stroke="#000000" stroke-width="1.4" />
+  <text x="2895" y="892" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">6.3</text>
+  <text x="2895" y="910" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Certificate &amp; Summary Report Generation</text>
+  <line x1="2895" y1="924" x2="2895" y2="942" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2754.0" y="942" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2895" y="960" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">INPUT</text>
+  <text x="2895" y="975" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Verified Completion Clearance &amp;</text>
+  <text x="2895" y="990" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Metrics</text>
+  <line x1="2895" y1="1002" x2="2895" y2="1020" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2754.0" y="1020" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2895" y="1038" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">PROCESS</text>
+  <text x="2895" y="1053" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Compile Program Analytics &amp; Format</text>
+  <text x="2895" y="1068" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Forms</text>
+  <line x1="2895" y1="1080" x2="2895" y2="1098" stroke="#000000" stroke-width="1.3" marker-end="url(#arrow)" />
+  <rect x="2754.0" y="1098" width="282" height="60" rx="2" fill="#ffffff" stroke="#000000" stroke-width="1.1" />
+  <text x="2895" y="1116" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#333333" text-anchor="middle" letter-spacing="0.5">OUTPUT</text>
+  <text x="2895" y="1131" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Completion Certificates &amp; Summary</text>
+  <text x="2895" y="1146" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="normal" fill="#000000" text-anchor="middle">Reports</text>
+</svg>

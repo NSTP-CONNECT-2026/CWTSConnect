@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
+    "dev": "nodemon --watch src --ext js,mjs,cjs src/server.js",
     "build": "echo 'No build step required for Node.js app'",
     "seed:nstp": "node src/seeders/createNstpOfficialAccount.js"
   },
@@ -16,6 +16,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.11.0",
     "connect-pg-simple": "^9.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

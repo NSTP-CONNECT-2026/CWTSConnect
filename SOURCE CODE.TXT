@@ -1,0 +1,185 @@
+================================================================================
+PART 1: ELIGIBILITY SCREENING PROCESS
+================================================================================
+
+START
+  │
+  ▼
+[ Fetch All Students (S) and Approved Community Request (R) ]
+  │
+  ▼
+[ Initialize Eligible_List = [] ]
+  │
+  ▼
+FOR EACH student in S:
+  │
+  ├──► Check 1: Are mandatory requirements completed (4/4 approved)?
+  │     │
+  │     NO ──► [ Mark as INELIGIBLE: Incomplete Requirements ]
+  │     │      [ Exclude from DSS Calculations ]
+  │     YES
+  │     │
+  ├──► Check 2: Is profile completed and is student not yet deployed?
+  │     │
+  │     NO ──► [ Mark as INELIGIBLE ]
+  │     │      [ Exclude from DSS Calculations ]
+  │     YES
+  │     │
+  └──► [ Mark as ELIGIBLE ]
+       [ Add student to Eligible_List ]
+  │
+  ▼
+[ Pass ONLY Eligible_List to DSS Engine ]
+  │
+  ├──► 1. Location Distance & Skill Matching Quantification
+  ├──► 2. Vector / Min-Max Normalization
+  ├──► 3. Simple Additive Weighting (SAW) Mathematical Computation
+  └──► 4. Final Ranking & Quota Deployment
+  │
+  ▼
+END
+
+
+================================================================================
+PART 2: CRITERIA QUANTIFICATION PROCESS
+================================================================================
+
+START
+  │
+  ▼
+[ Input: Eligible_List from Screening and Selected Community Request (R) ]
+  │
+  ▼
+[ Initialize Raw_Decision_Matrix = [] ]
+  │
+  ▼
+[ Retrieve Request Criteria: ]
+  ├──► Request Location (Barangay, Municipality, Province)
+  └──► Relevant Required Skills List (Total_Required_Skills)
+  │
+  ▼
+FOR EACH student in Eligible_List:
+  │
+  ├──► 1. Location Compatibility Evaluation:
+  │     │
+  │     ├──► Calculate geographic distance between Student Location and Request Location
+  │     │    Raw_Distance = Geographic_Distance(Student_Location, Request_Location) in km
+  │     │
+  │     └──► [ Treat as COST CRITERION ]
+  │          [ Note: Shorter distance is more favorable ]
+  │
+  ├──► 2. Skills / Request Compatibility Evaluation:
+  │     │
+  │     ├──► Compare Student Profile Skills with Request Required Skills
+  │     │    Matched_Skills_Count = Count of Matched Relevant Skills
+  │     │
+  │     ├──► Compute Skill Compatibility Value:
+  │     │    Raw_Skill_Ratio = Matched_Skills_Count / Total_Required_Skills
+  │     │
+  │     └──► [ Treat as BENEFIT CRITERION ]
+  │          [ Note: Higher ratio is more favorable ]
+  │
+  └──► 3. Store in Raw Decision Matrix:
+        │
+        └──► [ Append Row: Student_ID, Raw_Distance (Cost), Raw_Skill_Ratio (Benefit) ]
+  │
+  ▼
+[ Result: Raw Decision Matrix populated with unnormalized criteria values ]
+  │
+  ▼
+[ Pass Raw Decision Matrix to Succeeding DSS Step: Normalization ]
+  │
+  ▼
+END
+
+
+================================================================================
+PART 3: VECTOR / CRITERIA NORMALIZATION PROCESS
+================================================================================
+
+START
+  │
+  ▼
+[ Input: Raw Decision Matrix with distance and skill values for all eligible candidates ]
+  │
+  ▼
+[ Initialize Normalized_Decision_Matrix = [] ]
+  │
+  ▼
+[ Determine Minimum Distance among all eligible candidates: ]
+  └──► Min_Distance = MIN(Raw_Distance of all eligible candidates)
+  │
+  ▼
+FOR EACH student in Raw Decision Matrix:
+  │
+  ├──► 1. Normalize Location Compatibility (Cost Criterion):
+  │     │
+  │     ├──► Formula: Normalized_Location_Score = Min_Distance / Student_Raw_Distance
+  │     │
+  │     └──► [ Note: Shorter distance produces a higher normalized value closer to 1.0 ]
+  │
+  ├──► 2. Normalize Skills / Request Compatibility (0-to-1 Scale):
+  │     │
+  │     ├──► Map skill compatibility value directly onto the 0-to-1 scale:
+  │     │    Normalized_Skill_Score = Raw_Skill_Ratio
+  │     │
+  │     └──► [ Note: Represents the degree of skill compatibility with selected request ]
+  │
+  └──► 3. Store in Normalized Decision Matrix:
+        │
+        └──► [ Append Row: Student_ID, Normalized_Location_Score, Normalized_Skill_Score ]
+  │
+  ▼
+[ Result: Normalized values placed on a comparable 0-to-1 scale ]
+  │
+  ▼
+[ Pass Normalized Decision Matrix as inputs for SAW Computation ]
+  │
+  ▼
+END
+
+
+================================================================================
+PART 4: SIMPLE ADDITIVE WEIGHTING (SAW) COMPUTATION & RANKING PROCESS
+================================================================================
+
+START
+  │
+  ▼
+[ Input: Normalized Decision Matrix from Normalization Process ]
+  │
+  ▼
+[ Apply Assigned Criterion Weights (Validated by NSTP Coordinator): ]
+  ├──► Location Weight (W_loc)   = 0.30 (30%)
+  └──► Skills Weight   (W_skill) = 0.70 (70%)
+  │
+  ▼
+[ Initialize Suitability_Ranked_List = [] ]
+  │
+  ▼
+FOR EACH student in Normalized Decision Matrix:
+  │
+  ├──► 1. Apply Assigned Weights to Normalized Scores:
+  │     │
+  │     ├──► Weighted_Location = Normalized_Location_Score * 0.30
+  │     └──► Weighted_Skills   = Normalized_Skill_Score * 0.70
+  │
+  ├──► 2. Compute Final Suitability Score:
+  │     │
+  │     ├──► Formula: Final_Score = (Normalized_Location_Score * 0.30) + (Normalized_Skill_Score * 0.70)
+  │     │
+  │     └──► [ Optional: Convert to percentage format, e.g., Final_Score * 100% ]
+  │
+  └──► 3. Append to Suitability List:
+        │
+        └──► [ Store: Student_ID, Student_Name, Final_Suitability_Score ]
+  │
+  ▼
+[ Arrange / Sort Eligible Students: ]
+  └──► Sort Suitability_Ranked_List in DESCENDING order (Highest to Lowest Final Score)
+  │
+  ▼
+[ Output: Ranked Recommendation List for Review & Quota Deployment Selection ]
+  │
+  ▼
+END

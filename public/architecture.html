@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CWTSConnect — System Context &amp; Data Flow Diagrams (Thesis Edition)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f1f5f9;
+      --bg-card: #ffffff;
+      --border-card: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #1e3a8a;
+      --primary-accent: #2563eb;
+      --navy: #0f2b5c;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1540px;
+      margin: 0 auto;
+    }
+
+    /* Header Bar */
+    .top-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .title-group h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.02em;
+    }
+
+    .title-group p {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 8px;
+      gap: 4px;
+    }
+
+    .nav-btn {
+      text-decoration: none;
+      padding: 8px 16px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+
+    .nav-btn:hover {
+      color: var(--text-main);
+    }
+
+    .nav-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    }
+
+    /* Diagram Selector Tabs */
+    .tab-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .tab-pills {
+      display: flex;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 8px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 9px 18px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+      font-weight: 700;
+    }
+
+    .tab-badge {
+      font-size: 0.7rem;
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    /* Actions Toolbar */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--border-card);
+      background: #ffffff;
+      color: var(--text-main);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .action-btn.primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .action-btn.primary:hover {
+      background: var(--primary-accent);
+      border-color: var(--primary-accent);
+    }
+
+    .zoom-group {
+      display: flex;
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .zoom-btn {
+      background: #ffffff;
+      border: none;
+      padding: 8px 12px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      border-right: 1px solid var(--border-card);
+      transition: background 0.15s ease;
+    }
+
+    .zoom-btn:last-child {
+      border-right: none;
+    }
+
+    .zoom-btn:hover {
+      background: #f1f5f9;
+    }
+
+    /* Diagram Canvas Container */
+    .diagram-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+      overflow-x: auto;
+      text-align: center;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .diagram-viewer {
+      width: 100%;
+      max-width: 1320px;
+      transition: transform 0.2s ease;
+      transform-origin: center center;
+    }
+
+    .diagram-viewer object {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Instructions Card */
+    .instructions-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-top: 24px;
+      font-size: 0.85rem;
+      color: #334155;
+    }
+
+    .instructions-card h2 {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .instructions-card h3 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+
+    .instructions-card p {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .instructions-card ul {
+      padding-left: 24px;
+      margin-bottom: 14px;
+    }
+
+    .instructions-card li {
+      margin-bottom: 6px;
+      line-height: 1.55;
+    }
+
+    .specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 0.8125rem;
+    }
+
+    .specs-table th,
+    .specs-table td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    .specs-table th {
+      background-color: #f8fafc;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .specs-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .file-badge {
+      display: inline-block;
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="title-group">
+        <h1>CWTSConnect 2026 — System Concept &amp; Data Flow Diagrams</h1>
+        <p>Clean, Publication-Ready Architecture &amp; Data Flow Diagrams (Plain Background, No Borders)</p>
+      </div>
+
+      <div class="nav-links">
+        <a href="/flowchart.html" class="nav-btn">Process Flowcharts</a>
+        <a href="/usecase.html" class="nav-btn">Proposed Use Case</a>
+        <a href="/architecture.html" class="nav-btn active">Architecture &amp; DFD</a>
+        <a href="/hipo.html" class="nav-btn">HIPO Model</a>
+        <a href="/data-dictionary.html" class="nav-btn">Data Dictionary</a>
+      </div>
+    </header>
+
+    <!-- Tab Selector -->
+    <div class="tab-bar">
+      <div class="tab-pills">
+        <button class="tab-btn active" id="btnTabContext" onclick="switchDiagram('context')">
+          <span>1. System Context Diagram</span>
+        </button>
+        <button class="tab-btn" id="btnTabDfd" onclick="switchDiagram('dfd')">
+          <span>2. Data Flow Diagram</span>
+        </button>
+      </div>
+
+      <div class="zoom-group">
+        <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">Zoom In (+)</button>
+        <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">Zoom Out (-)</button>
+        <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom">Reset (100%)</button>
+      </div>
+    </div>
+
+    <!-- Actions Toolbar -->
+    <div class="toolbar">
+      <div id="currentDiagramLabel" style="font-size: 0.875rem; font-weight: 700; color: #1e3a8a;">
+        Displaying: System Context Diagram (Clean Plane Background)
+      </div>
+
+      <div class="btn-group">
+        <button class="action-btn primary" onclick="downloadCurrentPNG()">Download PNG (High-Res 300 DPI)</button>
+        <button class="action-btn" onclick="downloadCurrentSVG()">Download Vector SVG</button>
+        <button class="action-btn" onclick="downloadCurrentDrawio()">Download .drawio (Active)</button>
+        <button class="action-btn" onclick="downloadAllDrawio()">Download All in 1 .drawio</button>
+        <button class="action-btn" onclick="openDrawioWeb()">Open Draw.io Web</button>
+      </div>
+    </div>
+
+    <!-- Diagram Display -->
+    <div class="diagram-card" id="diagramWrap">
+      <div class="diagram-viewer" id="diagramViewer">
+        <object id="diagramSvgObj" type="image/svg+xml" data="/system-context-diagram.svg"></object>
+      </div>
+    </div>
+
+    <!-- Instructions / Architectural Documentation Card -->
+    <div class="instructions-card">
+      <h2>Chapter 3 Technical Specifications &amp; Architectural Description</h2>
+      <p>
+        Ang dalawang diagram na ito ay binuo bilang tapat at eksaktong representasyon ng arkitektura ng <strong>CWTSConnect 2026</strong>, 
+        hango sa standard format ng thesis/capstone manuscript (katulad ng kalakip na reference na may monochrome outer container frame, 
+        rotated vertical title sa kaliwang margin, at opisyal na page numbering).
+      </p>
+
+      <table class="specs-table">
+        <thead>
+          <tr>
+            <th>Diagram Type</th>
+            <th>Target Page</th>
+            <th>Primary Subsystems &amp; Entities</th>
+            <th>Resolution &amp; File Format</th>
+            <th>Primary Files</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>System Context Diagram</strong></td>
+            <td>Page 169</td>
+            <td>Central Hub (CWTSConnect), Users, Frontend UI, Notification Engine, Auth Session Store, Accounts Database, DSS Matching Engine</td>
+            <td>3080 &times; 2184 px (300 DPI Ultra High-Res PNG), Lossless Vector SVG, Editable XML</td>
+            <td>
+              <span class="file-badge">system-context-diagram-300dpi.png</span><br>
+              <span class="file-badge">system-context-diagram.svg</span><br>
+              <span class="file-badge">system-context-diagram.drawio</span>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Data Flow Diagram (Architecture)</strong></td>
+            <td>Page 170</td>
+            <td>User Actors, Browser Frontend, Edge/TLS Proxy, Backend Express.js (6 Core Modules), 3D Supabase DB Cylinder, Notification Webhooks, Cloudinary Storage</td>
+            <td>3080 &times; 2184 px (300 DPI Ultra High-Res PNG), Lossless Vector SVG, Editable XML</td>
+            <td>
+              <span class="file-badge">data-flow-diagram-300dpi.png</span><br>
+              <span class="file-badge">data-flow-diagram.svg</span><br>
+              <span class="file-badge">data-flow-diagram.drawio</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1. System Context Diagram Breakdown (Page 169)</h3>
+      <ul>
+        <li><strong>Central System Hub (CWTSCONNECT)</strong>: Kinakatawan ng madilim na navy-blue circle sa gitna ang buong computing core ng CWTSConnect platform na nagpoproseso at nagko-coordinate ng lahat ng transaksyon.</li>
+        <li><strong>USERS Entity (Naka-pwesto sa Ibaba)</strong>: Nagpapadala ng <em>user actions / submissions</em> patungo sa central hub (login credentials, student skill profile, CMO requirements, community assistance requests, at coordinator administrative overrides).</li>
+        <li><strong>FRONTEND Entity (Naka-pwesto sa Kanan-Itaas)</strong>: Nakikipag-ugnayan sa pamamagitan ng bidirectional <em>API requests / responses</em> gamit ang RESTful endpoints at WebSocket real-time state broadcast.</li>
+        <li><strong>NOTIFICATIONS Entity (Naka-pwesto sa Kanan-Ibaba)</strong>: Tumatanggap ng <em>email/alerts</em> trigger para sa automated verification notices, deployment roster updates, at DTR attendance warnings.</li>
+        <li><strong>DSS ENGINE Entity (Naka-pwesto sa Taas)</strong>: Nagpapadala at tumatanggap ng <em>matching algorithms / deployment events</em> upang kalkulahin ang proximity score gamit ang Haversine distance formula at matching weight analysis laban sa skills ng estudyante at pangangailangan ng komunidad.</li>
+        <li><strong>AUTH Entity (Naka-pwesto sa Kaliwa-Itaas)</strong>: Nagpapatupad ng <em>auth tokens / validation</em> gamit ang secure HttpOnly session cookies, cryptographic token verification, at role-based access control (RBAC).</li>
+        <li><strong>ACCOUNTS DB Entity (Naka-pwesto sa Kaliwa-Ibaba)</strong>: Namamahala sa persistent <em>account read/write</em> operations sa Supabase PostgreSQL relational schema.</li>
+      </ul>
+
+      <h3>2. Data Flow Diagram Architectural Breakdown (Page 170)</h3>
+      <ul>
+        <li><strong>USER Tier</strong>: Kinakatawan ng student volunteer, NSTP/CWTS coordinator, at community official na nag-a-access sa kani-kanilang designated web views gamit ang modern desktop/mobile web browsers.</li>
+        <li><strong>FRONTEND Tier (Browser Client)</strong>: Nagre-render ng dynamic UI/UX gamit ang vanilla CSS, semantic HTML5, at asynchronous JavaScript. Nagpapadala ng HTTPS/TLS encrypted network requests.</li>
+        <li><strong>Load Balancer / Edge Tier</strong>: Responsable sa HTTPS/TLS termination, reverse proxy routing, CORS filtering, at security hardening (Helmet headers) bago maipasa ang trapiko sa backend.</li>
+        <li><strong>BACKEND Tier (Express.js Container)</strong>: Binubuo ng anim (6) na dedikadong functional subsystem:
+          <ul>
+            <li><em>API Gateway / Auth / Static Files</em>: Request dispatcher, session validation, at web asset serving.</li>
+            <li><em>DSS Matching Engine</em>: Real-time multi-factor algorithmic matchmaking na nagkakalkula ng Haversine distance at skill-compatibility matrix.</li>
+            <li><em>CMO Compliance &amp; Verification</em>: Tagasuri ng CHED CMO requirements (medical certificate, parent consent/waiver, barangay clearance).</li>
+            <li><em>Admin &amp; Community Requests</em>: CRUD services para sa community request proposals at coordinator approvals.</li>
+            <li><em>Attendance &amp; Hours Tracking</em>: Pamamahala sa 54-hour mandatory DTR logs na may coordinator audit protection.</li>
+            <li><em>360 Evaluation &amp; CHED CMO Reporting</em>: Pagsusuri ng quantitative ratings at awtomatikong pagbuo ng standardized accomplishment reports.</li>
+          </ul>
+        </li>
+        <li><strong>DATABASE Tier (Supabase PostgreSQL)</strong>: 3D cylinder representation ng ACID-compliant relational database para sa users, community profiles, deployment records, attendance logs, at metrics.</li>
+        <li><strong>NOTIFICATION Tier</strong>: Asynchronous alert engine gamit ang SMTP email dispatchers at webhooks para sa agarang anunsyo sa mga estudyante at komunidad.</li>
+        <li><strong>Cloudinary Object Storage Tier</strong>: Secure cloud bucket para sa encrypted upload at streaming ng mga opisyal na CMO waiver documents at geo-tagged attendance photos.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    let currentDiagram = 'context';
+    let currentZoom = 1;
+
+    function switchDiagram(type) {
+      currentDiagram = type;
+      const btnContext = document.getElementById('btnTabContext');
+      const btnDfd = document.getElementById('btnTabDfd');
+      const label = document.getElementById('currentDiagramLabel');
+      const svgObj = document.getElementById('diagramSvgObj');
+
+      if (type === 'context') {
+        btnContext.classList.add('active');
+        btnDfd.classList.remove('active');
+        label.textContent = 'Displaying: System Context Diagram (Clean Plane Background)';
+        svgObj.setAttribute('data', '/system-context-diagram.svg');
+      } else {
+        btnDfd.classList.add('active');
+        btnContext.classList.remove('active');
+        label.textContent = 'Displaying: Data Flow Diagram (Clean Plane Background)';
+        svgObj.setAttribute('data', '/data-flow-diagram.svg');
+      }
+      resetZoom();
+    }
+
+    function zoomIn() {
+      currentZoom = Math.min(currentZoom + 0.15, 2.0);
+      applyZoom();
+    }
+
+    function zoomOut() {
+      currentZoom = Math.max(currentZoom - 0.15, 0.6);
+      applyZoom();
+    }
+
+    function resetZoom() {
+      currentZoom = 1;
+      applyZoom();
+    }
+
+    function applyZoom() {
+      const viewer = document.getElementById('diagramViewer');
+      viewer.style.transform = `scale(${currentZoom})`;
+    }
+
+    function downloadCurrentPNG() {
+      const filename = currentDiagram === 'context' 
+        ? 'system-context-diagram-300dpi.png' 
+        : 'data-flow-diagram-300dpi.png';
+      const link = document.createElement('a');
+      link.href = '/' + filename;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function downloadCurrentSVG() {
+      const filename = currentDiagram === 'context' 
+        ? 'system-context-diagram.svg' 
+        : 'data-flow-diagram.svg';
+      const link = document.createElement('a');
+      link.href = '/' + filename;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function downloadCurrentDrawio() {
+      const filename = currentDiagram === 'context' 
+        ? 'system-context-diagram.drawio' 
+        : 'data-flow-diagram.drawio';
+      const link = document.createElement('a');
+      link.href = '/' + filename;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function downloadAllDrawio() {
+      const link = document.createElement('a');
+      link.href = '/architecture-diagrams-all.drawio';
+      link.download = 'architecture-diagrams-all.drawio';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function openDrawioWeb() {
+      window.open('https://app.diagrams.net/', '_blank');
+    }
+  </script>
+</body>
+</html>

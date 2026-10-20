@@ -6,6 +6,204 @@
 
 @import url('../../community/css/community-requests.css');
 
+/* ==========================================================================
+   Search Bar Card (Standalone)
+   ========================================================================== */
+.search-card {
+  background: var(--cwts-glass-surface);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: 12px 18px;
+  margin-bottom: var(--space-md);
+  box-shadow: var(--neu-shadow-raised);
+  position: relative;
+  overflow: hidden;
+}
+
+.search-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+  pointer-events: none;
+}
+
+.search-card .search-input-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.search-card .search-input-wrap svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 17px;
+  height: 17px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.search-card .toolbar-input {
+  width: 100%;
+  height: 40px;
+  padding: 8px 14px 8px 40px;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  color: var(--text-main);
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--neu-shadow-inset);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-card .toolbar-input:focus {
+  outline: none;
+  border-color: var(--cwts-accent-green);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(47, 125, 91, 0.15);
+}
+
+/* ==========================================================================
+   Table Toolbar (Integrated directly in the requests table card)
+   ========================================================================== */
+.table-card-toolbar {
+  padding: 10px 18px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+  background: rgba(255, 255, 255, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Compact Status Filter Pills */
+.status-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.status-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: rgba(248, 250, 252, 0.9);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  line-height: 1;
+}
+
+.status-pill-btn:hover {
+  background: #ffffff;
+  color: var(--text-main);
+  border-color: rgba(203, 191, 166, 0.8);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Active State */
+.status-pill-btn.active {
+  background: var(--cwts-accent-green);
+  color: #ffffff;
+  border-color: var(--cwts-accent-green);
+  box-shadow: 0 2px 6px rgba(47, 125, 91, 0.3);
+  font-weight: 700;
+}
+
+/* Compact Count Badges */
+.status-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--text-main);
+  transition: all 0.18s ease;
+  line-height: 1;
+}
+
+.status-pill-badge.badge-count-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-pill-badge.badge-count-approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-pill-badge.badge-count-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* When pill button is active, highlight count badge */
+.status-pill-btn.active .status-pill-badge {
+  background: rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Request Type Filter Button & Dropdown Menu (Right Side of Table Toolbar)
+   ========================================================================== */
+.table-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.table-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: rgba(248, 250, 252, 0.9);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.table-action-btn:hover {
+  background: #ffffff;
+  color: var(--text-main);
+  border-color: rgba(203, 191, 166, 0.8);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.table-action-btn:active {
+  transform: translateY(1px);
+}
+
 /* Coordinator-specific tweaks */
 .request-details-modal-grid {
   display: grid;
@@ -29,3 +227,443 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   Request Types (School-Offered Services) Sub-Page Styling
+/* ==========================================================================
+   Sub-Page Search Bar Card with Aligned Less-than Back Button
+   ========================================================================== */
+.subpage-search-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.subpage-search-card .btn-subpage-back,
+.btn-subpage-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--cwts-glass-border);
+  background: rgba(248, 250, 252, 0.9);
+  box-shadow: var(--neu-shadow-inset);
+  color: var(--cwts-primary-dark);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+}
+
+.subpage-search-card .btn-subpage-back:hover,
+.btn-subpage-back:hover {
+  background: #ffffff;
+  color: var(--cwts-accent-green);
+  border-color: var(--cwts-accent-green);
+  box-shadow: 0 2px 8px rgba(47, 125, 91, 0.2);
+  transform: translateX(-2px);
+}
+
+.subpage-search-card .btn-subpage-back:active,
+.btn-subpage-back:active {
+  transform: scale(0.96);
+}
+
+.subpage-search-card .search-input-wrap {
+  flex: 1;
+  width: 100%;
+}
+
+.table-action-btn.primary-action-btn {
+  background: var(--cwts-accent-green);
+  color: #ffffff;
+  border-color: var(--cwts-accent-green);
+  box-shadow: 0 2px 5px rgba(47, 125, 91, 0.25);
+  gap: 6px;
+  font-weight: 700;
+}
+
+.table-action-btn.primary-action-btn:hover {
+  background: var(--cwts-primary-dark);
+  border-color: var(--cwts-primary-dark);
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(27, 73, 49, 0.35);
+  transform: translateY(-1px);
+}
+
+.table-action-btn.primary-action-btn svg {
+  stroke-width: 2.5;
+}
+
+/* Subpage Tab Group */
+.subpage-tab-group {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.subpage-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.subpage-tab-btn:hover {
+  color: var(--cwts-primary-dark);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.subpage-tab-btn.active {
+  color: #ffffff;
+  background: var(--cwts-accent-green);
+  box-shadow: 0 1px 3px rgba(47, 125, 91, 0.25);
+}
+
+.subpage-tab-btn.active .status-pill-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.skill-category-badge {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+/* Skill Badges in Table */
+.skills-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.skill-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(47, 125, 91, 0.08);
+  color: var(--cwts-accent-green);
+  border: 1px solid rgba(47, 125, 91, 0.2);
+  line-height: 1.3;
+}
+
+/* Multi-Select Skill Picker in Modal */
+.skill-picker-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.selected-skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 38px;
+  padding: 6px 10px;
+  background: #f8fafc;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: var(--radius-sm);
+  align-items: center;
+}
+
+.selected-skills-container:empty::before {
+  content: 'No skills selected yet. Choose from the dropdown above.';
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.selected-skill-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px 3px 10px;
+  border-radius: 14px;
+  background: var(--cwts-accent-green);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(47, 125, 91, 0.25);
+  animation: pillPop 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pillPop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.selected-skill-pill .remove-skill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border: none;
+  font-size: 0.625rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.selected-skill-pill .remove-skill-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+/* Action Buttons inside Request Types Table */
+.type-actions-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.btn-icon-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: #ffffff;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.btn-icon-action:hover {
+  border-color: var(--cwts-accent-green);
+  color: var(--cwts-accent-green);
+  background: rgba(47, 125, 91, 0.05);
+  transform: translateY(-1px);
+}
+
+.btn-icon-action.action-view {
+  width: 32px;
+  height: 32px;
+  color: var(--cwts-primary-dark, #1b4931);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.btn-icon-action.action-view:hover {
+  border-color: var(--cwts-accent-green, #2f7d5b);
+  color: var(--cwts-accent-green, #2f7d5b);
+  background: rgba(47, 125, 91, 0.08);
+  box-shadow: 0 2px 5px rgba(47, 125, 91, 0.15);
+  transform: translateY(-1px);
+}
+
+.btn-icon-action.delete:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.05);
+}
+
+/* ==========================================================================
+   Header Sticky Pinning (Guarantees topbar never scrolls off-screen)
+   ========================================================================== */
+.header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  width: 100% !important;
+}
+
+/* ==========================================================================
+   Modals Design System (Inspect Request, Add/Edit Type, Delete Confirmation)
+   Strictly prevents unstyled inline leaking onto the page
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(11, 61, 46, 0.75) !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.22s !important;
+}
+
+.modal-backdrop.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.modal-card {
+  background: #FFFFFF !important;
+  border: 1px solid var(--cwts-glass-border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.35) !important;
+  width: 100% !important;
+  max-width: 680px;
+  max-height: 90vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transform: translateY(20px) scale(0.97) !important;
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: hidden !important;
+  position: relative !important;
+  z-index: 10000 !important;
+}
+
+.modal-backdrop.active .modal-card {
+  transform: translateY(0) scale(1) !important;
+}
+
+.modal-header {
+  padding: 16px 24px !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: rgba(248, 250, 252, 0.85) !important;
+}
+
+.modal-title {
+  font-size: 1.0625rem !important;
+  font-weight: 700 !important;
+  color: var(--text-main) !important;
+  letter-spacing: -0.01em !important;
+}
+
+.modal-close-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #64748b !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: var(--radius-sm) !important;
+  transition: all 0.15s ease !important;
+  padding: 0 !important;
+  outline: none !important;
+}
+
+.modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #dc2626 !important;
+}
+
+.modal-close-btn svg {
+  pointer-events: none !important;
+}
+
+.modal-body {
+  padding: 20px 24px !important;
+  overflow-y: auto !important;
+  flex: 1 !important;
+}
+
+.modal-footer {
+  padding: 14px 24px !important;
+  border-top: 1px solid rgba(226, 232, 240, 0.85) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  background: rgba(248, 250, 252, 0.65) !important;
+}
+
+/* ==========================================================================
+   Community Requests Table Column Proportions
+   Eliminates the giant empty void before the Actions column
+   ========================================================================== */
+#requestsTable,
+#requestsSkeleton .neu-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+#requestsTable th:nth-child(1),
+#requestsTable td:nth-child(1),
+#requestsSkeleton .neu-table th:nth-child(1),
+#requestsSkeleton .neu-table td:nth-child(1) {
+  width: 24%;
+  min-width: 170px;
+}
+
+#requestsTable th:nth-child(2),
+#requestsTable td:nth-child(2),
+#requestsSkeleton .neu-table th:nth-child(2),
+#requestsSkeleton .neu-table td:nth-child(2) {
+  width: 40%;
+  min-width: 240px;
+}
+
+#requestsTable th:nth-child(3),
+#requestsTable td:nth-child(3),
+#requestsSkeleton .neu-table th:nth-child(3),
+#requestsSkeleton .neu-table td:nth-child(3) {
+  width: 18%;
+  min-width: 140px;
+}
+
+#requestsTable th:nth-child(4),
+#requestsTable td:nth-child(4),
+#requestsSkeleton .neu-table th:nth-child(4),
+#requestsSkeleton .neu-table td:nth-child(4) {
+  width: 11%;
+  min-width: 105px;
+}
+
+#requestsTable th:nth-child(5),
+#requestsTable td:nth-child(5),
+#requestsSkeleton .neu-table th:nth-child(5),
+#requestsSkeleton .neu-table td:nth-child(5) {
+  width: 7%;
+  min-width: 70px;
+  text-align: center;
+}
+
+
+

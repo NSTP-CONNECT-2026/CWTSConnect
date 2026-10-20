@@ -1,0 +1,3023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CWTSConnect — Database Data Dictionary (Thesis Edition)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Academic Black and White Print-Friendly Theme */
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --text-muted: #333333;
+      --border-dark: #000000;
+      --border-light: #444444;
+      --table-header-bg: #f5f5f5;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 11pt;
+      line-height: 1.45;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Screen Navigation Bar (Hidden when Printing) */
+    .screen-header {
+      background: #ffffff;
+      border: 1px solid #000000;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .screen-header h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #000000;
+    }
+
+    .screen-header p {
+      font-size: 0.8125rem;
+      color: #444444;
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      text-decoration: none;
+      padding: 7px 14px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #000000;
+      border: 1px solid #000000;
+      border-radius: 4px;
+      background: #ffffff;
+      transition: background 0.15s ease;
+    }
+
+    .nav-btn:hover {
+      background: #eeeeee;
+    }
+
+    .nav-btn.active {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .print-btn {
+      background: #000000;
+      color: #ffffff;
+      font-weight: 700;
+      border: 1px solid #000000;
+      padding: 8px 18px;
+      font-size: 0.875rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .print-btn:hover {
+      background: #333333;
+    }
+
+    /* Manuscript Title Page / Header Block */
+    .doc-title-block {
+      text-align: center;
+      border-bottom: 2px solid #000000;
+      padding-bottom: 14px;
+      margin-bottom: 24px;
+    }
+
+    .doc-title-block h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .doc-title-block p {
+      font-size: 0.9rem;
+      color: #333333;
+      margin-top: 4px;
+    }
+
+    /* Quick Table of Contents */
+    .toc-block {
+      border: 1px solid #000000;
+      padding: 14px 18px;
+      margin-bottom: 28px;
+      background: #fafafa;
+    }
+
+    .toc-block h3 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 6px 16px;
+      font-size: 0.825rem;
+    }
+
+    .toc-grid a {
+      color: #000000;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    /* Data Dictionary Table Sections */
+    .table-section {
+      margin-bottom: 34px;
+      page-break-inside: avoid;
+    }
+
+    .table-title {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #000000;
+      letter-spacing: -0.01em;
+      padding: 7px 10px;
+      border: 1px solid #000000;
+      border-bottom: 2px solid #000000;
+      background-color: #ffffff;
+      margin-bottom: 0;
+    }
+
+    /* The Data Dictionary Grid Table */
+    table.data-dict-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 0;
+      font-size: 9pt;
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid #000000;
+      border-top: none;
+    }
+
+    table.data-dict-table th,
+    table.data-dict-table td {
+      border: 1px solid #000000;
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.data-dict-table th {
+      background-color: #ffffff;
+      font-weight: 700;
+      color: #000000;
+      text-transform: uppercase;
+      font-size: 8pt;
+      letter-spacing: 0.04em;
+    }
+
+    .field-name {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #000000;
+    }
+
+    .data-type {
+      font-family: var(--font-mono);
+      font-size: 8.5pt;
+    }
+
+    .example-val {
+      font-family: var(--font-mono);
+      font-size: 8.5pt;
+      word-break: break-all;
+    }
+
+    .rel-badge {
+      font-weight: 700;
+      font-size: 8pt;
+      display: inline-block;
+    }
+
+    /* Print Specific Styles */
+    @media print {
+      body {
+        padding: 0;
+        font-size: 9.5pt;
+      }
+
+      .screen-header,
+      .print-btn,
+      .toc-block {
+        display: none !important;
+      }
+
+      .container {
+        max-width: 100%;
+        margin: 0;
+      }
+
+      .doc-title-block {
+        margin-bottom: 16px;
+      }
+
+      .table-section {
+        page-break-inside: avoid;
+        margin-bottom: 24px;
+      }
+
+      table.data-dict-table th {
+        background-color: #ffffff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      table.data-dict-table th,
+      table.data-dict-table td {
+        border: 1px solid #000000 !important;
+      }
+    }
+  
+    /* Download Panel & Group Bars */
+    .download-card {
+      border: 1.5px solid #000000;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      background: #ffffff;
+    }
+
+    .download-card h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #000000;
+      margin-bottom: 4px;
+    }
+
+    .download-card p {
+      font-size: 0.85rem;
+      color: #333333;
+    }
+
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 8px 12px;
+    }
+
+    .dl-card-btn {
+      display: flex;
+      flex-direction: column;
+      padding: 9px 12px;
+      border: 1px solid #000000;
+      background: #ffffff;
+      color: #000000;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .dl-card-btn:hover {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .dl-card-btn .dl-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .dl-card-btn .dl-sub {
+      font-size: 0.725rem;
+      color: #555555;
+      margin-top: 2px;
+      font-family: var(--font-mono);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dl-card-btn:hover .dl-sub {
+      color: #dddddd;
+    }
+
+    .dl-all-btn {
+      display: inline-block;
+      padding: 8px 18px;
+      background: #000000;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.825rem;
+      border: 1px solid #000000;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .dl-all-btn:hover {
+      background: #333333;
+    }
+
+    .table-group-wrapper {
+      margin-bottom: 40px;
+    }
+
+    .group-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      border: 1px solid #000000;
+      border-bottom: 2px solid #000000;
+      background: #fbfbfb;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+    }
+
+    .group-title-info {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .group-badge {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #000000;
+    }
+
+    .group-tables-list {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #444444;
+    }
+
+    .btn-group-dl {
+      display: inline-block;
+      padding: 6px 14px;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: #000000;
+      border: 1px solid #000000;
+      background: #ffffff;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .btn-group-dl:hover {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .group-tables-container {
+      background: #ffffff;
+      padding: 18px;
+      border: 1px solid #000000;
+    }
+
+    .group-tables-container .table-section {
+      margin-bottom: 24px;
+    }
+
+    .group-tables-container .table-section:last-child {
+      margin-bottom: 0;
+    }
+
+    @media print {
+      .download-card,
+      .group-header-bar {
+        display: none !important;
+      }
+      .group-tables-container {
+        padding: 0 !important;
+        border: none !important;
+      }
+      .table-group-wrapper {
+        margin-bottom: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+<header class="screen-header">
+      <div>
+        <h1>CWTSConnect 2026 — Database Data Dictionary</h1>
+        <p>Official Academic Specification (Ink-Friendly Monochrome / Black &amp; White Edition)</p>
+      </div>
+
+      <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+        <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+        <div class="nav-links">
+          <a href="/flowchart.html" class="nav-btn">Flowcharts</a>
+          <a href="/usecase.html" class="nav-btn">Use Case</a>
+          <a href="/architecture.html" class="nav-btn">Architecture &amp; DFD</a>
+          <a href="/hipo.html" class="nav-btn">HIPO Model</a>
+          <a href="/data-dictionary.html" class="nav-btn active">Data Dictionary</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Document Title Block -->
+    <div class="doc-title-block">
+      <h2>CWTSConnect System — Technical Data Dictionary</h2>
+      <p>Kabanata 3: Disenyo ng Database at Relational Schema (Chapter 3: System Architecture &amp; Database Specifications)</p>
+    </div>
+
+    <!-- Quick Table of Contents -->
+    <div class="toc-block">
+      <h3>Talaan ng mga Aktibong Tables (Active Tables Index - 17 Tables)</h3>
+      <div class="toc-grid">
+        <a href="#table_users">1. users</a>
+        <a href="#table_student_profiles">2. student_profiles</a>
+        <a href="#table_otp_verifications">3. otp_verifications</a>
+        <a href="#table_student_cmo_requirements">4. student_cmo_requirements</a>
+        <a href="#table_community_requests">5. community_requests</a>
+        <a href="#table_request_types">6. request_types</a>
+        <a href="#table_skills">7. skills</a>
+        <a href="#table_dss_match_results">8. dss_match_results</a>
+        <a href="#table_deployments">9. deployments</a>
+        <a href="#table_deployment_students">10. deployment_students</a>
+        <a href="#table_attendance_records">11. attendance_records</a>
+        <a href="#table_rendered_hours_summary">12. rendered_hours_summary</a>
+        <a href="#table_make_up_requests">13. make_up_requests</a>
+        <a href="#table_student_evaluations">14. student_evaluations</a>
+        <a href="#table_student_feedback">15. student_feedback</a>
+        <a href="#table_notifications">16. notifications</a>
+        <a href="#table_notification_preferences">17. notification_preferences</a>
+      </div>
+    </div>
+
+    <!-- PNG Downloads Section (Print-ready 300 DPI exports) -->
+    <div class="download-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+        <div>
+          <h3>Download Data Dictionary Tables as PNG (Black &amp; White)</h3>
+          <p>Naka-grupo ang kada 3 tables (at ang huling 2 tables) sa high-resolution 300 DPI PNG na angkop para sa pormal na dokumentasyon at matipid sa ink.</p>
+        </div>
+        <button onclick="downloadAllPNGs()" class="dl-all-btn">
+          Download All 6 PNG Batches
+        </button>
+      </div>
+
+      <div class="download-grid">
+          <a href="/data-dictionary-part1-tables-1-to-3.png" download="data-dictionary-part1-tables-1-to-3.png" class="dl-card-btn">
+            <span class="dl-title">Download Tables 1 – 3 PNG</span>
+            <span class="dl-sub">users, student_profiles, otp_verifications</span>
+          </a>
+          <a href="/data-dictionary-part2-tables-4-to-6.png" download="data-dictionary-part2-tables-4-to-6.png" class="dl-card-btn">
+            <span class="dl-title">Download Tables 4 – 6 PNG</span>
+            <span class="dl-sub">student_cmo_requirements, community_requests, request_types</span>
+          </a>
+          <a href="/data-dictionary-part3-tables-7-to-9.png" download="data-dictionary-part3-tables-7-to-9.png" class="dl-card-btn">
+            <span class="dl-title">Download Tables 7 – 9 PNG</span>
+            <span class="dl-sub">skills, dss_match_results, deployments</span>
+          </a>
+          <a href="/data-dictionary-part4-tables-10-to-12.png" download="data-dictionary-part4-tables-10-to-12.png" class="dl-card-btn">
+            <span class="dl-title">Download Tables 10 – 12 PNG</span>
+            <span class="dl-sub">deployment_students, attendance_records, rendered_hours_summary</span>
+          </a>
+          <a href="/data-dictionary-part5-tables-13-to-15.png" download="data-dictionary-part5-tables-13-to-15.png" class="dl-card-btn">
+            <span class="dl-title">Download Tables 13 – 15 PNG</span>
+            <span class="dl-sub">make_up_requests, student_evaluations, student_feedback</span>
+          </a>
+          <a href="/data-dictionary-part6-tables-16-to-17.png" download="data-dictionary-part6-tables-16-to-17.png" class="dl-card-btn">
+            <span class="dl-title">Download Tables 16 – 17 PNG</span>
+            <span class="dl-sub">notifications, notification_preferences</span>
+          </a>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PART 1: TABLES 1 – 3 -->
+    <!-- ========================================== -->
+    <div class="table-group-wrapper" id="group-wrapper-1">
+      <div class="group-header-bar">
+        <div class="group-title-info">
+          <span class="group-badge">Part 1: Tables 1 – 3</span>
+          <span class="group-tables-list">(users, student_profiles, otp_verifications)</span>
+        </div>
+        <a href="/data-dictionary-part1-tables-1-to-3.png" download="data-dictionary-part1-tables-1-to-3.png" class="btn-group-dl">
+          Download Tables 1 – 3 PNG
+        </a>
+      </div>
+
+      <div class="group-tables-container" id="group-container-1">
+<section class="table-section" id="table_users">
+      <div class="table-title">users</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng user account</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">email</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>email</td>
+            <td>255</td>
+            <td>Opisyal na institutional email address (unique)</td>
+            <td class="example-val">juan.delacruz@cvsu.edu.ph</td>
+            <td><span class="rel-badge">UK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">password_hash</td>
+            <td class="data-type">TEXT</td>
+            <td>hashed string</td>
+            <td>-</td>
+            <td>Bcrypt cryptographic password hash</td>
+            <td class="example-val">$2a$10$wK1xL7...</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">role</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>text</td>
+            <td>50</td>
+            <td>Access role ('student', 'community_official', 'nstp_official')</td>
+            <td class="example-val">student</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">account_status</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>text</td>
+            <td>50</td>
+            <td>Account lifecycle status ('pending_verification', 'active', 'inactive')</td>
+            <td class="example-val">active</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">profile_status</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>text</td>
+            <td>50</td>
+            <td>Katayuan ng profile form ('incomplete', 'complete')</td>
+            <td class="example-val">complete</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">cmo_compliance_status</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>text</td>
+            <td>50</td>
+            <td>CHED CMO legal status ('incomplete', 'pending_review', 'compliant')</td>
+            <td class="example-val">compliant</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa at oras kung kailan ginawa ang account</td>
+            <td class="example-val">2026-08-15 08:30:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa at oras ng huling pagbabago sa tala</td>
+            <td class="example-val">2026-10-12 14:22:15+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="table-section" id="table_student_profiles">
+      <div class="table-title">student_profiles</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">profile_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng student profile</td>
+            <td class="example-val">d4b9f2c3-5e6a-4b7d-9f0c-234567890def</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key na naka-link sa master user account</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id), UK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">full_name</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Buong pangalan ng mag-aaral</td>
+            <td class="example-val">Juan Protacio Dela Cruz</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">student_number</td>
+            <td class="data-type">VARCHAR(100)</td>
+            <td>alphanumeric</td>
+            <td>100</td>
+            <td>Opisyal na numero ng mag-aaral sa unibersidad (unique)</td>
+            <td class="example-val">2023-10492</td>
+            <td><span class="rel-badge">UK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">course</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Degree program / kursong kinabibilangan</td>
+            <td class="example-val">BS Information Technology</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">year_level</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>text</td>
+            <td>50</td>
+            <td>Taon sa kolehiyo ('1st Year', '2nd Year', atbp.)</td>
+            <td class="example-val">2nd Year</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">section</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>text</td>
+            <td>50</td>
+            <td>Klase / seksyon ng estudyante</td>
+            <td class="example-val">BSIT 2-1</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">nstp_component</td>
+            <td class="data-type">VARCHAR(100)</td>
+            <td>text</td>
+            <td>100</td>
+            <td>Kasalukuyang kinukuha na NSTP component ('CWTS')</td>
+            <td class="example-val">CWTS</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">contact_number</td>
+            <td class="data-type">VARCHAR(20)</td>
+            <td>numeric string</td>
+            <td>20</td>
+            <td>Numero ng telepono / cellphone ng estudyante</td>
+            <td class="example-val">09171234567</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">birthdate</td>
+            <td class="data-type">DATE</td>
+            <td>date</td>
+            <td>4 bytes</td>
+            <td>Araw ng kapanganakan ng estudyante</td>
+            <td class="example-val">2004-05-18</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">sex</td>
+            <td class="data-type">VARCHAR(10)</td>
+            <td>text</td>
+            <td>10</td>
+            <td>Kasarian ng estudyante ('Male', 'Female')</td>
+            <td class="example-val">Male</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">complete_address</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Kumpletong tirahan sa komunidad</td>
+            <td class="example-val">Blk 4 Lot 12 Sampaguita St.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">barangay</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Barangay kung saan naninirahan</td>
+            <td class="example-val">San Jose</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">municipality</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Lungsod o bayan ng tirahan</td>
+            <td class="example-val">Dasmariñas</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">province</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Lalawigan ng tirahan</td>
+            <td class="example-val">Cavite</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">latitude</td>
+            <td class="data-type">DECIMAL(10,8)</td>
+            <td>decimal</td>
+            <td>8 bytes</td>
+            <td>GPS latitude coordinate ng tirahan ng estudyante</td>
+            <td class="example-val">14.32941200</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">longitude</td>
+            <td class="data-type">DECIMAL(11,8)</td>
+            <td>decimal</td>
+            <td>8 bytes</td>
+            <td>GPS longitude coordinate ng tirahan ng estudyante</td>
+            <td class="example-val">120.93674100</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">skills</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Talaan ng mga kasanayan para sa outreach matching</td>
+            <td class="example-val">First Aid, Teaching, Literacy</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">emergency_contact_name</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Pangalan ng magulang / guardian sa oras ng emergency</td>
+            <td class="example-val">Maria Dela Cruz</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">emergency_contact_number</td>
+            <td class="data-type">VARCHAR(20)</td>
+            <td>numeric string</td>
+            <td>20</td>
+            <td>Numero ng emergency contact</td>
+            <td class="example-val">09189876543</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">emergency_contact_relationship</td>
+            <td class="data-type">VARCHAR(100)</td>
+            <td>text</td>
+            <td>100</td>
+            <td>Relasyon sa mag-aaral ('Mother', 'Father', atbp.)</td>
+            <td class="example-val">Mother</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa at oras ng paglikha ng profile</td>
+            <td class="example-val">2026-08-16 09:00:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa at oras ng huling pag-update</td>
+            <td class="example-val">2026-09-01 11:15:30+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="table-section" id="table_otp_verifications">
+      <div class="table-title">otp_verifications</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">otp_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng OTP record</td>
+            <td class="example-val">e5c0a3d4-6f7b-4c8e-a01d-345678901ef0</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">email</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>email</td>
+            <td>255</td>
+            <td>Email address kung saan ipinadala ang OTP</td>
+            <td class="example-val">juan.delacruz@cvsu.edu.ph</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">otp_code</td>
+            <td class="data-type">VARCHAR(6)</td>
+            <td>numeric string</td>
+            <td>6</td>
+            <td>6-digit one-time PIN code</td>
+            <td class="example-val">849201</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">expires_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Oras ng pag-expire ng OTP (karaniwang 10 minuto)</td>
+            <td class="example-val">2026-10-12 14:40:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">is_used</td>
+            <td class="data-type">BOOLEAN</td>
+            <td>boolean</td>
+            <td>1 byte</td>
+            <td>Flag kung nagamit na ang OTP code</td>
+            <td class="example-val">false</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa at oras ng pag-generate ng OTP</td>
+            <td class="example-val">2026-10-12 14:30:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PART 2: TABLES 4 – 6 -->
+    <!-- ========================================== -->
+    <div class="table-group-wrapper" id="group-wrapper-2">
+      <div class="group-header-bar">
+        <div class="group-title-info">
+          <span class="group-badge">Part 2: Tables 4 – 6</span>
+          <span class="group-tables-list">(student_cmo_requirements, community_requests, request_types)</span>
+        </div>
+        <a href="/data-dictionary-part2-tables-4-to-6.png" download="data-dictionary-part2-tables-4-to-6.png" class="btn-group-dl">
+          Download Tables 4 – 6 PNG
+        </a>
+      </div>
+
+      <div class="group-tables-container" id="group-container-2">
+<section class="table-section" id="table_student_cmo_requirements">
+      <div class="table-title">student_cmo_requirements</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">requirement_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng requirement submission</td>
+            <td class="example-val">f6d1b4e5-7a8c-4d9f-b12e-456789012fa1</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng estudyanteng nag-upload</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">requirement_type</td>
+            <td class="data-type">VARCHAR(100)</td>
+            <td>text</td>
+            <td>100</td>
+            <td>Uri ng dokumento ('notarized_parent_waiver', 'medical_certificate', atbp.)</td>
+            <td class="example-val">notarized_parent_waiver</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">file_name</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>filename</td>
+            <td>255</td>
+            <td>Orihinal na pangalan ng uploaded document</td>
+            <td class="example-val">delacruz_parent_waiver_2026.pdf</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">file_path</td>
+            <td class="data-type">TEXT</td>
+            <td>path string</td>
+            <td>-</td>
+            <td>Internal storage path sa cloud repository</td>
+            <td class="example-val">waivers/2026/c3a8e1b2_waiver.pdf</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">file_url</td>
+            <td class="data-type">TEXT</td>
+            <td>url</td>
+            <td>-</td>
+            <td>Ligtas na public access URL para matingnan ang dokumento</td>
+            <td class="example-val">https://res.cloudinary.com/.../waiver.pdf</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">file_type</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>MIME type</td>
+            <td>50</td>
+            <td>MIME format ('application/pdf', 'image/jpeg', 'image/png')</td>
+            <td class="example-val">application/pdf</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">file_size</td>
+            <td class="data-type">INTEGER</td>
+            <td>integer</td>
+            <td>4 bytes</td>
+            <td>Laki ng file sa bytes</td>
+            <td class="example-val">248512</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">status</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>text</td>
+            <td>50</td>
+            <td>Review status ('pending', 'approved', 'rejected')</td>
+            <td class="example-val">approved</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">remarks</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Puna o komento ng sumusing coordinator</td>
+            <td class="example-val">Verified notarized parent signature.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">uploaded_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa at oras ng pag-upload</td>
+            <td class="example-val">2026-08-20 10:15:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">reviewed_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa at oras ng pagsusuri ng coordinator</td>
+            <td class="example-val">2026-08-22 15:45:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">reviewed_by</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng CWTS coordinator na nag-review</td>
+            <td class="example-val">b2f9c8a1-3e4d-4c5b-9a8f-0123456789ab</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Tala ng paglikha sa database</td>
+            <td class="example-val">2026-08-20 10:15:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Tala ng huling pagbago sa database</td>
+            <td class="example-val">2026-08-22 15:45:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="table-section" id="table_community_requests">
+      <div class="table-title">community_requests</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">request_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng community request</td>
+            <td class="example-val">a1b2c3d4-e5f6-4a7b-8c9d-012345678901</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng Community Official na lumikha ng hiling</td>
+            <td class="example-val">d9e8f7a6-b5c4-4d3e-2f1a-9876543210fe</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">community_name</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Pangalan ng barangay / kapisanan / LGU partner</td>
+            <td class="example-val">Barangay San Agustin</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">community_address</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Pisikal na address ng barangay hall o punong tanggapan</td>
+            <td class="example-val">Barangay Hall, Provincial Road</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">barangay</td>
+            <td class="data-type">VARCHAR(100)</td>
+            <td>text</td>
+            <td>100</td>
+            <td>Barangay kung saan isasagawa ang proyekto</td>
+            <td class="example-val">San Agustin</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">municipality</td>
+            <td class="data-type">VARCHAR(100)</td>
+            <td>text</td>
+            <td>100</td>
+            <td>Lungsod o bayan ng proyekto</td>
+            <td class="example-val">Trece Martires</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">province</td>
+            <td class="data-type">VARCHAR(100)</td>
+            <td>text</td>
+            <td>100</td>
+            <td>Lalawigan ng proyekto</td>
+            <td class="example-val">Cavite</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">latitude</td>
+            <td class="data-type">DECIMAL(10,8)</td>
+            <td>decimal</td>
+            <td>8 bytes</td>
+            <td>GPS latitude coordinate ng deployment project site</td>
+            <td class="example-val">14.28312000</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">longitude</td>
+            <td class="data-type">DECIMAL(11,8)</td>
+            <td>decimal</td>
+            <td>8 bytes</td>
+            <td>GPS longitude coordinate ng deployment project site</td>
+            <td class="example-val">120.87123000</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">activity_title</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Opisyal na pamagat ng community outreach activity</td>
+            <td class="example-val">Community Literacy &amp; Basic Computer Training</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">activity_description</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Layunin at saklaw ng proyekto sa barangay</td>
+            <td class="example-val">Weekend tutorial for out-of-school youth.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">activity_type</td>
+            <td class="data-type">VARCHAR(100)</td>
+            <td>text</td>
+            <td>100</td>
+            <td>Kategorya ('Clean-up Drive', 'Literacy Program', atbp.)</td>
+            <td class="example-val">Computer Literacy Training</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">preferred_nstp_component</td>
+            <td class="data-type">VARCHAR(20)</td>
+            <td>text</td>
+            <td>20</td>
+            <td>Hiniling na component ('CWTS', 'LTS', 'Both')</td>
+            <td class="example-val">CWTS</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">students_needed</td>
+            <td class="data-type">INTEGER</td>
+            <td>integer</td>
+            <td>4 bytes</td>
+            <td>Target na bilang ng kinakailangang student volunteers</td>
+            <td class="example-val">15</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">preferred_start_date</td>
+            <td class="data-type">DATE</td>
+            <td>date</td>
+            <td>4 bytes</td>
+            <td>Inaasahang petsa ng simula ng deployment</td>
+            <td class="example-val">2026-10-01</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">preferred_end_date</td>
+            <td class="data-type">DATE</td>
+            <td>date</td>
+            <td>4 bytes</td>
+            <td>Inaasahang petsa ng pagtatapos ng deployment</td>
+            <td class="example-val">2026-11-15</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">preferred_schedule</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Oras at araw ng serbisyo</td>
+            <td class="example-val">Saturdays, 8:00 AM - 12:00 PM</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">urgency_level</td>
+            <td class="data-type">VARCHAR(20)</td>
+            <td>text</td>
+            <td>20</td>
+            <td>Priyoridad ng request ('Low', 'Medium', 'High')</td>
+            <td class="example-val">High</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">needed_skills</td>
+            <td class="data-type">TEXT[]</td>
+            <td>text array</td>
+            <td>-</td>
+            <td>Talaan ng kinakailangang kakayahan</td>
+            <td class="example-val">{'Teaching', 'Computer Literacy'}</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">target_beneficiaries</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Sektor ng komunidad na makikinabang</td>
+            <td class="example-val">40 Out-of-school youth residents</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">special_instructions</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Tagubilin sa kasuotan, kagamitan, o pag-iingat</td>
+            <td class="example-val">Wear NSTP uniform and bring student ID.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">request_status</td>
+            <td class="data-type">VARCHAR(20)</td>
+            <td>text</td>
+            <td>20</td>
+            <td>Estado ng request ('pending', 'approved', 'rejected', atbp.)</td>
+            <td class="example-val">approved</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">review_notes</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Komento ng CWTS Coordinator sa pagsusuri</td>
+            <td class="example-val">Approved with complete barangay council letter.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">reviewed_by</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng Coordinator na sumuri sa proposal</td>
+            <td class="example-val">b2f9c8a1-3e4d-4c5b-9a8f-0123456789ab</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">reviewed_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Oras kung kailan inaprubahan ang proposal</td>
+            <td class="example-val">2026-09-10 14:00:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Talaan ng petsa ng pagsumite</td>
+            <td class="example-val">2026-09-05 11:20:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Talaan ng petsa ng huling pagbabago</td>
+            <td class="example-val">2026-09-10 14:00:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="table-section" id="table_request_types">
+      <div class="table-title">request_types</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">type_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng uri ng serbisyo</td>
+            <td class="example-val">b2c3d4e5-f6a7-4b8c-9d0e-123456789012</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">name</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Opisyal na pangalan ng serbisyo (unique)</td>
+            <td class="example-val">Literacy and Numeracy Assistance</td>
+            <td><span class="rel-badge">UK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">description</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Deskripsyon at saklaw ng serbisyo</td>
+            <td class="example-val">Tutorial sessions for basic reading and math.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">required_skills</td>
+            <td class="data-type">TEXT[]</td>
+            <td>text array</td>
+            <td>-</td>
+            <td>Mga karaniwang kailangan na skills para sa gawaing ito</td>
+            <td class="example-val">{'Teaching', 'Communication'}</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">is_active</td>
+            <td class="data-type">BOOLEAN</td>
+            <td>boolean</td>
+            <td>1 byte</td>
+            <td>Katayuan kung aktibo ang serbisyo sa kasalukuyang semestre</td>
+            <td class="example-val">true</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_by</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng gumawa ng kategorya</td>
+            <td class="example-val">b2f9c8a1-3e4d-4c5b-9a8f-0123456789ab</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa ng pagkakatatag ng serbisyo sa catalog</td>
+            <td class="example-val">2026-08-01 08:00:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Huling petsa ng pagbago</td>
+            <td class="example-val">2026-08-01 08:00:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PART 3: TABLES 7 – 9 -->
+    <!-- ========================================== -->
+    <div class="table-group-wrapper" id="group-wrapper-3">
+      <div class="group-header-bar">
+        <div class="group-title-info">
+          <span class="group-badge">Part 3: Tables 7 – 9</span>
+          <span class="group-tables-list">(skills, dss_match_results, deployments)</span>
+        </div>
+        <a href="/data-dictionary-part3-tables-7-to-9.png" download="data-dictionary-part3-tables-7-to-9.png" class="btn-group-dl">
+          Download Tables 7 – 9 PNG
+        </a>
+      </div>
+
+      <div class="group-tables-container" id="group-container-3">
+<section class="table-section" id="table_skills">
+      <div class="table-title">skills</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">skill_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng skill</td>
+            <td class="example-val">c3d4e5f6-a7b8-4c9d-0e1f-234567890123</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">name</td>
+            <td class="data-type">VARCHAR(100)</td>
+            <td>text</td>
+            <td>100</td>
+            <td>Opisyal na pangalan ng kakayahan (unique)</td>
+            <td class="example-val">First Aid</td>
+            <td><span class="rel-badge">UK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">category</td>
+            <td class="data-type">VARCHAR(100)</td>
+            <td>text</td>
+            <td>100</td>
+            <td>Kategorya ('Education', 'Health &amp; Safety', 'Environmental', atbp.)</td>
+            <td class="example-val">Health &amp; Safety</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">description</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Paliwanag sa kakayahan at saklaw nito</td>
+            <td class="example-val">Emergency response, vital signs monitoring, CPR.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">is_active</td>
+            <td class="data-type">BOOLEAN</td>
+            <td>boolean</td>
+            <td>1 byte</td>
+            <td>Katayuan kung aktibo ang skill sa DSS criteria</td>
+            <td class="example-val">true</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa ng paglikha sa catalog</td>
+            <td class="example-val">2026-08-01 08:00:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa ng huling pagbago</td>
+            <td class="example-val">2026-08-01 08:00:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="table-section" id="table_dss_match_results">
+      <div class="table-title">dss_match_results</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">match_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng DSS match record</td>
+            <td class="example-val">d4e5f6a7-b8c9-4d0e-1f2a-345678901234</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">request_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng sinuring community request</td>
+            <td class="example-val">a1b2c3d4-e5f6-4a7b-8c9d-012345678901</td>
+            <td><span class="rel-badge">FK &rarr; community_requests(request_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">student_user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng kandidatong mag-aaral</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">match_score</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>percentage</td>
+            <td>5 bytes</td>
+            <td>Kabuuang computed score ng tugma (0.00 hanggang 100.00%)</td>
+            <td class="example-val">94.50</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">match_label</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>text</td>
+            <td>50</td>
+            <td>Tier ng rekomendasyon ('Highly Recommended', 'Recommended')</td>
+            <td class="example-val">Highly Recommended</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">recommendation_rank</td>
+            <td class="data-type">INTEGER</td>
+            <td>integer</td>
+            <td>4 bytes</td>
+            <td>Posisyon ng ranggo ng estudyante para sa proyektong ito</td>
+            <td class="example-val">1</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">location_score</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Proximity score batay sa distansya (Haversine Formula)</td>
+            <td class="example-val">98.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">skills_score</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Score batay sa katugmang kakayahan sa hiniling ng komunidad</td>
+            <td class="example-val">95.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">component_score</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Score batay sa angkop na NSTP track (CWTS)</td>
+            <td class="example-val">100.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">availability_score</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Score batay sa iskedyul ng mag-aaral</td>
+            <td class="example-val">85.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">generated_by</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng Coordinator na nagpatakbo ng DSS</td>
+            <td class="example-val">b2f9c8a1-3e4d-4c5b-9a8f-0123456789ab</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">generated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Eksaktong petsa at oras ng pag-kalkula ng algorithm</td>
+            <td class="example-val">2026-09-12 16:30:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa ng pagka-record sa database</td>
+            <td class="example-val">2026-09-12 16:30:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa ng huling pagbago</td>
+            <td class="example-val">2026-09-12 16:30:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="table-section" id="table_deployments">
+      <div class="table-title">deployments</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">deployment_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng deployment batch</td>
+            <td class="example-val">e5f6a7b8-c9d0-4e1f-2a3b-456789012345</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">request_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng pinupunang community request</td>
+            <td class="example-val">a1b2c3d4-e5f6-4a7b-8c9d-012345678901</td>
+            <td><span class="rel-badge">FK &rarr; community_requests(request_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">deployment_batch_name</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Opisyal na pangalan ng batch ng deployment</td>
+            <td class="example-val">Batch 2026-A: Brgy. San Agustin Literacy Project</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">deployment_status</td>
+            <td class="data-type">VARCHAR(20)</td>
+            <td>text</td>
+            <td>20</td>
+            <td>Katayuan ng deployment ('pending', 'active', 'ongoing', 'completed')</td>
+            <td class="example-val">active</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">assigned_by</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng Coordinator na nag-atas ng batch</td>
+            <td class="example-val">b2f9c8a1-3e4d-4c5b-9a8f-0123456789ab</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">deployment_start_date</td>
+            <td class="data-type">DATE</td>
+            <td>date</td>
+            <td>4 bytes</td>
+            <td>Petsa ng pormal na simula ng operasyon</td>
+            <td class="example-val">2026-10-01</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">deployment_end_date</td>
+            <td class="data-type">DATE</td>
+            <td>date</td>
+            <td>4 bytes</td>
+            <td>Petsa ng pagtatapos ng operasyon</td>
+            <td class="example-val">2026-11-15</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">notes</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Mga paalala at opisyal na panuntunan ng coordinator</td>
+            <td class="example-val">Weekly Saturday sessions with 4 credited hours per day.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Talaan ng petsa ng paglikha sa database</td>
+            <td class="example-val">2026-09-15 10:00:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Talaan ng petsa ng huling pagbago</td>
+            <td class="example-val">2026-10-01 08:00:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PART 4: TABLES 10 – 12 -->
+    <!-- ========================================== -->
+    <div class="table-group-wrapper" id="group-wrapper-4">
+      <div class="group-header-bar">
+        <div class="group-title-info">
+          <span class="group-badge">Part 4: Tables 10 – 12</span>
+          <span class="group-tables-list">(deployment_students, attendance_records, rendered_hours_summary)</span>
+        </div>
+        <a href="/data-dictionary-part4-tables-10-to-12.png" download="data-dictionary-part4-tables-10-to-12.png" class="btn-group-dl">
+          Download Tables 10 – 12 PNG
+        </a>
+      </div>
+
+      <div class="group-tables-container" id="group-container-4">
+<section class="table-section" id="table_deployment_students">
+      <div class="table-title">deployment_students</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">deployment_student_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng student assignment</td>
+            <td class="example-val">f6a7b8c9-d0e1-4f2a-3b4c-567890123456</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">deployment_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng kinalalagyang deployment batch</td>
+            <td class="example-val">e5f6a7b8-c9d0-4e1f-2a3b-456789012345</td>
+            <td><span class="rel-badge">FK &rarr; deployments(deployment_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">student_user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng itinalagang mag-aaral</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">deployment_student_status</td>
+            <td class="data-type">VARCHAR(20)</td>
+            <td>text</td>
+            <td>20</td>
+            <td>Katayuan ng mag-aaral ('assigned', 'active', 'completed')</td>
+            <td class="example-val">active</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">assigned_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa at oras ng opisyal na pagtatalaga sa grupo</td>
+            <td class="example-val">2026-09-15 10:30:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">notes</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Karagdagang gampanin sa pangkat (hal. Team Leader)</td>
+            <td class="example-val">Assigned as Lead Literacy Facilitator.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Talaan ng petsa ng paglikha</td>
+            <td class="example-val">2026-09-15 10:30:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Talaan ng petsa ng huling pagbago</td>
+            <td class="example-val">2026-10-01 08:00:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="table-section" id="table_attendance_records">
+      <div class="table-title">attendance_records</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">attendance_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng DTR log entry</td>
+            <td class="example-val">a7b8c9d0-e1f2-4a3b-4c5d-678901234567</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">deployment_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng deployment batch</td>
+            <td class="example-val">e5f6a7b8-c9d0-4e1f-2a3b-456789012345</td>
+            <td><span class="rel-badge">FK &rarr; deployments(deployment_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">student_user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng mag-aaral na dinaluhan ang sesyon</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">attendance_date</td>
+            <td class="data-type">DATE</td>
+            <td>date</td>
+            <td>4 bytes</td>
+            <td>Petsa ng pagdalo sa outreach site</td>
+            <td class="example-val">2026-10-04</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">check_in_time</td>
+            <td class="data-type">TIME</td>
+            <td>time</td>
+            <td>8 bytes</td>
+            <td>Oras ng pagdating / pagsisimula ng serbisyo</td>
+            <td class="example-val">08:00:00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">check_out_time</td>
+            <td class="data-type">TIME</td>
+            <td>time</td>
+            <td>8 bytes</td>
+            <td>Oras ng pag-alis / pagtatapos ng serbisyo</td>
+            <td class="example-val">12:00:00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">attendance_status</td>
+            <td class="data-type">VARCHAR(20)</td>
+            <td>text</td>
+            <td>20</td>
+            <td>Katayuan sa talaan ('present', 'absent', 'late', 'excused')</td>
+            <td class="example-val">present</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">hours_rendered</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Opisyal na bilang ng oras na na-credit sa sesyon</td>
+            <td class="example-val">4.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">verified_by</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng Community Official na nag-log at nagpatunay</td>
+            <td class="example-val">d9e8f7a6-b5c4-4d3e-2f1a-9876543210fe</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">verified_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Oras kung kailan pinagtibay ng opisyal ang attendance</td>
+            <td class="example-val">2026-10-04 12:15:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">student_remarks</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Ulat ng gawain na isinumite ng mag-aaral</td>
+            <td class="example-val">Facilitated reading module for Grade 2 children.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">nstp_remarks</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Puna o pagsusuri ng opisyal ng komunidad</td>
+            <td class="example-val">Punctual and proactive during tutoring.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Oras ng pagka-record sa database</td>
+            <td class="example-val">2026-10-04 08:05:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Oras ng huling pag-update</td>
+            <td class="example-val">2026-10-04 12:15:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="table-section" id="table_rendered_hours_summary">
+      <div class="table-title">rendered_hours_summary</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">summary_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng summary record</td>
+            <td class="example-val">b8c9d0e1-f2a3-4b4c-5d6e-789012345678</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">deployment_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng deployment batch</td>
+            <td class="example-val">e5f6a7b8-c9d0-4e1f-2a3b-456789012345</td>
+            <td><span class="rel-badge">FK &rarr; deployments(deployment_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">student_user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng mag-aaral</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">total_hours_required</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Kabuuang kinakailangang oras ayon sa CHED (54.00)</td>
+            <td class="example-val">54.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">total_hours_rendered</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Kabuuang oras na naisagawa na ng estudyante</td>
+            <td class="example-val">54.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">total_hours_verified</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Kabuuang oras na opisyal na pinagtibay ng opisyal</td>
+            <td class="example-val">54.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">total_hours_pending</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Oras na kasalukuyang nakabinbin ang beripikasyon</td>
+            <td class="example-val">0.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">total_sessions</td>
+            <td class="data-type">INTEGER</td>
+            <td>integer</td>
+            <td>4 bytes</td>
+            <td>Kabuuang bilang ng nakatakdang sesyon</td>
+            <td class="example-val">14</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">present_count</td>
+            <td class="data-type">INTEGER</td>
+            <td>integer</td>
+            <td>4 bytes</td>
+            <td>Bilang ng sesyon na dinaluhan (present)</td>
+            <td class="example-val">14</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">absent_count</td>
+            <td class="data-type">INTEGER</td>
+            <td>integer</td>
+            <td>4 bytes</td>
+            <td>Bilang ng sesyon na hindi dinaluhan (absent)</td>
+            <td class="example-val">0</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">late_count</td>
+            <td class="data-type">INTEGER</td>
+            <td>integer</td>
+            <td>4 bytes</td>
+            <td>Bilang ng sesyon kung saan nahuli (late)</td>
+            <td class="example-val">0</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">excused_count</td>
+            <td class="data-type">INTEGER</td>
+            <td>integer</td>
+            <td>4 bytes</td>
+            <td>Bilang ng sesyon na may pahintulot (excused)</td>
+            <td class="example-val">0</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">make_up_count</td>
+            <td class="data-type">INTEGER</td>
+            <td>integer</td>
+            <td>4 bytes</td>
+            <td>Bilang ng naisagawang make-up sessions</td>
+            <td class="example-val">0</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">completion_percentage</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>percentage</td>
+            <td>5 bytes</td>
+            <td>Bahagdan ng natapos na oras (0.00 hanggang 100.00%)</td>
+            <td class="example-val">100.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">completion_status</td>
+            <td class="data-type">VARCHAR(20)</td>
+            <td>text</td>
+            <td>20</td>
+            <td>Estado ng pagkumpleto ('in_progress', 'completed')</td>
+            <td class="example-val">completed</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa ng paglikha ng summary tracker</td>
+            <td class="example-val">2026-09-15 10:30:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Huling petsa ng pagbago</td>
+            <td class="example-val">2026-11-15 13:00:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PART 5: TABLES 13 – 15 -->
+    <!-- ========================================== -->
+    <div class="table-group-wrapper" id="group-wrapper-5">
+      <div class="group-header-bar">
+        <div class="group-title-info">
+          <span class="group-badge">Part 5: Tables 13 – 15</span>
+          <span class="group-tables-list">(make_up_requests, student_evaluations, student_feedback)</span>
+        </div>
+        <a href="/data-dictionary-part5-tables-13-to-15.png" download="data-dictionary-part5-tables-13-to-15.png" class="btn-group-dl">
+          Download Tables 13 – 15 PNG
+        </a>
+      </div>
+
+      <div class="group-tables-container" id="group-container-5">
+<section class="table-section" id="table_make_up_requests">
+      <div class="table-title">make_up_requests</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">make_up_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng make-up request</td>
+            <td class="example-val">c9d0e1f2-a3b4-4c5d-6e7f-890123456789</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">attendance_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng na-miss na attendance log</td>
+            <td class="example-val">a7b8c9d0-e1f2-4a3b-4c5d-678901234567</td>
+            <td><span class="rel-badge">FK &rarr; attendance_records(attendance_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">student_user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng mag-aaral na nagpepetisyon</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">deployment_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng deployment batch</td>
+            <td class="example-val">e5f6a7b8-c9d0-4e1f-2a3b-456789012345</td>
+            <td><span class="rel-badge">FK &rarr; deployments(deployment_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">missed_date</td>
+            <td class="data-type">DATE</td>
+            <td>date</td>
+            <td>4 bytes</td>
+            <td>Petsa kung kailan hindi nakadalo ang mag-aaral</td>
+            <td class="example-val">2026-10-18</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">reason</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Makatarungang dahilan ng pagliban sa outreach</td>
+            <td class="example-val">Medical reason with doctor excuse letter.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">proposed_make_up_date</td>
+            <td class="data-type">DATE</td>
+            <td>date</td>
+            <td>4 bytes</td>
+            <td>Iminumungkahing petsa para mag-make up</td>
+            <td class="example-val">2026-10-25</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">proposed_make_up_time</td>
+            <td class="data-type">TIME</td>
+            <td>time</td>
+            <td>8 bytes</td>
+            <td>Iminumungkahing oras ng pagbawi</td>
+            <td class="example-val">08:00:00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">request_status</td>
+            <td class="data-type">VARCHAR(20)</td>
+            <td>text</td>
+            <td>20</td>
+            <td>Katayuan ng petisyon ('pending', 'approved', 'rejected')</td>
+            <td class="example-val">approved</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">reviewed_by</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng coordinator na sumuri</td>
+            <td class="example-val">b2f9c8a1-3e4d-4c5b-9a8f-0123456789ab</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">reviewed_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa at oras ng pag-apruba ng petisyon</td>
+            <td class="example-val">2026-10-20 09:30:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">nstp_remarks</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Instruksyon ng coordinator sa pagbawi ng oras</td>
+            <td class="example-val">Render 4 hours at Barangay Health Center.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">actual_make_up_date</td>
+            <td class="data-type">DATE</td>
+            <td>date</td>
+            <td>4 bytes</td>
+            <td>Tunay na araw kung kailan naisagawa ang make-up</td>
+            <td class="example-val">2026-10-25</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">actual_make_up_time</td>
+            <td class="data-type">TIME</td>
+            <td>time</td>
+            <td>8 bytes</td>
+            <td>Tunay na oras ng pagsasagawa</td>
+            <td class="example-val">08:00:00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">hours_rendered</td>
+            <td class="data-type">DECIMAL(5,2)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Bilang ng oras na na-credit mula sa make-up</td>
+            <td class="example-val">4.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">completion_verified</td>
+            <td class="data-type">BOOLEAN</td>
+            <td>boolean</td>
+            <td>1 byte</td>
+            <td>Katibayan na pinagtibay ng opisyal ng komunidad</td>
+            <td class="example-val">true</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa ng paglikha sa database</td>
+            <td class="example-val">2026-10-19 14:00:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Huling petsa ng pagbago</td>
+            <td class="example-val">2026-10-25 12:30:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="table-section" id="table_student_evaluations">
+      <div class="table-title">student_evaluations</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">evaluation_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng student evaluation</td>
+            <td class="example-val">d0e1f2a3-b4c5-4d6e-7f8a-901234567890</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">deployment_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng deployment batch</td>
+            <td class="example-val">e5f6a7b8-c9d0-4e1f-2a3b-456789012345</td>
+            <td><span class="rel-badge">FK &rarr; deployments(deployment_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">student_user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng sinusuring mag-aaral</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">evaluator_user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng opisyal na nag-evaluate</td>
+            <td class="example-val">d9e8f7a6-b5c4-4d3e-2f1a-9876543210fe</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">evaluator_name</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Buong pangalan ng opisyal ng barangay</td>
+            <td class="example-val">Hon. Roberto Santos</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">student_name</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Pangalan ng sinusuring mag-aaral</td>
+            <td class="example-val">Juan Protacio Dela Cruz</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">community_name</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Pangalan ng partner barangay</td>
+            <td class="example-val">Barangay San Agustin</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">activity_title</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Pamagat ng outreach project</td>
+            <td class="example-val">Community Literacy Program</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">rating_punctuality</td>
+            <td class="data-type">DECIMAL(3,1)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Marka sa pagdating sa takdang oras (1.0 hanggang 5.0)</td>
+            <td class="example-val">5.0</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">rating_community_engagement</td>
+            <td class="data-type">DECIMAL(3,1)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Marka sa pakikipagkapwa at pakikitungo sa mamamayan</td>
+            <td class="example-val">4.8</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">rating_teamwork</td>
+            <td class="data-type">DECIMAL(3,1)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Marka sa pakikipagtulungan sa mga kapwa mag-aaral</td>
+            <td class="example-val">5.0</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">rating_initiative_attitude</td>
+            <td class="data-type">DECIMAL(3,1)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Marka sa pagkukusa at disiplina sa paglilingkod</td>
+            <td class="example-val">4.9</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">overall_score</td>
+            <td class="data-type">DECIMAL(3,2)</td>
+            <td>decimal</td>
+            <td>5 bytes</td>
+            <td>Pinal na computed average rating</td>
+            <td class="example-val">4.93</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">performance_grade</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>text</td>
+            <td>50</td>
+            <td>Katumbas na qualitative grade ('Outstanding', atbp.)</td>
+            <td class="example-val">Outstanding</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">evaluator_remarks</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Pahayag ng pasasalamat at puna ng komunidad</td>
+            <td class="example-val">Showed great leadership in teaching kids.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">evaluation_date</td>
+            <td class="data-type">DATE</td>
+            <td>date</td>
+            <td>4 bytes</td>
+            <td>Petsa ng pagsasagawa ng evaluation</td>
+            <td class="example-val">2026-11-16</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa ng paglikha sa database</td>
+            <td class="example-val">2026-11-16 14:00:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa ng huling pagbago</td>
+            <td class="example-val">2026-11-16 14:00:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="table-section" id="table_student_feedback">
+      <div class="table-title">student_feedback</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">feedback_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng feedback entry</td>
+            <td class="example-val">e1f2a3b4-c5d6-4e7f-8a9b-012345678901</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">deployment_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng deployment batch</td>
+            <td class="example-val">e5f6a7b8-c9d0-4e1f-2a3b-456789012345</td>
+            <td><span class="rel-badge">FK &rarr; deployments(deployment_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">student_user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng estudyante (kung individual feedback)</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">community_user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng opisyal na nagsumite</td>
+            <td class="example-val">d9e8f7a6-b5c4-4d3e-2f1a-9876543210fe</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">community_name</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Pangalan ng barangay / komunidad</td>
+            <td class="example-val">Barangay San Agustin</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">activity_title</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Pamagat ng community outreach activity</td>
+            <td class="example-val">Community Literacy Program</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">rating</td>
+            <td class="data-type">INTEGER</td>
+            <td>integer</td>
+            <td>4 bytes</td>
+            <td>Kasiyahan sa serbisyo (1 hanggang 5 stars)</td>
+            <td class="example-val">5</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">feedback_type</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>text</td>
+            <td>50</td>
+            <td>Uri ng feedback ('General Feedback', 'Logistics')</td>
+            <td class="example-val">General Feedback</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">comments</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Komento at rekomendasyon ng komunidad</td>
+            <td class="example-val">The students were very well-behaved and helpful.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">submitted_by</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Pangalan ng sumagot sa pagsusuri</td>
+            <td class="example-val">Hon. Roberto Santos</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">date_submitted</td>
+            <td class="data-type">DATE</td>
+            <td>date</td>
+            <td>4 bytes</td>
+            <td>Petsa ng pagsusumite</td>
+            <td class="example-val">2026-11-16</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Talaan ng petsa sa database</td>
+            <td class="example-val">2026-11-16 14:30:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Huling petsa ng pagbago</td>
+            <td class="example-val">2026-11-16 14:30:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PART 6: TABLES 16 – 17 (LAST 2 TABLES) -->
+    <!-- ========================================== -->
+    <div class="table-group-wrapper" id="group-wrapper-6">
+      <div class="group-header-bar">
+        <div class="group-title-info">
+          <span class="group-badge">Part 6: Tables 16 – 17 (Last 2 Tables)</span>
+          <span class="group-tables-list">(notifications, notification_preferences)</span>
+        </div>
+        <a href="/data-dictionary-part6-tables-16-to-17.png" download="data-dictionary-part6-tables-16-to-17.png" class="btn-group-dl">
+          Download Tables 16 – 17 PNG
+        </a>
+      </div>
+
+      <div class="group-tables-container" id="group-container-6">
+<section class="table-section" id="table_notifications">
+      <div class="table-title">notifications</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">notification_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng notification</td>
+            <td class="example-val">f2a3b4c5-d6e7-4f8a-9b0c-123456789012</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng tumanggap na user</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id)</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">notification_type</td>
+            <td class="data-type">VARCHAR(50)</td>
+            <td>text</td>
+            <td>50</td>
+            <td>Kategorya ('deployment_assigned', 'requirement_approved')</td>
+            <td class="example-val">deployment_assigned</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">title</td>
+            <td class="data-type">VARCHAR(255)</td>
+            <td>text</td>
+            <td>255</td>
+            <td>Pamagat ng alerto</td>
+            <td class="example-val">Deployment Assignment Notice</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">message</td>
+            <td class="data-type">TEXT</td>
+            <td>text</td>
+            <td>-</td>
+            <td>Detalyadong mensahe ng notipikasyon</td>
+            <td class="example-val">You have been deployed to Barangay San Agustin.</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">related_deployment_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Kaugnay na deployment ID (opsyonal)</td>
+            <td class="example-val">e5f6a7b8-c9d0-4e1f-2a3b-456789012345</td>
+            <td><span class="rel-badge">FK &rarr; deployments</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">related_attendance_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Kaugnay na attendance ID (opsyonal)</td>
+            <td class="example-val">a7b8c9d0-e1f2-4a3b-4c5d-678901234567</td>
+            <td><span class="rel-badge">FK &rarr; attendance_records</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">is_read</td>
+            <td class="data-type">BOOLEAN</td>
+            <td>boolean</td>
+            <td>1 byte</td>
+            <td>Katayuan kung nabasa na ng user</td>
+            <td class="example-val">false</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">priority</td>
+            <td class="data-type">VARCHAR(20)</td>
+            <td>text</td>
+            <td>20</td>
+            <td>Antas ng priyoridad ('low', 'normal', 'high', 'urgent')</td>
+            <td class="example-val">high</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">action_url</td>
+            <td class="data-type">TEXT</td>
+            <td>url</td>
+            <td>-</td>
+            <td>Direct web link papunta sa target module</td>
+            <td class="example-val">/student/deployment.html</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Oras ng pagpapadala ng alerto</td>
+            <td class="example-val">2026-09-15 10:30:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Huling pagbago</td>
+            <td class="example-val">2026-09-15 10:30:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="table-section" id="table_notification_preferences">
+      <div class="table-title">notification_preferences</div>
+      <table class="data-dict-table">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Field Name</th>
+            <th style="width: 14%;">Data Type</th>
+            <th style="width: 11%;">Data Format</th>
+            <th style="width: 8%;">Field Size</th>
+            <th style="width: 25%;">Description</th>
+            <th style="width: 18%;">Example</th>
+            <th style="width: 8%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">preference_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Primary key identifier ng preference setting</td>
+            <td class="example-val">a3b4c5d6-e7f8-4a9b-0c1d-234567890123</td>
+            <td><span class="rel-badge">PK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">user_id</td>
+            <td class="data-type">UUID</td>
+            <td>uuid</td>
+            <td>16 bytes</td>
+            <td>Foreign key ng user account</td>
+            <td class="example-val">c3a8e1b2-4d5f-4a6c-8e9b-123456789abc</td>
+            <td><span class="rel-badge">FK &rarr; users(user_id), UK</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">email_notifications</td>
+            <td class="data-type">BOOLEAN</td>
+            <td>boolean</td>
+            <td>1 byte</td>
+            <td>Pahintulot sa pagpapadala ng SMTP emails</td>
+            <td class="example-val">true</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">in_app_notifications</td>
+            <td class="data-type">BOOLEAN</td>
+            <td>boolean</td>
+            <td>1 byte</td>
+            <td>Pahintulot sa pagpapakita ng notification badges sa UI</td>
+            <td class="example-val">true</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">attendance_reminders</td>
+            <td class="data-type">BOOLEAN</td>
+            <td>boolean</td>
+            <td>1 byte</td>
+            <td>Pahintulot sa automated DTR log reminders</td>
+            <td class="example-val">true</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">announcement_alerts</td>
+            <td class="data-type">BOOLEAN</td>
+            <td>boolean</td>
+            <td>1 byte</td>
+            <td>Pahintulot sa mga broadcast announcements</td>
+            <td class="example-val">true</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">created_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Petsa ng paglikha ng setting</td>
+            <td class="example-val">2026-08-15 08:30:00+08</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td class="field-name">updated_at</td>
+            <td class="data-type">TIMESTAMPTZ</td>
+            <td>timestamp</td>
+            <td>8 bytes</td>
+            <td>Huling pagbago sa configuration</td>
+            <td class="example-val">2026-08-15 08:30:00+08</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+      </div>
+    </div>
+
+  </div>
+
+
+  <script>
+    function downloadAllPNGs() {
+      const files = [
+        '/data-dictionary-part1-tables-1-to-3.png',
+        '/data-dictionary-part2-tables-4-to-6.png',
+        '/data-dictionary-part3-tables-7-to-9.png',
+        '/data-dictionary-part4-tables-10-to-12.png',
+        '/data-dictionary-part5-tables-13-to-15.png',
+        '/data-dictionary-part6-tables-16-to-17.png'
+      ];
+      files.forEach((file, idx) => {
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = file;
+          a.download = file.substring(1);
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, idx * 450);
+      });
+    }
+  </script>
+
+</body>
+</html>

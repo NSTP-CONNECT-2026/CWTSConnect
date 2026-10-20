@@ -1,0 +1,63 @@
+{
+  "1cef9076-2cb8-4bdf-b950-ba01ab03ae06": {
+    "user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+    "email": "communityofficial@gmail.com",
+    "full_name": "Hon. Roberto M. Santos",
+    "position": "Barangay Captain",
+    "contact_number": "09178901234",
+    "community_name": "Barangay Community Partner",
+    "barangay": "Poblacion",
+    "municipality": "Santa Cruz",
+    "province": "Laguna"
+  },
+  "f1df9df5-f933-4c7b-93d9-aa52e3f923e0": {
+    "user_id": "f1df9df5-f933-4c7b-93d9-aa52e3f923e0",
+    "email": "communityofficial2@gmail.com",
+    "full_name": "Hon. Maria Elena V. Ramos",
+    "position": "Community Liaison Officer",
+    "contact_number": "09283456789",
+    "community_name": "Quinale Civic Outreach",
+    "barangay": "Quinale",
+    "municipality": "Paete",
+    "province": "Laguna",
+    "updated_at": "2026-10-15T08:16:59.764Z"
+  },
+  "18c19456-25de-4e73-bd70-596c2758a0e5": {
+    "full_name": "Barangay Mendiola Siniloan",
+    "email": "communityofficial3@gmail.com",
+    "contact_number": "09363026214",
+    "position": "Community Official",
+    "community_name": "Barangay Mendiola Siniloan",
+    "barangay": "Mendiola",
+    "municipality": "Pakil",
+    "province": "Laguna",
+    "latitude": 14.43557,
+    "longitude": 121.454613,
+    "location": "14.435570,121.454613",
+    "coordinates": {
+      "lat": 14.43557,
+      "lng": 121.454613
+    },
+    "user_id": "18c19456-25de-4e73-bd70-596c2758a0e5",
+    "updated_at": "2026-10-15T08:58:17.535Z"
+  },
+  "3a7552ae-88be-4896-813a-1f6e2eec1b3e": {
+    "full_name": "Barangay Salangbato Famy",
+    "email": "communityofficial1@gmail.com",
+    "contact_number": "09876787678",
+    "position": "Community Official",
+    "community_name": "Barangay Salangbato Famy",
+    "barangay": "Salangbato",
+    "municipality": "Famy",
+    "province": "Laguna",
+    "latitude": 14.446762,
+    "longitude": 121.453892,
+    "location": "14.446762,121.453892",
+    "coordinates": {
+      "lat": 14.446762,
+      "lng": 121.453892
+    },
+    "user_id": "3a7552ae-88be-4896-813a-1f6e2eec1b3e",
+    "updated_at": "2026-10-15T09:10:59.042Z"
+  }
+}

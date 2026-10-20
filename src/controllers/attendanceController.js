@@ -186,11 +186,20 @@ async function verifyAttendanceHours(req, res) {
 /**
  * Gets student's attendance records
  * GET /api/student/attendance/:deploymentId
+ * GET /api/attendance/my-attendance
+ * GET /api/attendance/student/:studentId
  */
 async function getStudentAttendance(req, res) {
   try {
-    const { deploymentId } = req.params;
-    const studentId = req.session.user.user_id;
+    const deploymentId = req.params.deploymentId || req.query.deploymentId || req.query.deployment_id;
+    const studentId = req.params.studentId || req.session?.user?.user_id || req.user?.user_id;
+
+    if (!studentId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
 
     const records = await attendanceService.getStudentAttendance(deploymentId, studentId);
     
@@ -213,8 +222,15 @@ async function getStudentAttendance(req, res) {
  */
 async function getTodayAttendance(req, res) {
   try {
-    const { deploymentId } = req.params;
-    const studentId = req.session.user.user_id;
+    const deploymentId = req.params.deploymentId || req.query.deploymentId || req.query.deployment_id;
+    const studentId = req.params.studentId || req.session?.user?.user_id || req.user?.user_id;
+
+    if (!studentId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
 
     const record = await attendanceService.getTodayAttendance(deploymentId, studentId);
     
@@ -339,7 +355,6 @@ module.exports = {
   getDeploymentAttendance: async (req, res) => {
     try {
       const { deploymentId } = req.params;
-      const { status, date } = req.query;
       const supabase = require('../config/supabaseClient');
 
       // MODE 1: ALL STUDENTS OVERVIEW (Total Deployments & Total Attendance)
@@ -357,26 +372,46 @@ module.exports = {
 
         const { data: assignmentsData } = await supabase
           .from('deployment_students')
-          .select('student_user_id, deployment_id');
+          .select('student_user_id, deployment_id, deployment_student_status');
 
         const { data: allAttendance } = await supabase
           .from('attendance_records')
-          .select('student_user_id, hours_rendered, attendance_status, verification_status');
+          .select('student_user_id, hours_rendered, attendance_status, verified_at, verified_by, student_remarks');
 
         const depCountMap = new Map();
         (assignmentsData || []).forEach(a => {
-          depCountMap.set(a.student_user_id, (depCountMap.get(a.student_user_id) || 0) + 1);
+          if (a.deployment_student_status !== 'removed') {
+            depCountMap.set(a.student_user_id, (depCountMap.get(a.student_user_id) || 0) + 1);
+          }
         });
 
         const attCountMap = new Map();
         const hoursMap = new Map();
         (allAttendance || []).forEach(att => {
-          attCountMap.set(att.student_user_id, (attCountMap.get(att.student_user_id) || 0) + 1);
-          hoursMap.set(att.student_user_id, (hoursMap.get(att.student_user_id) || 0) + Number(att.hours_rendered || 0));
+          if (att.attendance_status === 'present' || att.attendance_status === 'late' || Number(att.hours_rendered || 0) > 0) {
+            attCountMap.set(att.student_user_id, (attCountMap.get(att.student_user_id) || 0) + 1);
+          }
+          
+          let customHours = null;
+          if (att.student_remarks) {
+            const match = String(att.student_remarks).match(/\[CREDITED:([0-9.]+)\]/);
+            if (match) {
+              const parsedVal = parseFloat(match[1]);
+              if (!isNaN(parsedVal)) customHours = parsedVal;
+            }
+          }
+          const isCredited = Boolean(att.verified_at || att.verified_by || (att.student_remarks && /\[CREDITED:[0-9.]+\]/.test(att.student_remarks)));
+          if (isCredited) {
+            const creditedVal = (customHours !== null) ? customHours : Number(att.hours_rendered || 0);
+            hoursMap.set(att.student_user_id, (hoursMap.get(att.student_user_id) || 0) + creditedVal);
+          }
         });
 
         const summary = (studentsData || []).map(stu => {
-          const prof = stu.student_profiles?.[0] || {};
+          let prof = {};
+          if (stu.student_profiles) {
+            prof = Array.isArray(stu.student_profiles) ? (stu.student_profiles[0] || {}) : stu.student_profiles;
+          }
           return {
             student_user_id: stu.user_id,
             student_name: prof.full_name || stu.email,
@@ -398,100 +433,132 @@ module.exports = {
       }
 
       // MODE 2: SPECIFIC DEPLOYMENT BATCH
-      let query = supabase
-        .from('attendance_records')
+      const { data: batchAssignments, error: assignErr } = await supabase
+        .from('deployment_students')
         .select(`
-          *,
-          student:users!attendance_records_student_user_id_fkey(
+          deployment_student_id,
+          deployment_id,
+          student_user_id,
+          deployment_student_status,
+          student:users!deployment_students_student_user_id_fkey(
+            user_id,
             email,
             student_profiles(full_name, student_number, course, section, year_level)
-          ),
-          verified_by_user:users!attendance_records_verified_by_fkey(
-            email,
-            student_profiles(full_name)
           )
         `)
         .eq('deployment_id', deploymentId)
-        .order('attendance_date', { ascending: false });
+        .neq('deployment_student_status', 'removed');
 
-      if (status && status !== 'all') {
-        query = query.eq('verification_status', status);
+      if (assignErr) throw new Error(assignErr.message);
+
+      const studentUserIds = (batchAssignments || []).map(b => b.student_user_id);
+
+      let allAssignmentsForStudents = [];
+      let allAttendanceForStudents = [];
+
+      if (studentUserIds.length > 0) {
+        const { data: allAssign } = await supabase
+          .from('deployment_students')
+          .select('student_user_id, deployment_id, deployment_student_status')
+          .in('student_user_id', studentUserIds)
+          .neq('deployment_student_status', 'removed');
+        allAssignmentsForStudents = allAssign || [];
+
+        const { data: allAtt } = await supabase
+          .from('attendance_records')
+          .select('attendance_id, student_user_id, deployment_id, attendance_date, check_in_time, check_out_time, attendance_status, hours_rendered, verified_at, verified_by, student_remarks')
+          .in('student_user_id', studentUserIds);
+        allAttendanceForStudents = allAtt || [];
       }
 
-      if (date) {
-        query = query.eq('attendance_date', date);
-      }
+      const totalDepCountMap = new Map();
+      allAssignmentsForStudents.forEach(a => {
+        totalDepCountMap.set(a.student_user_id, (totalDepCountMap.get(a.student_user_id) || 0) + 1);
+      });
 
-      const { data, error } = await query;
+      const totalAttCountMap = new Map();
+      const totalHoursMap = new Map();
+      const currentBatchAttMap = new Map();
 
-      if (error) throw new Error(error.message);
+      allAttendanceForStudents.forEach(att => {
+        if (att.attendance_status === 'present' || att.attendance_status === 'late' || Number(att.hours_rendered || 0) > 0) {
+          totalAttCountMap.set(att.student_user_id, (totalAttCountMap.get(att.student_user_id) || 0) + 1);
+        }
 
-      // Get deployment default date
-      const { data: depData } = await supabase
-        .from('deployments')
-        .select('deployment_start_date, deployment_batch_name, activity_title')
-        .eq('deployment_id', deploymentId)
-        .single();
-      const defaultDate = depData?.deployment_start_date ? depData.deployment_start_date.split('T')[0] : new Date().toISOString().split('T')[0];
+        let customHours = null;
+        if (att.student_remarks) {
+          const match = String(att.student_remarks).match(/\[CREDITED:([0-9.]+)\]/);
+          if (match) {
+            const parsedVal = parseFloat(match[1]);
+            if (!isNaN(parsedVal)) customHours = parsedVal;
+          }
+        }
+        const isCredited = Boolean(att.verified_at || att.verified_by || (att.student_remarks && /\[CREDITED:[0-9.]+\]/.test(att.student_remarks)));
+        if (isCredited) {
+          const creditedVal = (customHours !== null) ? customHours : Number(att.hours_rendered || 0);
+          totalHoursMap.set(att.student_user_id, (totalHoursMap.get(att.student_user_id) || 0) + creditedVal);
+        }
 
-      // Transform logged attendance
-      const attendance = (data || []).map(record => {
-        const prof = record.student?.student_profiles?.[0] || {};
+        if (att.deployment_id === deploymentId) {
+          currentBatchAttMap.set(att.student_user_id, att);
+        }
+      });
+
+      const summary = (batchAssignments || []).map(item => {
+        const student = item.student || {};
+        let prof = {};
+        if (student.student_profiles) {
+          prof = Array.isArray(student.student_profiles) ? (student.student_profiles[0] || {}) : student.student_profiles;
+        }
+
+        const batchAtt = currentBatchAttMap.get(item.student_user_id);
+        const isPresent = Boolean(batchAtt && (batchAtt.attendance_status === 'present' || batchAtt.attendance_status === 'late' || Number(batchAtt.hours_rendered || 0) > 0));
+
+        let isCredited = false;
+        let batchCreditedHours = 0;
+        if (batchAtt) {
+          let customHours = null;
+          if (batchAtt.student_remarks) {
+            const match = String(batchAtt.student_remarks).match(/\[CREDITED:([0-9.]+)\]/);
+            if (match) {
+              const parsedVal = parseFloat(match[1]);
+              if (!isNaN(parsedVal)) customHours = parsedVal;
+            }
+          }
+          isCredited = Boolean(batchAtt.verified_at || batchAtt.verified_by || (batchAtt.student_remarks && /\[CREDITED:[0-9.]+\]/.test(batchAtt.student_remarks)));
+          if (isCredited) {
+            batchCreditedHours = (customHours !== null) ? customHours : Number(batchAtt.hours_rendered || 0);
+          }
+        }
+
         return {
-          ...record,
-          student_name: prof.full_name || 'N/A',
+          student_user_id: item.student_user_id,
+          deployment_id: deploymentId,
+          student_name: prof.full_name || student.email || 'Student Volunteer',
           student_number: prof.student_number || 'N/A',
-          course: prof.course || 'N/A',
+          course: prof.course || 'BSIT',
           section: prof.section || '1',
           year_level: prof.year_level || '1',
-          attendance_date: record.attendance_date || defaultDate,
-          verified_by_name: record.verified_by_user?.student_profiles?.[0]?.full_name || null
+          total_deployments: totalDepCountMap.get(item.student_user_id) || 1,
+          total_attendance: totalAttCountMap.get(item.student_user_id) || 0,
+          total_hours_rendered: totalHoursMap.get(item.student_user_id) || 0,
+          is_present: isPresent,
+          batch_attendance_status: isPresent ? 'Present' : 'Absent',
+          check_in_time: batchAtt ? batchAtt.check_in_time : null,
+          check_out_time: batchAtt ? batchAtt.check_out_time : null,
+          is_credited: isCredited,
+          batch_rendered_hours: batchCreditedHours
         };
       });
 
-      // Include all assigned students for this batch even if they haven't timed in yet
-      const { data: assignedStudents } = await supabase
-        .from('deployment_students')
-        .select(`
-          student_user_id,
-          student:users!deployment_students_student_user_id_fkey(
-            email,
-            student_profiles(full_name, student_number, course, section, year_level)
-          )
-        `)
-        .eq('deployment_id', deploymentId);
-
-      const loggedStudentIds = new Set((data || []).map(d => d.student_user_id));
-      if (assignedStudents && assignedStudents.length > 0) {
-        assignedStudents.forEach(as => {
-          if (!loggedStudentIds.has(as.student_user_id)) {
-            const prof = as.student?.student_profiles?.[0] || {};
-            attendance.push({
-              attendance_id: `pending-${as.student_user_id}`,
-              deployment_id: deploymentId,
-              student_user_id: as.student_user_id,
-              student_name: prof.full_name || 'Student Volunteer',
-              student_number: prof.student_number || 'N/A',
-              course: prof.course || 'BSIT',
-              section: prof.section || '1',
-              year_level: prof.year_level || '1',
-              attendance_date: defaultDate,
-              check_in_time: null,
-              check_out_time: null,
-              hours_rendered: 0,
-              attendance_status: 'not_logged',
-              verification_status: 'pending'
-            });
-          }
-        });
-      }
-
-      res.json({
+      return res.json({
         success: true,
         mode: 'batch_details',
-        attendance
+        deployment_id: deploymentId,
+        attendance: summary
       });
     } catch (error) {
+      console.error('getDeploymentAttendance Error:', error);
       res.status(500).json({
         success: false,
         message: error.message

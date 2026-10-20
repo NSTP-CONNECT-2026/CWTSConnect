@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CWTSConnect — Proposed Use Case Diagram (Thesis Edition)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f1f5f9;
+      --bg-card: #ffffff;
+      --border-card: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #0b3d2e;
+      --primary-accent: #15803d;
+      --shape-stroke: #1e293b;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1540px;
+      margin: 0 auto;
+    }
+
+    /* Header Bar */
+    .top-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .title-group h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.02em;
+    }
+
+    .title-group p {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 8px;
+      gap: 4px;
+    }
+
+    .nav-btn {
+      text-decoration: none;
+      padding: 8px 16px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+
+    .nav-btn:hover {
+      color: var(--text-main);
+    }
+
+    .nav-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    }
+
+    /* Actions Toolbar */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--border-card);
+      background: #ffffff;
+      color: var(--text-main);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .action-btn.primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .action-btn.primary:hover {
+      background: var(--primary-accent);
+      border-color: var(--primary-accent);
+    }
+
+    /* Diagram Canvas Container */
+    .diagram-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    .diagram-card img,
+    .diagram-card svg {
+      max-width: 100%;
+      height: auto;
+      display: inline-block;
+    }
+
+    /* Instructions Card */
+    .instructions-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 20px;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+
+    .instructions-card h3 {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .instructions-card ul {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+
+    .instructions-card li {
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="title-group">
+        <h1>CWTSConnect 2026 — Proposed Use Case Diagram</h1>
+        <p>Publication-Ready Thesis &amp; Capstone Manuscript UML Specifications</p>
+      </div>
+
+      <div class="nav-links">
+        <a href="/flowchart.html" class="nav-btn">Process Flowcharts</a>
+        <a href="/usecase.html" class="nav-btn active">Proposed Use Case</a>
+        <a href="/architecture.html" class="nav-btn">Architecture &amp; DFD</a>
+        <a href="/hipo.html" class="nav-btn">HIPO Model</a>
+        <a href="/data-dictionary.html" class="nav-btn">Data Dictionary</a>
+      </div>
+    </header>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div style="font-size: 0.875rem; font-weight: 600; color: #475569;">
+        Displaying: System Boundary &amp; Actor Use Case Associations
+      </div>
+
+      <div class="btn-group">
+        <button class="action-btn primary" onclick="downloadPNG()">Download PNG (High-Res 300 DPI)</button>
+        <button class="action-btn" onclick="downloadSVG()">Download Vector SVG</button>
+        <button class="action-btn" onclick="downloadDrawio()">Download .drawio File</button>
+        <button class="action-btn" onclick="openDrawioWeb()">Open in Draw.io Web</button>
+      </div>
+    </div>
+
+    <!-- Diagram Display -->
+    <div class="diagram-card" id="diagramWrap">
+      <object id="usecaseSvgObj" type="image/svg+xml" data="/usecase-diagram.svg" style="width: 100%; max-width: 1520px;"></object>
+    </div>
+
+    <!-- Instructions / Documentation Card -->
+    <div class="instructions-card">
+      <h3>Mga Detalye ng Proposed Use Case Diagram (Thesis / Manuscript):</h3>
+      <ul>
+        <li><strong>System Boundary</strong>: Kinakatawan ng malaking rectangular boundary ang <em>CWTSConnect System</em> kung saan nakapaloob ang lahat ng functional use cases na nakagrupo ayon sa functional modules.</li>
+        <li><strong>Mga Aktor (Actors)</strong>:
+          <ul>
+            <li><strong>Student Volunteer (&lt;&lt;primary actor&gt;&gt;)</strong>: Registration, Profile &amp; Skills, CMO document uploads, Matched deployment viewing, Attendance monitoring (54 hours), at 360-degree evaluation rating.</li>
+            <li><strong>Community Partner (&lt;&lt;primary actor&gt;&gt;)</strong>: Portal access, Profile &amp; site location management, Community project requests, Volunteer roster tracking, Daily Time Record (DTR) logging, at student performance evaluation.</li>
+            <li><strong>CWTS Coordinator (&lt;&lt;administrator&gt;&gt;)</strong>: Executive dashboard, User accounts management, CMO compliance auditing, Community proposal approvals, DSS matching execution, Deployment publishing, DTR log auditing, CHED CMO report generation, at system configuration.</li>
+            <li><strong>Internal Subsystems (&lt;&lt;internal system / service&gt;&gt;)</strong>: <em>DSS Matching Engine</em> (kalkulasyon ng proximity at skill compatibility) at <em>Notification Service</em> (awtomatikong alerto sa mga estudyante at partner).</li>
+          </ul>
+        </li>
+        <li><strong>UML Stereotypes</strong>:
+          <ul>
+            <li><code>&lt;&lt;include&gt;&gt;</code>: Ginagamit kapag mandatory ang sub-process (hal. DSS Matching kasama ang Proximity Score at Skill Fit; Generate Reports kasama ang Issue Certificates; Log DTR kasama ang Track Rendered Hours).</li>
+            <li><code>&lt;&lt;extend&gt;&gt;</code>: Ginagamit kapag may conditional branch (hal. Flag for Resubmission kung may kulang na CMO documents; Request Proposal Revision kung may kailangang baguhin sa community request).</li>
+          </ul>
+        </li>
+        <li><strong>Format at File Locations</strong>:
+          Nakahanda ang ultra-crisp <strong>300 DPI PNG</strong> (3800x2450 px), lossless <strong>Vector SVG</strong>, at <strong>Draw.io (.drawio)</strong> sa root folder ng project bilang <code>usecase-diagram-300dpi.png</code> at <code>usecase-diagram.drawio</code>.
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    function downloadPNG() {
+      const link = document.createElement('a');
+      link.href = '/usecase-diagram-300dpi.png';
+      link.download = 'usecase-diagram-300dpi.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function downloadSVG() {
+      const link = document.createElement('a');
+      link.href = '/usecase-diagram.svg';
+      link.download = 'usecase-diagram.svg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function downloadDrawio() {
+      const link = document.createElement('a');
+      link.href = '/usecase-diagram.drawio';
+      link.download = 'usecase-diagram.drawio';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function openDrawioWeb() {
+      window.open('https://app.diagrams.net/', '_blank');
+    }
+  </script>
+</body>
+</html>

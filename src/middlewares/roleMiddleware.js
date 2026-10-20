@@ -9,15 +9,17 @@ function roleMiddleware(requiredRole) {
   return function (req, res, next) {
     const user = req.session && req.session.user;
 
+    const requestUrl = req.originalUrl || req.baseUrl || req.path || '';
+
     if (!user) {
-      if (req.path.startsWith('/api/')) {
+      if (requestUrl.startsWith('/api/')) {
         return res.status(401).json({ success: false, message: 'Not authenticated.' });
       }
       return res.redirect('/login.html');
     }
 
     if (user.role !== requiredRole) {
-      if (req.path.startsWith('/api/')) {
+      if (requestUrl.startsWith('/api/')) {
         return res.status(403).json({
           success: false,
           message: `Access denied. This area is only for ${requiredRole} accounts.`
