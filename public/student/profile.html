@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/student-layout.css?v=27" />
-  <link rel="stylesheet" href="css/student-profile.css?v=27" />
+  <link rel="stylesheet" href="css/student-layout.css?v=33" />
+  <link rel="stylesheet" href="css/student-profile.css?v=33" />
 </head>
 
 <body>
@@ -147,38 +147,38 @@
       <main class="content-container">
 
         <!-- Skeleton Loading Container -->
-        <div id="profileSkeleton" class="page-loading-skeleton">
+        <div id="profileSkeleton" class="page-loading-skeleton" style="width: 100%; max-width: 100%; box-sizing: border-box; overflow: hidden;">
           <!-- Hero Card Skeleton -->
-          <div class="skeleton-card" style="padding: 28px; margin-bottom: 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-              <div style="display: flex; align-items: center; gap: 16px;">
-                <div class="skeleton" style="width: 72px; height: 72px; border-radius: 50%;"></div>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                  <div class="skeleton skeleton-title" style="width: 220px; height: 24px;"></div>
-                  <div class="skeleton skeleton-text" style="width: 160px; height: 14px;"></div>
-                  <div class="skeleton skeleton-badge" style="width: 90px; height: 22px;"></div>
+          <div class="skeleton-card" style="padding: 16px; margin-bottom: 14px; width: 100%; max-width: 100%; box-sizing: border-box; border-radius: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; width: 100%;">
+              <div style="display: flex; align-items: center; gap: 12px; min-width: 0; max-width: 100%; flex: 1;">
+                <div class="skeleton" style="width: 52px; height: 52px; min-width: 52px; border-radius: 50%; flex-shrink: 0;"></div>
+                <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1;">
+                  <div class="skeleton skeleton-title" style="width: 160px; max-width: 100%; height: 20px; border-radius: 4px;"></div>
+                  <div class="skeleton skeleton-text" style="width: 120px; max-width: 100%; height: 14px; border-radius: 4px;"></div>
+                  <div class="skeleton skeleton-badge" style="width: 80px; height: 18px; border-radius: 4px;"></div>
                 </div>
               </div>
-              <div class="skeleton skeleton-btn" style="width: 140px; height: 40px; border-radius: 10px;"></div>
+              <div class="skeleton skeleton-btn" style="width: 60px; height: 28px; border-radius: 6px; flex-shrink: 0;"></div>
             </div>
           </div>
 
           <!-- Section Cards Skeletons in Grid -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
-            <div class="skeleton-card" style="padding: 24px;">
-              <div class="skeleton skeleton-title" style="width: 180px; height: 20px; margin-bottom: 20px;"></div>
-              <div style="display: flex; flex-direction: column; gap: 14px;">
-                <div class="skeleton skeleton-row" style="height: 38px;"></div>
-                <div class="skeleton skeleton-row" style="height: 38px;"></div>
-                <div class="skeleton skeleton-row" style="height: 38px;"></div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; width: 100%; max-width: 100%; box-sizing: border-box;">
+            <div class="skeleton-card" style="padding: 16px; width: 100%; max-width: 100%; box-sizing: border-box; border-radius: 12px;">
+              <div class="skeleton skeleton-title" style="width: 140px; height: 18px; margin-bottom: 14px; border-radius: 4px;"></div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="skeleton skeleton-row" style="height: 36px; border-radius: 8px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px; border-radius: 8px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px; border-radius: 8px;"></div>
               </div>
             </div>
-            <div class="skeleton-card" style="padding: 24px;">
-              <div class="skeleton skeleton-title" style="width: 180px; height: 20px; margin-bottom: 20px;"></div>
-              <div style="display: flex; flex-direction: column; gap: 14px;">
-                <div class="skeleton skeleton-row" style="height: 38px;"></div>
-                <div class="skeleton skeleton-row" style="height: 38px;"></div>
-                <div class="skeleton skeleton-row" style="height: 38px;"></div>
+            <div class="skeleton-card" style="padding: 16px; width: 100%; max-width: 100%; box-sizing: border-box; border-radius: 12px;">
+              <div class="skeleton skeleton-title" style="width: 140px; height: 18px; margin-bottom: 14px; border-radius: 4px;"></div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="skeleton skeleton-row" style="height: 36px; border-radius: 8px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px; border-radius: 8px;"></div>
+                <div class="skeleton skeleton-row" style="height: 36px; border-radius: 8px;"></div>
               </div>
             </div>
           </div>
@@ -403,8 +403,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/student-layout.js?v=21"></script>
-  <script src="js/profile.js?v=21"></script>
+  <script src="js/student-layout.js?v=33"></script>
+  <script src="js/profile.js?v=33"></script>
 </body>
 
 </html>

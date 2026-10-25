@@ -3,7 +3,7 @@
    Inherits base tokens, sidebar, header, and shell from student-layout.css
    ========================================================================== */
 
-@import url('student-layout.css');
+@import url('student-layout.css?v=33');
 
 :root {
   --input-height: 44px;
@@ -1320,6 +1320,9 @@ h2.section-card-title {
    ========================================================================== */
 .profile-content-wrap {
   animation: stepFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Profile Hero Card */
@@ -1336,6 +1339,9 @@ h2.section-card-title {
   margin-bottom: var(--space-lg);
   position: relative;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .profile-hero-left {
@@ -1444,6 +1450,9 @@ h2.section-card-title {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .profile-content-wrap .profile-section-card {
@@ -1454,6 +1463,9 @@ h2.section-card-title {
   box-shadow: var(--neu-shadow-raised);
   position: relative;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .profile-content-wrap .section-card-header {
@@ -1591,6 +1603,13 @@ h2.section-card-title {
 
 /* Mobile Media Queries */
 @media (max-width: 768px) {
+  .profile-content-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden;
+  }
+
   .profile-hero-card {
     flex-direction: column;
     align-items: stretch;
@@ -1598,11 +1617,20 @@ h2.section-card-title {
     gap: 12px;
     border-radius: 14px;
     margin-bottom: 12px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden;
   }
 
   .profile-hero-left {
     width: 100%;
+    max-width: 100%;
     gap: 12px;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
   }
 
   .profile-hero-avatar {
@@ -1610,26 +1638,49 @@ h2.section-card-title {
     height: 52px;
     min-width: 52px;
     font-size: 1.1875rem;
+    flex-shrink: 0;
+  }
+
+  .profile-hero-info {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
   .profile-hero-name {
     font-size: 1.125rem !important;
     line-height: 1.25;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
   }
 
   .profile-hero-header-row {
     justify-content: space-between;
+    align-items: flex-start;
     gap: 8px;
+    min-width: 0;
+    width: 100%;
   }
 
   .profile-hero-meta-row {
     gap: 6px;
     margin-top: 2px;
+    min-width: 0;
+    width: 100%;
+    flex-wrap: wrap;
   }
 
   .profile-meta-badge {
     font-size: 0.75rem !important;
-    padding: 2px 7px;
+    padding: 2.5px 8px;
+    max-width: 100%;
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.35;
   }
 
   .profile-hero-actions {
@@ -1649,17 +1700,26 @@ h2.section-card-title {
 
   .profile-sections-grid {
     gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .profile-content-wrap .profile-section-card {
     padding: 14px 12px !important;
     border-radius: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden;
   }
 
   .profile-content-wrap .section-card-header {
     gap: 10px;
     margin-bottom: 12px;
     padding-bottom: 10px;
+    min-width: 0;
+    width: 100%;
   }
 
   .profile-content-wrap .section-icon-wrap {
@@ -1667,6 +1727,7 @@ h2.section-card-title {
     height: 32px !important;
     min-width: 32px !important;
     border-radius: 8px !important;
+    flex-shrink: 0;
   }
 
   .profile-content-wrap .section-icon-wrap svg {
@@ -1679,40 +1740,66 @@ h2.section-card-title {
     font-size: 1rem !important;
     line-height: 1.25 !important;
     font-weight: 700 !important;
+    word-break: break-word !important;
   }
 
   .profile-content-wrap .section-card-subtitle {
     font-size: 0.6875rem !important;
+    word-break: break-word !important;
   }
 
   .profile-display-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .profile-display-item {
     padding: 7px 10px !important;
     min-height: 48px !important;
     border-radius: 8px !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden;
   }
 
   .profile-display-label {
     font-size: 0.625rem !important;
     letter-spacing: 0.04em !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
   }
 
   .profile-display-value {
     font-size: 0.8125rem !important;
     font-weight: 600 !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
   }
 
   .profile-skills-wrap {
     padding: 10px 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .skills-pills-list {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .skill-pill {
     font-size: 0.75rem !important;
     padding: 3.5px 9px !important;
+    max-width: 100%;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
   }
 }
 
