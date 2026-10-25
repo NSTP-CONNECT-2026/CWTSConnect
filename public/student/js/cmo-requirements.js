@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const messageContent = document.getElementById('messageContent');
   const messageText = document.getElementById('messageText');
   const messageClose = document.getElementById('messageClose');
-  const backToDashboardBtn = document.getElementById('backToDashboardBtn');
 
   // Status elements
   const totalRequired = document.getElementById('totalRequired');
@@ -129,15 +128,144 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const statusBadgeClass = getStatusBadgeClass(requirement.status);
     const canUpload = requirement.status !== 'approved';
-    const hasFile = requirement.file_name && requirement.status !== 'not_submitted';
+    const hasFile = Boolean(requirement.file_name && requirement.status !== 'not_submitted');
     const submissionDateText = hasFile ? formatDate(requirement.uploaded_at) : 'Not yet submitted';
     const isImage = Boolean(
       (requirement.file_type && requirement.file_type.startsWith('image/')) ||
-      /\.(png|jpe?g|webp)($|\?)/i.test(requirement.file_name || requirement.file_url || '')
+      /\.(png|jpe?g|webp|gif|svg)($|\?)/i.test(requirement.file_name || requirement.file_url || '')
     );
 
+    let pasilipHtml = '';
+
+    if (hasFile && requirement.file_url) {
+      if (isImage) {
+        // Visual Pasilip Picture Sneak Peek
+        pasilipHtml = `
+          <div class="pasilip-container">
+            <div class="pasilip-img-card btn-view-doc" 
+                 role="button"
+                 tabindex="0"
+                 data-file-url="${escapeHtml(requirement.file_url)}"
+                 data-title="${escapeHtml(requirement.displayName || requirement.title)}"
+                 data-file-name="${escapeHtml(requirement.file_name || '')}"
+                 data-status="${escapeHtml(requirement.status || '')}"
+                 data-date="${escapeHtml(requirement.uploaded_at || '')}"
+                 title="Click to view image">
+              <div class="pasilip-img-wrapper">
+                <img src="${escapeHtml(requirement.file_url)}" 
+                     alt="${escapeHtml(requirement.displayName || 'Preview')}" 
+                     class="pasilip-img" 
+                     loading="lazy" 
+                     onerror="this.parentElement.classList.add('img-error'); this.style.display='none';" />
+                <div class="pasilip-img-fallback">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <span>Preview Image</span>
+                </div>
+              </div>
+              <div class="pasilip-info-footer">
+                <div class="pasilip-filename">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                  </svg>
+                  <span class="text-truncate">${escapeHtml(requirement.file_name)}</span>
+                </div>
+                <div class="pasilip-meta">
+                  ${submissionDateText}${requirement.file_size ? ` • ${formatFileSize(requirement.file_size)}` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        // PDF / Document Pasilip
+        pasilipHtml = `
+          <div class="pasilip-container">
+            <div class="pasilip-doc-card btn-view-doc"
+                 role="button"
+                 tabindex="0"
+                 data-file-url="${escapeHtml(requirement.file_url)}"
+                 data-title="${escapeHtml(requirement.displayName || requirement.title)}"
+                 data-file-name="${escapeHtml(requirement.file_name || '')}"
+                 data-status="${escapeHtml(requirement.status || '')}"
+                 data-date="${escapeHtml(requirement.uploaded_at || '')}"
+                 title="Click to view document">
+              <div class="pasilip-doc-icon-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+                <span class="pasilip-doc-type">PDF</span>
+              </div>
+              <div class="pasilip-doc-details">
+                <span class="pasilip-filename text-truncate">${escapeHtml(requirement.file_name)}</span>
+                <span class="pasilip-meta">
+                  ${submissionDateText}${requirement.file_size ? ` • ${formatFileSize(requirement.file_size)}` : ''}
+                </span>
+              </div>
+              <button type="button" class="pasilip-doc-view-btn" tabindex="-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                <span>View</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    } else {
+      // Empty placeholder when no file is submitted yet
+      pasilipHtml = `
+        <div class="pasilip-empty-card">
+          <div class="pasilip-empty-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+            </svg>
+          </div>
+          <div class="pasilip-empty-title">Walang file na na-upload</div>
+          <div class="pasilip-empty-sub">Pumili ng PDF, JPG, o PNG (Hanggang 5MB)</div>
+        </div>
+      `;
+    }
+
+    // Feedback remarks if coordinator rejected or requested revision
+    const remarksHtml = requirement.remarks ? `
+      <div class="file-remarks-alert">
+        <strong>Coordinator Feedback:</strong> ${escapeHtml(requirement.remarks)}
+      </div>
+    ` : '';
+
+    // Upload / Replace Controls (Only when status is NOT approved)
+    const uploadControlsHtml = canUpload ? `
+      <div class="upload-controls ${hasFile ? 'has-existing' : ''}">
+        <input type="file" 
+               id="file-${requirement.type}" 
+               class="file-input" 
+               accept=".pdf,.jpg,.jpeg,.png"
+               style="display: none;">
+        <label for="file-${requirement.type}" class="file-choose-label">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+          </svg>
+          <span>${hasFile ? 'Palitan ang File' : 'Pumili ng File'}</span>
+        </label>
+        <span class="file-name file-selected-text">
+          ${hasFile ? 'Pumili ng bago kung nais palitan' : 'Walang napiling file'}
+        </span>
+        <button type="button" 
+                class="upload-btn btn btn-primary btn-sm" 
+                data-requirement-type="${requirement.type}">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-text">${hasFile ? 'I-upload ang Kapalit' : 'I-upload ang Dokumento'}</span>
+        </button>
+      </div>
+    ` : '';
+
     card.innerHTML = `
-      <!-- 1. Required Document Header & 2. Current Submission State -->
       <div class="requirement-card-header">
         <div class="requirement-title-wrap">
           <div class="requirement-doc-icon">
@@ -145,125 +273,15 @@ document.addEventListener('DOMContentLoaded', function() {
               <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
           </div>
-          <h3 class="requirement-title">${escapeHtml(requirement.displayName)}</h3>
+          <h3 class="requirement-title">${escapeHtml(requirement.displayName || requirement.title)}</h3>
         </div>
         <span class="badge ${statusBadgeClass}">${getStatusDisplayName(requirement.status)}</span>
       </div>
 
       <div class="requirement-card-body">
-        <p class="requirement-desc">${escapeHtml(requirement.description)}</p>
-
-        <!-- 2. Current Submission State & 3. Submission Date Overview -->
-        <div class="requirement-meta-row">
-          <div class="meta-item">
-            <span class="meta-label">Current Submission State</span>
-            <span class="meta-value">
-              <span class="badge ${statusBadgeClass}">${getStatusDisplayName(requirement.status)}</span>
-            </span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Submission Date</span>
-            <span class="meta-value">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
-              ${submissionDateText}
-            </span>
-          </div>
-        </div>
-        
-        ${hasFile ? `
-          <div class="file-meta-box">
-            <div class="file-meta-row" style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-              <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                  <polyline points="14 2 14 8 20 8"></polyline>
-                </svg>
-                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(requirement.file_name)}</span>
-              </div>
-              ${requirement.file_url ? `
-                <button type="button" 
-                        class="btn-view-doc" 
-                        data-file-url="${escapeHtml(requirement.file_url)}"
-                        data-title="${escapeHtml(requirement.title)}"
-                        data-file-name="${escapeHtml(requirement.file_name || '')}"
-                        data-status="${escapeHtml(requirement.status || '')}"
-                        data-date="${escapeHtml(requirement.uploaded_at || '')}"
-                        style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #0284c7; background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 6px; cursor: pointer; flex-shrink: 0; transition: all 0.15s ease;" 
-                        title="View document in modal preview">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                  <span>View File</span>
-                </button>
-              ` : ''}
-            </div>
-            ${isImage && requirement.file_url ? `
-              <div class="file-thumb-container" style="margin-top: 10px; display: flex; align-items: center; gap: 12px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                <button type="button" 
-                        class="btn-thumb-preview"
-                        data-file-url="${escapeHtml(requirement.file_url)}"
-                        data-title="${escapeHtml(requirement.title)}"
-                        data-file-name="${escapeHtml(requirement.file_name || '')}"
-                        data-status="${escapeHtml(requirement.status || '')}"
-                        data-date="${escapeHtml(requirement.uploaded_at || '')}"
-                        style="display: block; border: none; background: transparent; padding: 0; cursor: pointer; flex-shrink: 0;" 
-                        title="Click to view full image in modal">
-                  <img src="${escapeHtml(requirement.file_url)}" alt="Preview" style="width: 52px; height: 52px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: transform 0.15s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
-                </button>
-                <div style="font-size: 11px; color: #64748b; line-height: 1.4;">
-                  <div style="font-weight: 600; color: #334155;">Image Document</div>
-                  <div>Stored securely in cloud storage • Click thumbnail to inspect</div>
-                </div>
-              </div>
-            ` : ''}
-            <div class="file-meta-details">
-              Submitted on ${formatDate(requirement.uploaded_at)}
-              ${requirement.file_size ? ` • ${formatFileSize(requirement.file_size)}` : ''}
-            </div>
-            ${requirement.remarks ? `
-              <div class="file-remarks-alert">
-                <strong>Coordinator Feedback:</strong> ${escapeHtml(requirement.remarks)}
-              </div>
-            ` : ''}
-          </div>
-        ` : ''}
-
-        <!-- 4. Upload / Submission Controls -->
-        ${canUpload ? `
-          <div class="upload-controls">
-            <input type="file" 
-                   id="file-${requirement.type}" 
-                   class="file-input" 
-                   accept=".pdf,.jpg,.jpeg,.png"
-                   style="display: none;">
-            <label for="file-${requirement.type}" class="file-choose-label">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-              </svg>
-              <span>Choose Document</span>
-            </label>
-            <span class="file-name file-selected-text">
-              ${hasFile ? 'Select a new file to replace existing document' : 'No file selected (PDF, JPG, PNG up to 5MB)'}
-            </span>
-            <button type="button" 
-                    class="upload-btn btn btn-primary btn-sm" 
-                    data-requirement-type="${requirement.type}">
-              <span class="spinner" aria-hidden="true"></span>
-              <span class="btn-text">${hasFile ? 'Replace Document' : 'Upload Document'}</span>
-            </button>
-          </div>
-        ` : `
-          <div class="approved-state-badge">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <span>Document Approved & Validated</span>
-          </div>
-        `}
+        ${pasilipHtml}
+        ${remarksHtml}
+        ${uploadControlsHtml}
       </div>
     `;
 
@@ -278,21 +296,37 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    // Document/Image View in Modal handlers
+    // Document/Image View in Modal handlers (supports pasilip cards & buttons)
     document.addEventListener('click', function(e) {
-      const viewBtn = e.target.closest('.btn-view-doc, .btn-thumb-preview');
+      const viewBtn = e.target.closest('.btn-view-doc, .btn-thumb-preview, .pasilip-img-card, .pasilip-doc-card, .pasilip-doc-view-btn');
       if (viewBtn) {
         e.preventDefault();
-        const fileUrl = viewBtn.getAttribute('data-file-url');
-        const title = viewBtn.getAttribute('data-title') || 'Document Preview';
-        const fileName = viewBtn.getAttribute('data-file-name') || '';
-        const status = viewBtn.getAttribute('data-status') || '';
-        const date = viewBtn.getAttribute('data-date') || '';
+        const trigger = viewBtn.hasAttribute('data-file-url') ? viewBtn : viewBtn.closest('[data-file-url]');
+        if (!trigger) return;
 
-        if (typeof window.openDocumentViewer === 'function') {
-          window.openDocumentViewer({ url: fileUrl, title, fileName, status, date });
-        } else {
-          window.open(fileUrl, '_blank');
+        const fileUrl = trigger.getAttribute('data-file-url');
+        const title = trigger.getAttribute('data-title') || 'Document Preview';
+        const fileName = trigger.getAttribute('data-file-name') || '';
+        const status = trigger.getAttribute('data-status') || '';
+        const date = trigger.getAttribute('data-date') || '';
+
+        if (fileUrl) {
+          if (typeof window.openDocumentViewer === 'function') {
+            window.openDocumentViewer({ url: fileUrl, title, fileName, status, date });
+          } else {
+            window.open(fileUrl, '_blank');
+          }
+        }
+      }
+    });
+
+    // Keyboard support for pasilip cards (Enter or Space)
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const target = e.target;
+        if (target && (target.classList.contains('pasilip-img-card') || target.classList.contains('pasilip-doc-card'))) {
+          e.preventDefault();
+          target.click();
         }
       }
     });
@@ -304,13 +338,6 @@ document.addEventListener('DOMContentLoaded', function() {
         handleUpload(btn);
       }
     });
-
-    // Back to dashboard
-    if (backToDashboardBtn) {
-      backToDashboardBtn.addEventListener('click', function() {
-        window.location.href = 'dashboard.html';
-      });
-    }
 
     // Message close
     if (messageClose) {
@@ -462,16 +489,24 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showMessage(message, type = 'success') {
+    if (window.showStudentToast) {
+      window.showStudentToast(message, type);
+      return;
+    }
     messageText.textContent = message;
     messageContent.className = `message-content ${type}`;
     messageContainer.style.display = 'block';
 
     setTimeout(() => {
       hideMessage();
-    }, 5000);
+    }, 3800);
   }
 
   function hideMessage() {
+    if (window.hideStudentToast) {
+      window.hideStudentToast();
+      return;
+    }
     messageContainer.style.display = 'none';
   }
 

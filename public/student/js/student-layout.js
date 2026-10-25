@@ -155,8 +155,8 @@
         </div>
       `;
     } else if (currentPath.includes('/student/')) {
-      const isEditProfile = currentPath.includes('edit-profile.html');
-      const profileHref = isEditProfile ? 'edit-profile.html' : 'complete-profile.html';
+      const isCompleteOrEdit = currentPath.includes('profile.html') || currentPath.includes('edit-profile.html');
+      const profileHref = isCompleteOrEdit ? 'profile.html' : 'complete-profile.html';
 
       sidebarNav.innerHTML = `
         <div class="sidebar-section">
@@ -294,7 +294,7 @@
   function highlightCurrentPage() {
     const currentPath = window.location.pathname.toLowerCase();
     const navItems = document.querySelectorAll('.sidebar-nav .sidebar-item');
-    const isProfilePage = currentPath.includes('complete-profile.html') || currentPath.includes('edit-profile.html');
+    const isProfilePage = currentPath.includes('profile.html') || currentPath.includes('complete-profile.html') || currentPath.includes('edit-profile.html');
 
     navItems.forEach(function (item) {
       const href = (item.getAttribute('href') || '').toLowerCase();
@@ -351,18 +351,72 @@
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('mobileOverlay');
 
+    function openSidebar() {
+      if (sidebar) sidebar.classList.add('mobile-open');
+      if (overlay) overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      if (sidebar) sidebar.classList.remove('mobile-open');
+      if (overlay) overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
     if (toggleBtn && sidebar) {
-      toggleBtn.addEventListener('click', function () {
-        sidebar.classList.toggle('mobile-open');
-        if (overlay) overlay.classList.toggle('active');
+      toggleBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (sidebar.classList.contains('mobile-open')) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
       });
     }
 
-    if (overlay && sidebar) {
-      overlay.addEventListener('click', function () {
-        sidebar.classList.remove('mobile-open');
-        overlay.classList.remove('active');
+    if (overlay) {
+      overlay.addEventListener('click', function (e) {
+        e.preventDefault();
+        closeSidebar();
       });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && sidebar && sidebar.classList.contains('mobile-open')) {
+        closeSidebar();
+      }
+    });
+
+    // Close on navigation item click on mobile
+    const sidebarLinks = document.querySelectorAll('.sidebar-item');
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        closeSidebar();
+      });
+    });
+
+    // Add close button inside sidebar header for mobile if not present
+    const sidebarHeader = document.querySelector('.sidebar-header');
+    if (sidebarHeader && !sidebarHeader.querySelector('.sidebar-mobile-close-btn')) {
+      const closeBtn = document.createElement('button');
+      closeBtn.type = 'button';
+      closeBtn.className = 'sidebar-mobile-close-btn';
+      closeBtn.setAttribute('aria-label', 'Close sidebar navigation');
+      closeBtn.title = 'Close sidebar';
+      closeBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      `;
+      closeBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeSidebar();
+      });
+      sidebarHeader.appendChild(closeBtn);
     }
   }
 
@@ -844,6 +898,119 @@
     // Initial check for unread count dot
     updateUnreadBadge();
   }
+
+  /**
+   * Global Student Portal Toast Notification System
+   * Top-anchored below the header with smooth entrance/exit animations.
+   */
+  let toastTimer = null;
+  window.showStudentToast = function(message, type = 'info', duration = 3800) {
+    let container = document.getElementById('messageContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'messageContainer';
+      container.className = 'message-container';
+      document.body.appendChild(container);
+    }
+
+    let content = document.getElementById('messageContent');
+    if (!content) {
+      content = document.createElement('div');
+      content.id = 'messageContent';
+      content.className = `message-content ${type}`;
+      container.appendChild(content);
+    }
+
+    let textEl = document.getElementById('messageText');
+    if (!textEl) {
+      textEl = document.createElement('p');
+      textEl.id = 'messageText';
+      content.appendChild(textEl);
+    }
+
+    let closeBtn = document.getElementById('messageClose');
+    if (!closeBtn) {
+      closeBtn = document.createElement('button');
+      closeBtn.id = 'messageClose';
+      closeBtn.className = 'btn-close';
+      closeBtn.type = 'button';
+      closeBtn.setAttribute('aria-label', 'Close toast');
+      closeBtn.innerHTML = '&times;';
+      closeBtn.addEventListener('click', window.hideStudentToast);
+      content.appendChild(closeBtn);
+    } else {
+      closeBtn.onclick = window.hideStudentToast;
+    }
+
+    // Icon setup
+    let iconWrap = content.querySelector('.toast-icon-wrap');
+    if (!iconWrap) {
+      iconWrap = document.createElement('div');
+      iconWrap.className = 'toast-icon-wrap';
+      content.insertBefore(iconWrap, textEl);
+    }
+
+    if (type === 'success') {
+      iconWrap.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      `;
+    } else if (type === 'error') {
+      iconWrap.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      `;
+    } else {
+      iconWrap.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+      `;
+    }
+
+    // Attach/Reset progress bar
+    let progressBar = content.querySelector('.toast-progress-bar');
+    if (!progressBar) {
+      progressBar = document.createElement('div');
+      progressBar.className = 'toast-progress-bar';
+      content.appendChild(progressBar);
+    }
+    progressBar.style.animation = 'none';
+    progressBar.offsetHeight; // trigger reflow
+    progressBar.style.animation = `toastProgress ${duration / 1000}s linear forwards`;
+
+    textEl.textContent = message;
+    content.className = `message-content ${type}`;
+
+    container.classList.remove('toast-hiding');
+    container.classList.add('toast-active');
+    container.style.display = 'block';
+
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(window.hideStudentToast, duration);
+  };
+
+  window.hideStudentToast = function() {
+    if (toastTimer) clearTimeout(toastTimer);
+    const container = document.getElementById('messageContainer');
+    if (!container) return;
+
+    container.classList.remove('toast-active');
+    container.classList.add('toast-hiding');
+
+    setTimeout(() => {
+      if (container.classList.contains('toast-hiding')) {
+        container.style.display = 'none';
+        container.classList.remove('toast-hiding');
+      }
+    }, 220);
+  };
 
 })();
 

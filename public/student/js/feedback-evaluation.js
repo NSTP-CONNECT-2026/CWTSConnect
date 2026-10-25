@@ -100,13 +100,13 @@
 
     if (!list || list.length === 0) {
       container.innerHTML = `
-        <div class="eval-card" style="text-align: center; padding: 48px 24px;">
-          <div style="width: 48px; height: 48px; margin: 0 auto 16px; border-radius: 50%; background: rgba(11, 61, 46, 0.08); display: flex; align-items: center; justify-content: center; color: var(--cwts-primary-dark, #0B3D2E);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div class="no-feedback-card">
+          <div class="no-feedback-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
           </div>
-          <h4 style="font-size: 1rem; font-weight: 700; color: var(--cwts-primary-dark, #0B3D2E); margin-bottom: 4px;">No Community Feedback Recorded Yet</h4>
+          <h4 class="no-feedback-title">No Community Feedback Recorded Yet</h4>
         </div>
       `;
       return;
@@ -164,14 +164,14 @@
 
     if (!list || list.length === 0) {
       container.innerHTML = `
-        <div class="eval-card" style="text-align: center; padding: 48px 24px;">
-          <div style="width: 48px; height: 48px; margin: 0 auto 16px; border-radius: 50%; background: rgba(11, 61, 46, 0.08); display: flex; align-items: center; justify-content: center; color: var(--cwts-primary-dark, #0B3D2E);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div class="no-feedback-card">
+          <div class="no-feedback-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
             </svg>
           </div>
-          <h4 style="font-size: 1rem; font-weight: 700; color: var(--cwts-primary-dark, #0B3D2E); margin-bottom: 4px;">No Performance Evaluation Recorded Yet</h4>
+          <h4 class="no-feedback-title">No Performance Evaluation Recorded Yet</h4>
         </div>
       `;
       return;
@@ -202,7 +202,7 @@
         return `
           <div class="criteria-box">
             <div class="criteria-header">
-              <span>${escapeHtml(c.label || key)}</span>
+              <span class="criteria-header-label">${escapeHtml(c.label || key)}</span>
               <span class="criteria-score">${score} / 5.0</span>
             </div>
             <div class="criteria-meter-bg">
@@ -219,22 +219,22 @@
             <div>
               <div class="eval-title">${actTitle}</div>
               <div class="eval-subtitle">
-                <span style="font-weight: 600; color: var(--cwts-primary-dark);">${commName}</span>
+                <span class="eval-subtitle-community">${commName}</span>
                 <span>•</span>
                 <span>${batchName}</span>
               </div>
             </div>
-            <div style="text-align: right;">
-              <div style="font-size: 1.25rem; font-weight: 800; color: var(--cwts-primary-dark);">
-                ${overallScore} <span style="font-size: 0.875rem; color: var(--text-muted); font-weight: 500;">/ 5.0</span>
+            <div class="eval-header-right">
+              <div class="eval-overall-score">
+                ${overallScore} <span class="eval-overall-unit">/ 5.0</span>
               </div>
-              <span class="badge badge-verified" style="font-size: 0.8125rem; font-weight: 700; padding: 4px 12px;">
+              <span class="badge badge-verified">
                 ${grade}
               </span>
             </div>
           </div>
 
-          <div style="font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">
+          <div class="eval-section-label">
             Performance Criteria Assessment
           </div>
 
@@ -242,8 +242,8 @@
             ${criteriaCardsHtml}
           </div>
 
-          <div style="margin-top: 16px; margin-bottom: 20px;">
-            <div style="font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">
+          <div style="margin-top: 14px; margin-bottom: 16px;">
+            <div class="eval-section-label">
               Evaluator Summary Remarks
             </div>
             <div class="feedback-comment-box" style="margin: 0;">

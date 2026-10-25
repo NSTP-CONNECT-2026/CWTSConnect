@@ -1,23 +1,7 @@
 // dashboard.js — CWTSConnect Student Dashboard Controller
 
-const logoutBtn = document.getElementById('logoutBtn');
-const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-const sidebar = document.getElementById('sidebar');
-const mobileOverlay = document.getElementById('mobileOverlay');
+// Note: Mobile drawer toggle and sign-out confirmation are managed centrally by student-layout.js
 const refreshNotifsBtn = document.getElementById('refreshNotifsBtn');
-
-// Mobile drawer toggle handlers
-if (mobileMenuToggle && sidebar && mobileOverlay) {
-  mobileMenuToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('mobile-open');
-    mobileOverlay.classList.toggle('active');
-  });
-
-  mobileOverlay.addEventListener('click', () => {
-    sidebar.classList.remove('mobile-open');
-    mobileOverlay.classList.remove('active');
-  });
-}
 
 /**
  * Fetches the current logged-in student's account data from the server.
@@ -112,11 +96,11 @@ function renderDashboard(user) {
       profileBadgeEl.className = 'badge badge-complete';
     }
     if (profileBtnEl) {
-      profileBtnEl.textContent = 'View & Edit Profile';
-      profileBtnEl.href = 'edit-profile.html';
+      profileBtnEl.textContent = 'View Profile';
+      profileBtnEl.href = 'profile.html';
       profileBtnEl.className = 'btn btn-secondary btn-sm';
     }
-    if (profileNavLink) profileNavLink.href = 'edit-profile.html';
+    if (profileNavLink) profileNavLink.href = 'profile.html';
     if (profileNavLabel) profileNavLabel.textContent = 'My Profile';
   } else {
     if (profileBadgeEl) {

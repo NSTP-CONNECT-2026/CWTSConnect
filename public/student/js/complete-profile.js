@@ -11,6 +11,16 @@ document.addEventListener('DOMContentLoaded', function() {
   const messageText = document.getElementById('messageText');
   const messageClose = document.getElementById('messageClose');
 
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   function showLoading() {
     if (profileSkeleton) profileSkeleton.style.display = 'block';
     if (profileWizardNav) profileWizardNav.classList.add('hidden');
@@ -55,14 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (longitudeField) longitudeField.value = numLng.toString();
 
     const coordsDisplay = document.getElementById('coordsDisplayVal');
-    const statusBadge = document.getElementById('coordsStatusBadge');
     if (coordsDisplay) {
       coordsDisplay.textContent = `Lat: ${numLat.toFixed(6)}, Lng: ${numLng.toFixed(6)}`;
-    }
-    if (statusBadge) {
-      statusBadge.textContent = 'Recorded';
-      statusBadge.style.background = '#dcfce7';
-      statusBadge.style.color = '#15803d';
     }
   }
 
@@ -248,24 +252,51 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
+    // Clean up any existing suggestions
+    const existingSuggestions = document.querySelector('.location-suggestions');
+    if (existingSuggestions) {
+      existingSuggestions.remove();
+    }
+
     searchLocationBtn.disabled = true;
     showLocationStatus('Searching for location...', 'loading');
 
     // Use Nominatim API for geocoding (free OpenStreetMap service)
     // Add more specific search for Philippines
-    const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery + ', Philippines')}&limit=3&addressdetails=1&countrycodes=ph`;
+    let q = searchQuery;
+    if (!q.toLowerCase().includes('philippines')) {
+      q += ', Philippines';
+    }
+    const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&addressdetails=1&countrycodes=ph`;
 
     fetch(nominatimUrl)
       .then(response => response.json())
       .then(data => {
         searchLocationBtn.disabled = false;
         
+        // Remove loading status
+        const existingStatus = document.querySelector('.location-status');
+        if (existingStatus) {
+          existingStatus.remove();
+        }
+
         if (data && data.length > 0) {
+          // Deduplicate results based on normalized display_name
+          const uniqueResults = [];
+          const seen = new Set();
+          for (const item of data) {
+            const key = (item.display_name || '').trim().toLowerCase();
+            if (!seen.has(key)) {
+              seen.add(key);
+              uniqueResults.push(item);
+            }
+          }
+
           // If multiple results, try to find the best match
-          let bestResult = data[0];
+          let bestResult = uniqueResults[0];
           
           // Prefer results that have more complete address information
-          for (let result of data) {
+          for (let result of uniqueResults) {
             const addr = result.address || {};
             const hasBarangay = addr.village || addr.suburb || addr.neighbourhood;
             const hasMunicipality = addr.city || addr.town || addr.municipality;
@@ -280,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const lat = parseFloat(bestResult.lat);
           const lng = parseFloat(bestResult.lon);
           
-          selectedLocation = { lat, lng };
+          updateSelectedCoordinates(lat, lng);
           
           // Update map
           if (map && marker) {
@@ -292,8 +323,8 @@ document.addEventListener('DOMContentLoaded', function() {
           parseNominatimAddress(bestResult);
           
           // Show additional suggestions if we have multiple results
-          if (data.length > 1) {
-            showLocationSuggestions(data);
+          if (uniqueResults.length > 1) {
+            showLocationSuggestions(uniqueResults, bestResult);
           } else {
             showLocationStatus('Location found! Review and confirm the details.', 'success');
           }
@@ -308,31 +339,105 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 
-  function showLocationSuggestions(results) {
+  function showLocationSuggestions(results, activeResult) {
     // Remove existing suggestions
     const existingSuggestions = document.querySelector('.location-suggestions');
     if (existingSuggestions) {
       existingSuggestions.remove();
     }
 
+    // Remove any loading status
+    const existingStatus = document.querySelector('.location-status');
+    if (existingStatus) {
+      existingStatus.remove();
+    }
+
     // Create suggestions container
     const suggestionsDiv = document.createElement('div');
     suggestionsDiv.className = 'location-suggestions';
-    
-    const title = document.createElement('p');
-    title.textContent = 'Multiple locations found. Click to select:';
-    title.style.fontWeight = '500';
-    title.style.marginBottom = '8px';
-    suggestionsDiv.appendChild(title);
+    suggestionsDiv.setAttribute('role', 'region');
+    suggestionsDiv.setAttribute('aria-label', 'Location search matches');
 
-    // Add suggestion buttons
-    results.slice(0, 3).forEach((result, index) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'location-suggestion-btn';
-      button.textContent = result.display_name;
-      
-      button.addEventListener('click', () => {
+    // Header container
+    const header = document.createElement('div');
+    header.className = 'location-suggestions-header';
+
+    const headerLeft = document.createElement('div');
+    headerLeft.className = 'location-suggestions-header-left';
+    headerLeft.innerHTML = `
+      <svg class="suggestions-header-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>
+      <span class="location-suggestions-title">Multiple locations found</span>
+      <span class="location-suggestions-count">${results.length} results</span>
+    `;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'location-suggestions-close-btn';
+    closeBtn.title = 'Dismiss suggestions';
+    closeBtn.setAttribute('aria-label', 'Dismiss suggestions');
+    closeBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    `;
+    closeBtn.addEventListener('click', () => {
+      suggestionsDiv.remove();
+    });
+
+    header.appendChild(headerLeft);
+    header.appendChild(closeBtn);
+    suggestionsDiv.appendChild(header);
+
+    const hint = document.createElement('p');
+    hint.className = 'location-suggestions-hint';
+    hint.textContent = 'Click to select the specific location that matches your address:';
+    suggestionsDiv.appendChild(hint);
+
+    const listContainer = document.createElement('div');
+    listContainer.className = 'location-suggestions-list';
+
+    // Add suggestion cards
+    results.forEach((result) => {
+      const parts = (result.display_name || '').split(',').map(s => s.trim()).filter(Boolean);
+      const primaryTitle = parts[0] || 'Location';
+      const secondaryDetails = parts.slice(1).join(', ') || 'Philippines';
+
+      const addr = result.address || {};
+      const contextTag = addr.city || addr.town || addr.municipality || addr.state || addr.province || (parts.length > 1 ? parts[1] : '');
+
+      const isActive = activeResult && (activeResult.place_id === result.place_id || (activeResult.lat === result.lat && activeResult.lon === result.lon));
+
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = `location-suggestion-card${isActive ? ' is-selected' : ''}`;
+      card.setAttribute('role', 'option');
+      card.setAttribute('aria-selected', isActive ? 'true' : 'false');
+
+      card.innerHTML = `
+        <div class="location-suggestion-pin">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+        </div>
+        <div class="location-suggestion-details">
+          <div class="location-suggestion-primary-row">
+            <span class="location-suggestion-primary">${escapeHtml(primaryTitle)}</span>
+            ${contextTag && contextTag.toLowerCase() !== primaryTitle.toLowerCase() ? `<span class="location-suggestion-badge">${escapeHtml(contextTag)}</span>` : ''}
+            ${isActive ? '<span class="location-current-pill">Current Pin</span>' : ''}
+          </div>
+          <div class="location-suggestion-secondary">${escapeHtml(secondaryDetails)}</div>
+        </div>
+        <div class="location-suggestion-action">
+          <span class="location-select-btn-pill">${isActive ? 'Selected' : 'Select'}</span>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
         const lat = parseFloat(result.lat);
         const lng = parseFloat(result.lon);
         
@@ -346,14 +451,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Parse address from selected result
         parseNominatimAddress(result);
-        
+
+        if (locationSearch) {
+          locationSearch.value = result.display_name || primaryTitle;
+        }
+
         // Remove suggestions
         suggestionsDiv.remove();
-        showLocationStatus('Location selected! Review and confirm the details.', 'success');
+        showLocationStatus(`Location selected: ${primaryTitle}${contextTag ? ' (' + contextTag + ')' : ''}`, 'success');
       });
-      
-      suggestionsDiv.appendChild(button);
+
+      listContainer.appendChild(card);
     });
+
+    suggestionsDiv.appendChild(listContainer);
 
     // Insert after location search container
     const searchContainer = document.querySelector('.location-search-bar') || document.querySelector('.location-search-container') || document.getElementById('locationSearch');
@@ -510,10 +621,24 @@ document.addEventListener('DOMContentLoaded', function() {
       existingStatus.remove();
     }
 
+    if (!message) return;
+
     // Create status element
     const statusDiv = document.createElement('div');
-    statusDiv.className = `location-status ${type}`;
-    statusDiv.textContent = message;
+    statusDiv.className = `location-status ${type || 'info'}`;
+
+    let iconHtml = '';
+    if (type === 'loading') {
+      iconHtml = '<span class="status-spinner"></span>';
+    } else if (type === 'success') {
+      iconHtml = '<span class="location-status-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></span>';
+    } else if (type === 'error') {
+      iconHtml = '<span class="location-status-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></span>';
+    } else if (type === 'warning') {
+      iconHtml = '<span class="location-status-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>';
+    }
+
+    statusDiv.innerHTML = `${iconHtml}<span>${escapeHtml(message)}</span>`;
 
     // Insert after location search container
     const searchContainer = document.querySelector('.location-search-bar') || document.querySelector('.location-search-container') || document.getElementById('locationSearch');
@@ -549,10 +674,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (response.ok && data.success && data.data) {
         if (data.data.profile) {
-          // Profile exists, redirect to edit profile
-          showMessage('You already have a profile. Redirecting to profile view...', 'info');
+          // Profile exists, redirect to profile view
+          showMessage('Profile already completed! Redirecting to My Profile...', 'info');
           setTimeout(() => {
-            window.location.href = '/student/edit-profile.html';
+            window.location.href = '/student/profile.html';
           }, 1500);
           return;
         }
@@ -605,7 +730,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Ensure at least one coordinator skill is selected
       if (!profileData.skills || !profileData.skills.trim()) {
-        showMessage('Please select at least one skill from the coordinator list before saving.', 'error');
+        showMessage('Please select at least one skill.', 'error');
         goToStep(3);
         const dropdown = document.getElementById('skillSelectDropdown');
         if (dropdown) {
@@ -640,7 +765,7 @@ document.addEventListener('DOMContentLoaded', function() {
         profileData.longitude = lng.toString();
         profileData.location = `${lat},${lng}`;
       } else {
-        showMessage('Please pin your home location on the map in Step 2 to record your coordinates.', 'error');
+        showMessage('Please pin your location on the map.', 'error');
         if (typeof goToStep === 'function') goToStep(2);
         submitBtn.disabled = false;
         hideLoading();
@@ -659,17 +784,17 @@ document.addEventListener('DOMContentLoaded', function() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        showMessage('Profile created successfully! Redirecting to dashboard...', 'success');
+        showMessage('Profile created! Redirecting to My Profile...', 'success');
         setTimeout(() => {
-          window.location.href = '/student/dashboard.html';
-        }, 2000);
+          window.location.href = '/student/profile.html';
+        }, 1500);
       } else {
-        showMessage(data.message || 'Failed to create profile. Please try again.', 'error');
+        showMessage(data.message || 'Failed to create profile.', 'error');
         submitBtn.disabled = false;
       }
     } catch (error) {
       console.error('Error creating profile:', error);
-      showMessage('An error occurred. Please check your connection and try again.', 'error');
+      showMessage('Network error. Please try again.', 'error');
       submitBtn.disabled = false;
     } finally {
       hideLoading();
@@ -677,24 +802,39 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showMessage(message, type = 'info') {
+    if (window.showStudentToast) {
+      window.showStudentToast(message, type);
+      return;
+    }
+
     messageText.textContent = message;
     messageContent.className = `message-content ${type}`;
+    messageContainer.classList.remove('toast-hiding');
+    messageContainer.classList.add('toast-active');
     messageContainer.style.display = 'block';
 
-    // Clear existing timeout
     if (messageTimeout) {
       clearTimeout(messageTimeout);
     }
-
-    // Auto-hide after 5 seconds
-    messageTimeout = setTimeout(hideMessage, 5000);
+    messageTimeout = setTimeout(hideMessage, 3800);
   }
 
   function hideMessage() {
-    messageContainer.style.display = 'none';
+    if (window.hideStudentToast) {
+      window.hideStudentToast();
+      return;
+    }
     if (messageTimeout) {
       clearTimeout(messageTimeout);
     }
+    messageContainer.classList.remove('toast-active');
+    messageContainer.classList.add('toast-hiding');
+    setTimeout(() => {
+      if (messageContainer.classList.contains('toast-hiding')) {
+        messageContainer.style.display = 'none';
+        messageContainer.classList.remove('toast-hiding');
+      }
+    }, 220);
   }
 
   // Form validation helpers
@@ -825,7 +965,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
       if (!isValid) {
-        showMessage('Please fill in all required Student Information fields before proceeding.', 'error');
+        showMessage('Please complete required student fields.', 'error');
       }
     } else if (step === 2) {
       const step2Fields = ['complete_address', 'barangay', 'municipality', 'province'];
@@ -838,7 +978,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
       if (!isValid) {
-        showMessage('Please fill in your complete location details before proceeding.', 'error');
+        showMessage('Please complete location details.', 'error');
       }
 
       // Check that coordinates are recorded
@@ -851,7 +991,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       if (!hasCoords) {
-        showMessage('Please click or pin your location on the map to set your coordinates before proceeding.', 'error');
+        showMessage('Please pin your location on the map.', 'error');
         isValid = false;
       }
     }

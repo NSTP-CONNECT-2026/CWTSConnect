@@ -7,145 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/student-layout.css?v=12" />
-  <link rel="stylesheet" href="css/student-deployment.css?v=2" />
-  <style>
-    /* Specific Feedback & Evaluation Visual Components */
-    .eval-card {
-      background: #FFFFFF;
-      border: 1px solid var(--cwts-glass-border, rgba(255, 255, 255, 0.9));
-      border-radius: var(--radius-lg, 12px);
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--neu-shadow-raised);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .eval-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--neu-shadow-raised-hover);
-    }
-
-    .eval-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .eval-title {
-      font-size: 1.125rem;
-      font-weight: 700;
-      color: var(--cwts-primary-dark, #0B3D2E);
-      margin-bottom: 4px;
-    }
-
-    .eval-subtitle {
-      font-size: 0.8125rem;
-      color: var(--text-muted, #596773);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .rating-stars {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      color: #F59E0B;
-    }
-
-    .rating-stars svg {
-      width: 16px;
-      height: 16px;
-      fill: currentColor;
-    }
-
-    .rating-stars svg.empty {
-      color: #D1D5DB;
-    }
-
-    .feedback-comment-box {
-      background: rgba(244, 246, 244, 0.7);
-      border-left: 4px solid var(--cwts-accent-green, #2F7D5B);
-      border-radius: 6px;
-      padding: 16px 18px;
-      font-size: 0.9375rem;
-      line-height: 1.6;
-      color: var(--cwts-dark-neutral, #1B1F23);
-      font-style: italic;
-      margin: 16px 0;
-    }
-
-    /* Criteria Grid for Evaluation */
-    .criteria-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin: 20px 0;
-    }
-
-    .criteria-box {
-      background: rgba(255, 255, 255, 0.7);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      border-radius: 8px;
-      padding: 16px;
-    }
-
-    .criteria-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.875rem;
-      font-weight: 700;
-      color: var(--cwts-primary-dark, #0B3D2E);
-      margin-bottom: 8px;
-    }
-
-    .criteria-score {
-      font-size: 0.9375rem;
-      font-weight: 800;
-      color: var(--cwts-accent-green, #2F7D5B);
-    }
-
-    .criteria-meter-bg {
-      width: 100%;
-      height: 8px;
-      background: rgba(11, 61, 46, 0.08);
-      border-radius: 999px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .criteria-meter-fill {
-      height: 100%;
-      background: var(--cwts-accent-green, #2F7D5B);
-      border-radius: 999px;
-    }
-
-    .criteria-remarks {
-      font-size: 0.75rem;
-      color: var(--text-muted, #596773);
-      line-height: 1.4;
-    }
-
-    .eval-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 14px;
-      border-top: 1px solid rgba(226, 232, 240, 0.8);
-      font-size: 0.8125rem;
-      color: var(--text-muted, #596773);
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="css/student-layout.css?v=32" />
+  <link rel="stylesheet" href="css/student-deployment.css?v=32" />
+  <link rel="stylesheet" href="css/student-feedback.css?v=32" />
 </head>
 <body>
   <div class="dashboard-layout">
@@ -182,7 +46,7 @@
             <span>Dashboard</span>
           </a>
 
-          <a href="complete-profile.html" class="sidebar-item" id="profileNavLink">
+          <a href="profile.html" class="sidebar-item" id="profileNavLink">
             <span class="sidebar-icon">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -342,7 +206,7 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <!-- Scripts -->
-  <script src="js/student-layout.js?v=14"></script>
-  <script src="js/feedback-evaluation.js?v=14"></script>
+  <script src="js/student-layout.js?v=32"></script>
+  <script src="js/feedback-evaluation.js?v=32"></script>
 </body>
 </html>

@@ -1,0 +1,304 @@
+/* ==========================================================================
+   CWTSConnect — Student Community Feedback & Performance Evaluation Stylesheet
+   Design Paradigm: Neumorphic + Glassmorphic Emerald Aesthetic
+   Strict 4-Level Typography Hierarchy:
+     Level 1: Titles — 1.0625rem - 1.125rem (17-18px) Bold 700
+     Level 2: Content / Values — 0.84375rem - 0.875rem (13.5-14px) SemiBold 600
+     Level 3: Subtitles / Remarks — 0.75rem (12px) Medium 500
+     Level 4: Labels / Badges — 0.6875rem (11px) Uppercase Bold 700
+   ========================================================================== */
+
+@import url('student-layout.css');
+@import url('student-deployment.css');
+
+/* --------------------------------------------------------------------------
+   1. FEEDBACK & EVALUATION CARDS
+   -------------------------------------------------------------------------- */
+.eval-card {
+  background: var(--cwts-glass-surface);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  box-shadow: var(--neu-shadow-raised);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.eval-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neu-shadow-raised-hover);
+}
+
+.eval-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.eval-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--cwts-primary-dark);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.eval-subtitle {
+  font-size: 0.75rem;
+  color: var(--cwts-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+.eval-subtitle-community {
+  font-weight: 600;
+  color: var(--cwts-primary-dark);
+}
+
+.eval-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.eval-overall-score {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--cwts-primary-dark);
+  line-height: 1;
+}
+
+.eval-overall-unit {
+  font-size: 0.75rem;
+  color: var(--cwts-text-muted);
+  font-weight: 500;
+}
+
+/* Star Ratings */
+.rating-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #F59E0B;
+}
+
+.rating-stars svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+
+.rating-stars svg.empty {
+  color: #D1D5DB;
+}
+
+/* --------------------------------------------------------------------------
+   2. COMMENT BOX (Clean Neutral Border, NO Left Colored Stripe)
+   -------------------------------------------------------------------------- */
+.feedback-comment-box {
+  background: rgba(248, 250, 249, 0.92);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.84375rem;
+  line-height: 1.5;
+  color: var(--cwts-dark-neutral);
+  font-style: italic;
+  margin: 12px 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.eval-section-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cwts-text-muted);
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   3. EVALUATION CRITERIA (2-by-2 Grid Layout)
+   -------------------------------------------------------------------------- */
+.criteria-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 10px 0 16px 0;
+}
+
+.criteria-box {
+  background: rgba(248, 250, 249, 0.92);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.criteria-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.criteria-header-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--cwts-primary-dark);
+}
+
+.criteria-score {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--cwts-accent-green);
+  white-space: nowrap;
+}
+
+.criteria-meter-bg {
+  width: 100%;
+  height: 6px;
+  background: rgba(11, 61, 46, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 3px 0;
+}
+
+.criteria-meter-fill {
+  height: 100%;
+  background: var(--cwts-accent-green);
+  border-radius: 999px;
+  transition: width 0.4s ease-out;
+}
+
+.criteria-remarks {
+  font-size: 0.6875rem;
+  color: var(--cwts-text-muted);
+  line-height: 1.35;
+}
+
+/* --------------------------------------------------------------------------
+   4. CARD FOOTER & EMPTY STATES
+   -------------------------------------------------------------------------- */
+.eval-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  font-size: 0.75rem;
+  color: var(--cwts-text-muted);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.eval-footer strong {
+  color: var(--cwts-primary-dark);
+}
+
+.no-feedback-card {
+  text-align: center;
+  padding: 36px 24px;
+  background: var(--cwts-glass-surface);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--neu-shadow-raised);
+}
+
+.no-feedback-icon-badge {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 10px auto;
+  border-radius: 50%;
+  background: rgba(47, 125, 91, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cwts-accent-green);
+}
+
+.no-feedback-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--cwts-primary-dark);
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   5. RESPONSIVE MOBILE ADAPTATIONS
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .eval-card {
+    padding: 14px 12px;
+    border-radius: 12px;
+    margin-bottom: var(--space-md);
+  }
+
+  .eval-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+  }
+
+  .eval-title {
+    font-size: 1.0625rem;
+  }
+
+  .eval-header-right {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  /* 2-by-2 Grid on Mobile */
+  .criteria-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 8px 0 12px 0;
+  }
+
+  .criteria-box {
+    padding: 9px 10px;
+    border-radius: 9px;
+  }
+
+  .feedback-comment-box {
+    padding: 10px 12px;
+    font-size: 0.8125rem;
+    margin: 8px 0;
+  }
+
+  .eval-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .no-feedback-card {
+    padding: 24px 16px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .criteria-grid {
+    grid-template-columns: 1fr;
+  }
+}

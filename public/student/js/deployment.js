@@ -130,7 +130,7 @@ function updateUserHeader(user) {
   const profileNavLink = document.getElementById('profileNavLink');
   const profileNavLabel = document.getElementById('profileNavLabel');
   if (user.profile_status === 'complete') {
-    if (profileNavLink) profileNavLink.href = 'edit-profile.html';
+    if (profileNavLink) profileNavLink.href = 'profile.html';
     if (profileNavLabel) profileNavLabel.textContent = 'My Profile';
   } else {
     if (profileNavLink) profileNavLink.href = 'complete-profile.html';
@@ -274,9 +274,9 @@ async function loadAttendanceData(userId) {
         if (records.length === 0) {
           tableBody.innerHTML = `
             <tr>
-              <td colspan="5" style="text-align: center; padding: 36px 20px;">
-                <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">No Attendance Records Yet</div>
-                <div style="font-size: 0.8125rem; color: var(--text-muted);">Attendance logged by the Community Official will appear here.</div>
+              <td colspan="5" style="text-align: center; padding: 28px 16px;">
+                <div class="table-empty-title">No Attendance Records Yet</div>
+                <div class="table-empty-desc">Attendance logged by the Community Official will appear here.</div>
               </td>
             </tr>
           `;
@@ -314,14 +314,14 @@ async function loadAttendanceData(userId) {
 
             return `
               <tr>
-                <td><strong>${dateStr}</strong></td>
-                <td>${inTime}</td>
-                <td>${outTime}</td>
-                <td><strong>${durationStr}</strong></td>
-                <td>
-                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                    <span style="color: var(--text-muted); font-size: 0.8125rem;">${escapeHtml(cleanRemarks)}</span>
-                    <span class="badge ${badgeClass}" style="font-size: 0.7rem; padding: 2px 7px;">${badgeLabel}</span>
+                <td data-label="Activity Date"><strong>${dateStr}</strong></td>
+                <td data-label="Time In">${inTime}</td>
+                <td data-label="Time Out">${outTime}</td>
+                <td data-label="Duration"><strong>${durationStr}</strong></td>
+                <td data-label="Remarks" class="td-remarks">
+                  <div class="table-remarks-content">
+                    <span class="remarks-text">${escapeHtml(cleanRemarks)}</span>
+                    <span class="badge ${badgeClass}">${badgeLabel}</span>
                   </div>
                 </td>
               </tr>
@@ -523,9 +523,9 @@ async function loadServiceHoursData(userId) {
       if (sessions.length === 0) {
         tableBody.innerHTML = `
           <tr>
-            <td colspan="4" style="text-align: center; padding: 36px 20px;">
-              <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">No Logged Service Sessions</div>
-              <div style="font-size: 0.8125rem; color: var(--text-muted);">Hours rendered during community deployment activities will appear here.</div>
+            <td colspan="4" style="text-align: center; padding: 28px 16px;">
+              <div class="table-empty-title">No Logged Service Sessions</div>
+              <div class="table-empty-desc">Hours rendered during community deployment activities will appear here.</div>
             </td>
           </tr>
         `;
@@ -537,13 +537,15 @@ async function loadServiceHoursData(userId) {
 
           return `
             <tr>
-              <td><strong>${formatDate(s.date || s.created_at)}</strong></td>
-              <td>
-                <div style="font-weight: 600; color: var(--text-main);">${escapeHtml(s.activity_name || 'Community Service Session')}</div>
-                ${s.remarks ? `<div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">${escapeHtml(s.remarks)}</div>` : ''}
+              <td data-label="Service Date"><strong>${formatDate(s.date || s.created_at)}</strong></td>
+              <td data-label="Activity Type" class="td-activity">
+                <div class="table-activity-content">
+                  <div class="activity-title">${escapeHtml(s.activity_name || 'Community Service Session')}</div>
+                  ${s.remarks ? `<div class="activity-subtitle">${escapeHtml(s.remarks)}</div>` : ''}
+                </div>
               </td>
-              <td><strong>${Number(s.hours || 0).toFixed(1)} hrs</strong></td>
-              <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+              <td data-label="Hours Rendered"><strong>${Number(s.hours || 0).toFixed(1)} hrs</strong></td>
+              <td data-label="Status"><span class="badge ${badgeClass}">${badgeLabel}</span></td>
             </tr>
           `;
         }).join('');
@@ -742,6 +744,10 @@ function escapeHtml(str) {
 }
 
 function showToast(msg, type = 'info') {
+  if (window.showStudentToast) {
+    window.showStudentToast(msg, type);
+    return;
+  }
   const container = document.getElementById('messageContainer');
   const content = document.getElementById('messageContent');
   const text = document.getElementById('messageText');
@@ -753,6 +759,6 @@ function showToast(msg, type = 'info') {
 
     setTimeout(() => {
       container.style.display = 'none';
-    }, 4000);
+    }, 3800);
   }
 }

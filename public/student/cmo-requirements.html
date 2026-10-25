@@ -7,9 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/student-layout.css?v=11" />
-  <link rel="stylesheet" href="css/student-cmo.css?v=11" />
-  <link rel="stylesheet" href="../css/document-viewer-modal.css?v=2" />
+  <link rel="stylesheet" href="css/student-layout.css?v=13" />
+  <link rel="stylesheet" href="css/student-cmo.css?v=23" />
+  <link rel="stylesheet" href="../css/document-viewer-modal.css?v=3" />
 </head>
 <body>
   <div class="dashboard-layout">
@@ -44,7 +44,7 @@
             <span>Dashboard</span>
           </a>
 
-          <a href="edit-profile.html" class="sidebar-item">
+          <a href="profile.html" class="sidebar-item" id="profileNavLink">
             <span class="sidebar-icon">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -199,66 +199,51 @@
           </div>
 
           <!-- 2x2 Requirement Cards Skeleton -->
+          <!-- 2x2 Requirement Cards Skeleton -->
           <div class="requirements-list">
-            <div class="skeleton-card" style="padding: 20px;">
+            <div class="skeleton-card" style="padding: 14px;">
               <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid rgba(226, 232, 240, 0.8);">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                  <div class="skeleton skeleton-icon" style="width: 30px; height: 30px;"></div>
-                  <div class="skeleton skeleton-title" style="width: 150px; height: 18px;"></div>
+                  <div class="skeleton skeleton-icon" style="width: 28px; height: 28px;"></div>
+                  <div class="skeleton skeleton-title" style="width: 140px; height: 16px;"></div>
                 </div>
-                <div class="skeleton skeleton-badge"></div>
+                <div class="skeleton skeleton-badge" style="width: 70px; height: 22px;"></div>
               </div>
-              <div class="skeleton skeleton-row" style="height: 52px; margin: 12px 0;"></div>
-              <div class="skeleton skeleton-text" style="width: 90%; height: 12px; margin-bottom: 12px;"></div>
-              <div style="display: flex; gap: 10px;">
-                <div class="skeleton skeleton-btn" style="flex: 1; height: 36px;"></div>
-                <div class="skeleton skeleton-btn" style="flex: 1; height: 36px;"></div>
-              </div>
+              <div class="skeleton skeleton-row" style="height: 140px; margin: 12px 0 8px 0; border-radius: 10px;"></div>
+              <div class="skeleton skeleton-text" style="width: 70%; height: 12px;"></div>
             </div>
-            <div class="skeleton-card" style="padding: 20px;">
+            <div class="skeleton-card" style="padding: 14px;">
               <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid rgba(226, 232, 240, 0.8);">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                  <div class="skeleton skeleton-icon" style="width: 30px; height: 30px;"></div>
-                  <div class="skeleton skeleton-title" style="width: 150px; height: 18px;"></div>
+                  <div class="skeleton skeleton-icon" style="width: 28px; height: 28px;"></div>
+                  <div class="skeleton skeleton-title" style="width: 140px; height: 16px;"></div>
                 </div>
-                <div class="skeleton skeleton-badge"></div>
+                <div class="skeleton skeleton-badge" style="width: 70px; height: 22px;"></div>
               </div>
-              <div class="skeleton skeleton-row" style="height: 52px; margin: 12px 0;"></div>
-              <div class="skeleton skeleton-text" style="width: 90%; height: 12px; margin-bottom: 12px;"></div>
-              <div style="display: flex; gap: 10px;">
-                <div class="skeleton skeleton-btn" style="flex: 1; height: 36px;"></div>
-                <div class="skeleton skeleton-btn" style="flex: 1; height: 36px;"></div>
-              </div>
+              <div class="skeleton skeleton-row" style="height: 140px; margin: 12px 0 8px 0; border-radius: 10px;"></div>
+              <div class="skeleton skeleton-text" style="width: 70%; height: 12px;"></div>
             </div>
-            <div class="skeleton-card" style="padding: 20px;">
+            <div class="skeleton-card" style="padding: 14px;">
               <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid rgba(226, 232, 240, 0.8);">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                  <div class="skeleton skeleton-icon" style="width: 30px; height: 30px;"></div>
-                  <div class="skeleton skeleton-title" style="width: 150px; height: 18px;"></div>
+                  <div class="skeleton skeleton-icon" style="width: 28px; height: 28px;"></div>
+                  <div class="skeleton skeleton-title" style="width: 140px; height: 16px;"></div>
                 </div>
-                <div class="skeleton skeleton-badge"></div>
+                <div class="skeleton skeleton-badge" style="width: 70px; height: 22px;"></div>
               </div>
-              <div class="skeleton skeleton-row" style="height: 52px; margin: 12px 0;"></div>
-              <div class="skeleton skeleton-text" style="width: 90%; height: 12px; margin-bottom: 12px;"></div>
-              <div style="display: flex; gap: 10px;">
-                <div class="skeleton skeleton-btn" style="flex: 1; height: 36px;"></div>
-                <div class="skeleton skeleton-btn" style="flex: 1; height: 36px;"></div>
-              </div>
+              <div class="skeleton skeleton-row" style="height: 140px; margin: 12px 0 8px 0; border-radius: 10px;"></div>
+              <div class="skeleton skeleton-text" style="width: 70%; height: 12px;"></div>
             </div>
-            <div class="skeleton-card" style="padding: 20px;">
+            <div class="skeleton-card" style="padding: 14px;">
               <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid rgba(226, 232, 240, 0.8);">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                  <div class="skeleton skeleton-icon" style="width: 30px; height: 30px;"></div>
-                  <div class="skeleton skeleton-title" style="width: 150px; height: 18px;"></div>
+                  <div class="skeleton skeleton-icon" style="width: 28px; height: 28px;"></div>
+                  <div class="skeleton skeleton-title" style="width: 140px; height: 16px;"></div>
                 </div>
-                <div class="skeleton skeleton-badge"></div>
+                <div class="skeleton skeleton-badge" style="width: 70px; height: 22px;"></div>
               </div>
-              <div class="skeleton skeleton-row" style="height: 52px; margin: 12px 0;"></div>
-              <div class="skeleton skeleton-text" style="width: 90%; height: 12px; margin-bottom: 12px;"></div>
-              <div style="display: flex; gap: 10px;">
-                <div class="skeleton skeleton-btn" style="flex: 1; height: 36px;"></div>
-                <div class="skeleton skeleton-btn" style="flex: 1; height: 36px;"></div>
-              </div>
+              <div class="skeleton skeleton-row" style="height: 140px; margin: 12px 0 8px 0; border-radius: 10px;"></div>
+              <div class="skeleton skeleton-text" style="width: 70%; height: 12px;"></div>
             </div>
           </div>
         </div>
@@ -342,11 +327,6 @@
           <!-- Loaded dynamically by cmo-requirements.js -->
         </div>
 
-        <!-- Page Action Footer -->
-        <div class="page-action-footer">
-          <button type="button" id="backToDashboardBtn" class="btn btn-secondary">Back to Dashboard</button>
-        </div>
-
       </main>
 
     </div>
@@ -370,8 +350,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/student-layout.js?v=14"></script>
-  <script src="../js/document-viewer-modal.js?v=2"></script>
-  <script src="js/cmo-requirements.js?v=18"></script>
+  <script src="js/student-layout.js?v=17"></script>
+  <script src="../js/document-viewer-modal.js?v=3"></script>
+  <script src="js/cmo-requirements.js?v=23"></script>
 </body>
 </html>

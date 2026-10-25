@@ -1,53 +1,64 @@
-// Profile View JavaScript
-document.addEventListener('DOMContentLoaded', function() {
+// Student Profile View JavaScript
+document.addEventListener('DOMContentLoaded', function () {
+  const profileSkeleton = document.getElementById('profileSkeleton');
+  const profileContent = document.getElementById('profileContent');
   const editProfileBtn = document.getElementById('editProfileBtn');
-  const backToDashboardBtn = document.getElementById('backToDashboardBtn');
-  const loadingOverlay = document.getElementById('loadingOverlay');
   const messageContainer = document.getElementById('messageContainer');
   const messageContent = document.getElementById('messageContent');
   const messageText = document.getElementById('messageText');
   const messageClose = document.getElementById('messageClose');
 
+  let messageTimeout;
+
+  if (editProfileBtn) {
+    editProfileBtn.addEventListener('click', function (e) {
+      // Natural link to edit-profile.html
+      window.location.href = 'edit-profile.html';
+    });
+  }
+
+  if (messageClose) {
+    messageClose.addEventListener('click', hideMessage);
+  }
+
   // Load profile data
   loadProfile();
-
-  // Event listeners
-  editProfileBtn.addEventListener('click', function() {
-    window.location.href = '/student/edit-profile.html';
-  });
-
-  backToDashboardBtn.addEventListener('click', function() {
-    window.location.href = '/student/dashboard.html';
-  });
-
-  messageClose.addEventListener('click', hideMessage);
-
-  // Auto-hide messages after 5 seconds
-  let messageTimeout;
 
   async function loadProfile() {
     showLoading();
 
     try {
-      const response = await fetch('/api/student/profile');
+      const response = await fetch('/api/student/profile', {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      if (response.status === 401 || response.status === 403) {
+        window.location.href = '/student/login.html';
+        return;
+      }
+
       const data = await response.json();
 
-      if (response.ok && data.success) {
-        displayProfile(data.data);
-      } else {
-        if (response.status === 401) {
-          // Not authenticated, redirect to login
-          window.location.href = '/student/login.html';
-          return;
-        }
-        
-        showMessage(data.message || 'Failed to load profile.', 'error');
-        
-        // If no profile exists, redirect to complete profile
-        if (data.message && data.message.includes('not found')) {
+      if (response.ok && data.success && data.data) {
+        const { user, profile } = data.data;
+
+        // If profile doesn't exist yet, redirect to complete-profile.html
+        if (!profile || user?.profile_status !== 'complete') {
+          showMessage('Please complete your profile first.', 'info');
           setTimeout(() => {
             window.location.href = '/student/complete-profile.html';
-          }, 2000);
+          }, 1500);
+          return;
+        }
+
+        displayProfile(user, profile);
+      } else {
+        showMessage(data.message || 'Failed to load profile.', 'error');
+        if (data.message && data.message.toLowerCase().includes('not found')) {
+          setTimeout(() => {
+            window.location.href = '/student/complete-profile.html';
+          }, 1500);
         }
       }
     } catch (error) {
@@ -58,103 +69,165 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  function displayProfile(data) {
-    const { user, profile } = data;
+  function displayProfile(user, profile) {
+    const fullName = profile.full_name || 'Student';
+    const email = user.email || '—';
+    const initials = getInitials(fullName);
 
-    // Display user information
-    document.getElementById('email').textContent = user.email || '-';
+    // Hero Header
+    const fullNameHeader = document.getElementById('fullNameHeader');
+    if (fullNameHeader) fullNameHeader.textContent = fullName;
 
-    // Display profile status
-    const statusBadge = document.getElementById('statusBadge');
-    const statusText = document.getElementById('statusText');
-    
-    if (user.profile_status === 'complete') {
-      statusBadge.className = 'status-badge complete';
-      statusBadge.textContent = 'Complete';
-      statusText.textContent = 'Your profile is complete and ready for deployment activities.';
-    } else {
-      statusBadge.className = 'status-badge incomplete';
-      statusBadge.textContent = 'Incomplete';
-      statusText.textContent = 'Please complete all required fields to access deployment features.';
+    const heroAvatar = document.getElementById('heroAvatar');
+    if (heroAvatar) heroAvatar.textContent = initials;
+
+    const headerStudentNumber = document.getElementById('headerStudentNumber');
+    if (headerStudentNumber) headerStudentNumber.textContent = profile.student_number ? `ID: ${profile.student_number}` : '—';
+
+    const headerAcademicInfo = document.getElementById('headerAcademicInfo');
+    if (headerAcademicInfo) {
+      const parts = [];
+      if (profile.course) parts.push(profile.course);
+      if (profile.year_level) parts.push(`Year ${profile.year_level}`);
+      if (profile.section) parts.push(`Sec ${profile.section}`);
+      headerAcademicInfo.textContent = parts.join(' • ') || 'CWTS Student';
     }
 
-    if (profile) {
-      // Personal Information
-      document.getElementById('fullName').textContent = profile.full_name || '-';
-      document.getElementById('studentNumber').textContent = profile.student_number || '-';
-      document.getElementById('contactNumber').textContent = profile.contact_number || '-';
-      document.getElementById('birthdate').textContent = profile.birthdate ? formatDate(profile.birthdate) : '-';
-      document.getElementById('sex').textContent = profile.sex || '-';
+    // Status Badge & Text
+    const statusBadge = document.getElementById('statusBadge');
+    const statusText = document.getElementById('statusText');
+    if (statusBadge) {
+      statusBadge.className = 'badge badge-complete';
+      statusBadge.textContent = 'Complete';
+    }
+    if (statusText) {
+      statusText.textContent = 'Your profile is complete and verified for NSTP deployment.';
+    }
 
-      // Academic Information
-      document.getElementById('course').textContent = profile.course || '-';
-      document.getElementById('yearLevel').textContent = profile.year_level || '-';
-      document.getElementById('section').textContent = profile.section || '-';
-      document.getElementById('nstpComponent').textContent = profile.nstp_component || '-';
+    // Personal Information
+    setFieldText('fullName', fullName);
+    setFieldText('studentNumber', profile.student_number);
+    setFieldText('email', email);
+    setFieldText('contactNumber', profile.contact_number);
+    setFieldText('birthdate', profile.birthdate ? formatDate(profile.birthdate) : '—');
+    setFieldText('sex', profile.sex);
 
-      // Location Information
-      document.getElementById('completeAddress').textContent = profile.complete_address || '-';
-      document.getElementById('barangay').textContent = profile.barangay || '-';
-      document.getElementById('municipality').textContent = profile.municipality || '-';
-      document.getElementById('province').textContent = profile.province || '-';
+    // Academic Information
+    setFieldText('course', profile.course);
+    setFieldText('yearLevel', profile.year_level ? `Year ${profile.year_level}` : '—');
+    setFieldText('section', profile.section);
+    setFieldText('nstpComponent', profile.nstp_component || 'CWTS');
 
-      // Skills
-      document.getElementById('skills').textContent = profile.skills || '-';
+    // Location Information
+    setFieldText('completeAddress', profile.complete_address);
+    setFieldText('barangay', profile.barangay);
+    setFieldText('municipality', profile.municipality);
+    setFieldText('province', profile.province);
 
-      // Emergency Contact
-      document.getElementById('emergencyContactName').textContent = profile.emergency_contact_name || '-';
-      document.getElementById('emergencyContactNumber').textContent = profile.emergency_contact_number || '-';
-      document.getElementById('emergencyContactRelationship').textContent = profile.emergency_contact_relationship || '-';
-    } else {
-      // No profile data, redirect to complete profile
-      showMessage('Profile not found. Redirecting to complete profile...', 'info');
-      setTimeout(() => {
-        window.location.href = '/student/complete-profile.html';
-      }, 2000);
+    // Skills
+    renderSkills(profile.skills);
+
+    // Emergency Contact
+    setFieldText('emergencyContactName', profile.emergency_contact_name);
+    setFieldText('emergencyContactNumber', profile.emergency_contact_number);
+    setFieldText('emergencyContactRelationship', profile.emergency_contact_relationship);
+
+    // Update Sidebar User Info if available
+    const sidebarUserName = document.getElementById('sidebarUserName');
+    const sidebarAvatar = document.getElementById('sidebarAvatar');
+    if (sidebarUserName && fullName) sidebarUserName.textContent = fullName;
+    if (sidebarAvatar && initials) sidebarAvatar.textContent = initials;
+  }
+
+  function setFieldText(id, value) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.textContent = value && String(value).trim() !== '' ? value : '—';
     }
   }
 
+  function renderSkills(skillsData) {
+    const container = document.getElementById('skillsPillsContainer');
+    if (!container) return;
+
+    if (!skillsData || !skillsData.trim()) {
+      container.innerHTML = '<span class="profile-display-value">—</span>';
+      return;
+    }
+
+    // Skills might be comma separated or single string
+    const skillsList = skillsData.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
+
+    if (skillsList.length === 0) {
+      container.innerHTML = '<span class="profile-display-value">—</span>';
+      return;
+    }
+
+    container.innerHTML = skillsList.map(skill => `
+      <span class="skill-pill">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        ${escapeHtml(skill)}
+      </span>
+    `).join('');
+  }
+
+  function getInitials(name) {
+    if (!name) return 'ST';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
   function formatDate(dateString) {
-    if (!dateString) return '-';
-    
+    if (!dateString) return '—';
     try {
       const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString;
       return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       });
-    } catch (error) {
+    } catch (e) {
       return dateString;
     }
   }
 
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
   function showLoading() {
-    loadingOverlay.style.display = 'flex';
+    if (profileSkeleton) profileSkeleton.style.display = 'block';
+    if (profileContent) profileContent.style.display = 'none';
   }
 
   function hideLoading() {
-    loadingOverlay.style.display = 'none';
+    if (profileSkeleton) profileSkeleton.style.display = 'none';
+    if (profileContent) profileContent.style.display = 'block';
   }
 
   function showMessage(message, type = 'info') {
+    if (window.showStudentToast) {
+      window.showStudentToast(message, type);
+      return;
+    }
+
+    if (!messageContainer || !messageText || !messageContent) return;
     messageText.textContent = message;
     messageContent.className = `message-content ${type}`;
     messageContainer.style.display = 'block';
 
-    // Clear existing timeout
-    if (messageTimeout) {
-      clearTimeout(messageTimeout);
-    }
-
-    // Auto-hide after 5 seconds
-    messageTimeout = setTimeout(hideMessage, 5000);
+    if (messageTimeout) clearTimeout(messageTimeout);
+    messageTimeout = setTimeout(hideMessage, 4000);
   }
 
   function hideMessage() {
-    messageContainer.style.display = 'none';
-    if (messageTimeout) {
-      clearTimeout(messageTimeout);
-    }
+    if (messageContainer) messageContainer.style.display = 'none';
+    if (messageTimeout) clearTimeout(messageTimeout);
   }
 });

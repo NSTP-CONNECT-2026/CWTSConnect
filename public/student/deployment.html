@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/student-layout.css?v=12" />
-  <link rel="stylesheet" href="css/student-deployment.css?v=2" />
+  <link rel="stylesheet" href="css/student-layout.css?v=31" />
+  <link rel="stylesheet" href="css/student-deployment.css?v=31" />
 </head>
 <body>
   <div class="dashboard-layout">
@@ -45,7 +45,7 @@
             <span>Dashboard</span>
           </a>
 
-          <a href="complete-profile.html" class="sidebar-item" id="profileNavLink">
+          <a href="profile.html" class="sidebar-item" id="profileNavLink">
             <span class="sidebar-icon">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -199,22 +199,15 @@
           <div class="deployment-tab-pane active" id="paneOverview" role="tabpanel">
             
             <!-- Not Deployed Empty State -->
-            <div id="noDeploymentState" class="card hidden" style="padding: 48px 32px; text-align: center;">
-              <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(47, 125, 91, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; color: var(--cwts-accent-green);">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <div id="noDeploymentState" class="card hidden no-deployment-card">
+              <div class="no-deployment-icon-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                   <polyline points="2 17 12 22 22 17"></polyline>
                   <polyline points="2 12 12 17 22 12"></polyline>
                 </svg>
               </div>
-              <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--cwts-primary-dark);" id="noDeploymentTitle">No Active Deployment Assignment</h2>
-              <p style="font-size: 0.875rem; color: var(--text-muted); max-width: 480px; margin: 8px auto 20px auto; line-height: 1.5;" id="noDeploymentDesc">
-                You are not currently assigned to a community deployment. Ensure your Student Profile and CMO Requirements are approved so the NSTP Coordinator can include you in the DSS matching allocation.
-              </p>
-              <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                <a href="cmo-requirements.html" class="btn btn-primary btn-sm">Check CMO Requirements</a>
-                <a href="dashboard.html" class="btn btn-secondary btn-sm">Go to Dashboard</a>
-              </div>
+              <h2 class="no-deployment-title" id="noDeploymentTitle">No Active Deployment Assignment</h2>
             </div>
 
             <!-- Active Deployment Details Card -->
@@ -229,9 +222,9 @@
                 </div>
               </div>
 
-              <!-- 3-Column Meta Details Grid -->
+              <!-- 2-by-2 Meta Details Grid -->
               <div class="deployment-details-grid">
-                <div class="detail-item-box">
+                <div class="detail-item-box full-width">
                   <span class="detail-item-label">Assigned Community</span>
                   <span class="detail-item-value highlight" id="deployCommunityName">---</span>
                 </div>
@@ -242,6 +235,11 @@
                 </div>
 
                 <div class="detail-item-box">
+                  <span class="detail-item-label">Volunteer Status</span>
+                  <span class="detail-item-value highlight" id="deployStudentStatus">Active Volunteer</span>
+                </div>
+
+                <div class="detail-item-box full-width">
                   <span class="detail-item-label">Location / Barangay</span>
                   <span class="detail-item-value" id="deployLocation">---</span>
                 </div>
@@ -255,21 +253,16 @@
                   <span class="detail-item-label">Schedule / Time</span>
                   <span class="detail-item-value" id="deploySchedule">Flexible / As Scheduled</span>
                 </div>
-
-                <div class="detail-item-box">
-                  <span class="detail-item-label">Your Volunteer Status</span>
-                  <span class="detail-item-value highlight" id="deployStudentStatus">Active Volunteer</span>
-                </div>
               </div>
 
               <!-- Quick Action Bar -->
-              <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 16px; border-top: 1px solid rgba(226, 232, 240, 0.8); flex-wrap: wrap;">
+              <div class="deployment-quick-actions">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="window.switchDeploymentTab('attendance')">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <polyline points="9 11 12 14 22 4"></polyline>
                     <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                   </svg>
-                  <span>Go to Attendance Check-In</span>
+                  <span>Attendance Check-In</span>
                 </button>
                 <button type="button" class="btn btn-primary btn-sm" onclick="window.switchDeploymentTab('hours')">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -379,18 +372,18 @@
             <!-- Total Rendered Hours Summary Card (No Target Hours) -->
             <div class="hours-overview-grid">
               <div class="hours-summary-card">
-                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-                  <div>
-                    <span style="font-size: 0.8125rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Total Rendered Service Hours</span>
-                    <div class="hours-metric-headline" style="margin: 8px 0 0 0;">
+                <div class="hours-summary-inner">
+                  <div class="hours-metric-group">
+                    <span class="hours-metric-label">Total Rendered Service Hours</span>
+                    <div class="hours-metric-headline">
                       <span class="hours-big-number" id="hoursCompletedNumber">0.0</span>
-                      <span style="font-size: 1.125rem; font-weight: 600; color: var(--text-muted); margin-left: 6px;">Hours Rendered</span>
+                      <span class="hours-unit-text">Hours Rendered</span>
                     </div>
                   </div>
-                  <div style="display: flex; gap: 14px;">
-                    <div class="detail-item-box" style="padding: 12px 20px; background: rgba(255, 255, 255, 0.85); min-width: 150px;">
+                  <div class="hours-sessions-box">
+                    <div class="detail-item-box sessions-badge-tile">
                       <span class="detail-item-label">Verified Sessions</span>
-                      <span class="detail-item-value highlight" id="hoursTotalSessions" style="font-size: 1.15rem;">0 Sessions</span>
+                      <span class="detail-item-value highlight" id="hoursTotalSessions">0 Sessions</span>
                     </div>
                   </div>
                 </div>
@@ -452,7 +445,7 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <!-- Scripts -->
-  <script src="js/student-layout.js?v=16"></script>
-  <script src="js/deployment.js?v=16"></script>
+  <script src="js/student-layout.js?v=31"></script>
+  <script src="js/deployment.js?v=31"></script>
 </body>
 </html>

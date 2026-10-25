@@ -1,13 +1,11 @@
 /* ==========================================================================
    CWTSConnect — Student Deployment & Monitoring Stylesheet
-   Inherits base tokens, sidebar, header, and glassmorphic shell from student-layout.css
-   Covers:
-     - 3-Tab Switcher (Overview, Attendance, Service Hours)
-     - Deployment Overview Card & Scope Badges
-     - Check In / Check Out Live Action Tile
-     - Attendance Stats & Timeline Table
-     - Service Hours Circular / Linear Progress Cards
-     - Notifications Slide-out Drawer
+   Design Paradigm: Neumorphic + Glassmorphic Emerald Aesthetic
+   Strict 4-Level Typography Hierarchy:
+     Level 1: Section & Card Titles  — 1.0625rem - 1.125rem (17-18px) Bold 700
+     Level 2: Primary Content/Values — 0.84375rem - 0.875rem (13.5-14px) SemiBold 600
+     Level 3: Subtitles/Descriptions — 0.75rem (12px) Medium 500
+     Level 4: Labels/Badges/Headers  — 0.6875rem (11px) Uppercase Bold 700
    ========================================================================== */
 
 @import url('student-layout.css');
@@ -22,24 +20,24 @@
   background: var(--cwts-glass-surface);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
-  padding: 6px 8px;
-  margin-bottom: var(--space-xl);
+  padding: 5px 6px;
+  margin-bottom: var(--space-lg);
   box-shadow: var(--neu-shadow-raised);
   width: fit-content;
   flex-wrap: wrap;
 }
 
 .deployment-tab-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
+  gap: 7px;
+  padding: 8px 16px;
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   background: transparent;
   color: var(--text-muted);
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -64,7 +62,7 @@
 .deployment-tab-badge {
   font-size: 0.6875rem;
   font-weight: 700;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: var(--radius-pill);
   background: rgba(0, 0, 0, 0.08);
 }
@@ -98,15 +96,46 @@
 }
 
 /* --------------------------------------------------------------------------
-   3. OVERVIEW: DEPLOYMENT HERO & META CARDS
+   3. OVERVIEW: EMPTY STATE & ACTIVE DEPLOYMENT HERO CARD
    -------------------------------------------------------------------------- */
+.no-deployment-card {
+  padding: 36px 24px;
+  text-align: center;
+  background: var(--cwts-glass-surface);
+  border: 1px solid var(--cwts-glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--neu-shadow-raised);
+  margin-bottom: var(--space-lg);
+}
+
+.no-deployment-icon-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(47, 125, 91, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px auto;
+  color: var(--cwts-accent-green);
+}
+
+.no-deployment-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--cwts-primary-dark);
+  letter-spacing: -0.01em;
+  margin-bottom: 0;
+  line-height: 1.3;
+}
+
 .deployment-hero-card {
   background: var(--cwts-glass-surface);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-xl);
+  padding: var(--space-lg);
   box-shadow: var(--neu-shadow-raised);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
   position: relative;
   overflow: hidden;
 }
@@ -117,60 +146,82 @@
   align-items: flex-start;
   flex-wrap: wrap;
   gap: var(--space-md);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .deployment-hero-title {
-  font-size: 1.35rem;
-  font-weight: 800;
+  font-size: 1.125rem;
+  font-weight: 700;
   color: var(--cwts-primary-dark);
   letter-spacing: -0.01em;
   line-height: 1.3;
 }
 
 .deployment-hero-subtitle {
-  font-size: 0.9375rem;
-  color: var(--text-muted);
-  margin-top: 4px;
+  font-size: 0.75rem;
+  color: var(--cwts-text-muted);
+  margin-top: 3px;
   font-weight: 500;
 }
 
 .deployment-details-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-lg);
-  margin-bottom: var(--space-lg);
+  gap: 12px;
+  margin-bottom: var(--space-md);
 }
 
 .detail-item-box {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  border-radius: var(--radius-md);
-  padding: 16px;
+  background: rgba(248, 250, 249, 0.92);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 10px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  box-shadow: 2px 2px 8px rgba(163, 177, 198, 0.15);
+  gap: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.detail-item-box.full-width {
+  grid-column: 1 / -1;
 }
 
 .detail-item-label {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 700;
-  color: var(--text-muted);
+  color: var(--cwts-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
 }
 
 .detail-item-value {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-main);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cwts-dark-neutral);
+  line-height: 1.35;
+  word-break: break-word;
 }
 
 .detail-item-value.highlight {
   color: var(--cwts-accent-green);
+  font-weight: 700;
+}
+
+.deployment-quick-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 14px;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  flex-wrap: wrap;
+}
+
+.deployment-quick-actions .btn {
+  font-size: 0.8125rem;
+  font-weight: 600;
 }
 
 /* --------------------------------------------------------------------------
@@ -200,8 +251,8 @@
 }
 
 .check-in-icon-badge {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-sm);
   background: rgba(47, 125, 91, 0.1);
   border: 1px solid rgba(47, 125, 91, 0.25);
@@ -221,29 +272,29 @@
 .check-in-header-line {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .check-in-title {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--cwts-primary-dark);
 }
 
 .check-in-desc {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--cwts-text-muted);
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .live-time-ticker {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--cwts-accent-green);
   background: rgba(47, 125, 91, 0.08);
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(47, 125, 91, 0.2);
   display: inline-block;
@@ -253,12 +304,22 @@
 .check-in-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
+.check-in-controls .btn {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.check-in-controls .badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
 /* --------------------------------------------------------------------------
-   DATA TABLES (CWTSConnect Academic Standard)
+   5. DATA TABLES (CWTSConnect Academic Standard)
    -------------------------------------------------------------------------- */
 .table-card {
   background: var(--cwts-glass-surface);
@@ -266,11 +327,11 @@
   border-radius: var(--radius-md);
   box-shadow: var(--neu-shadow-raised);
   overflow: hidden;
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
 }
 
 .table-card-header {
-  padding: 14px 20px;
+  padding: 12px 18px;
   background: rgba(255, 255, 255, 0.9);
   border-bottom: 1px solid rgba(226, 232, 240, 0.9);
   display: flex;
@@ -282,12 +343,12 @@
 .table-card-title-group {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .table-card-icon {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: var(--radius-sm);
   background: rgba(20, 90, 58, 0.08);
   color: var(--cwts-secondary-green);
@@ -298,7 +359,7 @@
 }
 
 .table-card-title {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: var(--cwts-primary-dark);
   letter-spacing: -0.01em;
@@ -306,21 +367,23 @@
 }
 
 .table-card-subtitle {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--cwts-text-muted);
-  margin-top: 1px;
+  margin-top: 2px;
+  font-weight: 500;
 }
 
 .table-responsive {
   width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .neu-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.84375rem;
 }
 
 .neu-table thead {
@@ -329,8 +392,8 @@
 }
 
 .neu-table th {
-  padding: 12px 18px;
-  font-size: 0.75rem;
+  padding: 10px 16px;
+  font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -339,10 +402,11 @@
 }
 
 .neu-table td {
-  padding: 14px 18px;
+  padding: 12px 16px;
   border-bottom: 1px solid rgba(226, 232, 240, 0.7);
   vertical-align: middle;
   color: var(--cwts-dark-neutral);
+  font-size: 0.84375rem;
 }
 
 .neu-table tbody tr {
@@ -357,11 +421,52 @@
   border-bottom: none;
 }
 
+.table-empty-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--cwts-primary-dark);
+  margin-bottom: 3px;
+}
+
+.table-empty-desc {
+  font-size: 0.75rem;
+  color: var(--cwts-text-muted);
+}
+
+.table-activity-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.table-activity-content .activity-title {
+  font-size: 0.84375rem;
+  font-weight: 600;
+  color: var(--cwts-dark-neutral);
+}
+
+.table-activity-content .activity-subtitle {
+  font-size: 0.75rem;
+  color: var(--cwts-text-muted);
+}
+
+.table-remarks-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.table-remarks-content .remarks-text {
+  color: var(--cwts-text-muted);
+  font-size: 0.8125rem;
+}
+
 /* --------------------------------------------------------------------------
-   5. SERVICE HOURS: PROGRESS & BREAKDOWN CARDS
+   6. SERVICE HOURS: REFINED STATS CARD (Tamed & Balanced)
    -------------------------------------------------------------------------- */
 .hours-overview-grid {
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
 }
 
 .hours-progress-card,
@@ -369,62 +474,504 @@
   background: var(--cwts-glass-surface);
   border: 1px solid var(--cwts-glass-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-xl);
+  padding: var(--space-lg);
   box-shadow: var(--neu-shadow-raised);
+}
+
+.hours-summary-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.hours-metric-group {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+}
+
+.hours-metric-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--cwts-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .hours-metric-headline {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  margin: 12px 0 16px 0;
+  gap: 6px;
+  margin: 6px 0 0 0;
 }
 
 .hours-big-number {
-  font-size: 3rem;
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--cwts-primary-dark);
   line-height: 1;
 }
 
-.hours-target-text {
-  font-size: 1.125rem;
+.hours-unit-text {
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--cwts-text-muted);
+  margin-left: 2px;
 }
 
-.progress-track {
-  width: 100%;
-  height: 14px;
-  background: rgba(0, 0, 0, 0.08);
-  border-radius: var(--radius-pill);
-  overflow: hidden;
-  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.15);
-  margin-bottom: 12px;
+.hours-sessions-box {
+  display: flex;
 }
 
-.progress-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #348b65, #276b4d);
-  border-radius: var(--radius-pill);
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+.sessions-badge-tile {
+  padding: 10px 16px;
+  min-width: 140px;
 }
 
+.sessions-badge-tile .detail-item-value {
+  font-size: 1rem;
+  color: var(--cwts-accent-green);
+}
+
+/* --------------------------------------------------------------------------
+   7. RESPONSIVE BREAKPOINTS & MOBILE ADAPTATIONS
+   -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .deployment-details-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
+
   .hours-overview-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
+  /* 3-Tab Switcher on Mobile */
+  .deployment-tabs-bar {
+    width: 100%;
+    padding: 3px;
+    gap: 3px;
+    margin-bottom: var(--space-md);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: var(--neu-shadow-raised);
+  }
+
+  .deployment-tab-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 7px 5px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    justify-content: center;
+    gap: 5px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    min-height: 36px;
+  }
+
+  .deployment-tab-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .deployment-tab-badge {
+    font-size: 0.6875rem;
+    padding: 1px 5px;
+  }
+
+  /* Empty State on Mobile */
+  .no-deployment-card {
+    padding: 24px 16px;
+    border-radius: 12px;
+  }
+
+  .no-deployment-icon-badge {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .no-deployment-title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    margin-bottom: 0;
+  }
+
+  /* Active Deployment Hero Card on Mobile */
+  .deployment-hero-card {
+    padding: 14px 12px;
+    border-radius: 12px;
+    margin-bottom: var(--space-md);
+  }
+
+  .deployment-hero-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+  }
+
+  .deployment-hero-title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--cwts-primary-dark);
+    line-height: 1.3;
+  }
+
+  .deployment-hero-subtitle {
+    font-size: 0.75rem;
+    color: var(--cwts-text-muted);
+    margin-top: 2px;
+  }
+
+  /* 2-by-2 Details Grid on Mobile */
   .deployment-details-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .detail-item-box {
+    padding: 8px 10px;
+    border-radius: 9px;
+    gap: 2px;
+    background: rgba(248, 250, 249, 0.92);
+    border: 1px solid rgba(226, 232, 240, 0.85);
+  }
+
+  .detail-item-box.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .detail-item-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--cwts-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .detail-item-value {
+    font-size: 0.84375rem;
+    font-weight: 600;
+    color: var(--cwts-dark-neutral);
+    line-height: 1.35;
+  }
+
+  .detail-item-value.highlight {
+    color: var(--cwts-accent-green);
+    font-weight: 700;
+  }
+
+  /* Quick Action Buttons on Mobile */
+  .deployment-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding-top: 10px;
+  }
+
+  .deployment-quick-actions .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 38px;
+    padding: 7px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .deployment-quick-actions .btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  /* Attendance Live Hero Bar on Mobile */
+  .check-in-hero {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 12px;
+    gap: 10px;
+    margin-bottom: var(--space-md);
+    border-radius: 12px;
+  }
+
+  .check-in-info {
+    align-items: flex-start;
+    gap: 10px;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .check-in-icon-badge {
+    width: 32px;
+    height: 32px;
+  }
+
+  .check-in-header-line {
+    gap: 6px;
+    align-items: center;
+  }
+
+  .check-in-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--cwts-primary-dark);
+  }
+
+  .live-time-ticker {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+  }
+
+  .check-in-desc {
+    font-size: 0.75rem;
+    line-height: 1.35;
+  }
+
+  .check-in-controls {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .check-in-controls .btn {
+    width: 100%;
+    min-height: 40px;
+    justify-content: center;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .check-in-controls .badge {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    padding: 5px 8px;
+    font-size: 0.6875rem;
+  }
+
+  /* -------------------------------------------------------------------------
+     Data Tables Card Transformation on Mobile:
+     Each row becomes an independent structured card fitting 100% screen width
+     ------------------------------------------------------------------------- */
+  .table-card {
+    border-radius: 12px;
+    margin-bottom: var(--space-md);
+  }
+
+  .table-card-header {
+    padding: 10px 12px;
+  }
+
+  .table-card-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .table-card-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .table-card-title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+  }
+
+  .table-card-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .table-responsive {
+    overflow: visible;
+    padding: 8px;
+  }
+
+  .neu-table {
+    display: block;
+    width: 100%;
+    border-collapse: separate;
+  }
+
+  .neu-table thead {
+    display: none;
+  }
+
+  .neu-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .neu-table tbody tr {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: rgba(248, 250, 249, 0.95);
+    border: 1px solid rgba(226, 232, 240, 0.92);
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .neu-table tbody tr:hover {
+    background: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .neu-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px dashed rgba(226, 232, 240, 0.85);
+    font-size: 0.84375rem;
+    color: var(--cwts-dark-neutral);
+    width: 100%;
+  }
+
+  .neu-table td:first-child {
+    padding-top: 0;
+  }
+
+  .neu-table td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .neu-table td::before {
+    content: attr(data-label);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--cwts-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .neu-table td[data-label="Activity Date"] strong,
+  .neu-table td[data-label="Service Date"] strong {
+    color: var(--cwts-primary-dark);
+    font-size: 0.84375rem;
+  }
+
+  /* Activity Type and Remarks multiline styling */
+  .neu-table td.td-activity,
+  .neu-table td.td-remarks {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .neu-table td.td-activity .table-activity-content,
+  .neu-table td.td-remarks .table-remarks-content {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .neu-table td.td-activity .table-activity-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .table-activity-content .activity-title {
+    font-size: 0.84375rem;
+    font-weight: 600;
+    color: var(--cwts-dark-neutral);
+  }
+
+  .table-activity-content .activity-subtitle {
+    font-size: 0.75rem;
+    color: var(--cwts-text-muted);
+    margin-top: 2px;
+  }
+
+  .table-remarks-content .remarks-text {
+    font-size: 0.75rem;
+    color: var(--cwts-text-muted);
+  }
+
+  /* Empty state table rows */
+  .neu-table td[colspan] {
+    display: block !important;
+    text-align: center !important;
+    padding: 20px 12px !important;
+    border-bottom: none !important;
+  }
+
+  .neu-table td[colspan]::before {
+    display: none !important;
+  }
+
+  /* Hours Summary Card on Mobile */
+  .hours-summary-card {
+    padding: 14px 12px;
+    border-radius: 12px;
+    margin-bottom: var(--space-md);
+  }
+
+  .hours-summary-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .hours-metric-label {
+    font-size: 0.6875rem;
+  }
+
+  .hours-big-number {
+    font-size: 1.375rem;
+  }
+
+  .hours-unit-text {
+    font-size: 0.8125rem;
+  }
+
+  .hours-sessions-box {
+    width: 100%;
+  }
+
+  .sessions-badge-tile {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 9px;
+    background: rgba(248, 250, 249, 0.92);
+    border: 1px solid rgba(226, 232, 240, 0.85);
+  }
+
+  .sessions-badge-tile .detail-item-value {
+    font-size: 0.9375rem;
   }
 }
 
+@media (max-width: 420px) {
+  .deployment-quick-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .deployment-tab-btn {
+    padding: 6px 4px;
+    font-size: 0.71875rem;
+    gap: 3px;
+  }
+
+  .deployment-tab-btn svg {
+    display: none;
+  }
+}

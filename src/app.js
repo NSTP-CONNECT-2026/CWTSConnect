@@ -181,6 +181,10 @@ app.get('/student/complete-profile.html', isAuthenticated, roleMiddleware('stude
   res.sendFile(path.join(__dirname, '../public/student/complete-profile.html'));
 });
 
+app.get('/student/profile.html', isAuthenticated, roleMiddleware('student'), (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/student/profile.html'));
+});
+
 app.get('/student/edit-profile.html', isAuthenticated, roleMiddleware('student'), (req, res) => {
   res.sendFile(path.join(__dirname, '../public/student/edit-profile.html'));
 });
