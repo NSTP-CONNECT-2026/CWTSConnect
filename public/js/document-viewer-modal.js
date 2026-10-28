@@ -289,8 +289,8 @@
       };
     }
 
-    if (!opts.url) {
-      console.warn('[DocViewer] No URL provided for document preview.');
+    if (!opts.url || opts.url === 'null' || opts.url === 'undefined' || String(opts.url).includes('/undefined')) {
+      console.warn('[DocViewer] Invalid or missing URL provided for document preview:', opts.url);
       return;
     }
 
@@ -361,47 +361,61 @@
       }
 
       // Set image source and dismiss spinner on load
-      imgEl.onload = function () {
-        spinnerEl.style.opacity = '0';
-        setTimeout(() => { spinnerEl.style.display = 'none'; }, 200);
-      };
+      if (imgEl) {
+        imgEl.onload = function () {
+          if (spinnerEl) {
+            spinnerEl.style.opacity = '0';
+            setTimeout(() => { if (spinnerEl) spinnerEl.style.display = 'none'; }, 200);
+          }
+        };
 
-      imgEl.onerror = function () {
-        spinnerEl.innerHTML = `
-          <div style="color: #ef4444; text-align: center; padding: 20px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="margin-bottom: 8px;">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
-            <p style="margin: 0; font-weight: 600;">Unable to render image preview.</p>
-            <p style="margin: 4px 0 0; font-size: 0.8rem; color: #94a3b8;">Click "Download" or "Open in new tab" above to access the file.</p>
-          </div>
-        `;
-      };
+        imgEl.onerror = function () {
+          if (spinnerEl) {
+            spinnerEl.innerHTML = `
+              <div style="color: #ef4444; text-align: center; padding: 20px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="margin-bottom: 8px;">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <p style="margin: 0; font-weight: 600;">Unable to render image preview.</p>
+                <p style="margin: 4px 0 0; font-size: 0.8rem; color: #94a3b8;">Click "Download" or "Open in new tab" above to access the file.</p>
+              </div>
+            `;
+          }
+        };
 
-      imgEl.src = state.url;
+        imgEl.src = state.url;
+      }
     } else {
       // PDF / DOCUMENT MODE
-      zoomControlsEl.style.display = 'none';
-      hintsEl.style.display = 'none';
-      imgEl.style.display = 'none';
-      imgEl.src = '';
-      iframeEl.style.display = 'block';
+      if (zoomControlsEl) zoomControlsEl.style.display = 'none';
+      if (hintsEl) hintsEl.style.display = 'none';
+      if (imgEl) {
+        imgEl.style.display = 'none';
+        imgEl.src = '';
+      }
+      if (iframeEl) {
+        iframeEl.style.display = 'block';
 
-      // Update Icon to Document Icon
-      iconBadge.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-        </svg>
-      `;
+        iframeEl.onload = function () {
+          if (spinnerEl) {
+            spinnerEl.style.opacity = '0';
+            setTimeout(() => { if (spinnerEl) spinnerEl.style.display = 'none'; }, 200);
+          }
+        };
 
-      iframeEl.onload = function () {
-        spinnerEl.style.opacity = '0';
-        setTimeout(() => { spinnerEl.style.display = 'none'; }, 200);
-      };
+        iframeEl.src = `${state.url}#toolbar=1&navpanes=0`;
+      }
 
-      iframeEl.src = `${state.url}#toolbar=1&navpanes=0`;
+      // Update Icon to Document Icon (if present)
+      if (iconBadge) {
+        iconBadge.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
+        `;
+      }
     }
 
     // Show backdrop

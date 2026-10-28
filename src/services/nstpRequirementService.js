@@ -98,7 +98,7 @@ async function getAllStudentsWithRequirements(filters = {}) {
         profileData = student.student_profiles;
       }
 
-      const computedStatus = student.cmo_compliance_status || (approvedCount === 4 ? 'compliant' : (pendingCount > 0 ? 'pending_review' : 'incomplete'));
+      const computedStatus = student.cmo_compliance_status || (approvedCount === 4 ? 'compliant' : (submittedCount === 4 ? 'pending_review' : 'incomplete'));
 
       return {
         ...student,

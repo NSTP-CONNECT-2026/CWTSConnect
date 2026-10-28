@@ -395,7 +395,7 @@
     tbody.innerHTML = students.map((s) => {
       const studentName = s.full_name || s.student_name || 'Student Volunteer';
       const course = s.course || s.program || 'CWTS Volunteer';
-      const section = s.section ? `Sec ${s.section}` : '';
+      const section = s.section ? (String(s.section).toLowerCase().startsWith('section') ? s.section : `Section ${String(s.section).replace(/^sec\.?\s*/i, '')}`) : '';
       const courseSection = section ? `${course} • ${section}` : course;
 
       const defaultIn = s.today_attendance?.check_in_time 
@@ -688,7 +688,7 @@
 
       const studentName = r.student_name || r.full_name || 'Student Volunteer';
       const course = r.course || '---';
-      const section = r.section ? `Sec ${r.section}` : '';
+      const section = r.section ? (String(r.section).toLowerCase().startsWith('section') ? r.section : `Section ${String(r.section).replace(/^sec\.?\s*/i, '')}`) : '';
       const courseSection = section ? `${course} • ${section}` : course;
 
       return `
@@ -784,7 +784,7 @@
           <td class="col-student">
             <div style="font-weight: 700; color: var(--text-main); font-size: 0.9375rem;">${escapeHtml(s.student_name)}</div>
             <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
-              ${s.student_number && s.student_number !== '---' ? escapeHtml(s.student_number) + ' • ' : ''}${escapeHtml(s.course)}${s.section && s.section !== '---' ? ' (Sec ' + escapeHtml(s.section) + ')' : ''}
+              ${s.student_number && s.student_number !== '---' ? escapeHtml(s.student_number) + ' • ' : ''}${escapeHtml(s.course)}${s.section && s.section !== '---' ? ' (' + escapeHtml(String(s.section).toLowerCase().startsWith('section') ? s.section : 'Section ' + String(s.section).replace(/^sec\.?\s*/i, '')) + ')' : ''}
             </div>
           </td>
           <td class="col-time">

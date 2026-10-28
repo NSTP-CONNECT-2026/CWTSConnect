@@ -214,7 +214,7 @@ function computeSawSuitabilityRankings(eligibleStudents, request) {
       studentNumber: p.student_number || student.student_number || 'N/A',
       course: p.course || student.course || 'BSIT',
       yearLevel: p.year_level || student.year_level || '1st Year',
-      section: p.section || student.section || '1',
+      section: (p.section || student.section) ? (String(p.section || student.section).toLowerCase().startsWith('section') ? (p.section || student.section) : `Section ${String(p.section || student.section).replace(/^sec\.?\s*/i, '')}`) : 'Section A',
       municipality: p.municipality || student.municipality || '',
       province: p.province || student.province || '',
       nstpComponent: p.nstp_component || student.nstp_component || 'CWTS',

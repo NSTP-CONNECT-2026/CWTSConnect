@@ -253,42 +253,67 @@
     }
 
     .report-paper-container .neu-table {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-      border-spacing: 0;
-      box-sizing: border-box;
-      margin: 0;
+      display: table !important;
+      width: 100% !important;
+      table-layout: fixed !important;
+      border-collapse: collapse !important;
+      border-spacing: 0 !important;
+      box-sizing: border-box !important;
+      margin: 0 !important;
+    }
+
+    .report-paper-container .neu-table thead {
+      display: table-header-group !important;
+    }
+
+    .report-paper-container .neu-table tbody {
+      display: table-row-group !important;
+    }
+
+    .report-paper-container .neu-table tr,
+    .report-paper-container .neu-table tbody tr {
+      display: table-row !important;
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      box-shadow: none !important;
     }
 
     .report-paper-container .neu-table th,
     .report-paper-container .neu-table td {
-      border: 1px solid #E2E8F0;
-      padding: 9px 10px;
-      font-size: 0.8125rem;
-      word-wrap: break-word;
-      word-break: break-word;
-      box-sizing: border-box;
-      vertical-align: middle;
+      display: table-cell !important;
+      border: 1px solid #E2E8F0 !important;
+      padding: 9px 10px !important;
+      font-size: 0.8125rem !important;
+      word-wrap: break-word !important;
+      word-break: break-word !important;
+      box-sizing: border-box !important;
+      vertical-align: middle !important;
+    }
+
+    .report-paper-container .neu-table td::before {
+      display: none !important;
+      content: none !important;
     }
 
     .report-paper-container .neu-table th {
-      background: #F8FAFC;
-      color: #0F172A;
-      font-weight: 700;
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      border-top: none;
-      white-space: nowrap;
-      padding: 8px 6px;
+      background: #F8FAFC !important;
+      color: #0F172A !important;
+      font-weight: 700 !important;
+      font-size: 0.72rem !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.3px !important;
+      border-top: none !important;
+      white-space: nowrap !important;
+      padding: 8px 6px !important;
     }
 
     .report-paper-container .neu-table th:first-child,
     .report-paper-container .neu-table td:first-child {
-      border-left: none;
-      width: 30px;
-      text-align: center;
+      border-left: none !important;
+      width: 32px !important;
+      text-align: center !important;
     }
 
     .report-paper-container .badge {
@@ -328,10 +353,10 @@
       border: none !important;
     }
 
-    /* Print Stylesheet for Official A4 Document Output */
+    /* Print Stylesheet for Official Institutional Document Output */
     @page {
-      size: A4 portrait;
-      margin: 12mm 10mm 12mm 10mm;
+      size: auto;
+      margin: 10mm;
     }
 
     @media print {
@@ -344,27 +369,23 @@
         text-shadow: none !important;
       }
 
-      /* Force universal background to pure white and clear canvas gradients */
+      /* Base document canvas */
       html, body {
         background: #FFFFFF !important;
         background-color: #FFFFFF !important;
         background-image: none !important;
         color: #0F172A !important;
-        font-size: 9pt !important;
+        font-size: 10pt !important;
         width: 100% !important;
         min-width: 100% !important;
         max-width: 100% !important;
         height: auto !important;
-        min-height: 0 !important;
-        max-height: none !important;
         margin: 0 !important;
         padding: 0 !important;
         overflow: visible !important;
-        overflow-x: visible !important;
-        overflow-y: visible !important;
       }
 
-      /* Completely hide all non-printable application shell and UI elements */
+      /* Hide non-printable portal navigation, header, cards, and buttons */
       .sidebar,
       .header,
       .filter-panel-card,
@@ -384,32 +405,26 @@
         visibility: hidden !important;
       }
 
-      /* Flatten layout shell hierarchy to prevent 100vh overflow and scrollbar gutters */
+      /* Flatten portal containers */
       .dashboard-layout,
       .main-wrapper,
       .content-container {
         display: block !important;
         position: static !important;
         margin: 0 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
         padding: 0 !important;
         width: 100% !important;
         min-width: 100% !important;
         max-width: 100% !important;
         height: auto !important;
-        min-height: 0 !important;
-        max-height: none !important;
         background: #FFFFFF !important;
         background-image: none !important;
         box-shadow: none !important;
         border: none !important;
         overflow: visible !important;
-        overflow-x: visible !important;
-        overflow-y: visible !important;
       }
 
-      /* Report Paper Container: fills 100% width of printable A4 page */
+      /* Report Paper Container - Clean print layout matching preview */
       .report-paper-container {
         display: block !important;
         position: static !important;
@@ -419,225 +434,197 @@
         padding: 0 !important;
         margin: 0 !important;
         width: 100% !important;
-        min-width: 100% !important;
         max-width: 100% !important;
-        height: auto !important;
-        min-height: 0 !important;
         background: #FFFFFF !important;
         background-image: none !important;
         overflow: visible !important;
       }
 
-      /* Institutional Header for A4 */
+      /* Institutional Header - Matches Preview */
       .inst-header {
         display: block !important;
         width: 100% !important;
         box-sizing: border-box !important;
         text-align: center !important;
         border-bottom: 2px solid #0B3D2E !important;
-        padding-bottom: 8px !important;
-        margin-bottom: 12px !important;
+        padding-bottom: 14px !important;
+        margin-bottom: 16px !important;
       }
 
       .inst-name {
-        font-size: 13pt !important;
+        font-size: 1.125rem !important;
         font-weight: 800 !important;
         color: #0B3D2E !important;
         letter-spacing: 0.5px !important;
         margin-bottom: 2px !important;
       }
 
+      /* Document Title Bar - Matches Preview */
       .doc-title-bar {
         width: 100% !important;
         box-sizing: border-box !important;
-        background: #F1F5F9 !important;
-        border: 1px solid #CBD5E1 !important;
-        border-radius: 4px !important;
-        padding: 6px 12px !important;
-        margin-top: 8px !important;
-        margin-bottom: 10px !important;
+        background: rgba(47, 125, 91, 0.08) !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 10px 16px !important;
+        margin-top: 14px !important;
+        margin-bottom: 16px !important;
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
 
       .doc-main-title {
-        font-size: 10pt !important;
+        font-size: 1rem !important;
         font-weight: 800 !important;
         color: #0B3D2E !important;
         text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
       }
 
       .doc-meta {
-        font-size: 8pt !important;
+        font-size: 0.75rem !important;
         color: #475569 !important;
         font-weight: 600 !important;
       }
 
-      /* Table Container and Elements: 100% width edge-to-edge, never cut off */
-      .table-responsive {
+      /* Table Container - Matches Preview */
+      .report-paper-container .table-responsive {
         overflow: visible !important;
-        overflow-x: visible !important;
-        overflow-y: visible !important;
         width: 100% !important;
         min-width: 100% !important;
         max-width: 100% !important;
         display: block !important;
         margin: 0 !important;
         padding: 0 !important;
-        border: none !important;
+        border: 1px solid #CBD5E1 !important;
+        border-radius: 6px !important;
+        background: #FFFFFF !important;
         box-shadow: none !important;
         box-sizing: border-box !important;
       }
 
-      .neu-table {
+      .report-paper-container .neu-table {
+        display: table !important;
         width: 100% !important;
         min-width: 100% !important;
         max-width: 100% !important;
         table-layout: fixed !important;
         border-collapse: collapse !important;
         border-spacing: 0 !important;
-        font-size: 8pt !important;
+        font-size: 0.8125rem !important;
         page-break-inside: auto !important;
         box-shadow: none !important;
         margin: 0 !important;
         box-sizing: border-box !important;
-        border: 1px solid #CBD5E1 !important;
+        border: none !important;
       }
 
-      .neu-table thead {
+      .report-paper-container .neu-table thead {
         display: table-header-group !important;
       }
 
-      .neu-table tr {
-        page-break-inside: avoid !important;
-        page-break-after: auto !important;
+      .report-paper-container .neu-table tbody {
+        display: table-row-group !important;
       }
 
-      .neu-table th {
-        background: #F1F5F9 !important;
+      .report-paper-container .neu-table tr,
+      .report-paper-container .neu-table tbody tr {
+        display: table-row !important;
+        page-break-inside: avoid !important;
+        page-break-after: auto !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+      }
+
+      .report-paper-container .neu-table th {
+        display: table-cell !important;
+        background: #F8FAFC !important;
         color: #0F172A !important;
         font-weight: 700 !important;
-        padding: 5px 4px !important;
-        border: 1px solid #CBD5E1 !important;
-        font-size: 6.8pt !important;
-        text-align: left !important;
+        padding: 8px 6px !important;
+        border: 1px solid #E2E8F0 !important;
+        border-top: none !important;
+        font-size: 0.72rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.3px !important;
         white-space: nowrap !important;
         box-sizing: border-box !important;
         vertical-align: middle !important;
-        letter-spacing: 0.2px !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
 
-      .neu-table th:first-child,
-      .neu-table td:first-child {
+      .report-paper-container .neu-table th:first-child,
+      .report-paper-container .neu-table td:first-child {
+        border-left: none !important;
         text-align: center !important;
-        width: 4% !important;
-        max-width: 4% !important;
+        width: 32px !important;
       }
 
-      .neu-table td {
-        padding: 5px 6px !important;
-        border: 1px solid #CBD5E1 !important;
+      .report-paper-container .neu-table td {
+        display: table-cell !important;
+        padding: 8px 10px !important;
+        border: 1px solid #E2E8F0 !important;
         color: #1E293B !important;
-        font-size: 7.5pt !important;
+        font-size: 0.8125rem !important;
         word-wrap: break-word !important;
         word-break: break-word !important;
         box-sizing: border-box !important;
         vertical-align: middle !important;
+        background-color: #FFFFFF !important;
+        justify-content: unset !important;
+        align-items: unset !important;
+        box-shadow: none !important;
       }
 
-      .neu-table tbody tr:nth-child(even) {
-        background-color: #F8FAFC !important;
+      .report-paper-container .neu-table td::before {
+        display: none !important;
+        content: none !important;
       }
 
-      /* Simple Borderless Badges in Print */
-      .badge {
-        padding: 2px 6px !important;
-        font-size: 7pt !important;
+      /* Badges - Exact Match with Preview */
+      .report-paper-container .badge {
+        padding: 3px 8px !important;
+        font-size: 0.75rem !important;
         font-weight: 700 !important;
-        border-radius: 3px !important;
+        border-radius: 4px !important;
         display: inline-block !important;
         border: none !important;
         box-shadow: none !important;
         white-space: nowrap !important;
-        box-sizing: border-box !important;
         text-align: center !important;
-        max-width: 100% !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
 
-      .badge-complete {
+      .report-paper-container .badge-complete {
         background: #E8F5E9 !important;
         color: #166534 !important;
         border: none !important;
       }
 
-      .badge-pending {
+      .report-paper-container .badge-pending {
         background: #FEF3C7 !important;
         color: #92400E !important;
         border: none !important;
       }
 
-      .badge-verified {
+      .report-paper-container .badge-verified {
         background: #E0F2FE !important;
         color: #0369A1 !important;
         border: none !important;
       }
 
-      .badge-inactive {
+      .report-paper-container .badge-inactive {
         background: #FEE2E2 !important;
         color: #991B1B !important;
         border: none !important;
-      }
-
-      /* Summary Strip positioned below table on A4 (only visible when not empty) */
-      .preview-summary-strip {
-        page-break-inside: avoid !important;
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: flex-start !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-        gap: 12px !important;
-        margin-top: 14px !important;
-        margin-bottom: 0 !important;
-        padding: 8px 12px !important;
-        background: #F8FAFC !important;
-        border: 1px solid #CBD5E1 !important;
-        border-radius: 6px !important;
-      }
-
-      .preview-summary-strip:empty,
-      .preview-summary-strip[style*="display: none"],
-      .preview-summary-strip.is-empty {
-        display: none !important;
-        visibility: hidden !important;
-        height: 0 !important;
-        min-height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-      }
-
-      .summary-strip-item {
-        background: #FFFFFF !important;
-        border: 1px solid #CBD5E1 !important;
-        border-radius: 6px !important;
-        padding: 6px 12px !important;
-        box-shadow: none !important;
-        flex: 1 !important;
-        min-width: 100px !important;
-      }
-
-      .summary-strip-label {
-        font-size: 6.5pt !important;
-        color: #64748B !important;
-        font-weight: 700 !important;
-      }
-
-      .summary-strip-val {
-        font-size: 9.5pt !important;
-        color: #0B3D2E !important;
-        font-weight: 800 !important;
       }
     }
   </style>
@@ -878,7 +865,6 @@
               <label class="filter-label" for="filterSection">Class Section</label>
               <select id="filterSection" class="filter-select">
                 <option value="ALL">All Sections</option>
-                <option value="SMP A">Section SMP A</option>
                 <option value="A">Section A</option>
                 <option value="B">Section B</option>
                 <option value="C">Section C</option>
@@ -979,6 +965,6 @@
 
   <!-- Layout & Controller Scripts -->
   <script src="../student/js/student-layout.js?v=20"></script>
-  <script src="js/report-generation.js?v=28"></script>
+  <script src="js/report-generation.js?v=30"></script>
 </body>
 </html>

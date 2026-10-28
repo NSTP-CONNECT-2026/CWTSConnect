@@ -88,8 +88,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (headerAcademicInfo) {
       const parts = [];
       if (profile.course) parts.push(profile.course);
-      if (profile.year_level) parts.push(`Year ${profile.year_level}`);
-      if (profile.section) parts.push(`Sec ${profile.section}`);
+      if (profile.year_level) {
+        const yStr = String(profile.year_level).trim();
+        parts.push(yStr.toLowerCase().includes('year') ? yStr : `${yStr} Year`);
+      }
+      if (profile.section) {
+        const sStr = String(profile.section).trim();
+        parts.push(sStr.toLowerCase().startsWith('section') ? sStr : `Section ${sStr.replace(/^sec\.?\s*/i, '')}`);
+      }
       headerAcademicInfo.textContent = parts.join(' • ') || 'CWTS Student';
     }
 

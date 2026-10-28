@@ -281,7 +281,8 @@
       if (avatarEl) avatarEl.textContent = getInitials(student.student_name);
       if (nameEl) nameEl.textContent = student.student_name || 'Student Volunteer';
       if (metaEl) {
-        metaEl.textContent = `${student.course || 'BSIT'} • Section ${student.section || '1'} • ID: ${student.student_number || '---'}`;
+        const secStr = student.section ? (String(student.section).toLowerCase().startsWith('section') ? student.section : `Section ${String(student.section).replace(/^sec\.?\s*/i, '')}`) : 'Section A';
+        metaEl.textContent = `${student.course || 'BSIT'} • ${secStr} • ID: ${student.student_number || '---'}`;
       }
       if (actEl) {
         actEl.textContent = `Activity: ${student.activity_title || 'Community Activity'} • ${student.deployment_batch_name || 'Batch'}`;
@@ -452,7 +453,8 @@
       if (avatarEl) avatarEl.textContent = getInitials(student.student_name);
       if (nameEl) nameEl.textContent = student.student_name || 'Student Volunteer';
       if (metaEl) {
-        metaEl.textContent = `${student.course || 'BSIT'} • Section ${student.section || '1'} • ID: ${student.student_number || '---'}`;
+        const secStr = student.section ? (String(student.section).toLowerCase().startsWith('section') ? student.section : `Section ${String(student.section).replace(/^sec\.?\s*/i, '')}`) : 'Section A';
+        metaEl.textContent = `${student.course || 'BSIT'} • ${secStr} • ID: ${student.student_number || '---'}`;
       }
       if (actEl) {
         actEl.textContent = `Activity: ${student.activity_title || 'Community Activity'} • ${student.deployment_batch_name || 'Batch'}`;
@@ -697,7 +699,9 @@
     tbody.innerHTML = batchStudents.map(s => {
       const name = escapeHtml(s.student_name || 'Student Volunteer');
       const number = escapeHtml(s.student_number || '---');
-      const courseSection = `${escapeHtml(s.course || 'BSIT')} • Sec ${escapeHtml(s.section || '1')}`;
+      const secRaw = s.section || 'Section A';
+      const secFormatted = String(secRaw).toLowerCase().startsWith('section') ? secRaw : `Section ${String(secRaw).replace(/^sec\.?\s*/i, '')}`;
+      const courseSection = `${escapeHtml(s.course || 'BSIT')} • ${escapeHtml(secFormatted)}`;
       const yearText = s.year_level ? `Year ${escapeHtml(s.year_level)}` : '';
       const initials = getInitials(s.student_name);
 
@@ -810,7 +814,9 @@
     tbody.innerHTML = filtered.map(s => {
       const name = escapeHtml(s.student_name || 'Student Volunteer');
       const number = escapeHtml(s.student_number || '---');
-      const courseSection = `${escapeHtml(s.course || 'BSIT')} • Sec ${escapeHtml(s.section || '1')}`;
+      const secRaw = s.section || 'Section A';
+      const secFormatted = String(secRaw).toLowerCase().startsWith('section') ? secRaw : `Section ${String(secRaw).replace(/^sec\.?\s*/i, '')}`;
+      const courseSection = `${escapeHtml(s.course || 'BSIT')} • ${escapeHtml(secFormatted)}`;
       const yearText = s.year_level ? `Year ${escapeHtml(s.year_level)}` : '';
       const initials = getInitials(s.student_name);
       const isEval = Boolean(s.is_evaluated && s.evaluation);

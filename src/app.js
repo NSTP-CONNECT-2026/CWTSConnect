@@ -213,11 +213,14 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
-app.use('/api/nstp', nstpRoutes);
+app.use('/api/nstp/deployments', deploymentRoutes);
+app.use('/api/student/deployments', deploymentRoutes);
+app.use('/api/nstp/dss', dssMatchingRoutes);
+app.use('/api/nstp/request-types', requestTypeRoutes);
+app.use('/api/nstp/skills', skillRoutes);
 app.use('/api/nstp', nstpRequirementRoutes);
 app.use('/api/nstp', nstpCommunityRequestRoutes);
-app.use('/api/nstp/dss', dssMatchingRoutes);
-app.use('/api/nstp/deployments', deploymentRoutes);
+app.use('/api/nstp', nstpRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/community', communityRequestRoutes);
 app.use('/api/student', studentAuthRoutes);
@@ -236,6 +239,11 @@ app.use('/api/nstp/skills', skillRoutes);
 // ─── Root Route (Landing Page) ───────────────────────────────────────────────
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
+// Convenient URL aliases for Forgot Password
+app.get(['/forgotpassword', '/forgot-password', '/forgotpassword.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/forgot-password.html'));
 });
 
 // ─── 404 Handler ──────────────────────────────────────────────────────────────

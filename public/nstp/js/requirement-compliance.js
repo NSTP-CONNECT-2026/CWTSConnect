@@ -182,12 +182,40 @@ document.addEventListener('DOMContentLoaded', function () {
       const result = await res.json();
       allComplianceRecords = (result.success && Array.isArray(result.data)) ? result.data : [];
 
+      updateKPIStats(allComplianceRecords);
       updateCourseFilterOptions(allComplianceRecords);
       renderTable(allComplianceRecords);
     } catch (err) {
       console.error('Error loading requirements list:', err);
+      updateKPIStats([]);
       renderTable([]);
     }
+  }
+
+  function updateKPIStats(records) {
+    if (!records || !Array.isArray(records)) return;
+    const total = records.length;
+    const compliant = records.filter(item => {
+      const compStatus = (item.compliance_status || item.cmo_compliance_status || '').toLowerCase();
+      const approvedCount = item.approved_count || 0;
+      const totalDocs = item.total_required || 4;
+      return compStatus === 'compliant' || approvedCount >= totalDocs;
+    }).length;
+
+    const pending = records.filter(item => {
+      const compStatus = (item.compliance_status || item.cmo_compliance_status || '').toLowerCase();
+      const approvedCount = item.approved_count || 0;
+      const totalDocs = item.total_required || 4;
+      const subCount = item.submitted_documents_count || 0;
+      return compStatus === 'pending_review' || (subCount >= totalDocs && approvedCount < totalDocs);
+    }).length;
+
+    const incomplete = total - compliant - pending;
+
+    if (statTotalStudents) statTotalStudents.textContent = total;
+    if (statCompliantStudents) statCompliantStudents.textContent = compliant;
+    if (statPendingReviews) statPendingReviews.textContent = pending;
+    if (statNonCompliant) statNonCompliant.textContent = incomplete;
   }
 
   function updateCourseFilterOptions() {
@@ -270,15 +298,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const compStatus = (item.compliance_status || item.cmo_compliance_status || '').toLowerCase();
       const approvedCount = item.approved_count ?? 0;
-      const pendingCount = item.pending_count ?? 0;
+      const totalDocs = item.total_required || 4;
+      const subCount = item.submitted_documents_count ?? 0;
+
+      const isCompliant = compStatus === 'compliant' || approvedCount >= totalDocs;
+      const isPending = compStatus === 'pending_review' || (subCount >= totalDocs && approvedCount < totalDocs);
+      const isIncomplete = !isCompliant && !isPending;
 
       let statusMatch = true;
       if (status === 'compliant') {
-        statusMatch = compStatus === 'compliant' || approvedCount === 4;
+        statusMatch = isCompliant;
       } else if (status === 'pending') {
-        statusMatch = compStatus === 'pending_review' || pendingCount > 0;
+        statusMatch = isPending;
       } else if (status === 'incomplete') {
-        statusMatch = compStatus === 'incomplete' || compStatus === 'non_compliant' || compStatus === 'rejected';
+        statusMatch = isIncomplete;
       }
 
       return searchMatch && courseMatch && yearMatch && sectionMatch && statusMatch;
@@ -313,7 +346,10 @@ document.addEventListener('DOMContentLoaded', function () {
       const section = p.section ? escapeHtml(p.section) : '';
       const yearSecParts = [];
       if (year) yearSecParts.push(year);
-      if (section) yearSecParts.push(`Sec ${section}`);
+      if (section) {
+        const secText = section.toLowerCase().startsWith('section') ? section : `Section ${section.replace(/^sec\.?\s*/i, '')}`;
+        yearSecParts.push(secText);
+      }
       const yearSection = yearSecParts.join(' • ') || 'Not Specified';
 
       const studentId = item.student_id || item.user_id || item.id;
@@ -326,16 +362,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Overall Status Badge
       const compStatus = (item.compliance_status || item.cmo_compliance_status || '').toLowerCase();
-      const isCompliant = approvedCount === totalDocs || compStatus === 'compliant';
-      const hasPending = (item.pending_count > 0) || compStatus === 'pending_review';
+      const isCompliant = approvedCount >= totalDocs || compStatus === 'compliant';
+      const isPending = compStatus === 'pending_review' || (item.submitted_documents_count >= totalDocs && approvedCount < totalDocs);
 
       let overallBadge = '';
       if (isCompliant) {
         overallBadge = '<span class="badge badge-complete">Fully Compliant</span>';
-      } else if (hasPending) {
+      } else if (isPending) {
         overallBadge = '<span class="badge badge-pending">Review Pending</span>';
       } else {
-        overallBadge = '<span class="badge badge-rejected">Incomplete</span>';
+        let pendingNote = '';
+        if (item.pending_count > 0) {
+          pendingNote = `<div style="font-size: 0.6875rem; color: #D97706; margin-top: 3px; font-weight: 600;">(${item.pending_count} for review)</div>`;
+        }
+        overallBadge = `<div><span class="badge badge-rejected">Incomplete</span>${pendingNote}</div>`;
       }
 
       return `

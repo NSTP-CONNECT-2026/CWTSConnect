@@ -254,34 +254,16 @@
                   <span class="detail-item-value" id="deploySchedule">Flexible / As Scheduled</span>
                 </div>
               </div>
-
-              <!-- Quick Action Bar -->
-              <div class="deployment-quick-actions">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="window.switchDeploymentTab('attendance')">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <polyline points="9 11 12 14 22 4"></polyline>
-                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                  </svg>
-                  <span>Attendance Check-In</span>
-                </button>
-                <button type="button" class="btn btn-primary btn-sm" onclick="window.switchDeploymentTab('hours')">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                  <span>View Rendered Hours</span>
-                </button>
-              </div>
             </div>
 
           </div>
 
           <!-- ====================================================================
-               TAB 2: ATTENDANCE (Check In / Out & Attendance History)
+               TAB 2: ATTENDANCE (Attendance Monitoring & History)
                ==================================================================== -->
           <div class="deployment-tab-pane" id="paneAttendance" role="tabpanel">
             
-            <!-- Minimized Check In / Out Live Bar -->
+            <!-- Attendance Monitoring Live Status Banner -->
             <div class="check-in-hero" id="checkInHero">
               <div class="check-in-info">
                 <div class="check-in-icon-badge" id="checkInIconBadge">
@@ -292,36 +274,21 @@
                 </div>
                 <div class="check-in-text-group">
                   <div class="check-in-header-line">
-                    <span class="check-in-title" id="checkInStatusTitle">Check-In Inactive</span>
+                    <span class="check-in-title" id="checkInStatusTitle">Official Attendance Recording</span>
                     <span class="live-time-ticker" id="liveClockTicker">--:--:-- --</span>
                   </div>
-                  <div class="check-in-desc" id="checkInStatusDesc">You do not have an active deployment assignment yet. Daily check-in will become available once assigned to a community activity.</div>
+                  <div class="check-in-desc" id="checkInStatusDesc">Attendance and service hours are recorded and verified directly on-site by your assigned Barangay / Community Official.</div>
                 </div>
               </div>
 
-              <!-- Action Controls -->
+              <!-- Status Badges -->
               <div class="check-in-controls">
                 <span class="badge badge-locked" id="badgeNoDeployment">
                   No Active Deployment
                 </span>
-
-                <button type="button" class="btn btn-primary btn-sm hidden" id="btnCheckIn">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                    <polyline points="10 17 15 12 10 7"></polyline>
-                    <line x1="15" y1="12" x2="3" y2="12"></line>
-                  </svg>
-                  <span>Check In Today</span>
-                </button>
-
-                <button type="button" class="btn btn-secondary btn-sm hidden" id="btnCheckOut" style="color: #DC2626; border-color: rgba(220, 38, 38, 0.3);">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                  </svg>
-                  <span>Check Out Now</span>
-                </button>
+                <span class="badge badge-approved hidden" id="badgeActiveDeployment">
+                  Active Deployment
+                </span>
               </div>
             </div>
 
@@ -445,7 +412,7 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <!-- Scripts -->
-  <script src="js/student-layout.js?v=31"></script>
-  <script src="js/deployment.js?v=31"></script>
+  <script src="js/student-layout.js?v=34"></script>
+  <script src="js/deployment.js?v=33"></script>
 </body>
 </html>

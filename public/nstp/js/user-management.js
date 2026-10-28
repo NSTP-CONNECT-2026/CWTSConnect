@@ -485,13 +485,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     studentsTableBody.innerHTML = students.map(s => {
       const p = s.student_profiles || {};
-      const name = escapeHtml(p.full_name || s.full_name || 'Student Volunteer');
-      const studentNumber = escapeHtml(p.student_number || s.student_number || 'No ID');
+      const isProfileComplete = Boolean(p.full_name && (p.course || p.section));
+      const name = escapeHtml(p.full_name || s.full_name || s.email || 'Student Volunteer');
+      const studentNumber = escapeHtml(p.student_number || s.student_number || '---');
       const email = escapeHtml(s.email || 'N/A');
-      const rawCourse = p.course || s.course || 'BSIT';
-      const courseAbbr = escapeHtml(getCourseAbbreviation(rawCourse));
-      const courseFull = escapeHtml(rawCourse);
-      const yearSection = `${escapeHtml(p.year_level || s.year_level || '1st Year')} • Section ${escapeHtml(p.section || s.section || '1')}`;
+      const rawCourse = isProfileComplete ? (p.course || s.course || 'BSIT') : '---';
+      const courseAbbr = isProfileComplete ? escapeHtml(getCourseAbbreviation(rawCourse)) : '---';
+      const courseFull = isProfileComplete ? escapeHtml(rawCourse) : 'Pending Profile';
+
+      let yearSection = '';
+      if (!isProfileComplete) {
+        yearSection = '<span style="color: #92400E; font-size: 0.75rem; font-weight: 600;">Pending Profile</span>';
+      } else {
+        const secRaw = p.section || s.section || 'Section A';
+        const secFormatted = String(secRaw).toLowerCase().startsWith('section') ? secRaw : `Section ${String(secRaw).replace(/^sec\.?\s*/i, '')}`;
+        yearSection = `${escapeHtml(p.year_level || s.year_level || '1st Year')} • ${escapeHtml(secFormatted)}`;
+      }
       const location = `${escapeHtml(p.barangay || s.barangay || '---')}, ${escapeHtml(p.municipality || s.municipality || '---')}`;
       const province = escapeHtml(p.province || s.province || 'Laguna');
 
@@ -516,13 +525,6 @@ document.addEventListener('DOMContentLoaded', function () {
           </td>
           <td>
             ${isActive ? '<span class="badge badge-complete">Active</span>' : '<span class="badge badge-rejected">Inactive</span>'}
-          </td>
-          <td>
-            <div class="table-actions" style="display: flex; gap: 6px; align-items: center;">
-              <button type="button" class="action-btn-sm action-btn-status-toggle" onclick="event.stopPropagation(); window.toggleStudentStatus('${escapeHtml(String(userId))}', ${isActive})" title="${isActive ? 'Deactivate Account' : 'Activate Account'}">
-                ${isActive ? 'Deactivate' : 'Activate'}
-              </button>
-            </div>
           </td>
         </tr>
       `;
@@ -629,10 +631,19 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
 
+        const isProfileComplete = Boolean(p.full_name && (p.course || p.section));
         const isActive = s.account_status !== 'inactive' && s.is_active !== false;
         const isCompliant = s.cmo_compliance_status === 'compliant';
         const totalHours = Number(s.total_hours_rendered || 0).toFixed(1);
         const totalDeployments = s.total_deployments_count || 0;
+
+        let modalCourseYearSec = '<span style="color: #92400E; font-weight: 600;">Pending Profile Setup</span>';
+        if (isProfileComplete) {
+          const mCourse = escapeHtml(p.course || s.course || 'BSIT');
+          const mYear = escapeHtml(p.year_level || s.year_level || '1st Year');
+          const mSec = escapeHtml(String(p.section || s.section || 'Section A').toLowerCase().startsWith('section') ? (p.section || s.section) : `Section ${String(p.section || s.section || 'A').replace(/^sec\.?\s*/i, '')}`);
+          modalCourseYearSec = `${mCourse} - ${mYear} (${mSec})`;
+        }
 
         studentModalBody.innerHTML = `
           <div style="display: flex; flex-direction: column; gap: 16px;">
@@ -650,11 +661,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 <span class="badge badge-complete">${escapeHtml(p.nstp_component || s.nstp_component || 'CWTS')}</span>
               </div>
             </div>
-
             <div class="meta-list">
               <div class="meta-item">
                 <span class="meta-label">Course & Year Level</span>
-                <span class="meta-value">${escapeHtml(p.course || s.course || '---')} - ${escapeHtml(p.year_level || s.year_level || '1st Year')} (Section ${escapeHtml(p.section || s.section || '1')})</span>
+                <span class="meta-value">${modalCourseYearSec}</span>
               </div>
               <div class="meta-item">
                 <span class="meta-label">Contact Number</span>

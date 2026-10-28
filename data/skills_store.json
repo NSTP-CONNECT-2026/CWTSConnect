@@ -126,60 +126,6 @@
     "updated_at": "2026-09-01T08:00:00.000Z"
   },
   {
-    "skill_id": "51daac7e-ee94-4d31-9d58-c3676621d815",
-    "name": "TESTING SKILL 1",
-    "description": "AWDWAKDAWDAWKDKAWD",
-    "category": "General",
-    "is_active": true,
-    "created_at": "2026-09-20T19:11:02.112Z",
-    "updated_at": "2026-09-20T19:11:02.112Z"
-  },
-  {
-    "skill_id": "ea5f3625-429b-4c44-8250-99aa5569b6fa",
-    "name": "TESTING SKILL 2",
-    "description": "afafaefaefsefsefsef",
-    "category": "General",
-    "is_active": true,
-    "created_at": "2026-09-20T19:12:39.027Z",
-    "updated_at": "2026-09-20T19:12:39.027Z"
-  },
-  {
-    "skill_id": "5f63dc29-b054-4ba5-a093-72c195aca0c1",
-    "name": "TESTING SKILL 3",
-    "description": "WALA",
-    "category": "General",
-    "is_active": true,
-    "created_at": "2026-09-20T19:16:58.240Z",
-    "updated_at": "2026-09-20T19:16:58.240Z"
-  },
-  {
-    "skill_id": "bd7f65be-4cc2-46d9-83d7-748ca9eee7ae",
-    "name": "TESTING SKILL 4",
-    "description": "",
-    "category": "General",
-    "is_active": true,
-    "created_at": "2026-09-20T19:18:45.989Z",
-    "updated_at": "2026-09-20T19:18:45.989Z"
-  },
-  {
-    "skill_id": "749ca1c6-5d6b-49b0-852e-f095b3f9ad5c",
-    "name": "TESTING SKILL 5",
-    "description": "",
-    "category": "General",
-    "is_active": true,
-    "created_at": "2026-09-20T19:36:22.399Z",
-    "updated_at": "2026-09-20T19:36:22.399Z"
-  },
-  {
-    "skill_id": "c195a8ed-aecd-46ba-8305-3468dd5f53fb",
-    "name": "TESTING SKILL 6",
-    "description": "sfsfse",
-    "category": "General",
-    "is_active": true,
-    "created_at": "2026-09-20T19:36:32.345Z",
-    "updated_at": "2026-09-20T19:36:32.345Z"
-  },
-  {
     "skill_id": "sk-012",
     "name": "Video Editing",
     "category": "Media & Creative",

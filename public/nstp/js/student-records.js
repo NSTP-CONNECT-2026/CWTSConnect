@@ -443,6 +443,19 @@ function renderCMORequirements(requirements) {
 }
 
 /**
+ * Format requirement type name
+ */
+function getRequirementTypeName(type) {
+  const requirementTypes = {
+    'notarized_parent_waiver': 'Notarized Parent Waiver',
+    'validated_student_id': 'Validated Student ID',
+    'valid_parent_id': 'Valid Parent ID',
+    'medical_certificate': 'Medical Certificate'
+  };
+  return requirementTypes[type] || type || 'Document';
+}
+
+/**
  * Get requirement status badge class
  */
 function getRequirementStatusBadge(status) {

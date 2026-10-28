@@ -1,34 +1,5 @@
 [
   {
-    "type_id": "868029dc-dfe1-4cea-8e37-86692004fbe5",
-    "name": "DADAWDAWDAWDAD",
-    "description": "adawdawdawdawdawdawdaw",
-    "required_skills": [
-      "Leadership",
-      "Documentation",
-      "Event Management",
-      "Social Media Management"
-    ],
-    "is_active": true,
-    "created_by": "76dbbecd-4deb-4b6d-9c23-1f1e58df5916",
-    "created_at": "2026-10-05T02:33:27.997Z",
-    "updated_at": "2026-10-19T06:34:28.179Z"
-  },
-  {
-    "type_id": "f7121aad-c03b-4096-8f63-ba0e2014c97b",
-    "name": "TESTING REQUEST TYPE 1",
-    "description": "ADAWDWADADADADAWDAWD",
-    "required_skills": [
-      "TESTING SKILL 2",
-      "TESTING SKILL 3",
-      "TESTING SKILL 6"
-    ],
-    "is_active": true,
-    "created_by": "76dbbecd-4deb-4b6d-9c23-1f1e58df5916",
-    "created_at": "2026-09-20T19:37:10.430Z",
-    "updated_at": "2026-09-20T19:37:10.431Z"
-  },
-  {
     "type_id": "rt-001",
     "name": "Clean-up Drive & Environmental Sanitation",
     "description": "Community-wide clean-up operations, coastal care, waste segregation drives, and waterway clearing led by student volunteers.",

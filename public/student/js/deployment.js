@@ -23,7 +23,6 @@ function initDeploymentController() {
   setupNotificationsDrawer();
   setupLiveClock();
   setupLogout();
-  setupCheckInOutActions();
 
   // Load core student data
   loadStudentData();
@@ -179,7 +178,14 @@ async function loadCurrentDeployment(userId) {
         const locationStr = [req.barangay, req.municipality, req.province].filter(Boolean).join(', ') || 'Assigned Location';
         setText('deployLocation', locationStr);
 
-        const schedStr = dep.deployment_start_date ? formatDate(dep.deployment_start_date) : 'Scheduled';
+        const startStr = dep.deployment_start_date ? formatDate(dep.deployment_start_date) : '';
+        const endStr = dep.deployment_end_date ? formatDate(dep.deployment_end_date) : '';
+        let schedStr = 'Scheduled';
+        if (startStr && endStr && startStr !== endStr) {
+          schedStr = `${startStr} – ${endStr}`;
+        } else if (startStr) {
+          schedStr = startStr;
+        }
         setText('deployDateRange', schedStr);
 
         // Schedule / Time
@@ -335,20 +341,18 @@ async function loadAttendanceData(userId) {
   }
 }
 
-function updateCheckInHeroState(isCheckedIn, record) {
+function updateCheckInHeroState() {
   const title = document.getElementById('checkInStatusTitle');
   const desc = document.getElementById('checkInStatusDesc');
-  const btnIn = document.getElementById('btnCheckIn');
-  const btnOut = document.getElementById('btnCheckOut');
   const badgeNoDep = document.getElementById('badgeNoDeployment');
+  const badgeActiveDep = document.getElementById('badgeActiveDeployment');
   const iconBadge = document.getElementById('checkInIconBadge');
 
   if (!currentDeploymentId) {
-    if (title) title.textContent = 'Check-In Inactive';
-    if (desc) desc.textContent = 'You do not have an active deployment assignment yet. Daily check-in will become available once assigned by the NSTP Coordinator.';
-    if (btnIn) btnIn.classList.add('hidden');
-    if (btnOut) btnOut.classList.add('hidden');
+    if (title) title.textContent = 'Attendance Monitoring Inactive';
+    if (desc) desc.textContent = 'You do not have an active deployment assignment yet. Attendance monitoring will begin once assigned to a community project.';
     if (badgeNoDep) badgeNoDep.classList.remove('hidden');
+    if (badgeActiveDep) badgeActiveDep.classList.add('hidden');
     if (iconBadge) {
       iconBadge.style.color = '#94A3B8';
       iconBadge.style.background = 'rgba(0, 0, 0, 0.05)';
@@ -357,127 +361,16 @@ function updateCheckInHeroState(isCheckedIn, record) {
     return;
   }
 
-  // Active deployment exists
+  // Active deployment exists - Community Official records attendance on-site
   if (badgeNoDep) badgeNoDep.classList.add('hidden');
+  if (badgeActiveDep) badgeActiveDep.classList.remove('hidden');
 
-  if (isCheckedIn && record) {
-    if (title) title.textContent = `Checked In (${formatTime(record.check_in_time)})`;
-    if (desc) desc.textContent = 'Your session is actively recording. Click Check Out when concluding today\'s community work.';
-    if (btnIn) btnIn.classList.add('hidden');
-    if (btnOut) btnOut.classList.remove('hidden');
-    if (iconBadge) {
-      iconBadge.style.color = '#10B981';
-      iconBadge.style.background = 'rgba(16, 185, 129, 0.12)';
-      iconBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-    }
-  } else {
-    if (title) title.textContent = 'Ready for Check-In';
-    if (desc) desc.textContent = 'Log your arrival and departure for today\'s deployment activity.';
-    if (btnIn) btnIn.classList.remove('hidden');
-    if (btnOut) btnOut.classList.add('hidden');
-    if (iconBadge) {
-      iconBadge.style.color = 'var(--cwts-accent-green)';
-      iconBadge.style.background = 'rgba(47, 125, 91, 0.12)';
-      iconBadge.style.borderColor = 'rgba(47, 125, 91, 0.3)';
-    }
-  }
-}
-
-function setupCheckInOutActions() {
-  const btnIn = document.getElementById('btnCheckIn');
-  const btnOut = document.getElementById('btnCheckOut');
-
-  if (btnIn) {
-    btnIn.addEventListener('click', async () => {
-      if (!currentDeploymentId) {
-        showToast('You must have an active deployment assignment to check in.', 'error');
-        return;
-      }
-
-      btnIn.disabled = true;
-      btnIn.innerHTML = '<span>Checking In...</span>';
-
-      try {
-        const res = await fetch(`/api/attendance/check-in`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            deployment_id: currentDeploymentId,
-            attendance_date: new Date().toISOString().split('T')[0],
-            check_in_time: new Date().toISOString()
-          })
-        });
-
-        const json = await res.json();
-        if (json.success) {
-          showToast('Check-in recorded successfully!', 'success');
-          await loadAttendanceData(currentStudentUser.user_id);
-          await loadServiceHoursData(currentStudentUser.user_id);
-        } else {
-          showToast(json.message || 'Check-in failed.', 'error');
-        }
-      } catch (err) {
-        showToast('Network error while checking in.', 'error');
-      } finally {
-        btnIn.disabled = false;
-        btnIn.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-            <polyline points="10 17 15 12 10 7"></polyline>
-            <line x1="15" y1="12" x2="3" y2="12"></line>
-          </svg>
-          <span>Check In Today</span>
-        `;
-      }
-    });
-  }
-
-  if (btnOut) {
-    btnOut.addEventListener('click', async () => {
-      if (!activeAttendanceRecord) {
-        showToast('No active check-in session found.', 'error');
-        return;
-      }
-
-      btnOut.disabled = true;
-      btnOut.innerHTML = '<span>Checking Out...</span>';
-
-      try {
-        const recordId = activeAttendanceRecord.attendance_id || activeAttendanceRecord.id;
-        const res = await fetch(`/api/attendance/check-out`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            attendance_id: recordId,
-            check_out_time: new Date().toISOString()
-          })
-        });
-
-        const json = await res.json();
-        if (json.success) {
-          showToast('Check-out recorded successfully! Hours logged.', 'success');
-          activeAttendanceRecord = null;
-          await loadAttendanceData(currentStudentUser.user_id);
-          await loadServiceHoursData(currentStudentUser.user_id);
-        } else {
-          showToast(json.message || 'Check-out failed.', 'error');
-        }
-      } catch (err) {
-        showToast('Network error while checking out.', 'error');
-      } finally {
-        btnOut.disabled = false;
-        btnOut.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-            <polyline points="16 17 21 12 16 7"></polyline>
-            <line x1="21" y1="12" x2="9" y2="12"></line>
-          </svg>
-          <span>Check Out Now</span>
-        `;
-      }
-    });
+  if (title) title.textContent = 'Official Attendance Recording';
+  if (desc) desc.textContent = 'Daily attendance and credited service hours are recorded and verified directly on-site by your assigned Barangay / Community Official.';
+  if (iconBadge) {
+    iconBadge.style.color = '#10B981';
+    iconBadge.style.background = 'rgba(16, 185, 129, 0.12)';
+    iconBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
   }
 }
 

@@ -537,7 +537,7 @@
 /* --------------------------------------------------------------------------
    7. RESPONSIVE BREAKPOINTS & MOBILE ADAPTATIONS
    -------------------------------------------------------------------------- */
-@media (max-width: 1024px) {
+@media screen and (max-width: 1024px) {
   .deployment-details-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
@@ -548,7 +548,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   /* 3-Tab Switcher on Mobile */
   .deployment-tabs-bar {
     width: 100%;
@@ -960,7 +960,7 @@
   }
 }
 
-@media (max-width: 420px) {
+@media screen and (max-width: 420px) {
   .deployment-quick-actions {
     grid-template-columns: 1fr;
   }

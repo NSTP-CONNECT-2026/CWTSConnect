@@ -711,10 +711,6 @@
         </div>
 
       </div>
-
-      <div class="notif-drawer-footer">
-        <span class="notif-footer-text">NSTPConnect Core Real-Time Notification Feed</span>
-      </div>
     `;
 
     async function updateUnreadBadge() {

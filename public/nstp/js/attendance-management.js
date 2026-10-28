@@ -213,10 +213,16 @@
     tbody.innerHTML = records.map(r => {
       const fullName = r.student_name || 'Student Volunteer';
       const studentNumber = r.student_number || '---';
-      const course = r.course || 'BSIT';
-      const yearFormatted = formatYearLevel(r.year_level);
-      const sec = r.section ? (String(r.section).toLowerCase().startsWith('sec') ? r.section : `Sec ${r.section}`) : '';
-      const yearAndSection = `${yearFormatted}${sec ? ` • ${sec}` : ''}`;
+      const isPending = !r.section || r.section === '---' || r.year_level === '---' || r.profile_completed === false;
+      const course = isPending ? (r.course && r.course !== '---' ? r.course : '---') : (r.course || 'BSIT');
+      let yearAndSection = '---';
+      if (isPending) {
+        yearAndSection = '<span class="badge badge-pending" style="font-size: 0.75rem; padding: 3px 8px;">Pending Profile</span>';
+      } else {
+        const yearFormatted = formatYearLevel(r.year_level);
+        const sec = r.section ? (String(r.section).toLowerCase().startsWith('section') ? r.section : `Section ${String(r.section).replace(/^sec\.?\s*/i, '')}`) : 'Section A';
+        yearAndSection = `${yearFormatted}${sec ? ` • ${sec}` : ''}`;
+      }
 
       const totalDeps = Number(r.total_deployments || 0);
       const totalAtt = Number(r.total_attendance || 0);
@@ -386,10 +392,14 @@
 
     const studentNumber = student.student_number || '---';
     const email = student.email || '---';
-    const course = student.course || 'BSIT';
-    const yearFormatted = formatYearLevel(student.year_level);
-    const sec = student.section ? (String(student.section).toLowerCase().startsWith('sec') ? student.section : `Sec ${student.section}`) : '';
-    const yearAndSec = `${yearFormatted}${sec ? ` • ${sec}` : ''}`;
+    const isProfilePending = (!student.full_name && !student.student_number) || student.profile_status === 'incomplete';
+    const course = isProfilePending ? (student.course && student.course !== '---' ? student.course : '---') : (student.course || 'BSIT');
+    let yearAndSec = 'Pending Profile';
+    if (!isProfilePending) {
+      const yearFormatted = formatYearLevel(student.year_level || '1st Year');
+      const sec = student.section ? (String(student.section).toLowerCase().startsWith('section') ? student.section : `Section ${String(student.section).replace(/^sec\.?\s*/i, '')}`) : 'Section A';
+      yearAndSec = `${yearFormatted}${sec ? ` • ${sec}` : ''}`;
+    }
     const component = student.nstp_component || 'CWTS';
     const contact = student.contact_number || '---';
 
@@ -668,7 +678,7 @@
   }
 
   function formatYearLevel(yearStr) {
-    if (!yearStr || yearStr === '---' || yearStr === 'N/A') return '1st Year';
+    if (!yearStr || yearStr === '---' || yearStr === 'N/A') return '---';
     const str = String(yearStr).trim();
     if (str.toLowerCase().includes('year')) return str;
     const num = parseInt(str, 10);

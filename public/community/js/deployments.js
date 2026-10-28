@@ -306,7 +306,7 @@
             <div>
               <div style="font-weight: 700; color: #1E293B; font-size: 0.875rem;">${escapeHtml(s.course || 'BSIT')}</div>
               <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; font-weight: 500;">
-                Sec ${escapeHtml(s.section || '1')}${yearFormatted ? ` • ${escapeHtml(yearFormatted)}` : ''}
+                ${escapeHtml(s.section ? (String(s.section).toLowerCase().startsWith('section') ? s.section : `Section ${String(s.section).replace(/^sec\.?\s*/i, '')}`) : 'Section A')}${yearFormatted ? ` • ${escapeHtml(yearFormatted)}` : ''}
               </div>
             </div>
           </td>

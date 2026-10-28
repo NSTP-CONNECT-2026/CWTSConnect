@@ -61,9 +61,23 @@ async function getAttendanceRecords(req, res) {
  */
 async function recordCheckIn(req, res) {
   try {
-    const { deploymentId } = req.params;
-    const studentId = req.session.user.user_id;
-    const checkInData = req.body;
+    const deploymentId = req.params.deploymentId || req.body?.deployment_id || req.body?.deploymentId || req.query?.deployment_id;
+    const studentId = req.session?.user?.user_id || req.user?.user_id;
+    const checkInData = req.body || {};
+
+    if (!studentId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
+    if (!deploymentId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Deployment ID is required for check-in'
+      });
+    }
 
     const record = await attendanceService.recordCheckIn(deploymentId, studentId, checkInData);
     
@@ -87,8 +101,15 @@ async function recordCheckIn(req, res) {
  */
 async function recordCheckOut(req, res) {
   try {
-    const { attendanceId } = req.params;
-    const checkOutData = req.body;
+    const attendanceId = req.params.attendanceId || req.body?.attendance_id || req.body?.attendanceId || req.query?.attendance_id;
+    const checkOutData = req.body || {};
+
+    if (!attendanceId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Attendance record ID is required for check-out'
+      });
+    }
 
     const record = await attendanceService.recordCheckOut(attendanceId, checkOutData);
     
@@ -412,13 +433,32 @@ module.exports = {
           if (stu.student_profiles) {
             prof = Array.isArray(stu.student_profiles) ? (stu.student_profiles[0] || {}) : stu.student_profiles;
           }
+
+          const isProfileComplete = Boolean(prof.full_name && (prof.course || prof.section));
+          let formattedSection = '---';
+          if (prof.section) {
+            const sStr = String(prof.section).trim();
+            formattedSection = sStr.toLowerCase().startsWith('section') ? sStr : `Section ${sStr.replace(/^sec\.?\s*/i, '')}`;
+          } else if (isProfileComplete) {
+            formattedSection = 'Section A';
+          }
+
+          let formattedYear = '---';
+          if (prof.year_level) {
+            const yStr = String(prof.year_level).trim();
+            formattedYear = yStr.toLowerCase().includes('year') ? yStr : (yStr === '1' ? '1st Year' : `${yStr} Year`);
+          } else if (isProfileComplete) {
+            formattedYear = '1st Year';
+          }
+
           return {
             student_user_id: stu.user_id,
             student_name: prof.full_name || stu.email,
-            student_number: prof.student_number || 'N/A',
-            course: prof.course || 'BSIT',
-            section: prof.section || '1',
-            year_level: prof.year_level || '1',
+            student_number: prof.student_number || '---',
+            course: prof.course || (isProfileComplete ? 'BSIT' : '---'),
+            section: formattedSection,
+            year_level: formattedYear,
+            profile_completed: isProfileComplete,
             total_deployments: depCountMap.get(stu.user_id) || 0,
             total_attendance: attCountMap.get(stu.user_id) || 0,
             total_hours_rendered: hoursMap.get(stu.user_id) || 0
@@ -531,14 +571,32 @@ module.exports = {
           }
         }
 
+        const isProfileComplete = Boolean(prof.full_name && (prof.course || prof.section));
+        let formattedSection = '---';
+        if (prof.section) {
+          const sStr = String(prof.section).trim();
+          formattedSection = sStr.toLowerCase().startsWith('section') ? sStr : `Section ${sStr.replace(/^sec\.?\s*/i, '')}`;
+        } else if (isProfileComplete) {
+          formattedSection = 'Section A';
+        }
+
+        let formattedYear = '---';
+        if (prof.year_level) {
+          const yStr = String(prof.year_level).trim();
+          formattedYear = yStr.toLowerCase().includes('year') ? yStr : (yStr === '1' ? '1st Year' : `${yStr} Year`);
+        } else if (isProfileComplete) {
+          formattedYear = '1st Year';
+        }
+
         return {
           student_user_id: item.student_user_id,
           deployment_id: deploymentId,
           student_name: prof.full_name || student.email || 'Student Volunteer',
-          student_number: prof.student_number || 'N/A',
-          course: prof.course || 'BSIT',
-          section: prof.section || '1',
-          year_level: prof.year_level || '1',
+          student_number: prof.student_number || '---',
+          course: prof.course || (isProfileComplete ? 'BSIT' : '---'),
+          section: formattedSection,
+          year_level: formattedYear,
+          profile_completed: isProfileComplete,
           total_deployments: totalDepCountMap.get(item.student_user_id) || 1,
           total_attendance: totalAttCountMap.get(item.student_user_id) || 0,
           total_hours_rendered: totalHoursMap.get(item.student_user_id) || 0,

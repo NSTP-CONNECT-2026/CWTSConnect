@@ -285,9 +285,9 @@
       const name = escapeHtml(r.student_name || 'Student Volunteer');
       const num = escapeHtml(r.student_number || '---');
       const course = escapeHtml(r.course || 'BSIT');
-      const sec = r.section ? `Sec ${r.section}` : '';
-      const yr = r.year_level ? `(Yr ${r.year_level})` : '';
-      const courseStr = `${course} ${sec} ${yr}`.trim();
+      const sec = r.section ? (String(r.section).toLowerCase().startsWith('section') ? r.section : `Section ${String(r.section).replace(/^sec\.?\s*/i, '')}`) : '';
+      const yr = r.year_level ? `(${r.year_level})` : '';
+      const courseStr = `${course}${sec ? ` • ${sec}` : ''}${yr ? ` • ${yr}` : ''}`.trim();
 
       const commName = escapeHtml(r.community_name || 'Partner Community');
       const actTitle = escapeHtml(r.activity_title || 'Community Activity');
@@ -375,9 +375,9 @@
     const name = ev.student_name || 'Student Volunteer';
     const num = ev.student_number || '---';
     const course = ev.course || 'BSIT';
-    const sec = ev.section ? `Sec ${ev.section}` : '';
-    const yr = ev.year_level ? `(Yr ${ev.year_level})` : '';
-    const courseStr = `${course} ${sec} ${yr}`.trim();
+    const sec = ev.section ? (String(ev.section).toLowerCase().startsWith('section') ? ev.section : `Section ${String(ev.section).replace(/^sec\.?\s*/i, '')}`) : '';
+    const yr = ev.year_level ? `(${ev.year_level})` : '';
+    const courseStr = `${course}${sec ? ` • ${sec}` : ''}${yr ? ` • ${yr}` : ''}`.trim();
 
     setElText('modalStudentNameTitle', `${name} - Evaluation`);
     setElText('modalDetailStudentName', name);

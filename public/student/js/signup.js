@@ -79,3 +79,21 @@ form.addEventListener('submit', async function (event) {
     setLoading(false);
   }
 });
+
+// Password visibility toggles
+document.querySelectorAll('.password-toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const targetId = btn.getAttribute('data-target');
+    const input = document.getElementById(targetId);
+    if (!input) return;
+    const isPassword = input.type === 'password';
+    input.type = isPassword ? 'text' : 'password';
+    const eyeIcon = btn.querySelector('.eye-icon');
+    const eyeOffIcon = btn.querySelector('.eye-off-icon');
+    if (eyeIcon && eyeOffIcon) {
+      eyeIcon.style.display = isPassword ? 'none' : 'block';
+      eyeOffIcon.style.display = isPassword ? 'block' : 'none';
+    }
+    btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+  });
+});

@@ -87,6 +87,18 @@ function matchCourseReport(studentCourse, filterVal) {
   return s.includes(f) || f.includes(s);
 }
 
+function formatFullSection(rawSection) {
+  if (!rawSection || rawSection === '---') return '---';
+  const str = String(rawSection).trim();
+  if (/^section\s+/i.test(str)) {
+    return 'Section ' + str.replace(/^section\s+/i, '').trim();
+  }
+  if (/^sec\.?\s+/i.test(str)) {
+    return 'Section ' + str.replace(/^sec\.?\s+/i, '').trim();
+  }
+  return 'Section ' + str;
+}
+
 function matchSectionReport(studentSection, filterVal) {
   if (!filterVal || filterVal === 'ALL' || filterVal === 'all') return true;
   if (!studentSection) return false;
@@ -217,7 +229,7 @@ async function generateReport(req, res) {
             full_name: prof.full_name || s.email,
             course: getCourseAbbr(prof.course),
             raw_course: prof.course || '',
-            section: prof.section ? (String(prof.section).startsWith('Sec') ? prof.section : `Section ${prof.section}`) : '---',
+            section: formatFullSection(prof.section),
             raw_section: prof.section || '',
             contact_number: prof.contact_number || '---',
             status: isCompleted ? 'Completed' : 'Pending Review',
@@ -316,7 +328,7 @@ async function generateReport(req, res) {
             student_name: prof.full_name || s.email,
             course: getCourseAbbr(prof.course),
             raw_course: prof.course || '',
-            section: prof.section || '',
+            section: formatFullSection(prof.section),
             medical_cert: medStatus,
             parent_consent: waiverStatus,
             waiver: idStatus,
@@ -647,7 +659,7 @@ async function generateReport(req, res) {
             student_name: prof.full_name || 'Student Volunteer',
             course: getCourseAbbr(prof.course),
             raw_course: prof.course || '',
-            section: prof.section || '',
+            section: formatFullSection(prof.section),
             community: siteName,
             time_in: formatTime(l.check_in_time),
             time_out: formatTime(l.check_out_time),
@@ -749,7 +761,7 @@ async function generateReport(req, res) {
             student_name: prof.full_name || s.email,
             course: getCourseAbbr(prof.course),
             raw_course: prof.course || '',
-            section: prof.section || '',
+            section: formatFullSection(prof.section),
             total_rendered: `${totalHrs.toFixed(1)}h`,
             raw_hours: totalHrs,
             target_hours: `${targetHours.toFixed(1)}h`,
@@ -893,7 +905,7 @@ async function generateReport(req, res) {
             student_name: e.student_name || prof.full_name || 'Student Volunteer',
             course: getCourseAbbr(prof.course || e.course),
             raw_course: prof.course || e.course || '',
-            section: prof.section || '',
+            section: formatFullSection(prof.section),
             punctuality: punc,
             engagement: eng,
             teamwork: team,

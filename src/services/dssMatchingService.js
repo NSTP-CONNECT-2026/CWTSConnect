@@ -460,7 +460,7 @@ async function getScreeningStudents(targetRequestOrId) {
         student_number: profile.student_number || 'N/A',
         course: profile.course || 'BSIT',
         year_level: profile.year_level || '1st Year',
-        section: profile.section || '1',
+        section: profile.section ? (String(profile.section).toLowerCase().startsWith('section') ? profile.section : `Section ${String(profile.section).replace(/^sec\.?\s*/i, '')}`) : 'Section A',
         nstp_component: profile.nstp_component || 'CWTS',
         barangay: profile.barangay || '',
         municipality: profile.municipality || '',

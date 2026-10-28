@@ -19,12 +19,37 @@ function setLoading(isLoading) {
   loginBtn.classList.toggle('loading', isLoading);
 }
 
-// Show success message if redirected from OTP verification
+// Setup password eye toggle and show success message if redirected from OTP verification
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   if (params.get('verified') === 'true') {
     showAlert('Email verified successfully. You can now log in.', 'success');
   }
+
+  // Password visibility toggle
+  const toggleBtns = document.querySelectorAll('.password-toggle-btn');
+  toggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      if (!input) return;
+
+      const eyeIcon = btn.querySelector('.eye-icon');
+      const eyeOffIcon = btn.querySelector('.eye-off-icon');
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.setAttribute('aria-label', 'Hide password');
+        if (eyeIcon) eyeIcon.style.display = 'none';
+        if (eyeOffIcon) eyeOffIcon.style.display = 'block';
+      } else {
+        input.type = 'password';
+        btn.setAttribute('aria-label', 'Show password');
+        if (eyeIcon) eyeIcon.style.display = 'block';
+        if (eyeOffIcon) eyeOffIcon.style.display = 'none';
+      }
+    });
+  });
 });
 
 form.addEventListener('submit', async function (event) {

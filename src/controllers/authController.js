@@ -115,7 +115,153 @@ async function logout(req, res) {
   }
 }
 
+/**
+ * POST /api/auth/forgot-password
+ * Send OTP verification code to registered email for password recovery
+ */
+async function requestPasswordResetController(req, res) {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter your registered email address.'
+      });
+    }
+
+    const { requestPasswordReset } = require('../services/authService');
+    const result = await requestPasswordReset(email);
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error('Forgot password controller error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error processing password reset request.'
+    });
+  }
+}
+
+/**
+ * POST /api/auth/verify-reset-otp
+ * Verify OTP code entered by user
+ */
+async function verifyPasswordResetOtpController(req, res) {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and verification code are required.'
+      });
+    }
+
+    const { verifyPasswordResetOtp } = require('../services/authService');
+    const result = await verifyPasswordResetOtp(email, otp);
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error('Verify reset OTP controller error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error verifying reset code.'
+    });
+  }
+}
+
+/**
+ * POST /api/auth/reset-password
+ * Reset user password with verified OTP
+ */
+async function resetPasswordController(req, res) {
+  try {
+    const { email, otp, newPassword, confirmPassword } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and verification code are required.'
+      });
+    }
+
+    if (!newPassword || newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: 'New password must be at least 8 characters long.'
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Passwords do not match.'
+      });
+    }
+
+    const { resetPasswordWithOtp } = require('../services/authService');
+    const result = await resetPasswordWithOtp(email, otp, newPassword, confirmPassword);
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error('Reset password controller error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error resetting password.'
+    });
+  }
+}
+
+/**
+ * POST /api/auth/resend-reset-otp
+ * Resend a new OTP verification code
+ */
+async function resendPasswordResetOtpController(req, res) {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter your registered email address.'
+      });
+    }
+
+    const { requestPasswordReset } = require('../services/authService');
+    const result = await requestPasswordReset(email);
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    res.json({
+      success: true,
+      message: 'A new verification code has been sent to your email.'
+    });
+  } catch (error) {
+    console.error('Resend reset OTP controller error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error resending verification code.'
+    });
+  }
+}
+
 module.exports = {
   login,
-  logout
+  logout,
+  requestPasswordResetController,
+  verifyPasswordResetOtpController,
+  resetPasswordController,
+  resendPasswordResetOtpController
 };

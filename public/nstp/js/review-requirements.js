@@ -52,8 +52,43 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
+  // Setup Delegated Event Listeners for Requirements Grid
+  setupGridEventListeners();
+
   // Initialize Page
   loadStudentRequirements();
+
+  function setupGridEventListeners() {
+    if (!requirementsGrid) return;
+
+    requirementsGrid.addEventListener('click', (e) => {
+      const viewBtn = e.target.closest('.btn-view-doc');
+      if (viewBtn) {
+        e.preventDefault();
+        const url = viewBtn.getAttribute('data-file-url');
+        const title = viewBtn.getAttribute('data-title');
+        const fileName = viewBtn.getAttribute('data-file-name');
+        const status = viewBtn.getAttribute('data-status');
+        const date = viewBtn.getAttribute('data-date');
+        if (typeof window.openDocumentViewer === 'function') {
+          window.openDocumentViewer(url, title, fileName, status, date);
+        } else if (url) {
+          window.open(url, '_blank');
+        }
+        return;
+      }
+
+      const reviewBtn = e.target.closest('.btn-review-action');
+      if (reviewBtn) {
+        e.preventDefault();
+        const reqId = reviewBtn.getAttribute('data-req-id');
+        const action = reviewBtn.getAttribute('data-action');
+        if (reqId && action && typeof window.submitReview === 'function') {
+          window.submitReview(reqId, action);
+        }
+      }
+    });
+  }
 
   async function loadStudentRequirements() {
     showLoading();
@@ -90,8 +125,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const name = p.full_name || s.full_name || 'Student';
     const num = p.student_number || s.student_number || 'N/A';
     const email = s.email || 'N/A';
-    const course = p.course || 'BSIT';
-    const yearSection = `${p.year_level || '1st Year'} • Section ${p.section || '1'}`;
+    const course = p.course || s.course || 'BSIT';
+    const secRaw = p.section || s.section || 'Section A';
+    const secFormatted = String(secRaw).toLowerCase().startsWith('section') ? secRaw : `Section ${String(secRaw).replace(/^sec\.?\s*/i, '')}`;
+    const yearSection = `${p.year_level || s.year_level || '1st Year'} • ${secFormatted}`;
 
     if (studentName) studentName.textContent = name;
     if (studentNumber) studentNumber.textContent = num;
@@ -130,7 +167,10 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!reqDoc) {
         reqDoc = reqMap[typeDef.name.toLowerCase().replace(/[\s/-]+/g, '_')];
       }
-      const status = (reqDoc ? reqDoc.status || reqDoc.verification_status || 'pending' : 'not_submitted').toLowerCase();
+
+      // Truly submitted if record exists and is not 'not_submitted' with valid ID or file
+      const isSubmitted = !!(reqDoc && reqDoc.status && reqDoc.status.toLowerCase() !== 'not_submitted' && (reqDoc.file_url || reqDoc.file_path || reqDoc.requirement_id || reqDoc.id));
+      const status = (isSubmitted ? (reqDoc.status || reqDoc.verification_status || 'pending') : 'not_submitted').toLowerCase();
 
       if (status === 'approved') approvedCount++;
 
@@ -145,11 +185,22 @@ document.addEventListener('DOMContentLoaded', function () {
         badgeHtml = '<span class="badge badge-warning">Not Submitted</span>';
       }
 
-      const fileUrl = reqDoc ? (reqDoc.file_url || reqDoc.file_path || `/api/nstp/requirements/file/${reqDoc.requirement_id || reqDoc.id}`) : null;
-      const fileName = reqDoc ? (reqDoc.file_name || `${typeDef.name} Upload`) : null;
-      const submittedAt = reqDoc && reqDoc.created_at ? new Date(reqDoc.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null;
-      const reqId = reqDoc ? (reqDoc.requirement_id || reqDoc.id) : null;
-      const remarks = reqDoc ? (reqDoc.remarks || '') : '';
+      const reqId = isSubmitted ? (reqDoc.requirement_id || reqDoc.id || null) : null;
+      let fileUrl = null;
+      if (isSubmitted) {
+        if (reqDoc.file_url && String(reqDoc.file_url).startsWith('http')) {
+          fileUrl = reqDoc.file_url;
+        } else if (reqDoc.file_path && String(reqDoc.file_path).startsWith('http')) {
+          fileUrl = reqDoc.file_path;
+        } else if (reqId && reqId !== 'undefined' && reqId !== 'null') {
+          fileUrl = `/api/nstp/requirements/file/${encodeURIComponent(reqId)}`;
+        }
+      }
+
+      const fileName = isSubmitted ? (reqDoc.file_name || `${typeDef.name} Upload`) : null;
+      const rawDate = isSubmitted ? (reqDoc.uploaded_at || reqDoc.created_at) : null;
+      const submittedAt = rawDate ? new Date(rawDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null;
+      const remarks = isSubmitted ? (reqDoc.remarks || '') : '';
 
       return `
         <div class="req-item-card" id="card_${typeDef.key}">
@@ -162,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
               <div>${badgeHtml}</div>
             </div>
 
-            ${reqDoc ? `
+            ${isSubmitted ? `
               <div class="req-file-preview-box">
                 <div class="file-info-snippet">
                   <div class="file-icon-badge">
@@ -177,8 +228,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 ${fileUrl ? `
                   <button type="button" 
-                          class="btn btn-secondary btn-sm"
-                          onclick="openDocumentViewer('${escapeHtml(fileUrl)}', '${escapeHtml(typeDef.title)}', '${escapeHtml(fileName)}', '${escapeHtml(status)}', '${escapeHtml(submittedAt)}')"
+                          class="btn btn-secondary btn-sm btn-view-doc"
+                          data-file-url="${escapeHtml(fileUrl)}"
+                          data-title="${escapeHtml(typeDef.name)}"
+                          data-file-name="${escapeHtml(fileName)}"
+                          data-status="${escapeHtml(status)}"
+                          data-date="${escapeHtml(submittedAt || '')}"
                           title="Preview document in modal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -201,16 +256,16 @@ document.addEventListener('DOMContentLoaded', function () {
             `}
           </div>
 
-          ${reqDoc ? `
+          ${isSubmitted && reqId ? `
             <div class="req-review-actions">
-              <button type="button" class="btn btn-secondary btn-sm" style="color: #DC2626; border-color: rgba(239, 68, 68, 0.4);" onclick="window.submitReview('${reqId}', 'rejected')">
+              <button type="button" class="btn btn-secondary btn-sm btn-review-action" style="color: #DC2626; border-color: rgba(239, 68, 68, 0.4);" data-action="rejected" data-req-id="${escapeHtml(reqId)}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
                 <span>Reject</span>
               </button>
-              <button type="button" class="btn btn-primary btn-sm" onclick="window.submitReview('${reqId}', 'approved')">
+              <button type="button" class="btn btn-primary btn-sm btn-review-action" data-action="approved" data-req-id="${escapeHtml(reqId)}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
@@ -227,12 +282,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Overall Status Progress
     if (approvedDocsCount) approvedDocsCount.textContent = `${approvedCount} of 4 Requirements Approved`;
     if (overallStatusBadge) {
+      const actuallySubmitted = submittedReqs.filter(r => r.status && r.status.toLowerCase() !== 'not_submitted' && (r.file_url || r.file_path || r.requirement_id || r.id));
       if (approvedCount === 4) {
         overallStatusBadge.className = 'badge badge-complete';
         overallStatusBadge.textContent = 'Fully Compliant';
-      } else if (submittedReqs.some(r => (r.status || '').toLowerCase() === 'pending')) {
+      } else if (actuallySubmitted.length === 4 && actuallySubmitted.some(r => (r.status || '').toLowerCase() === 'pending')) {
         overallStatusBadge.className = 'badge badge-pending';
-        overallStatusBadge.textContent = 'Review In Progress';
+        overallStatusBadge.textContent = 'Pending Verification';
       } else {
         overallStatusBadge.className = 'badge badge-rejected';
         overallStatusBadge.textContent = 'Incomplete';

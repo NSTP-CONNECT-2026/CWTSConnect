@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function () {
         student_number: p.student_number || s.student_number || 'N/A',
         course: p.course || s.course || 'BSIT',
         year_level: p.year_level || s.year_level || '1st Year',
-        section: p.section || s.section || '1',
+        section: (p.section || s.section) ? (String(p.section || s.section).toLowerCase().startsWith('section') ? (p.section || s.section) : `Section ${String(p.section || s.section).replace(/^sec\.?\s*/i, '')}`) : 'Section A',
         barangay: p.barangay || s.barangay || '',
         municipality: p.municipality || s.municipality || '',
         province: p.province || s.province || '',
@@ -614,8 +614,10 @@ document.addEventListener('DOMContentLoaded', function () {
       const name = escapeHtml(item.full_name || 'Student Candidate');
       const num = escapeHtml(item.student_number || 'N/A');
       const email = escapeHtml(item.email || '');
-      const course = escapeHtml(item.course || 'BSIT');
-      const yearSec = `${escapeHtml(item.year_level || '1st Year')} • Sec ${escapeHtml(item.section || '1')}`;
+      const course = escapeHtml(item.course || (item.profile && item.profile.course) || (item.student && item.student.course) || 'BS Information Technology');
+      const secRaw = item.section || 'Section A';
+      const secFormatted = String(secRaw).toLowerCase().startsWith('section') ? secRaw : `Section ${String(secRaw).replace(/^sec\.?\s*/i, '')}`;
+      const yearSec = `${escapeHtml(item.year_level || '1st Year')} • ${escapeHtml(secFormatted)}`;
       const approved = item.approvedDocsCount;
 
       // Check 1: Mandatory CMO Requirements
@@ -813,8 +815,10 @@ document.addEventListener('DOMContentLoaded', function () {
       const studentId = s.user_id || s.id;
       const studentName = escapeHtml(p.full_name || s.full_name || 'Candidate');
       const studentNumber = escapeHtml(p.student_number || s.student_number || 'N/A');
-      const course = escapeHtml(p.course || s.course || 'BSIT');
-      const yearSec = `${escapeHtml(p.year_level || s.year_level || '1st Year')} • Sec ${escapeHtml(p.section || s.section || '1')}`;
+      const course = escapeHtml(item.course || (p && p.course) || (s && s.course) || 'BS Information Technology');
+      const secRaw = p.section || s.section || 'Section A';
+      const secFormatted = String(secRaw).toLowerCase().startsWith('section') ? secRaw : `Section ${String(secRaw).replace(/^sec\.?\s*/i, '')}`;
+      const yearSec = `${escapeHtml(p.year_level || s.year_level || '1st Year')} • ${escapeHtml(secFormatted)}`;
       const address = `${escapeHtml(p.barangay || s.barangay || '')}, ${escapeHtml(p.municipality || s.municipality || '')}`;
 
       // A. Location Compatibility Evaluation (Cost Criterion)
@@ -1385,8 +1389,9 @@ document.addEventListener('DOMContentLoaded', function () {
       // Merge remote student data with in-memory DSS metrics
       const studentName = (profileData && profileData.full_name) || (candidate && candidate.studentName) || 'Student Candidate';
       const studentNum = (profileData && profileData.student_number) || (candidate && candidate.studentNumber) || 'N/A';
-      const course = (profileData && profileData.course) || (candidate && candidate.course) || 'CWTS';
-      const section = (profileData && profileData.section) || (candidate && candidate.yearSec) || '1';
+      const course = (profileData && profileData.course) || (candidate && candidate.course) || 'BS Information Technology';
+      const rawSec = (profileData && profileData.section) || (candidate && candidate.yearSec) || 'Section A';
+      const section = String(rawSec).toLowerCase().startsWith('section') ? rawSec : `Section ${String(rawSec).replace(/^sec\.?\s*/i, '')}`;
       const email = (profileData && profileData.email) || (candidate && candidate.email) || 'Not provided';
       const contact = (profileData && profileData.contact_number) || (candidate && candidate.contactNumber) || 'Not provided';
       const address = (profileData && (profileData.complete_address || `${profileData.barangay || ''}, ${profileData.municipality || ''}`)) || (candidate && candidate.address) || 'Not specified';
