@@ -202,7 +202,7 @@
       const checkOutTime = todayAtt ? todayAtt.check_out_time : null;
       const attDate = todayAtt ? todayAtt.attendance_date : null;
       const createdAt = todayAtt ? (todayAtt.created_at || todayAtt.updated_at) : null;
-      const isLive = isSessionLive(checkInTime, checkOutTime);
+      const isLive = isSessionLive(checkInTime, checkOutTime, attDate);
       const baseHours = Number(s.hours_rendered || s.total_hours_rendered || 0);
 
       const isCredited = Boolean(
@@ -293,19 +293,28 @@
     startLiveHourTicker();
   }
 
-  function isSessionLive(checkInTime, checkOutTime) {
+  function isSessionLive(checkInTime, checkOutTime, attDate) {
     if (!checkInTime || checkInTime === '---' || String(checkInTime).toUpperCase() === 'N/A' || String(checkInTime).toUpperCase() === 'N\\A') {
       return false;
     }
-    // If Time Out is N/A or empty, duty is actively ongoing -> LIVE!
-    if (!checkOutTime || checkOutTime === '---' || String(checkOutTime).toUpperCase() === 'N/A' || String(checkOutTime).toUpperCase() === 'N\\A') {
+    const isTimeoutNA = !checkOutTime || checkOutTime === '---' || String(checkOutTime).toUpperCase() === 'N/A' || String(checkOutTime).toUpperCase() === 'N\\A';
+    if (isTimeoutNA) {
+      const todayStr = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+      const sessionDate = attDate ? String(attDate).split('T')[0] : todayStr;
+      if (sessionDate < todayStr) {
+        return false;
+      }
       return true;
     }
-    // If a specific Time Out has already been recorded, duty is completed (not live).
     return false;
   }
 
   function renderHoursDisplay(baseHours, isLive, checkInTime, checkOutTime, attDate) {
+    const todayStr = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    const sessionDate = attDate ? String(attDate).split('T')[0] : todayStr;
+    const isPastSession = Boolean(sessionDate && sessionDate < todayStr);
+    const isTimeoutNA = !checkOutTime || checkOutTime === '---' || String(checkOutTime).toUpperCase() === 'N/A' || String(checkOutTime).toUpperCase() === 'N\\A';
+
     if (isLive && checkInTime) {
       const elapsed = calculateElapsedHours(checkInTime, attDate);
       const sessionDecimal = elapsed.hoursDecimal;
@@ -333,11 +342,20 @@
             <span style="font-size: 0.71875rem; color: ${elapsed.isNegative ? '#B45309' : '#059669'}; font-weight: 600; margin-left: 2px;">(${elapsed.formatted})</span>
           </div>
           <div style="font-size: 0.71875rem; color: var(--text-muted); font-weight: 500;">
-            Time In: ${formatTime12Hour(checkInTime)} • Time Out: <span style="color: #B45309; font-weight: 700;">N/A (Ongoing)</span>
+            Time In: ${formatTime12Hour(checkInTime)} • Time Out: <span style="color: #64748B; font-weight: 700;">N/A</span>
           </div>
         </div>
       `;
-    } else if (checkInTime && checkOutTime && checkOutTime !== '---' && String(checkOutTime).toUpperCase() !== 'N/A' && String(checkOutTime).toUpperCase() !== 'N\\A') {
+    } else if (checkInTime && isTimeoutNA && isPastSession) {
+      return `
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-weight: 800; color: #64748B; font-size: 0.95rem;">N/A</span>
+          <span style="font-size: 0.71875rem; color: #94A3B8; font-weight: 500;">
+            Time In: ${formatTime12Hour(checkInTime)} • Time Out: N/A
+          </span>
+        </div>
+      `;
+    } else if (checkInTime && checkOutTime && !isTimeoutNA) {
       return `
         <div style="display: flex; flex-direction: column; gap: 2px;">
           <span style="font-weight: 800; color: var(--cwts-primary-dark, #0B3D2E); font-size: 0.95rem;">${baseHours.toFixed(1)} hrs</span>
@@ -349,7 +367,7 @@
     } else {
       return `
         <span style="font-weight: 800; color: var(--cwts-primary-dark, #0B3D2E); font-size: 0.95rem;">
-          ${baseHours.toFixed(1)} hrs
+          ${baseHours > 0 ? `${baseHours.toFixed(1)} hrs` : 'N/A'}
         </span>
       `;
     }

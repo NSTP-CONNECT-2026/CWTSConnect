@@ -640,11 +640,6 @@ async function getAllCommunityRequests(filters = {}) {
       .from('community_requests')
       .select('*');
 
-    // Apply status filter
-    if (filters.status && filters.status !== 'all') {
-      query = query.eq('request_status', filters.status);
-    }
-
     // Apply activity type filter
     if (filters.activity_type && filters.activity_type !== 'all') {
       query = query.eq('activity_type', filters.activity_type);
@@ -673,7 +668,47 @@ async function getAllCommunityRequests(filters = {}) {
       throw new Error('Failed to fetch requests: ' + error.message);
     }
 
-    return (requests || []).map(normalizeRequestRecord);
+    // Fetch existing deployments to correlate which requests were deployed
+    const { data: deps } = await supabase
+      .from('deployments')
+      .select('deployment_id, request_id, deployment_status');
+    const depMap = new Map((deps || []).map(d => [d.request_id, d]));
+
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+
+    let enriched = (requests || []).map(r => {
+      const normalized = normalizeRequestRecord(r);
+      const matchedDep = depMap.get(r.request_id);
+      const s = (normalized.request_status || 'pending').toLowerCase();
+      const dateStr = (normalized.preferred_end_date || normalized.preferred_start_date || normalized.target_start_date || '').split('T')[0];
+      const isPast = Boolean(dateStr && dateStr < todayStr);
+      const isDeployed = Boolean(matchedDep);
+      const isExpired = s === 'expired' || s === 'lapsed' || (isPast && (s === 'pending' || (s === 'approved' && !isDeployed)));
+
+      return {
+        ...normalized,
+        is_deployed: isDeployed,
+        deployment_id: matchedDep ? matchedDep.deployment_id : null,
+        deployment_status: matchedDep ? matchedDep.deployment_status : null,
+        is_expired: isExpired,
+        display_status: isExpired ? 'expired' : s
+      };
+    });
+
+    if (filters.status && filters.status !== 'all') {
+      const targetStatus = filters.status.toLowerCase();
+      if (targetStatus === 'expired') {
+        enriched = enriched.filter(r => r.is_expired);
+      } else if (targetStatus === 'pending') {
+        enriched = enriched.filter(r => (r.request_status || '').toLowerCase() === 'pending' && !r.is_expired);
+      } else if (targetStatus === 'approved') {
+        enriched = enriched.filter(r => (r.request_status || '').toLowerCase() === 'approved' && (!r.is_expired || r.is_deployed));
+      } else if (targetStatus === 'rejected') {
+        enriched = enriched.filter(r => ['rejected', 'cancelled'].includes((r.request_status || '').toLowerCase()));
+      }
+    }
+
+    return enriched;
   } catch (error) {
     throw new Error('Service error: ' + error.message);
   }
@@ -726,7 +761,28 @@ async function getCommunityRequestByIdForNSTP(requestId) {
       }
     }
 
-    return normalizeRequestRecord(request);
+    // Check deployment status
+    const { data: matchedDep } = await supabase
+      .from('deployments')
+      .select('deployment_id, deployment_status')
+      .eq('request_id', requestId)
+      .maybeSingle();
+
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+    const s = (request.request_status || 'pending').toLowerCase();
+    const dateStr = (request.preferred_end_date || request.preferred_start_date || request.target_start_date || '').split('T')[0];
+    const isPast = Boolean(dateStr && dateStr < todayStr);
+    const isDeployed = Boolean(matchedDep);
+    const isExpired = s === 'expired' || s === 'lapsed' || (isPast && (s === 'pending' || (s === 'approved' && !isDeployed)));
+
+    const normalized = normalizeRequestRecord(request);
+    normalized.is_deployed = isDeployed;
+    normalized.deployment_id = matchedDep ? matchedDep.deployment_id : null;
+    normalized.deployment_status = matchedDep ? matchedDep.deployment_status : null;
+    normalized.is_expired = isExpired;
+    normalized.display_status = isExpired ? 'expired' : s;
+
+    return normalized;
   } catch (error) {
     throw new Error('Service error: ' + error.message);
   }

@@ -27,15 +27,27 @@ async function syncDeploymentStatusesBySchedule() {
     });
     const today = formatter.format(new Date());
 
-    // 1. Auto-complete: Any deployment whose end date has passed (< today)
-    const { data: toComplete, error: compErr } = await supabase
+    // 1. Auto-complete: Any deployment whose end date (or start date if null end date) has passed (< today)
+    const { data: toCompleteEnd, error: compErrEnd } = await supabase
       .from('deployments')
       .select('deployment_id')
       .in('deployment_status', ['pending', 'active', 'ongoing'])
       .lt('deployment_end_date', today);
 
-    if (!compErr && toComplete && toComplete.length > 0) {
-      const compIds = toComplete.map(d => d.deployment_id);
+    const { data: toCompleteStart, error: compErrStart } = await supabase
+      .from('deployments')
+      .select('deployment_id')
+      .in('deployment_status', ['pending', 'active', 'ongoing'])
+      .is('deployment_end_date', null)
+      .lt('deployment_start_date', today);
+
+    const allToComplete = [
+      ...(toCompleteEnd || []),
+      ...(toCompleteStart || [])
+    ];
+
+    if (allToComplete.length > 0) {
+      const compIds = Array.from(new Set(allToComplete.map(d => d.deployment_id)));
       await supabase
         .from('deployments')
         .update({
@@ -46,9 +58,9 @@ async function syncDeploymentStatusesBySchedule() {
 
       await supabase
         .from('deployment_students')
-        .update({ deployment_student_status: 'completed' })
+        .update({ deployment_student_status: 'completed', updated_at: new Date().toISOString() })
         .in('deployment_id', compIds)
-        .in('deployment_student_status', ['assigned', 'active']);
+        .in('deployment_student_status', ['assigned', 'active', 'pending']);
     }
 
     // 2. Auto-activate: Any pending deployment whose start date has arrived (<= today) and end date >= today
@@ -245,6 +257,7 @@ async function getDeployableRequests() {
       .order('urgency_level', { ascending: false })
       .order('created_at', { ascending: true });
 
+    let candidateRequests = [];
     if (error) {
       console.warn('deployable_requests_view error, fallback to direct query:', error.message);
       const { data: directReqs, error: directErr } = await supabase
@@ -254,10 +267,32 @@ async function getDeployableRequests() {
         .order('created_at', { ascending: true });
 
       if (directErr) throw new Error(directErr.message);
-      return directReqs || [];
+      candidateRequests = directReqs || [];
+    } else {
+      candidateRequests = requests || [];
     }
 
-    return requests || [];
+    if (candidateRequests.length === 0) return [];
+
+    // Filter out requests that are already deployed or expired
+    const { data: allDeployments } = await supabase
+      .from('deployments')
+      .select('deployment_id, request_id');
+
+    const deployedIds = new Set((allDeployments || []).map(d => d.request_id).filter(Boolean));
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+
+    const filtered = candidateRequests.filter(r => {
+      if (deployedIds.has(r.request_id)) return false;
+      if (r.deployment_status && r.deployment_status !== 'no_deployment') return false;
+      const s = (r.request_status || '').toLowerCase();
+      if (['expired', 'lapsed', 'cancelled', 'rejected'].includes(s)) return false;
+      const dateStr = (r.preferred_end_date || r.preferred_start_date || r.target_start_date || '').split('T')[0];
+      if (dateStr && dateStr < todayStr) return false;
+      return true;
+    });
+
+    return filtered;
   } catch (error) {
     throw new Error('Service error: ' + error.message);
   }
@@ -755,13 +790,13 @@ async function getDeploymentDetails(deploymentId) {
           }
           attendanceStatsMap.set(att.student_user_id, current);
 
-          const existing = latestAttMap.get(att.student_user_id);
-          if (!existing) {
-            latestAttMap.set(att.student_user_id, att);
-          } else if (att.attendance_date === todayDate && existing.attendance_date !== todayDate) {
-            latestAttMap.set(att.student_user_id, att);
-          } else if (existing.attendance_date === att.attendance_date && existing.check_out_time && !att.check_out_time) {
-            latestAttMap.set(att.student_user_id, att);
+          if (att.attendance_date === todayDate) {
+            const existing = latestAttMap.get(att.student_user_id);
+            if (!existing) {
+              latestAttMap.set(att.student_user_id, att);
+            } else if (!existing.check_out_time && att.check_out_time) {
+              latestAttMap.set(att.student_user_id, att);
+            }
           }
         });
       } catch (attErr) {
@@ -1013,6 +1048,21 @@ async function getStudentCurrentDeployment(studentId) {
 
       if (!compErr && completedDep) {
         deployment = completedDep;
+      }
+    }
+
+    if (deployment && deployment.deployment) {
+      const depDate = deployment.deployment.deployment_end_date || deployment.deployment.deployment_start_date;
+      const formatter = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Manila',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+      const today = formatter.format(new Date());
+      if (depDate && depDate < today) {
+        deployment.deployment.deployment_status = 'completed';
+        deployment.deployment_student_status = 'completed';
       }
     }
 

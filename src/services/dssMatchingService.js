@@ -103,12 +103,14 @@ async function getDashboardSummary() {
       pending_deployment_requests: 0
     };
 
-    // Keep dashboard count in sync with the new filters (only not deployed, not completed)
+    // Keep dashboard count in sync with the new filters (only not deployed, not completed, not expired)
     try {
       const eligibleList = await getEligibleStudents();
       summary.total_eligible_students = eligibleList.length;
+      const approvedList = await getApprovedRequests();
+      summary.approved_community_requests = approvedList.length;
     } catch (e) {
-      console.error('Error syncing eligible students count:', e);
+      console.error('Error syncing counts in dashboard summary:', e);
     }
 
     return summary;
@@ -118,8 +120,9 @@ async function getDashboardSummary() {
 }
 
 /**
- * Gets all approved community requests
- * @returns {Promise<Array>} Array of approved requests
+ * Gets all approved community requests eligible for DSS matching
+ * Excludes requests that have already been deployed or have expired
+ * @returns {Promise<Array>} Array of approved, active, undeployed requests
  */
 async function getApprovedRequests() {
   try {
@@ -133,7 +136,47 @@ async function getApprovedRequests() {
       throw new Error('Failed to fetch approved requests: ' + error.message);
     }
 
-    return requests || [];
+    if (!requests || requests.length === 0) {
+      return [];
+    }
+
+    // 1. Fetch all deployments to filter out requests that are already deployed
+    const { data: deployments, error: depError } = await supabase
+      .from('deployments')
+      .select('deployment_id, request_id, deployment_status');
+
+    if (depError) {
+      console.warn('Deployments fetch warning in getApprovedRequests:', depError.message);
+    }
+
+    const deployedRequestIds = new Set((deployments || []).map(d => d.request_id).filter(Boolean));
+
+    // 2. Manila timezone current date (YYYY-MM-DD)
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+
+    // 3. Exclude requests that are already deployed or expired
+    const deployableRequests = requests.filter(r => {
+      // Exclude requests that have an existing deployment record
+      if (deployedRequestIds.has(r.request_id)) {
+        return false;
+      }
+
+      // Exclude requests with status expired, lapsed, cancelled, or rejected
+      const s = (r.request_status || '').toLowerCase();
+      if (['expired', 'lapsed', 'cancelled', 'rejected'].includes(s)) {
+        return false;
+      }
+
+      // Exclude requests whose scheduled date has already passed
+      const dateStr = (r.preferred_end_date || r.preferred_start_date || r.target_start_date || '').split('T')[0];
+      if (dateStr && dateStr < todayStr) {
+        return false;
+      }
+
+      return true;
+    });
+
+    return deployableRequests;
   } catch (error) {
     throw new Error('Service error: ' + error.message);
   }
@@ -537,6 +580,24 @@ async function generateMatchRecommendations(requestId, generatedBy) {
         throw new Error('Approved request not found');
       }
       throw new Error('Failed to fetch request: ' + requestError.message);
+    }
+
+    // Guard: Check if request has already been deployed
+    const { data: existingDep } = await supabase
+      .from('deployments')
+      .select('deployment_id')
+      .eq('request_id', requestId)
+      .maybeSingle();
+
+    if (existingDep) {
+      throw new Error('This request has already been deployed and is no longer available for DSS matching.');
+    }
+
+    // Guard: Check if request has expired
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+    const dateStr = (request.preferred_end_date || request.preferred_start_date || request.target_start_date || '').split('T')[0];
+    if (dateStr && dateStr < todayStr) {
+      throw new Error('This request has expired and is no longer available for DSS matching.');
     }
 
     // Enrich request with official's pinned coordinates and location

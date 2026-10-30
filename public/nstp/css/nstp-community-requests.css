@@ -157,10 +157,21 @@
   color: #991b1b;
 }
 
+.status-pill-badge.badge-count-expired {
+  background: #f1f5f9;
+  color: #475569;
+}
+
 /* When pill button is active, highlight count badge */
 .status-pill-btn.active .status-pill-badge {
   background: rgba(255, 255, 255, 0.28);
   color: #ffffff;
+}
+
+.badge-expired {
+  background: rgba(100, 116, 139, 0.12);
+  color: #475569;
+  border: 1px solid rgba(100, 116, 139, 0.28);
 }
 
 /* ==========================================================================
@@ -615,54 +626,90 @@
 }
 
 /* ==========================================================================
-   Community Requests Table Column Proportions
-   Eliminates the giant empty void before the Actions column
+   Community Requests Table Column Proportions & Clickable Rows
    ========================================================================== */
 #requestsTable,
 #requestsSkeleton .neu-table {
-  table-layout: fixed;
   width: 100%;
 }
 
-#requestsTable th:nth-child(1),
-#requestsTable td:nth-child(1),
+#requestsTable tbody tr.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+#requestsTable tbody tr.clickable-row:hover {
+  background-color: rgba(47, 125, 91, 0.06) !important;
+}
+
+#requestsTable tbody tr.clickable-row:active {
+  background-color: rgba(47, 125, 91, 0.12) !important;
+}
+
+/* 5-Column layout (All tab: Community, Activity, Location, Status, Schedule) */
+#requestsTable.has-status th:nth-child(1),
+#requestsTable.has-status td:nth-child(1),
 #requestsSkeleton .neu-table th:nth-child(1),
 #requestsSkeleton .neu-table td:nth-child(1) {
-  width: 24%;
-  min-width: 170px;
+  width: 22%;
+  min-width: 160px;
 }
 
-#requestsTable th:nth-child(2),
-#requestsTable td:nth-child(2),
+#requestsTable.has-status th:nth-child(2),
+#requestsTable.has-status td:nth-child(2),
 #requestsSkeleton .neu-table th:nth-child(2),
 #requestsSkeleton .neu-table td:nth-child(2) {
-  width: 40%;
-  min-width: 240px;
+  width: 32%;
+  min-width: 200px;
 }
 
-#requestsTable th:nth-child(3),
-#requestsTable td:nth-child(3),
+#requestsTable.has-status th:nth-child(3),
+#requestsTable.has-status td:nth-child(3),
 #requestsSkeleton .neu-table th:nth-child(3),
 #requestsSkeleton .neu-table td:nth-child(3) {
   width: 18%;
-  min-width: 140px;
+  min-width: 130px;
 }
 
-#requestsTable th:nth-child(4),
-#requestsTable td:nth-child(4),
+#requestsTable.has-status th:nth-child(4),
+#requestsTable.has-status td:nth-child(4),
 #requestsSkeleton .neu-table th:nth-child(4),
 #requestsSkeleton .neu-table td:nth-child(4) {
-  width: 11%;
+  width: 12%;
   min-width: 105px;
 }
 
-#requestsTable th:nth-child(5),
-#requestsTable td:nth-child(5),
+#requestsTable.has-status th:nth-child(5),
+#requestsTable.has-status td:nth-child(5),
 #requestsSkeleton .neu-table th:nth-child(5),
 #requestsSkeleton .neu-table td:nth-child(5) {
-  width: 7%;
-  min-width: 70px;
-  text-align: center;
+  width: 16%;
+  min-width: 140px;
+}
+
+/* 4-Column layout (Pending, Approved, Rejected, Expired tabs: Community, Activity, Location, Schedule) */
+#requestsTable:not(.has-status) th:nth-child(1),
+#requestsTable:not(.has-status) td:nth-child(1) {
+  width: 25%;
+  min-width: 170px;
+}
+
+#requestsTable:not(.has-status) th:nth-child(2),
+#requestsTable:not(.has-status) td:nth-child(2) {
+  width: 38%;
+  min-width: 220px;
+}
+
+#requestsTable:not(.has-status) th:nth-child(3),
+#requestsTable:not(.has-status) td:nth-child(3) {
+  width: 20%;
+  min-width: 140px;
+}
+
+#requestsTable:not(.has-status) th:nth-child(4),
+#requestsTable:not(.has-status) td:nth-child(4) {
+  width: 17%;
+  min-width: 140px;
 }
 
 

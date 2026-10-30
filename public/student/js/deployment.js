@@ -21,7 +21,6 @@ let liveClockInterval = null;
 function initDeploymentController() {
   setupTabSwitcher();
   setupNotificationsDrawer();
-  setupLiveClock();
   setupLogout();
 
   // Load core student data
@@ -188,21 +187,24 @@ async function loadCurrentDeployment(userId) {
         }
         setText('deployDateRange', schedStr);
 
-        // Schedule / Time
-        const schedVal = req.preferred_schedule || 'Flexible / As Scheduled';
-        setText('deploySchedule', schedVal);
+        const todayStr = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+        const endDate = dep.deployment_end_date || dep.deployment_start_date;
+        const isPastDeployment = Boolean(endDate && endDate < todayStr);
+
+        let st = (json.data.deployment_student_status || dep.deployment_status || 'active').toLowerCase();
+        if (isPastDeployment) {
+          st = 'completed';
+        }
 
         const statusBadge = document.getElementById('deployStatusBadge');
         if (statusBadge) {
-          const st = json.data.deployment_student_status || dep.deployment_status || 'active';
           statusBadge.textContent = capitalize(st);
           statusBadge.className = `badge badge-${st === 'active' ? 'active' : st === 'completed' ? 'complete' : 'pending'}`;
         }
 
         const studentStatusEl = document.getElementById('deployStudentStatus');
         if (studentStatusEl) {
-          const studentSt = json.data.deployment_student_status || dep.deployment_status || 'active';
-          studentStatusEl.textContent = capitalize(studentSt) + ' Volunteer';
+          studentStatusEl.textContent = capitalize(st) + ' Volunteer';
         }
 
         return;
@@ -280,7 +282,7 @@ async function loadAttendanceData(userId) {
         if (records.length === 0) {
           tableBody.innerHTML = `
             <tr>
-              <td colspan="5" style="text-align: center; padding: 28px 16px;">
+              <td colspan="4" style="text-align: center; padding: 28px 16px;">
                 <div class="table-empty-title">No Attendance Records Yet</div>
                 <div class="table-empty-desc">Attendance logged by the Community Official will appear here.</div>
               </td>
@@ -292,17 +294,9 @@ async function loadAttendanceData(userId) {
             const inTime = formatTime(r.check_in_time);
             const outTime = formatTime(r.check_out_time);
 
-            // Parse [CREDITED:X.X] in remarks / student_remarks
+            // Parse [CREDITED:X.X] in remarks / student_remarks for verification check
             const combinedRemarks = `${r.remarks || ''} ${r.student_remarks || ''}`;
             const credMatch = combinedRemarks.match(/\[CREDITED:([0-9.]+)\]/i);
-            let durationHours = null;
-            if (credMatch && credMatch[1]) {
-              durationHours = parseFloat(credMatch[1]);
-            } else if (r.hours_rendered != null && !isNaN(parseFloat(r.hours_rendered))) {
-              durationHours = parseFloat(r.hours_rendered);
-            }
-
-            const durationStr = durationHours != null ? `${durationHours.toFixed(1)} hrs` : (r.check_out_time ? 'Completed' : 'Ongoing');
 
             const isVerified = Boolean(
               r.verification_status === 'verified' ||
@@ -315,15 +309,17 @@ async function loadAttendanceData(userId) {
 
             let cleanRemarks = (r.remarks || r.student_remarks || 'Standard Session')
               .replace(/\[CREDITED:[0-9.]+\]/gi, '')
+              .replace(/Ongoing duty\s*/gi, '')
               .trim();
-            if (!cleanRemarks) cleanRemarks = isVerified ? 'Verified by Community Official' : 'Standard Session';
+            if (!cleanRemarks || cleanRemarks === '(Time Out: N/A)') {
+              cleanRemarks = isVerified ? 'Verified by Community Official' : (outTime === 'N/A' ? 'Time Out: N/A' : 'Standard Session');
+            }
 
             return `
               <tr>
                 <td data-label="Activity Date"><strong>${dateStr}</strong></td>
                 <td data-label="Time In">${inTime}</td>
                 <td data-label="Time Out">${outTime}</td>
-                <td data-label="Duration"><strong>${durationStr}</strong></td>
                 <td data-label="Remarks" class="td-remarks">
                   <div class="table-remarks-content">
                     <span class="remarks-text">${escapeHtml(cleanRemarks)}</span>
@@ -344,15 +340,11 @@ async function loadAttendanceData(userId) {
 function updateCheckInHeroState() {
   const title = document.getElementById('checkInStatusTitle');
   const desc = document.getElementById('checkInStatusDesc');
-  const badgeNoDep = document.getElementById('badgeNoDeployment');
-  const badgeActiveDep = document.getElementById('badgeActiveDeployment');
   const iconBadge = document.getElementById('checkInIconBadge');
 
   if (!currentDeploymentId) {
     if (title) title.textContent = 'Attendance Monitoring Inactive';
     if (desc) desc.textContent = 'You do not have an active deployment assignment yet. Attendance monitoring will begin once assigned to a community project.';
-    if (badgeNoDep) badgeNoDep.classList.remove('hidden');
-    if (badgeActiveDep) badgeActiveDep.classList.add('hidden');
     if (iconBadge) {
       iconBadge.style.color = '#94A3B8';
       iconBadge.style.background = 'rgba(0, 0, 0, 0.05)';
@@ -362,9 +354,6 @@ function updateCheckInHeroState() {
   }
 
   // Active deployment exists - Community Official records attendance on-site
-  if (badgeNoDep) badgeNoDep.classList.add('hidden');
-  if (badgeActiveDep) badgeActiveDep.classList.remove('hidden');
-
   if (title) title.textContent = 'Official Attendance Recording';
   if (desc) desc.textContent = 'Daily attendance and credited service hours are recorded and verified directly on-site by your assigned Barangay / Community Official.';
   if (iconBadge) {
@@ -424,9 +413,10 @@ async function loadServiceHoursData(userId) {
         `;
       } else {
         tableBody.innerHTML = sessions.map(s => {
-          const isVerified = s.is_verified !== false;
-          const badgeClass = isVerified ? 'badge-complete' : 'badge-pending';
-          const badgeLabel = isVerified ? 'Verified' : 'Pending';
+          const isVerified = s.is_verified !== false && s.hours != null;
+          const badgeClass = isVerified ? 'badge-complete' : (s.hours == null ? 'badge-pending' : 'badge-pending');
+          const badgeLabel = isVerified ? 'Verified' : (s.hours == null ? 'N/A' : 'Pending');
+          const hoursDisplay = s.hours != null ? `${Number(s.hours).toFixed(1)} hrs` : 'N/A';
 
           return `
             <tr>
@@ -437,7 +427,7 @@ async function loadServiceHoursData(userId) {
                   ${s.remarks ? `<div class="activity-subtitle">${escapeHtml(s.remarks)}</div>` : ''}
                 </div>
               </td>
-              <td data-label="Hours Rendered"><strong>${Number(s.hours || 0).toFixed(1)} hrs</strong></td>
+              <td data-label="Hours Rendered"><strong>${hoursDisplay}</strong></td>
               <td data-label="Status"><span class="badge ${badgeClass}">${badgeLabel}</span></td>
             </tr>
           `;
@@ -544,23 +534,6 @@ async function loadNotifications() {
 }
 
 /**
- * LIVE CLOCK TICKER
- */
-function setupLiveClock() {
-  const ticker = document.getElementById('liveClockTicker');
-  if (!ticker) return;
-
-  function update() {
-    const now = new Date();
-    ticker.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  }
-
-  update();
-  if (liveClockInterval) clearInterval(liveClockInterval);
-  liveClockInterval = setInterval(update, 1000);
-}
-
-/**
  * LOGOUT HANDLER
  */
 function setupLogout() {
@@ -601,7 +574,7 @@ function formatDate(dateStr) {
 
 function formatTime(timeString) {
   if (!timeString || timeString === '---' || String(timeString).toUpperCase() === 'N/A' || String(timeString).toUpperCase() === 'N\\A') {
-    return '---';
+    return 'N/A';
   }
   const trimmed = String(timeString).trim();
   if (trimmed.includes('T')) {

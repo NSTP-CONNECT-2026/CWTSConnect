@@ -53,8 +53,33 @@ async function recordBatchAttendance(req, res) {
     for (const record of records) {
       try {
         const studentUserId = record.student_user_id;
-        const inTime = record.check_in_time || null;
-        const outTime = record.check_out_time || null;
+        if (!studentUserId) {
+          errors.push('Missing student_user_id in attendance record');
+          continue;
+        }
+
+        let inTime = record.check_in_time !== undefined ? record.check_in_time : null;
+        let outTime = record.check_out_time !== undefined ? record.check_out_time : null;
+
+        // If either inTime or outTime is not explicitly provided in record, preserve existing database attendance
+        if (inTime === null || outTime === null) {
+          const { data: existingAtt } = await supabase
+            .from('attendance_records')
+            .select('check_in_time, check_out_time, hours_rendered, student_remarks, attendance_status')
+            .eq('deployment_id', deployment_id)
+            .eq('student_user_id', studentUserId)
+            .eq('attendance_date', attendance_date)
+            .maybeSingle();
+
+          if (existingAtt) {
+            if (inTime === null && record.check_in_time === undefined) {
+              inTime = existingAtt.check_in_time;
+            }
+            if (outTime === null && record.check_out_time === undefined) {
+              outTime = existingAtt.check_out_time;
+            }
+          }
+        }
 
         // Auto-calculate hours from Time In and Time Out if not explicitly passed
         let hours = 0;
@@ -70,7 +95,9 @@ async function recordBatchAttendance(req, res) {
         }
 
         const status = record.status || (inTime ? 'present' : (hours > 0 ? 'present' : 'absent'));
-        const remarks = record.remarks || (outTime ? '' : 'Ongoing duty (Time Out: N/A)');
+        const remarks = record.remarks !== undefined 
+          ? record.remarks 
+          : (outTime ? '' : 'Time Out: N/A');
 
         // Upsert attendance record
         const { data: attendanceData, error: attError } = await supabase

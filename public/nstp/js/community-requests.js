@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const requestsMainView = document.getElementById('requestsMainView');
   const requestsTableCard = document.getElementById('requestsTableCard');
   const requestsTable = document.getElementById('requestsTable');
+  const requestsTableHead = document.getElementById('requestsTableHead');
   const requestsTableBody = document.getElementById('requestsTableBody');
   const requestsEmptyState = document.getElementById('requestsEmptyState');
 
@@ -53,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const countPending = document.getElementById('countPending');
   const countApproved = document.getElementById('countApproved');
   const countRejected = document.getElementById('countRejected');
+  const countExpired = document.getElementById('countExpired');
 
   // Subpage Elements - Request Types & Skills (School Offered Services)
   const btnRequestType = document.getElementById('btnRequestType');
@@ -175,16 +177,33 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  function isRequestExpired(r) {
+    if (!r) return false;
+    if (r.is_expired === true) return true;
+    const s = (r.request_status || 'pending').toLowerCase();
+    if (s === 'expired' || s === 'lapsed') return true;
+    if (['rejected', 'cancelled'].includes(s)) return false;
+
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+    const dateStr = (r.preferred_end_date || r.preferred_start_date || r.target_start_date || '').split('T')[0];
+    const isPast = Boolean(dateStr && dateStr < todayStr);
+    const isDeployed = Boolean(r.is_deployed);
+
+    return isPast && (s === 'pending' || (s === 'approved' && !isDeployed));
+  }
+
   function updateStats(requests) {
     const total = requests.length;
-    const pending = requests.filter(r => (r.request_status || '').toLowerCase() === 'pending').length;
-    const approved = requests.filter(r => (r.request_status || '').toLowerCase() === 'approved').length;
-    const rejected = requests.filter(r => ['rejected', 'cancelled'].includes((r.request_status || '').toLowerCase())).length;
+    const expired = requests.filter(r => isRequestExpired(r)).length;
+    const rejected = requests.filter(r => !isRequestExpired(r) && ['rejected', 'cancelled'].includes((r.request_status || '').toLowerCase())).length;
+    const pending = requests.filter(r => !isRequestExpired(r) && (r.request_status || '').toLowerCase() === 'pending').length;
+    const approved = requests.filter(r => !isRequestExpired(r) && (r.request_status || '').toLowerCase() === 'approved').length;
 
     if (countAll) countAll.textContent = total;
     if (countPending) countPending.textContent = pending;
     if (countApproved) countApproved.textContent = approved;
     if (countRejected) countRejected.textContent = rejected;
+    if (countExpired) countExpired.textContent = expired;
   }
 
   function setupFilters() {
@@ -224,14 +243,18 @@ document.addEventListener('DOMContentLoaded', function () {
       const searchMatch = !q || title.includes(q) || community.includes(q) || brgy.includes(q) || desc.includes(q);
       
       let statusMatch = true;
+      const expired = isRequestExpired(r);
+
       if (status === 'all') {
         statusMatch = true;
       } else if (status === 'pending') {
-        statusMatch = rStatus === 'pending';
+        statusMatch = !expired && rStatus === 'pending';
       } else if (status === 'approved') {
-        statusMatch = rStatus === 'approved';
+        statusMatch = !expired && rStatus === 'approved';
       } else if (status === 'rejected') {
         statusMatch = ['rejected', 'cancelled'].includes(rStatus);
+      } else if (status === 'expired') {
+        statusMatch = expired;
       }
 
       return searchMatch && statusMatch;
@@ -240,8 +263,90 @@ document.addEventListener('DOMContentLoaded', function () {
     renderTable(filtered);
   }
 
+  /**
+   * Format schedule date for request table row (Schedule date only)
+   */
+  function formatScheduleDate(r) {
+    if (!r) return '<span style="color: var(--text-muted); font-size: 0.8125rem;">Flexible</span>';
+
+    const startDateRaw = r.preferred_start_date || r.target_start_date || r.deployment_start_date;
+    const endDateRaw = r.preferred_end_date || r.target_end_date || r.deployment_end_date;
+
+    const formatDateStr = (dStr) => {
+      if (!dStr) return '';
+      const clean = String(dStr).split('T')[0];
+      const parts = clean.split('-').map(Number);
+      if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
+        const dt = new Date(parts[0], parts[1] - 1, parts[2]);
+        return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      }
+      const dt = new Date(dStr);
+      return !isNaN(dt.getTime())
+        ? dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        : clean;
+    };
+
+    let dateDisplay = '';
+    if (startDateRaw) {
+      const startFormatted = formatDateStr(startDateRaw);
+      const startClean = String(startDateRaw).split('T')[0];
+      const endClean = endDateRaw ? String(endDateRaw).split('T')[0] : '';
+
+      if (endClean && endClean !== startClean) {
+        const endFormatted = formatDateStr(endDateRaw);
+        dateDisplay = `${startFormatted} &ndash; ${endFormatted}`;
+      } else {
+        dateDisplay = startFormatted;
+      }
+    }
+
+    if (!dateDisplay) {
+      return '<span style="color: var(--text-muted); font-size: 0.8125rem;">Flexible</span>';
+    }
+
+    return `
+      <div style="display: inline-flex; align-items: center; gap: 6px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color: var(--cwts-accent-green, #2F7D5B); flex-shrink: 0;">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span style="font-weight: 600; color: var(--text-main); font-size: 0.8125rem; white-space: nowrap;">${dateDisplay}</span>
+      </div>
+    `;
+  }
+
   function renderTable(requests) {
     if (!requestsTableBody) return;
+
+    const isAllTab = (currentStatusFilter || 'all') === 'all';
+
+    // Update dynamic thead
+    if (requestsTableHead) {
+      if (isAllTab) {
+        requestsTableHead.innerHTML = `
+          <tr>
+            <th style="width: 22%; min-width: 160px;">Community</th>
+            <th style="width: 32%; min-width: 200px;">Activity</th>
+            <th style="width: 18%; min-width: 130px;">Location</th>
+            <th style="width: 12%; min-width: 105px;">Status</th>
+            <th style="width: 16%; min-width: 140px;">Schedule</th>
+          </tr>
+        `;
+        if (requestsTable) requestsTable.classList.add('has-status');
+      } else {
+        requestsTableHead.innerHTML = `
+          <tr>
+            <th style="width: 25%; min-width: 170px;">Community</th>
+            <th style="width: 38%; min-width: 220px;">Activity</th>
+            <th style="width: 20%; min-width: 140px;">Location</th>
+            <th style="width: 17%; min-width: 140px;">Schedule</th>
+          </tr>
+        `;
+        if (requestsTable) requestsTable.classList.remove('has-status');
+      }
+    }
 
     if (!requests || requests.length === 0) {
       requestsTableBody.innerHTML = '';
@@ -259,12 +364,14 @@ document.addEventListener('DOMContentLoaded', function () {
       const type = escapeHtml(r.activity_type || 'General CWTS');
       const location = `${escapeHtml(r.barangay || '---')}, ${escapeHtml(r.municipality || '---')}`;
       const province = escapeHtml(r.province || 'Philippines');
-      const studentsNeeded = r.students_needed || r.required_students || 0;
       const status = (r.request_status || 'pending').toLowerCase();
       const requestId = r.request_id || r.id;
 
+      const isExpired = isRequestExpired(r);
       let badgeHtml = '';
-      if (status === 'approved') {
+      if (isExpired) {
+        badgeHtml = '<span class="badge badge-expired">Expired</span>';
+      } else if (status === 'approved') {
         badgeHtml = '<span class="badge badge-approved">Approved</span>';
       } else if (status === 'pending') {
         badgeHtml = '<span class="badge badge-pending">Pending</span>';
@@ -275,8 +382,11 @@ document.addEventListener('DOMContentLoaded', function () {
         badgeHtml = `<span class="badge badge-cancelled">${escapeHtml(displayStatus)}</span>`;
       }
 
+      const scheduleHtml = formatScheduleDate(r);
+      const statusCell = isAllTab ? `<td>${badgeHtml}</td>` : '';
+
       return `
-        <tr>
+        <tr class="clickable-row" onclick="window.inspectRequest('${escapeHtml(String(requestId))}')" title="Click to view details">
           <td>
             <div style="font-weight: 700; color: var(--cwts-primary-dark); font-size: 0.875rem;">${community}</div>
             <div style="font-size: 0.75rem; color: var(--text-muted);">CWTS Community Partner</div>
@@ -291,16 +401,9 @@ document.addEventListener('DOMContentLoaded', function () {
             <div style="font-weight: 500;">${location}</div>
             <div style="font-size: 0.75rem; color: var(--text-muted);">${province}</div>
           </td>
+          ${statusCell}
           <td>
-            ${badgeHtml}
-          </td>
-          <td style="text-align: center;">
-            <button type="button" class="btn-icon-action action-view" title="Inspect & Review Request" aria-label="Inspect & Review Request" onclick="window.inspectRequest('${escapeHtml(String(requestId))}')">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-              </svg>
-            </button>
+            ${scheduleHtml}
           </td>
         </tr>
       `;
@@ -327,7 +430,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (res.ok && result.success && result.data) {
         const r = result.data;
         const status = (r.request_status || 'pending').toLowerCase();
-        const isPending = status === 'pending';
+        const isExpired = isRequestExpired(r);
+        const isPending = status === 'pending' && !isExpired;
 
         let skills = [];
         const rawSkills = r.needed_skills || r.skills_required;
@@ -349,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
               </div>
               <div>
-                ${status === 'approved' ? '<span class="badge badge-approved">Approved</span>' : (status === 'pending' ? '<span class="badge badge-pending">Pending</span>' : '<span class="badge badge-rejected">Rejected</span>')}
+                ${isExpired ? '<span class="badge badge-expired">Expired</span>' : (status === 'approved' ? '<span class="badge badge-approved">Approved</span>' : (status === 'pending' ? '<span class="badge badge-pending">Pending</span>' : '<span class="badge badge-rejected">Rejected</span>'))}
               </div>
             </div>
 
@@ -382,7 +486,14 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
 
         if (inspectModalFooter) {
-          if (isPending) {
+          if (isExpired) {
+            inspectModalFooter.innerHTML = `
+              <div style="font-size: 0.8125rem; color: #DC2626; margin-right: auto; font-weight: 600;">
+                Notice: Schedule for this request has already passed. It cannot be approved or deployed.
+              </div>
+              <button type="button" class="btn btn-secondary" onclick="closeInspectModal()">Close</button>
+            `;
+          } else if (isPending) {
             inspectModalFooter.innerHTML = `
               <button type="button" class="btn btn-secondary" onclick="closeInspectModal()">Cancel</button>
               <button type="button" class="btn btn-secondary" style="color: #DC2626; border-color: rgba(239, 68, 68, 0.4);" onclick="window.submitRequestDecision('${requestId}', 'reject')">

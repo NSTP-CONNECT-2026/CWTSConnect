@@ -117,7 +117,27 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       const result = await res.json();
-      approvedRequests = (result.success && Array.isArray(result.data)) ? result.data : [];
+      const rawList = (result.success && Array.isArray(result.data)) ? result.data : [];
+      const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+
+      // Defensive filtering: do not display any requests that are already deployed or expired
+      approvedRequests = rawList.filter(r => {
+        if (r.is_deployed === true || (r.deployment_status && r.deployment_status !== 'no_deployment') || r.deployment_id) {
+          return false;
+        }
+        if (r.is_expired === true) {
+          return false;
+        }
+        const s = (r.request_status || '').toLowerCase();
+        if (['expired', 'lapsed', 'cancelled', 'rejected'].includes(s)) {
+          return false;
+        }
+        const dateStr = (r.preferred_end_date || r.preferred_start_date || r.target_start_date || '').split('T')[0];
+        if (dateStr && dateStr < todayStr) {
+          return false;
+        }
+        return true;
+      });
 
       renderRequestSelectionCards(approvedRequests);
     } catch (err) {
@@ -180,6 +200,46 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /**
+   * Format activity schedule for request cards and banners (Schedule date only)
+   */
+  function formatRequestSchedule(r) {
+    if (!r) return 'Schedule TBD';
+
+    const startDateRaw = r.preferred_start_date || r.target_start_date || r.deployment_start_date;
+    const endDateRaw = r.preferred_end_date || r.target_end_date || r.deployment_end_date;
+
+    const formatDateStr = (dStr) => {
+      if (!dStr) return '';
+      const clean = String(dStr).split('T')[0];
+      const parts = clean.split('-').map(Number);
+      if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
+        const dt = new Date(parts[0], parts[1] - 1, parts[2]);
+        return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      }
+      const dt = new Date(dStr);
+      return !isNaN(dt.getTime())
+        ? dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        : clean;
+    };
+
+    let dateDisplay = '';
+    if (startDateRaw) {
+      const startFormatted = formatDateStr(startDateRaw);
+      const startClean = String(startDateRaw).split('T')[0];
+      const endClean = endDateRaw ? String(endDateRaw).split('T')[0] : '';
+
+      if (endClean && endClean !== startClean) {
+        const endFormatted = formatDateStr(endDateRaw);
+        dateDisplay = `${startFormatted} – ${endFormatted}`;
+      } else {
+        dateDisplay = startFormatted;
+      }
+    }
+
+    return dateDisplay || 'Schedule TBD';
+  }
+
+  /**
    * RENDER SCREEN 21: REQUEST SELECTION CARDS
    */
   function renderRequestSelectionCards(requests) {
@@ -211,6 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const quota = r.students_needed || r.required_students || 15;
       const hours = r.estimated_hours || 30;
       const reqId = r.request_id || r.id;
+      const scheduleText = formatRequestSchedule(r);
 
       let skills = [];
       if (Array.isArray(r.skills_required)) skills = r.skills_required;
@@ -223,14 +284,22 @@ document.addEventListener('DOMContentLoaded', function () {
       return `
         <div class="request-select-card" id="reqCard_${escapeHtml(String(reqId))}" onclick="window.selectCommunityRequest('${escapeHtml(String(reqId))}')">
           <div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-              <div>
-                <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--cwts-primary-dark);">${title}</h3>
-                <div style="font-size: 0.8125rem; font-weight: 600; color: var(--text-muted); margin-top: 2px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 12px;">
+              <div style="flex: 1; min-width: 0;">
+                <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--cwts-primary-dark); line-height: 1.35;">${title}</h3>
+                <div style="font-size: 0.8125rem; font-weight: 600; color: var(--text-muted); margin-top: 4px;">
                   ${community} • <span class="user-code-tag">${type}</span>
                 </div>
               </div>
-              <span class="badge badge-approved">Approved for DSS</span>
+              <span class="badge" style="background: rgba(47, 125, 91, 0.1); color: var(--cwts-primary-dark); border: 1px solid rgba(47, 125, 91, 0.25); font-size: 0.78rem; font-weight: 600; text-transform: none; letter-spacing: normal; padding: 5px 10px; display: inline-flex; align-items: center; gap: 6px; border-radius: var(--radius-pill); flex-shrink: 0;" title="Target Activity Schedule">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color: var(--cwts-accent-green); flex-shrink: 0;">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>${escapeHtml(scheduleText)}</span>
+              </span>
             </div>
 
             <div class="meta-list" style="margin: 12px 0;">
@@ -290,6 +359,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const type = escapeHtml(req.activity_type || 'General');
     const location = `${escapeHtml(req.barangay || '---')}, ${escapeHtml(req.municipality || '---')}`;
     const quota = req.students_needed || req.required_students || 15;
+    const scheduleText = formatRequestSchedule(req);
 
     const bannerHtml = `
       <div style="display: flex; align-items: center; gap: 14px;">
@@ -306,7 +376,15 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </div>
       <div>
-        <span class="badge badge-approved" style="font-size: 0.8125rem;">Approved for DSS Matching</span>
+        <span class="badge" style="background: rgba(47, 125, 91, 0.1); color: var(--cwts-primary-dark); border: 1px solid rgba(47, 125, 91, 0.25); font-size: 0.8125rem; font-weight: 600; text-transform: none; letter-spacing: normal; padding: 6px 12px; display: inline-flex; align-items: center; gap: 6px; border-radius: var(--radius-pill);" title="Target Activity Schedule">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color: var(--cwts-accent-green); flex-shrink: 0;">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>${escapeHtml(scheduleText)}</span>
+        </span>
       </div>
     `;
 
@@ -574,9 +652,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const course = (item.course || '').toLowerCase();
         const email = (item.email || '').toLowerCase();
         return name.includes(screeningSearchTerm) ||
-               num.includes(screeningSearchTerm) ||
-               course.includes(screeningSearchTerm) ||
-               email.includes(screeningSearchTerm);
+          num.includes(screeningSearchTerm) ||
+          course.includes(screeningSearchTerm) ||
+          email.includes(screeningSearchTerm);
       });
     }
 

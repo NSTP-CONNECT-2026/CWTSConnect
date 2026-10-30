@@ -197,17 +197,21 @@ function displayAttendanceHistory(records) {
     tbody.innerHTML = '<tr><td colspan="6" class="text-center">No attendance records found.</td></tr>';
     return;
   }
-  
-  tbody.innerHTML = records.map(record => `
-    <tr>
-      <td>${formatDate(record.attendance_date)}</td>
-      <td>${formatTime(record.check_in_time)}</td>
-      <td>${record.check_out_time ? formatTime(record.check_out_time) : 'Not checked out'}</td>
-      <td>${record.hours_rendered || '0.0'} hrs</td>
-      <td><span class="badge badge-${record.verification_status}">${record.verification_status}</span></td>
-      <td>${record.verified_by_name || 'N/A'}</td>
-    </tr>
-  `).join('');
+
+  tbody.innerHTML = records.map(record => {
+    const hasOut = Boolean(record.check_out_time && record.check_out_time !== '---' && String(record.check_out_time).toUpperCase() !== 'N/A');
+    const hoursDisplay = hasOut ? `${Number(record.hours_rendered || 0).toFixed(1)} hrs` : 'N/A';
+    return `
+      <tr>
+        <td>${formatDate(record.attendance_date)}</td>
+        <td>${formatTime(record.check_in_time)}</td>
+        <td>${hasOut ? formatTime(record.check_out_time) : 'N/A'}</td>
+        <td>${hoursDisplay}</td>
+        <td><span class="badge badge-${record.verification_status}">${record.verification_status}</span></td>
+        <td>${record.verified_by_name || 'N/A'}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 // Check in
@@ -304,7 +308,7 @@ function formatDate(dateString) {
 
 function formatTime(timeString) {
   if (!timeString || timeString === '---' || String(timeString).toUpperCase() === 'N/A' || String(timeString).toUpperCase() === 'N\\A') {
-    return '---';
+    return 'N/A';
   }
   const trimmed = String(timeString).trim();
   if (trimmed.includes('T')) {

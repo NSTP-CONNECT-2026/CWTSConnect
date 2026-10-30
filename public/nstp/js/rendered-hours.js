@@ -265,18 +265,24 @@
         `;
       } else {
         const inFormatted = r.check_in_time ? formatTime12h(r.check_in_time) : '---';
+        const todayStr = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+        const sessionDate = r.attendance_date ? String(r.attendance_date).split('T')[0] : '';
+        const isTimeoutMissing = !r.check_out_time || r.check_out_time === '---' || String(r.check_out_time).toUpperCase() === 'N/A';
+        const isPastSession = Boolean(sessionDate && sessionDate < todayStr);
+
         let outFormatted = '---';
-        if (r.check_out_time) {
+        if (r.check_out_time && !isTimeoutMissing) {
           outFormatted = formatTime12h(r.check_out_time);
-        } else if (r.check_in_time) {
-          outFormatted = '<span class="badge badge-pending" style="font-size: 0.75rem; padding: 3px 8px; border-radius: 9999px;">Ongoing</span>';
+        } else if (r.check_in_time || isTimeoutMissing) {
+          outFormatted = '<span class="badge badge-pending" style="font-size: 0.75rem; padding: 3px 8px; border-radius: 9999px;">N/A</span>';
         }
 
         const isCredited = Boolean(r.is_credited);
         const creditedHours = isCredited ? Number(r.batch_rendered_hours || 0) : 0;
 
-        const renderedHoursBadge = isCredited && creditedHours > 0
-          ? `
+        let renderedHoursBadge = '';
+        if (isCredited && creditedHours > 0) {
+          renderedHoursBadge = `
             <span class="badge badge-verified" style="font-weight: 800; font-size: 0.8125rem; padding: 6px 14px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -284,8 +290,15 @@
               </svg>
               <span>${creditedHours.toFixed(1)} hrs</span>
             </span>
-          `
-          : `
+          `;
+        } else if (isTimeoutMissing && isPastSession) {
+          renderedHoursBadge = `
+            <span class="badge badge-pending" style="font-weight: 700; font-size: 0.8125rem; padding: 6px 14px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+              <span>N/A</span>
+            </span>
+          `;
+        } else {
+          renderedHoursBadge = `
             <span class="badge badge-pending" style="font-weight: 700; font-size: 0.8125rem; padding: 6px 14px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -294,6 +307,7 @@
               <span>0.0 hrs</span>
             </span>
           `;
+        }
 
         dynamicCols = `
           <td style="padding: 14px 18px; vertical-align: middle; text-align: center;">

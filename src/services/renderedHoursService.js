@@ -136,20 +136,43 @@ async function getStudentHoursSummary(deploymentId, studentId) {
 
     const { data: attRecords, error: attError } = await attQuery;
 
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Manila',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    const today = formatter.format(new Date());
+
     let totalCreditedHours = 0;
     let totalPendingHours = 0;
     const sessions = (attRecords || []).map(att => {
       const match = String(att.student_remarks || '').match(/\[CREDITED:([0-9.]+)\]/);
       const isVerified = Boolean(att.verified_at || att.verified_by || (att.student_remarks && /\[CREDITED:[0-9.]+\]/.test(att.student_remarks)));
-      const credited = match ? parseFloat(match[1]) : (Number(att.hours_rendered) || 0);
+      const isTimeoutMissing = !att.check_out_time || att.check_out_time === '---' || String(att.check_out_time).toUpperCase() === 'N/A' || String(att.check_out_time).toUpperCase() === 'N\\A';
+      const attDate = att.attendance_date ? String(att.attendance_date).split('T')[0] : '';
+      const isDayPast = attDate && attDate < today;
 
-      if (isVerified) {
-        totalCreditedHours += credited;
-      } else {
-        totalPendingHours += credited;
+      // If student had check-in, but deployment day has ended without time-out, rendered hours is N/A
+      const isIncompleteNoTimeout = isTimeoutMissing && isDayPast;
+
+      let credited = match ? parseFloat(match[1]) : (Number(att.hours_rendered) || 0);
+      if (isIncompleteNoTimeout) {
+        credited = null;
       }
 
-      const cleanRemarks = att.student_remarks ? String(att.student_remarks).replace(/\[CREDITED:[0-9.]+\]\s*/g, '').trim() : '';
+      if (credited != null) {
+        if (isVerified) {
+          totalCreditedHours += credited;
+        } else {
+          totalPendingHours += credited;
+        }
+      }
+
+      let cleanRemarks = att.student_remarks ? String(att.student_remarks).replace(/\[CREDITED:[0-9.]+\]\s*/g, '').replace(/Ongoing duty\s*/gi, '').trim() : '';
+      if (isIncompleteNoTimeout) {
+        cleanRemarks = 'Time Out: N/A';
+      }
 
       return {
         attendance_id: att.attendance_id,
@@ -157,10 +180,10 @@ async function getStudentHoursSummary(deploymentId, studentId) {
         activity_name: att.deployment?.community_requests?.activity_title || att.deployment?.deployment_batch_name || 'Community Service Session',
         hours: credited,
         check_in_time: att.check_in_time,
-        check_out_time: att.check_out_time,
-        status: att.attendance_status,
+        check_out_time: isTimeoutMissing ? null : att.check_out_time,
+        status: isIncompleteNoTimeout ? 'incomplete' : att.attendance_status,
         is_verified: isVerified,
-        remarks: cleanRemarks || (isVerified ? 'Verified & credited by Community Official' : 'Pending Verification')
+        remarks: cleanRemarks || (isVerified ? 'Verified & credited by Community Official' : (isIncompleteNoTimeout ? 'Time Out: N/A' : 'Pending Verification'))
       };
     });
 

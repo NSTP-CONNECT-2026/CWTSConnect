@@ -202,16 +202,75 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      reportTableBody.innerHTML = rows.map((row, idx) => `
-        <tr>
-          <td style="text-align: center; font-weight: 600; color: #64748B;">${idx + 1}</td>
-          ${columns.map(col => {
-            const cellVal = row[col.key] || '—';
-            const { align } = getColumnStyle(currentType, col.key);
-            return `<td style="${align}">${formatTableCell(cellVal, col.key)}</td>`;
-          }).join('')}
-        </tr>
-      `).join('');
+      const batchSeparatedTypes = ['attendance_logs', 'rendered_hours', 'community_feedback', 'evaluation_records'];
+      const isBatchSeparated = batchSeparatedTypes.includes(currentType);
+
+      if (!isBatchSeparated) {
+        reportTableBody.innerHTML = rows.map((row, idx) => `
+          <tr>
+            <td style="text-align: center; font-weight: 600; color: #64748B;">${idx + 1}</td>
+            ${columns.map(col => {
+              const cellVal = row[col.key] || '—';
+              const { align } = getColumnStyle(currentType, col.key);
+              return `<td style="${align}">${formatTableCell(cellVal, col.key)}</td>`;
+            }).join('')}
+          </tr>
+        `).join('');
+        return;
+      }
+
+      // Pre-calculate count of rows per batch for badge
+      const batchCounts = {};
+      rows.forEach(r => {
+        const bId = r.batch_id || (r.batch_name ? r.batch_name : 'unassigned');
+        batchCounts[bId] = (batchCounts[bId] || 0) + 1;
+      });
+
+      let lastBatchId = null;
+      let html = '';
+
+      rows.forEach((row, idx) => {
+        const rowBatchId = row.batch_id || (row.batch_name ? row.batch_name : 'unassigned');
+
+        if (rowBatchId !== lastBatchId) {
+          lastBatchId = rowBatchId;
+          const count = batchCounts[rowBatchId] || 0;
+          const countLabel = count === 1 ? '1 Record' : `${count} Records`;
+          const batchCode = row.batch_code || 'BATCH';
+          const batchName = row.batch_name || 'Deployment Batch';
+
+          html += `
+            <tr class="batch-divider-row">
+              <td colspan="${columns.length + 1}">
+                <div class="batch-divider-content">
+                  <div class="batch-divider-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" style="color: #0B3D2E; flex-shrink: 0;">
+                      <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    <strong class="batch-divider-title">${escapeHtml(batchName)}</strong>
+                  </div>
+                  <div class="batch-divider-right">
+                    <span class="batch-divider-count">${countLabel}</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          `;
+        }
+
+        html += `
+          <tr>
+            <td style="text-align: center; font-weight: 600; color: #64748B;">${idx + 1}</td>
+            ${columns.map(col => {
+              const cellVal = row[col.key] || '—';
+              const { align } = getColumnStyle(currentType, col.key);
+              return `<td style="${align}">${formatTableCell(cellVal, col.key)}</td>`;
+            }).join('')}
+          </tr>
+        `;
+      });
+
+      reportTableBody.innerHTML = html;
     }
   }
 
@@ -221,12 +280,12 @@ document.addEventListener('DOMContentLoaded', function () {
    */
   function getColumnStyle(reportType, key) {
     const centeredKeys = [
-      'course', 'section', 'contact_number', 'status', 'overall_status',
+      'course', 'section', 'contact_number', 'status', 'overall_status', 'attendance',
       'request_id', 'target_date', 'batch_code', 'schedule', 'assigned_volunteers',
       'date', 'time_in', 'time_out', 'hours_rendered', 'total_rendered',
       'target_hours', 'progress', 'rating', 'punctuality', 'engagement',
       'teamwork', 'initiative', 'overall_score', 'grade', 'medical_cert',
-      'parent_consent', 'waiver'
+      'parent_consent', 'waiver', 'parent_waiver', 'student_id', 'parent_id'
     ];
 
     const isCentered = centeredKeys.includes(key) || key.includes('status');
@@ -242,13 +301,12 @@ document.addEventListener('DOMContentLoaded', function () {
         status: '17%'
       },
       requirement_compliance: {
-        student_number: '12%',
-        student_name: '21%',
-        course: '8%',
-        medical_cert: '14%',
-        parent_consent: '13%',
-        waiver: '13%',
-        overall_status: '15%'
+        student_number: '16%',
+        student_name: '28%',
+        medical_cert: '13%',
+        parent_waiver: '13%',
+        student_id: '13%',
+        parent_id: '13%'
       },
       community_requests: {
         request_id: '11%',
@@ -267,23 +325,18 @@ document.addEventListener('DOMContentLoaded', function () {
         status: '17%'
       },
       attendance_logs: {
-        date: '11%',
-        student_name: '20%',
-        course: '8%',
-        community: '17%',
-        time_in: '9%',
-        time_out: '9%',
-        hours_rendered: '10%',
-        status: '12%'
+        date: '16%',
+        student_name: '32%',
+        community: '32%',
+        attendance: '16%'
       },
       rendered_hours: {
-        student_number: '12%',
-        student_name: '22%',
-        course: '8%',
-        total_rendered: '13%',
-        target_hours: '12%',
-        progress: '13%',
-        status: '16%'
+        student_number: '16%',
+        student_name: '32%',
+        time_in: '12%',
+        time_out: '12%',
+        hours_rendered: '12%',
+        status: '12%'
       },
       community_feedback: {
         date: '11%',
@@ -293,15 +346,14 @@ document.addEventListener('DOMContentLoaded', function () {
         feedback_comment: '32%'
       },
       evaluation_records: {
-        student_number: '10%',
-        student_name: '21%',
-        course: '7%',
-        punctuality: '9%',
-        engagement: '9%',
-        teamwork: '9%',
-        initiative: '9%',
-        overall_score: '10%',
-        grade: '12%'
+        student_number: '12%',
+        student_name: '26%',
+        punctuality: '10%',
+        engagement: '10%',
+        teamwork: '10%',
+        initiative: '10%',
+        overall_score: '8%',
+        grade: '10%'
       }
     };
 
@@ -315,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function formatTableCell(val, key) {
     const str = String(val);
 
-    if (str === 'Verified' || str === 'Completed' || str === 'Approved' || str === 'Fully Compliant') {
+    if (str === 'Verified' || str === 'Completed' || str === 'Approved' || str === 'Fully Compliant' || str === 'Present') {
       return `<span class="badge badge-complete">${escapeHtml(str)}</span>`;
     }
 
@@ -327,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return `<span class="badge badge-verified">${escapeHtml(str)}</span>`;
     }
 
-    if (str === 'Cancelled' || str === 'Rejected' || str === 'Incomplete' || str === 'Missing') {
+    if (str === 'Cancelled' || str === 'Rejected' || str === 'Incomplete' || str === 'Missing' || str === 'Absent') {
       return `<span class="badge badge-inactive">${escapeHtml(str)}</span>`;
     }
 

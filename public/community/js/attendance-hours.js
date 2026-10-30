@@ -69,9 +69,20 @@
       });
     }
 
-    const saveBatchBtn = document.getElementById('saveAttendanceBatchBtn');
-    if (saveBatchBtn) {
-      saveBatchBtn.addEventListener('click', saveAttendanceBatch);
+    const quickAttBtn = document.getElementById('quickAttendanceBtn');
+    if (quickAttBtn) {
+      quickAttBtn.addEventListener('click', openQuickAttendanceModal);
+    }
+
+    const quickSelectAll = document.getElementById('quickAttSelectAll');
+    if (quickSelectAll) {
+      quickSelectAll.addEventListener('change', function () {
+        const isChecked = this.checked;
+        document.querySelectorAll('.quick-student-cb').forEach(cb => {
+          cb.checked = isChecked;
+        });
+        updateQuickAttCounts();
+      });
     }
 
     const refreshHistoryBtn = document.getElementById('refreshAttHistoryBtn');
@@ -241,13 +252,13 @@
 
   function updateDeploymentStatusNotice(dep) {
     const noticeEl = document.getElementById('deploymentStatusNotice');
-    const saveBtn = document.getElementById('saveAttendanceBatchBtn');
+    const quickBtn = document.getElementById('quickAttendanceBtn');
 
     if (!dep) {
       if (noticeEl) noticeEl.style.display = 'none';
-      if (saveBtn) {
-        saveBtn.disabled = true;
-        saveBtn.style.display = 'none';
+      if (quickBtn) {
+        quickBtn.disabled = true;
+        quickBtn.style.display = 'none';
       }
       return;
     }
@@ -271,9 +282,9 @@
         noticeEl.style.display = 'block';
       }
 
-      if (saveBtn) {
-        saveBtn.disabled = false;
-        saveBtn.style.display = 'inline-flex';
+      if (quickBtn) {
+        quickBtn.disabled = false;
+        quickBtn.style.display = 'inline-flex';
       }
     } else if (status === 'pending') {
       if (noticeEl) {
@@ -289,9 +300,9 @@
         noticeEl.style.display = 'block';
       }
 
-      if (saveBtn) {
-        saveBtn.disabled = true;
-        saveBtn.style.display = 'none';
+      if (quickBtn) {
+        quickBtn.disabled = true;
+        quickBtn.style.display = 'none';
       }
     } else if (status === 'completed') {
       if (noticeEl) {
@@ -307,9 +318,9 @@
         noticeEl.style.display = 'block';
       }
 
-      if (saveBtn) {
-        saveBtn.disabled = true;
-        saveBtn.style.display = 'none';
+      if (quickBtn) {
+        quickBtn.disabled = true;
+        quickBtn.style.display = 'none';
       }
     } else {
       if (noticeEl) {
@@ -325,9 +336,9 @@
         noticeEl.style.display = 'block';
       }
 
-      if (saveBtn) {
-        saveBtn.disabled = true;
-        saveBtn.style.display = 'none';
+      if (quickBtn) {
+        quickBtn.disabled = true;
+        quickBtn.style.display = 'none';
       }
     }
   }
@@ -398,121 +409,496 @@
       const section = s.section ? (String(s.section).toLowerCase().startsWith('section') ? s.section : `Section ${String(s.section).replace(/^sec\.?\s*/i, '')}`) : '';
       const courseSection = section ? `${course} • ${section}` : course;
 
-      const defaultIn = s.today_attendance?.check_in_time 
-        ? s.today_attendance.check_in_time.slice(0, 5) 
-        : getCurrentTimeHHMM();
-      const rawOut = s.today_attendance?.check_out_time;
-      const hasCheckoutTime = rawOut && 
-                              rawOut !== '---' && 
-                              String(rawOut).toUpperCase() !== 'N/A' && 
-                              String(rawOut).toUpperCase() !== 'N\\A';
-      const isTimeoutNA = !hasCheckoutTime;
-      const defaultOut = hasCheckoutTime ? String(rawOut).slice(0, 5) : '12:00';
+      // Initials for avatar
+      const nameParts = studentName.trim().split(/\s+/);
+      const initials = nameParts.length >= 2 
+        ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
+        : studentName.slice(0, 2).toUpperCase();
+
+      const att = s.today_attendance;
+      const hasTimeIn = Boolean(att && att.check_in_time && att.check_in_time !== '---');
+      const rawOut = att ? att.check_out_time : null;
+      const hasTimeOut = Boolean(rawOut && rawOut !== '---' && String(rawOut).toUpperCase() !== 'N/A' && String(rawOut).toUpperCase() !== 'N\\A');
+
+      let timeInHtml = '';
+      if (!hasTimeIn) {
+        timeInHtml = `
+          <button type="button" class="btn-action-timein" onclick="openConfirmAttendanceModal('${s.student_user_id}', 'in')">
+            Time In
+          </button>
+        `;
+      } else {
+        timeInHtml = `
+          <div class="att-action-pill att-pill-timein" title="Logged Time In">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>${formatTime12Hour(att.check_in_time)}</span>
+          </div>
+        `;
+      }
+
+      let timeOutHtml = '';
+      if (!hasTimeIn) {
+        // Requirement: "Dapat walang makikitang 'Time out' button kapag hindi pa nakakapa time in."
+        timeOutHtml = `<span style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600; display: inline-flex; justify-content: center; min-width: 124px;">---</span>`;
+      } else if (!hasTimeOut) {
+        timeOutHtml = `
+          <button type="button" class="btn-action-timeout" onclick="openConfirmAttendanceModal('${s.student_user_id}', 'out')">
+            Time Out
+          </button>
+        `;
+      } else {
+        const hrs = Number(att.hours_rendered || 0);
+        timeOutHtml = `
+          <div class="att-action-pill att-pill-timeout" title="Logged Time Out">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>${formatTime12Hour(att.check_out_time)}</span>
+            ${hrs > 0 ? `<span style="font-weight: 600; opacity: 0.85;">(${hrs.toFixed(1)}h)</span>` : ''}
+          </div>
+        `;
+      }
 
       return `
         <tr data-student-id="${s.student_user_id}">
           <td>
-            <div style="font-weight: 700; color: var(--cwts-primary-dark, #0B3D2E); font-size: 0.9375rem;">${escapeHtml(studentName)}</div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">${escapeHtml(courseSection)}</div>
-          </td>
-          <td>
-            <input type="time" class="time-input-sm att-time-in" value="${defaultIn}" />
-          </td>
-          <td>
-            <div class="timeout-cell-container" style="display: flex; align-items: center; gap: 8px;">
-              <input 
-                type="time" 
-                class="time-input-sm att-time-out" 
-                value="${defaultOut}" 
-                style="${isTimeoutNA ? 'display: none;' : 'display: inline-block;'}" 
-              />
-              <span 
-                class="att-timeout-badge" 
-                style="${isTimeoutNA ? 'display: inline-flex;' : 'display: none;'} align-items: center; gap: 4px; background: rgba(245, 158, 11, 0.12); color: #B45309; border: 1px solid rgba(245, 158, 11, 0.35); font-weight: 700; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px;"
-              >
-                <span style="width: 6px; height: 6px; border-radius: 50%; background: #F59E0B; display: inline-block;"></span>
-                N/A (Ongoing)
-              </span>
-              <label class="na-toggle-label" style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer; color: var(--text-muted); user-select: none; margin-left: auto;">
-                <input 
-                  type="checkbox" 
-                  class="att-time-out-na" 
-                  ${isTimeoutNA ? 'checked' : ''} 
-                  style="cursor: pointer; accent-color: var(--cwts-primary-dark, #0B3D2E);"
-                />
-                <span>N/A</span>
-              </label>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(11, 61, 46, 0.08); color: var(--cwts-primary-dark, #0B3D2E); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem; flex-shrink: 0; border: 1.5px solid rgba(11, 61, 46, 0.15);">
+                ${initials}
+              </div>
+              <div>
+                <div style="font-weight: 700; color: var(--cwts-primary-dark, #0B3D2E); font-size: 0.9375rem; line-height: 1.25;">${escapeHtml(studentName)}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">${escapeHtml(courseSection)}</div>
+              </div>
             </div>
+          </td>
+          <td style="text-align: center;">
+            ${timeInHtml}
+          </td>
+          <td style="text-align: center;">
+            ${timeOutHtml}
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  /* ==========================================================================
+     Single Attendance Confirmation Modal (Row-level Time In / Time Out)
+     ========================================================================== */
+  let pendingSingleAtt = null;
+
+  window.openConfirmAttendanceModal = function (studentUserId, action) {
+    const student = currentStudents.find(s => String(s.student_user_id) === String(studentUserId));
+    if (!student) return;
+
+    const studentName = student.full_name || student.student_name || 'Student Volunteer';
+    const course = student.course || student.program || 'CWTS Volunteer';
+    const section = student.section ? (String(student.section).toLowerCase().startsWith('section') ? student.section : `Section ${String(student.section).replace(/^sec\.?\s*/i, '')}`) : '';
+    const courseSection = section ? `${course} • ${section}` : course;
+
+    const modal = document.getElementById('singleAttendanceConfirmModal');
+    const modalTitle = document.getElementById('singleAttModalTitle');
+    const studentNameEl = document.getElementById('singleAttStudentName');
+    const courseSectionEl = document.getElementById('singleAttCourseSection');
+    const actionBadge = document.getElementById('singleAttActionBadge');
+    const activityDateEl = document.getElementById('singleAttActivityDate');
+    const recordedTimeEl = document.getElementById('singleAttRecordedTime');
+    const confirmPromptEl = document.getElementById('singleAttConfirmPrompt');
+    const actionIcon = document.getElementById('singleAttActionIcon');
+
+    const dateInput = document.getElementById('attDatePicker');
+    const activityDate = dateInput ? dateInput.value : getLocalDateString();
+    const currentTimeHHMM = getCurrentTimeHHMM();
+    const formatted12h = formatTime12Hour(currentTimeHHMM);
+
+    pendingSingleAtt = {
+      studentUserId,
+      action,
+      studentName,
+      activityDate,
+      timeHHMM: currentTimeHHMM
+    };
+
+    if (studentNameEl) studentNameEl.textContent = studentName;
+    if (courseSectionEl) courseSectionEl.textContent = courseSection;
+    if (activityDateEl) activityDateEl.textContent = activityDate;
+    if (recordedTimeEl) recordedTimeEl.textContent = formatted12h;
+
+    if (action === 'in') {
+      if (modalTitle) modalTitle.textContent = 'Confirm Student Time In';
+      if (actionBadge) {
+        actionBadge.textContent = 'Time In';
+        actionBadge.style.background = 'rgba(16, 185, 129, 0.12)';
+        actionBadge.style.color = '#065F46';
+        actionBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+      }
+      if (actionIcon) {
+        actionIcon.style.background = 'rgba(16, 185, 129, 0.12)';
+        actionIcon.style.color = '#065F46';
+      }
+      if (confirmPromptEl) {
+        confirmPromptEl.innerHTML = `Are you sure you want to record <strong>Time In</strong> for <strong>${escapeHtml(studentName)}</strong> at <strong>${formatted12h}</strong>?`;
+      }
+    } else {
+      if (modalTitle) modalTitle.textContent = 'Confirm Student Time Out';
+      if (actionBadge) {
+        actionBadge.textContent = 'Time Out';
+        actionBadge.style.background = 'rgba(59, 130, 246, 0.12)';
+        actionBadge.style.color = '#1E40AF';
+        actionBadge.style.borderColor = 'rgba(59, 130, 246, 0.3)';
+      }
+      if (actionIcon) {
+        actionIcon.style.background = 'rgba(59, 130, 246, 0.12)';
+        actionIcon.style.color = '#1E40AF';
+      }
+      const existingIn = student.today_attendance?.check_in_time ? formatTime12Hour(student.today_attendance.check_in_time) : 'earlier';
+      if (confirmPromptEl) {
+        confirmPromptEl.innerHTML = `Are you sure you want to record <strong>Time Out</strong> for <strong>${escapeHtml(studentName)}</strong> at <strong>${formatted12h}</strong>? (Timed in at ${existingIn})`;
+      }
+    }
+
+    if (modal) modal.classList.add('active');
+  };
+
+  window.closeSingleAttendanceModal = function () {
+    const modal = document.getElementById('singleAttendanceConfirmModal');
+    if (modal) modal.classList.remove('active');
+    pendingSingleAtt = null;
+  };
+
+  window.submitSingleAttendanceRecord = async function () {
+    if (!pendingSingleAtt) return;
+
+    const { studentUserId, action, studentName, activityDate, timeHHMM } = pendingSingleAtt;
+    const confirmBtn = document.getElementById('btnConfirmSingleAtt');
+
+    try {
+      if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<span>Saving...</span>';
+      }
+
+      const finalTimeHHMM = getCurrentTimeHHMM() || timeHHMM;
+      const recordObj = {
+        student_user_id: studentUserId,
+        status: 'present'
+      };
+
+      if (action === 'in') {
+        recordObj.check_in_time = `${finalTimeHHMM}:00`;
+      } else {
+        recordObj.check_out_time = `${finalTimeHHMM}:00`;
+      }
+
+      const res = await fetch('/api/community/attendance/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          deployment_id: currentDeploymentId,
+          attendance_date: activityDate,
+          records: [recordObj]
+        })
+      });
+
+      const result = await res.json();
+
+      if (res.ok && result.success) {
+        closeSingleAttendanceModal();
+        const actionLabel = action === 'in' ? 'Time In' : 'Time Out';
+        showToast(`${actionLabel} successfully recorded for ${studentName}!`, 'success');
+        await Promise.all([
+          loadStudentsForDeployment(currentDeploymentId),
+          loadAttendanceHistory(currentDeploymentId),
+          loadSessionsForVerification(currentDeploymentId)
+        ]);
+      } else {
+        showToast(result.message || 'Failed to record attendance.', 'error');
+      }
+    } catch (err) {
+      console.error('Record single attendance error:', err);
+      showToast('Error connecting to server. Please try again.', 'error');
+    } finally {
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = '<span>Confirm</span>';
+      }
+    }
+  };
+
+  /* ==========================================================================
+     Quick Attendance Modal (Multi-student Batch Logging)
+     ========================================================================== */
+  let quickAttTimer = null;
+
+  function updateQuickAttLiveTime() {
+    const timeEl = document.getElementById('quickAttTimeText');
+    if (timeEl) {
+      timeEl.textContent = formatTime12Hour(getCurrentTimeHHMM());
+    }
+  }
+
+  function renderQuickAttendanceRoster(action) {
+    const tbody = document.getElementById('quickAttRosterTableBody');
+    const selectAllCb = document.getElementById('quickAttSelectAll');
+    const confirmBtn = document.getElementById('btnConfirmQuickAtt');
+    const noticeEl = document.getElementById('quickAttActionNotice');
+    if (!tbody) return;
+
+    // Filter students strictly based on action:
+    // - "in": only students without Time In
+    // - "out": only students with Time In but without Time Out
+    const eligibleStudents = (currentStudents || []).filter(s => {
+      const att = s.today_attendance;
+      const hasIn = Boolean(att && att.check_in_time && att.check_in_time !== '---');
+      const rawOut = att ? att.check_out_time : null;
+      const hasOut = Boolean(rawOut && rawOut !== '---' && String(rawOut).toUpperCase() !== 'N/A' && String(rawOut).toUpperCase() !== 'N\\A');
+
+      if (action === 'in') {
+        return !hasIn;
+      } else {
+        return hasIn && !hasOut;
+      }
+    });
+
+    if (action === 'in') {
+      if (noticeEl) noticeEl.textContent = 'Recording Time In for selected students';
+      if (confirmBtn) confirmBtn.innerHTML = '<span>Confirm & Record Time In</span>';
+    } else {
+      if (noticeEl) noticeEl.textContent = 'Recording Time Out for selected students';
+      if (confirmBtn) confirmBtn.innerHTML = '<span>Confirm & Record Time Out</span>';
+    }
+
+    if (eligibleStudents.length === 0) {
+      const emptyMsg = action === 'in' 
+        ? 'No students eligible for Time In. All assigned students have already timed in.' 
+        : 'No students eligible for Time Out. Students must log Time In first before timing out.';
+      const hintMsg = action === 'in'
+        ? 'Switch to "Log Time Out" above to record departures.'
+        : 'Switch to "Log Time In" above to record arrivals.';
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align: center; padding: 36px 16px; color: var(--text-muted);">
+            <div style="font-weight: 600; font-size: 0.875rem; color: var(--text-main); margin-bottom: 4px;">${emptyMsg}</div>
+            <div style="font-size: 0.78rem;">${hintMsg}</div>
+          </td>
+        </tr>
+      `;
+      if (selectAllCb) {
+        selectAllCb.checked = false;
+        selectAllCb.disabled = true;
+      }
+      if (confirmBtn) {
+        confirmBtn.disabled = true;
+      }
+      updateQuickAttCounts();
+      return;
+    }
+
+    if (selectAllCb) {
+      selectAllCb.disabled = false;
+      selectAllCb.checked = true;
+    }
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+    }
+
+    tbody.innerHTML = eligibleStudents.map(s => {
+      const studentName = s.full_name || s.student_name || 'Student Volunteer';
+      const course = s.course || s.program || 'CWTS Volunteer';
+      const section = s.section ? (String(s.section).toLowerCase().startsWith('section') ? s.section : `Section ${String(s.section).replace(/^sec\.?\s*/i, '')}`) : '';
+      const courseSection = section ? `${course} • ${section}` : course;
+
+      const att = s.today_attendance;
+      const hasIn = Boolean(att && att.check_in_time && att.check_in_time !== '---');
+
+      let statusBadge = '<span style="color: #64748B; font-size: 0.75rem; font-weight: 600;">Not Timed In</span>';
+      if (hasIn) {
+        statusBadge = `<span style="color: #065F46; background: rgba(16, 185, 129, 0.12); padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">Timed In (${formatTime12Hour(att.check_in_time)})</span>`;
+      }
+
+      return `
+        <tr>
+          <td style="text-align: center;">
+            <input 
+              type="checkbox" 
+              class="quick-student-cb" 
+              data-student-id="${s.student_user_id}" 
+              checked 
+              style="cursor: pointer; width: 16px; height: 16px; accent-color: var(--cwts-primary-dark, #0B3D2E);"
+              onchange="updateQuickAttCounts()"
+            />
+          </td>
+          <td>
+            <div style="font-weight: 700; color: var(--cwts-primary-dark, #0B3D2E); font-size: 0.875rem;">${escapeHtml(studentName)}</div>
+          </td>
+          <td>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(courseSection)}</div>
+          </td>
+          <td style="text-align: center;">
+            ${statusBadge}
           </td>
         </tr>
       `;
     }).join('');
 
-    attachTimeoutToggleListeners();
+    updateQuickAttCounts();
   }
 
-  function attachTimeoutToggleListeners() {
-    const naCheckboxes = document.querySelectorAll('.att-time-out-na');
-    naCheckboxes.forEach(cb => {
-      cb.addEventListener('change', function () {
-        const row = this.closest('tr');
-        if (!row) return;
-        const timeInput = row.querySelector('.att-time-out');
-        const badge = row.querySelector('.att-timeout-badge');
-        if (this.checked) {
-          if (timeInput) timeInput.style.display = 'none';
-          if (badge) badge.style.display = 'inline-flex';
-        } else {
-          if (timeInput) {
-            timeInput.style.display = 'inline-block';
-            if (!timeInput.value) timeInput.value = '12:00';
-          }
-          if (badge) badge.style.display = 'none';
-        }
-        updateHeaderNAToggleState();
-      });
-    });
-
-    const headerToggle = document.getElementById('toggleAllTimeoutNA');
-    if (headerToggle) {
-      // Remove any existing clone listeners
-      const newHeaderToggle = headerToggle.cloneNode(true);
-      headerToggle.parentNode.replaceChild(newHeaderToggle, headerToggle);
-
-      newHeaderToggle.addEventListener('change', function () {
-        const isChecked = this.checked;
-        document.querySelectorAll('.att-time-out-na').forEach(cb => {
-          cb.checked = isChecked;
-          const row = cb.closest('tr');
-          if (row) {
-            const timeInput = row.querySelector('.att-time-out');
-            const badge = row.querySelector('.att-timeout-badge');
-            if (isChecked) {
-              if (timeInput) timeInput.style.display = 'none';
-              if (badge) badge.style.display = 'inline-flex';
-            } else {
-              if (timeInput) {
-                timeInput.style.display = 'inline-block';
-                if (!timeInput.value) timeInput.value = '12:00';
-              }
-              if (badge) badge.style.display = 'none';
-            }
-          }
-        });
-      });
+  window.openQuickAttendanceModal = function () {
+    if (!currentDeploymentId) {
+      showToast('Please select a deployment first.', 'error');
+      return;
     }
 
-    updateHeaderNAToggleState();
-  }
+    const dep = deployments.find(d => String(d.deployment_id) === String(currentDeploymentId));
+    if (!dep || (dep.deployment_status !== 'active' && dep.deployment_status !== 'ongoing')) {
+      showToast('Quick Attendance is only available for Active deployments.', 'error');
+      return;
+    }
 
-  function updateHeaderNAToggleState() {
-    const headerToggle = document.getElementById('toggleAllTimeoutNA');
-    if (!headerToggle) return;
-    const all = document.querySelectorAll('.att-time-out-na');
-    if (all.length === 0) return;
-    const allChecked = Array.from(all).every(cb => cb.checked);
-    headerToggle.checked = allChecked;
-  }
+    if (!currentStudents || currentStudents.length === 0) {
+      showToast('No students assigned to this deployment.', 'error');
+      return;
+    }
+
+    const modal = document.getElementById('quickAttendanceModal');
+
+    // Update live clock and start continuous ticker
+    updateQuickAttLiveTime();
+    clearInterval(quickAttTimer);
+    quickAttTimer = setInterval(updateQuickAttLiveTime, 1000);
+
+    // Determine default action based on current student statuses
+    const anyNeedsIn = (currentStudents || []).some(s => {
+      const att = s.today_attendance;
+      return !att || !att.check_in_time || att.check_in_time === '---';
+    });
+    const defaultAction = anyNeedsIn ? 'in' : 'out';
+
+    const actionRadios = document.querySelectorAll('input[name="quickAttAction"]');
+    actionRadios.forEach(r => {
+      r.checked = (r.value === defaultAction);
+    });
+
+    renderQuickAttendanceRoster(defaultAction);
+
+    if (modal) modal.classList.add('active');
+  };
+
+  window.closeQuickAttendanceModal = function () {
+    const modal = document.getElementById('quickAttendanceModal');
+    if (modal) modal.classList.remove('active');
+    clearInterval(quickAttTimer);
+    quickAttTimer = null;
+  };
+
+  window.handleQuickActionChange = function () {
+    const selectedAction = document.querySelector('input[name="quickAttAction"]:checked')?.value || 'in';
+    renderQuickAttendanceRoster(selectedAction);
+  };
+
+  window.updateQuickAttCounts = function () {
+    const cbs = document.querySelectorAll('.quick-student-cb');
+    const selectedCbs = document.querySelectorAll('.quick-student-cb:checked');
+    const countEl = document.getElementById('quickAttSelectedCount');
+    const selectAllCb = document.getElementById('quickAttSelectAll');
+    const confirmBtn = document.getElementById('btnConfirmQuickAtt');
+
+    if (countEl) {
+      countEl.textContent = `Selected: ${selectedCbs.length} of ${cbs.length} student(s)`;
+    }
+
+    if (selectAllCb && cbs.length > 0) {
+      selectAllCb.checked = (selectedCbs.length === cbs.length);
+    }
+
+    if (confirmBtn && cbs.length === 0) {
+      confirmBtn.disabled = true;
+    } else if (confirmBtn) {
+      confirmBtn.disabled = (selectedCbs.length === 0);
+    }
+  };
+
+  window.submitQuickAttendance = async function () {
+    const selectedCbs = document.querySelectorAll('.quick-student-cb:checked');
+    if (selectedCbs.length === 0) {
+      showToast('Please select at least one student.', 'error');
+      return;
+    }
+
+    const action = document.querySelector('input[name="quickAttAction"]:checked')?.value || 'in';
+    const currentTimeHHMM = getCurrentTimeHHMM();
+
+    const dateInput = document.getElementById('attDatePicker');
+    const activityDate = dateInput ? dateInput.value : getLocalDateString();
+
+    const confirmBtn = document.getElementById('btnConfirmQuickAtt');
+
+    const records = [];
+    selectedCbs.forEach(cb => {
+      const studentId = cb.getAttribute('data-student-id');
+      if (!studentId) return;
+
+      if (action === 'in') {
+        records.push({
+          student_user_id: studentId,
+          check_in_time: `${currentTimeHHMM}:00`,
+          status: 'present'
+        });
+      } else {
+        records.push({
+          student_user_id: studentId,
+          check_out_time: `${currentTimeHHMM}:00`,
+          status: 'present'
+        });
+      }
+    });
+
+    try {
+      if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<span>Recording...</span>';
+      }
+
+      showToast('Recording attendance in database...', 'info');
+
+      const res = await fetch('/api/community/attendance/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          deployment_id: currentDeploymentId,
+          attendance_date: activityDate,
+          records
+        })
+      });
+
+      const result = await res.json();
+
+      if (res.ok && result.success) {
+        closeQuickAttendanceModal();
+        const actionLabel = action === 'in' ? 'Time In' : 'Time Out';
+        showToast(`${actionLabel} recorded successfully for ${result.savedCount || records.length} student(s)!`, 'success');
+        await Promise.all([
+          loadStudentsForDeployment(currentDeploymentId),
+          loadAttendanceHistory(currentDeploymentId),
+          loadSessionsForVerification(currentDeploymentId)
+        ]);
+      } else {
+        showToast(result.message || 'Failed to record attendance.', 'error');
+      }
+    } catch (err) {
+      console.error('Quick attendance error:', err);
+      showToast('Error connecting to server. Please try again.', 'error');
+    } finally {
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        handleQuickActionChange();
+      }
+    }
+  };
+
 
   function parseTimeComponents(timeStr) {
     if (!timeStr) return null;
@@ -595,7 +981,7 @@
         check_in_time: timeIn,
         check_out_time: timeOut,
         hours_rendered: hours,
-        remarks: isTimeoutNA ? 'Ongoing duty (Time Out: N/A)' : ''
+        remarks: isTimeoutNA ? 'Time Out: N/A' : ''
       });
     });
 
@@ -675,7 +1061,7 @@
       
       let creditedContent = '';
       if (isTimeoutNA) {
-        creditedContent = `<span class="badge" style="background: rgba(16, 185, 129, 0.12); color: #065F46; border: 1px solid rgba(16, 185, 129, 0.35); font-weight: 700; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; letter-spacing: 0.02em; display: inline-flex; align-items: center; gap: 4px;"><span style="width:6px;height:6px;border-radius:50%;background:#10B981;display:inline-block;"></span>Ongoing (Live)</span>`;
+        creditedContent = `<span class="badge" style="background: #F1F5F9; color: #64748B; font-weight: 700; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; display: inline-flex; align-items: center;">N/A</span>`;
       } else if (isCredited) {
         creditedContent = `<span style="font-weight: 700; color: var(--cwts-primary-dark, #0B3D2E); font-size: 0.9375rem;">${Number(r.hours_rendered || 0).toFixed(1)} hrs</span>`;
       } else {
@@ -683,7 +1069,7 @@
       }
 
       const timeoutDisplay = isTimeoutNA
-        ? `<span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #B45309; border: 1px solid rgba(245, 158, 11, 0.35); font-weight: 700; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;"><span style="width:5px;height:5px;border-radius:50%;background:#F59E0B;display:inline-block;"></span>N/A (Ongoing)</span>`
+        ? `<span class="badge" style="background: #F1F5F9; color: #64748B; font-weight: 700; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; display: inline-flex; align-items: center;">N/A</span>`
         : escapeHtml(formatTime12Hour(r.check_out_time));
 
       const studentName = r.student_name || r.full_name || 'Student Volunteer';
@@ -768,11 +1154,11 @@
       const statusBadge = isVerified
         ? `<span class="badge" style="background:#D1FAE5; color:#065F46; font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:4px; display:inline-block;">Credited</span>`
         : (isTimeoutNA 
-            ? `<span class="badge" style="background:rgba(16, 185, 129, 0.12); color:#065F46; font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:4px; display:inline-block;">Ongoing</span>`
+            ? `<span class="badge" style="background:#F1F5F9; color:#64748B; font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:4px; display:inline-block;">N/A</span>`
             : `<span class="badge" style="background:rgba(245, 158, 11, 0.15); color:#B45309; font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:4px; display:inline-block;">Pending</span>`);
 
       const timeoutBadge = isTimeoutNA
-        ? `<span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #B45309; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;"><span style="width:5px;height:5px;border-radius:50%;background:#F59E0B;display:inline-block;"></span>N/A (Ongoing)</span>`
+        ? `<span class="badge" style="background: #F1F5F9; color: #64748B; font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; display: inline-block;">N/A</span>`
         : `<span class="badge" style="background:#F1F5F9; color:#334155; font-family: inherit; font-weight: 600; font-size: 0.8125rem; padding: 4px 10px; border-radius: 6px; display: inline-block;">${escapeHtml(formatTime12Hour(s.check_out_time))}</span>`;
 
       return `

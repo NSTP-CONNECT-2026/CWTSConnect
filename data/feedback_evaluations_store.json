@@ -1,4 +1,626 @@
 {
-  "feedback": [],
-  "evaluations": []
+  "feedback": [
+    {
+      "feedback_id": "f31551e7-f489-4a75-b21b-ad528df6397f",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "92b951f5-8999-473d-ab73-6892b9373275",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "f768bafe-d211-4d0f-a52e-5298513e0760",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "54eb36ca-2227-4d7c-831d-596574e4bd15",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "b0b1e84e-a3d9-48eb-8547-9b71cde4752d",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "f799c696-746f-4422-9870-76fb20b9bc3a",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "96fae7ad-5b6e-4a94-9902-44efdba478ba",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "f9187e80-cc1c-46d9-9270-94abcb6be085",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "7b4ca6cf-dc8b-4e3c-89d9-6f62b562995b",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "c1ba903d-438e-41b6-8dea-8f41262227e1",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "5137f633-6129-444a-8739-da3ca76cc5ca",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "70c41d1c-2452-4491-b06b-678b3d746715",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "df8e477c-108a-4aa9-be34-71cd0e32c2aa",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "d16c37a7-6614-477f-b04f-31f3da844295",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "7678f26a-5607-416a-817f-b1500d858f46",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "d6e299ed-1547-4ab7-81cd-22c80040e99d",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "6cefc4ce-8232-4e43-8a48-7546a7e0aff2",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "0dea0907-b637-4108-a572-f7e05b5dc546",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "bbe87dfe-8021-4d97-8f47-db3ec4193e5e",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "dec25312-700a-4031-afe7-a71d946ae3eb",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "90b2accb-378c-46b6-be8b-eb38d3b49f8f",
+      "deployment_id": "9a36417d-ae4d-446e-944f-310ab05978bb",
+      "student_user_id": "92b951f5-8999-473d-ab73-6892b9373275",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Clean-up Drive & Coastal Care",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "4a6ca670-ec14-4aa8-8702-5034c7456962",
+      "deployment_id": "9a36417d-ae4d-446e-944f-310ab05978bb",
+      "student_user_id": "54eb36ca-2227-4d7c-831d-596574e4bd15",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Clean-up Drive & Coastal Care",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "7da0e664-7d19-4f3b-bf54-2319f6acabff",
+      "deployment_id": "9a36417d-ae4d-446e-944f-310ab05978bb",
+      "student_user_id": "f9187e80-cc1c-46d9-9270-94abcb6be085",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Clean-up Drive & Coastal Care",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "41e02995-d9f5-43e6-81da-cb72af4f91e2",
+      "deployment_id": "9a36417d-ae4d-446e-944f-310ab05978bb",
+      "student_user_id": "f799c696-746f-4422-9870-76fb20b9bc3a",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Clean-up Drive & Coastal Care",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "2aaa3610-8d80-451e-af71-0b9b9f32f109",
+      "deployment_id": "9a36417d-ae4d-446e-944f-310ab05978bb",
+      "student_user_id": "c1ba903d-438e-41b6-8dea-8f41262227e1",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Clean-up Drive & Coastal Care",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "841d4f17-134a-4e27-9eae-235f3591aa2b",
+      "deployment_id": "9a36417d-ae4d-446e-944f-310ab05978bb",
+      "student_user_id": "70c41d1c-2452-4491-b06b-678b3d746715",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Clean-up Drive & Coastal Care",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "2726aa8d-8e8e-4934-847a-9f13ba424aed",
+      "deployment_id": "9a36417d-ae4d-446e-944f-310ab05978bb",
+      "student_user_id": "0dea0907-b637-4108-a572-f7e05b5dc546",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Clean-up Drive & Coastal Care",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "92ce3667-ef90-4ab8-83b9-63fd0bdee372",
+      "deployment_id": "9a36417d-ae4d-446e-944f-310ab05978bb",
+      "student_user_id": "d6e299ed-1547-4ab7-81cd-22c80040e99d",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Clean-up Drive & Coastal Care",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "4583b43c-f0b2-4c84-aee2-fc7fb922c011",
+      "deployment_id": "9a36417d-ae4d-446e-944f-310ab05978bb",
+      "student_user_id": "d16c37a7-6614-477f-b04f-31f3da844295",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Clean-up Drive & Coastal Care",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    },
+    {
+      "feedback_id": "cb6256d2-358e-49b4-ab95-552b8c0308bf",
+      "deployment_id": "9a36417d-ae4d-446e-944f-310ab05978bb",
+      "student_user_id": "dec25312-700a-4031-afe7-a71d946ae3eb",
+      "community_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Clean-up Drive & Coastal Care",
+      "rating": 5,
+      "feedback_type": "General Feedback",
+      "comments": "Very good ang team work!",
+      "submitted_by": "Community Official",
+      "date_submitted": "2026-10-29"
+    }
+  ],
+  "evaluations": [
+    {
+      "evaluation_id": "0e91a53c-2589-47ad-a2a8-07973549062f",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "92b951f5-8999-473d-ab73-6892b9373275",
+      "student_name": "Alliah M. Villanueva",
+      "evaluator_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "evaluator_name": "Community Official",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating_punctuality": 5,
+      "rating_community_engagement": 5,
+      "rating_teamwork": 5,
+      "rating_initiative_attitude": 5,
+      "overall_score": 5,
+      "performance_grade": "Outstanding",
+      "criteria": {
+        "punctuality": {
+          "score": 5,
+          "label": "Punctuality & Attendance"
+        },
+        "community_engagement": {
+          "score": 5,
+          "label": "Community Engagement & Rapport"
+        },
+        "teamwork": {
+          "score": 5,
+          "label": "Teamwork & Cooperation"
+        },
+        "initiative_attitude": {
+          "score": 5,
+          "label": "Initiative & Work Attitude"
+        }
+      },
+      "evaluator_remarks": "Very good!",
+      "evaluation_date": "2026-10-29"
+    },
+    {
+      "evaluation_id": "58a15e0e-fb8f-4ef7-b82c-9cc756004cf3",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "54eb36ca-2227-4d7c-831d-596574e4bd15",
+      "student_name": "Alliza S. Aurelio",
+      "evaluator_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "evaluator_name": "Community Official",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating_punctuality": 5,
+      "rating_community_engagement": 5,
+      "rating_teamwork": 5,
+      "rating_initiative_attitude": 5,
+      "overall_score": 5,
+      "performance_grade": "Outstanding",
+      "criteria": {
+        "punctuality": {
+          "score": 5,
+          "label": "Punctuality & Attendance"
+        },
+        "community_engagement": {
+          "score": 5,
+          "label": "Community Engagement & Rapport"
+        },
+        "teamwork": {
+          "score": 5,
+          "label": "Teamwork & Cooperation"
+        },
+        "initiative_attitude": {
+          "score": 5,
+          "label": "Initiative & Work Attitude"
+        }
+      },
+      "evaluator_remarks": "Very good!",
+      "evaluation_date": "2026-10-29"
+    },
+    {
+      "evaluation_id": "7bdb8f8a-08f6-4b04-863f-ed2f4f07b79b",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "f799c696-746f-4422-9870-76fb20b9bc3a",
+      "student_name": "Ryza Joice B. Batol",
+      "evaluator_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "evaluator_name": "Community Official",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating_punctuality": 5,
+      "rating_community_engagement": 5,
+      "rating_teamwork": 5,
+      "rating_initiative_attitude": 5,
+      "overall_score": 5,
+      "performance_grade": "Outstanding",
+      "criteria": {
+        "punctuality": {
+          "score": 5,
+          "label": "Punctuality & Attendance"
+        },
+        "community_engagement": {
+          "score": 5,
+          "label": "Community Engagement & Rapport"
+        },
+        "teamwork": {
+          "score": 5,
+          "label": "Teamwork & Cooperation"
+        },
+        "initiative_attitude": {
+          "score": 5,
+          "label": "Initiative & Work Attitude"
+        }
+      },
+      "evaluator_remarks": "Very good!",
+      "evaluation_date": "2026-10-29"
+    },
+    {
+      "evaluation_id": "88a5c128-b506-4185-a8b2-3836f2056807",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "f9187e80-cc1c-46d9-9270-94abcb6be085",
+      "student_name": "Imee C. Merin",
+      "evaluator_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "evaluator_name": "Community Official",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating_punctuality": 5,
+      "rating_community_engagement": 5,
+      "rating_teamwork": 5,
+      "rating_initiative_attitude": 5,
+      "overall_score": 5,
+      "performance_grade": "Outstanding",
+      "criteria": {
+        "punctuality": {
+          "score": 5,
+          "label": "Punctuality & Attendance"
+        },
+        "community_engagement": {
+          "score": 5,
+          "label": "Community Engagement & Rapport"
+        },
+        "teamwork": {
+          "score": 5,
+          "label": "Teamwork & Cooperation"
+        },
+        "initiative_attitude": {
+          "score": 5,
+          "label": "Initiative & Work Attitude"
+        }
+      },
+      "evaluator_remarks": "Very good!",
+      "evaluation_date": "2026-10-29"
+    },
+    {
+      "evaluation_id": "86f8ea7e-f1f2-4765-b724-05ddaf2613c2",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "c1ba903d-438e-41b6-8dea-8f41262227e1",
+      "student_name": "Ryan Jhay P. De Vera",
+      "evaluator_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "evaluator_name": "Community Official",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating_punctuality": 5,
+      "rating_community_engagement": 5,
+      "rating_teamwork": 5,
+      "rating_initiative_attitude": 5,
+      "overall_score": 5,
+      "performance_grade": "Outstanding",
+      "criteria": {
+        "punctuality": {
+          "score": 5,
+          "label": "Punctuality & Attendance"
+        },
+        "community_engagement": {
+          "score": 5,
+          "label": "Community Engagement & Rapport"
+        },
+        "teamwork": {
+          "score": 5,
+          "label": "Teamwork & Cooperation"
+        },
+        "initiative_attitude": {
+          "score": 5,
+          "label": "Initiative & Work Attitude"
+        }
+      },
+      "evaluator_remarks": "Very good!",
+      "evaluation_date": "2026-10-29"
+    },
+    {
+      "evaluation_id": "a427c1da-bf47-4188-a307-6786734a82a4",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "70c41d1c-2452-4491-b06b-678b3d746715",
+      "student_name": "Dianne Yvonne T. Marasigan",
+      "evaluator_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "evaluator_name": "Community Official",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating_punctuality": 5,
+      "rating_community_engagement": 5,
+      "rating_teamwork": 5,
+      "rating_initiative_attitude": 5,
+      "overall_score": 5,
+      "performance_grade": "Outstanding",
+      "criteria": {
+        "punctuality": {
+          "score": 5,
+          "label": "Punctuality & Attendance"
+        },
+        "community_engagement": {
+          "score": 5,
+          "label": "Community Engagement & Rapport"
+        },
+        "teamwork": {
+          "score": 5,
+          "label": "Teamwork & Cooperation"
+        },
+        "initiative_attitude": {
+          "score": 5,
+          "label": "Initiative & Work Attitude"
+        }
+      },
+      "evaluator_remarks": "Very good!",
+      "evaluation_date": "2026-10-29"
+    },
+    {
+      "evaluation_id": "ea6ab579-22b2-4cd4-a985-825deeb48fe3",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "d16c37a7-6614-477f-b04f-31f3da844295",
+      "student_name": "Jennylyn D. Magpantay",
+      "evaluator_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "evaluator_name": "Community Official",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating_punctuality": 5,
+      "rating_community_engagement": 5,
+      "rating_teamwork": 5,
+      "rating_initiative_attitude": 5,
+      "overall_score": 5,
+      "performance_grade": "Outstanding",
+      "criteria": {
+        "punctuality": {
+          "score": 5,
+          "label": "Punctuality & Attendance"
+        },
+        "community_engagement": {
+          "score": 5,
+          "label": "Community Engagement & Rapport"
+        },
+        "teamwork": {
+          "score": 5,
+          "label": "Teamwork & Cooperation"
+        },
+        "initiative_attitude": {
+          "score": 5,
+          "label": "Initiative & Work Attitude"
+        }
+      },
+      "evaluator_remarks": "Very good!",
+      "evaluation_date": "2026-10-29"
+    },
+    {
+      "evaluation_id": "d8313919-c6b5-4bf7-8d86-e291173a40d7",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "d6e299ed-1547-4ab7-81cd-22c80040e99d",
+      "student_name": "Ginalenn Mae L. Cuaterno",
+      "evaluator_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "evaluator_name": "Community Official",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating_punctuality": 5,
+      "rating_community_engagement": 5,
+      "rating_teamwork": 5,
+      "rating_initiative_attitude": 5,
+      "overall_score": 5,
+      "performance_grade": "Outstanding",
+      "criteria": {
+        "punctuality": {
+          "score": 5,
+          "label": "Punctuality & Attendance"
+        },
+        "community_engagement": {
+          "score": 5,
+          "label": "Community Engagement & Rapport"
+        },
+        "teamwork": {
+          "score": 5,
+          "label": "Teamwork & Cooperation"
+        },
+        "initiative_attitude": {
+          "score": 5,
+          "label": "Initiative & Work Attitude"
+        }
+      },
+      "evaluator_remarks": "Very good!",
+      "evaluation_date": "2026-10-29"
+    },
+    {
+      "evaluation_id": "e1a14438-c831-44c9-90f9-fc95bbb08ec9",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "0dea0907-b637-4108-a572-f7e05b5dc546",
+      "student_name": "John Paul L. Cuaterno",
+      "evaluator_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "evaluator_name": "Community Official",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating_punctuality": 5,
+      "rating_community_engagement": 5,
+      "rating_teamwork": 5,
+      "rating_initiative_attitude": 5,
+      "overall_score": 5,
+      "performance_grade": "Outstanding",
+      "criteria": {
+        "punctuality": {
+          "score": 5,
+          "label": "Punctuality & Attendance"
+        },
+        "community_engagement": {
+          "score": 5,
+          "label": "Community Engagement & Rapport"
+        },
+        "teamwork": {
+          "score": 5,
+          "label": "Teamwork & Cooperation"
+        },
+        "initiative_attitude": {
+          "score": 5,
+          "label": "Initiative & Work Attitude"
+        }
+      },
+      "evaluator_remarks": "Very good!",
+      "evaluation_date": "2026-10-29"
+    },
+    {
+      "evaluation_id": "c1bbba97-10de-41ac-876f-9a08b99f823d",
+      "deployment_id": "de4e069b-624b-4813-9471-52f3618d8693",
+      "student_user_id": "dec25312-700a-4031-afe7-a71d946ae3eb",
+      "student_name": "Bea R. Jamito",
+      "evaluator_user_id": "1cef9076-2cb8-4bdf-b950-ba01ab03ae06",
+      "evaluator_name": "Community Official",
+      "community_name": "Barangay Community Partner",
+      "activity_title": "Elementary Literacy and Reading Enrichment Program",
+      "rating_punctuality": 5,
+      "rating_community_engagement": 5,
+      "rating_teamwork": 5,
+      "rating_initiative_attitude": 5,
+      "overall_score": 5,
+      "performance_grade": "Outstanding",
+      "criteria": {
+        "punctuality": {
+          "score": 5,
+          "label": "Punctuality & Attendance"
+        },
+        "community_engagement": {
+          "score": 5,
+          "label": "Community Engagement & Rapport"
+        },
+        "teamwork": {
+          "score": 5,
+          "label": "Teamwork & Cooperation"
+        },
+        "initiative_attitude": {
+          "score": 5,
+          "label": "Initiative & Work Attitude"
+        }
+      },
+      "evaluator_remarks": "Very good!",
+      "evaluation_date": "2026-10-29"
+    }
+  ]
 }

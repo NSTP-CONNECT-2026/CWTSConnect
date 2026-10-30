@@ -227,14 +227,14 @@ async function getCommunityDeploymentDetails(req, res) {
         }
         attendanceStatsMap.set(att.student_user_id, current);
 
-        // Store latest attendance record (prefer target/today record, or active ongoing session)
-        const existing = latestAttMap.get(att.student_user_id);
-        if (!existing) {
-          latestAttMap.set(att.student_user_id, att);
-        } else if (att.attendance_date === targetDate && existing.attendance_date !== targetDate) {
-          latestAttMap.set(att.student_user_id, att);
-        } else if (existing.attendance_date === att.attendance_date && existing.check_out_time && !att.check_out_time) {
-          latestAttMap.set(att.student_user_id, att);
+        // Store attendance record for the target / selected date
+        if (att.attendance_date === targetDate) {
+          const existing = latestAttMap.get(att.student_user_id);
+          if (!existing) {
+            latestAttMap.set(att.student_user_id, att);
+          } else if (!existing.check_out_time && att.check_out_time) {
+            latestAttMap.set(att.student_user_id, att);
+          }
         }
       });
 

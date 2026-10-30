@@ -254,15 +254,14 @@ async function generateReport(req, res) {
       // 2. REQUIREMENT COMPLIANCE
       case 'requirement_compliance': {
         reportData.title = 'CHED CMO Requirement Compliance Audit Report';
-        reportData.subtitle = 'Verification Audit of Medical Certificate, Parent Consent & Waivers';
+        reportData.subtitle = 'Verification Audit of Medical Certificate, Parent Waiver, Student ID & Parent ID';
         reportData.columns = [
           { key: 'student_number', label: 'Student No.' },
           { key: 'student_name', label: 'Student Name' },
-          { key: 'course', label: 'Course' },
-          { key: 'medical_cert', label: 'Medical Clearance' },
-          { key: 'parent_consent', label: 'Parent Consent' },
-          { key: 'waiver', label: 'Liability Waiver' },
-          { key: 'overall_status', label: 'Overall Status' }
+          { key: 'medical_cert', label: 'Medical Certificate' },
+          { key: 'parent_waiver', label: "Parent's Waiver" },
+          { key: 'student_id', label: 'Student ID' },
+          { key: 'parent_id', label: 'Parent ID' }
         ];
 
         const { data: students, error: stuErr } = await supabase
@@ -314,7 +313,8 @@ async function generateReport(req, res) {
 
           const medStatus = formatDocStatus(r.medical_certificate);
           const waiverStatus = formatDocStatus(r.notarized_parent_waiver);
-          const idStatus = formatDocStatus(r.validated_student_id || r.valid_parent_id);
+          const studentIdStatus = formatDocStatus(r.validated_student_id);
+          const parentIdStatus = formatDocStatus(r.valid_parent_id);
 
           let overall = 'Incomplete';
           if (s.cmo_compliance_status === 'compliant' || (r.medical_certificate === 'approved' && r.notarized_parent_waiver === 'approved' && r.validated_student_id === 'approved' && r.valid_parent_id === 'approved')) {
@@ -330,8 +330,11 @@ async function generateReport(req, res) {
             raw_course: prof.course || '',
             section: formatFullSection(prof.section),
             medical_cert: medStatus,
+            parent_waiver: waiverStatus,
+            student_id: studentIdStatus,
+            parent_id: parentIdStatus,
             parent_consent: waiverStatus,
-            waiver: idStatus,
+            waiver: waiverStatus,
             overall_status: overall,
             raw_date: reqDateMap.get(s.user_id) || s.created_at
           };
@@ -576,12 +579,117 @@ async function generateReport(req, res) {
       // 5. ATTENDANCE LOGS
       case 'attendance_logs': {
         reportData.title = 'Official CWTS Student Attendance Audit Records';
-        reportData.subtitle = 'Barangay On-Site Time-In/Out & Supervisor Verifications';
+        reportData.subtitle = 'Barangay On-Site Attendance & Supervisor Verifications';
         reportData.columns = [
           { key: 'date', label: 'Date' },
           { key: 'student_name', label: 'Student Volunteer' },
-          { key: 'course', label: 'Course' },
           { key: 'community', label: 'Community Site' },
+          { key: 'attendance', label: 'Attendance' }
+        ];
+
+        const { data: logs, error: logErr } = await supabase
+          .from('attendance_records')
+          .select(`
+            attendance_id,
+            student_user_id,
+            deployment_id,
+            attendance_date,
+            check_in_time,
+            check_out_time,
+            attendance_status,
+            hours_rendered,
+            verified_at,
+            verified_by,
+            student_remarks,
+            created_at,
+            deployments (
+              deployment_id,
+              deployment_batch_name,
+              community_requests (
+                community_name,
+                barangay
+              )
+            )
+          `)
+          .order('attendance_date', { ascending: false });
+
+        if (logErr) throw logErr;
+
+        const { data: studentProfiles } = await supabase
+          .from('student_profiles')
+          .select('user_id, full_name, student_number, course, section');
+
+        const studentProfMap = new Map();
+        (studentProfiles || []).forEach(p => studentProfMap.set(p.user_id, p));
+
+        let rows = (logs || []).map(l => {
+          const prof = studentProfMap.get(l.student_user_id) || {};
+
+          let siteName = 'Deployment Venue';
+          if (l.deployments) {
+            siteName = l.deployments.community_requests?.community_name || l.deployments.deployment_batch_name || 'Community Site';
+          }
+
+          const batchId = l.deployment_id || 'unassigned';
+          const batchName = l.deployments?.deployment_batch_name || 'Community Deployment Batch';
+          const batchCode = l.deployment_id ? `DEP-${l.deployment_id.slice(0, 8).toUpperCase()}` : 'DEP-GENERAL';
+
+          const isPresent = (l.attendance_status === 'present' || Boolean(l.check_in_time));
+          const attendanceStatus = isPresent ? 'Present' : 'Absent';
+
+          return {
+            batch_id: batchId,
+            batch_name: batchName,
+            batch_code: batchCode,
+            date: l.attendance_date || '---',
+            student_name: prof.full_name || 'Student Volunteer',
+            course: getCourseAbbr(prof.course),
+            raw_course: prof.course || '',
+            section: formatFullSection(prof.section),
+            community: siteName,
+            attendance: attendanceStatus,
+            raw_date: l.attendance_date || l.created_at
+          };
+        });
+
+        if (course !== 'ALL') rows = rows.filter(r => matchCourseReport(r.raw_course, course));
+        if (section !== 'ALL') rows = rows.filter(r => matchSectionReport(r.section, section));
+        if (status !== 'ALL') {
+          if (status === 'Completed' || status === 'Present') {
+            rows = rows.filter(r => r.attendance === 'Present');
+          } else if (status === 'Pending' || status === 'Absent') {
+            rows = rows.filter(r => r.attendance === 'Absent');
+          }
+        }
+        if (dateFrom || dateTo) {
+          rows = rows.filter(r => matchDateRange(r.raw_date, dateFrom, dateTo));
+        }
+
+        // Sort primarily by batch so batch row separation is cleanly grouped
+        rows.sort((a, b) => {
+          if (a.batch_id === 'unassigned' && b.batch_id !== 'unassigned') return 1;
+          if (b.batch_id === 'unassigned' && a.batch_id !== 'unassigned') return -1;
+          if (a.batch_id !== b.batch_id) {
+            return (a.batch_name || '').localeCompare(b.batch_name || '');
+          }
+          if (a.raw_date !== b.raw_date) {
+            return String(b.raw_date).localeCompare(String(a.raw_date));
+          }
+          return (a.student_name || '').localeCompare(b.student_name || '');
+        });
+
+        reportData.rows = rows;
+        reportData.summaryMetrics = {};
+        break;
+      }
+
+      // 6. RENDERED SERVICE HOURS
+      case 'rendered_hours': {
+        reportData.title = 'Official CWTS Rendered Service Hours Records';
+        reportData.subtitle = 'Volunteer Verified Service Hours, Time In / Out & Supervisor Clearances';
+        reportData.columns = [
+          { key: 'student_number', label: 'Student No.' },
+          { key: 'student_name', label: 'Student Name' },
           { key: 'time_in', label: 'Time In' },
           { key: 'time_out', label: 'Time Out' },
           { key: 'hours_rendered', label: 'Hours Credited' },
@@ -604,11 +712,8 @@ async function generateReport(req, res) {
             student_remarks,
             created_at,
             deployments (
-              deployment_batch_name,
-              community_requests (
-                community_name,
-                barangay
-              )
+              deployment_id,
+              deployment_batch_name
             )
           `)
           .order('attendance_date', { ascending: false });
@@ -649,18 +754,19 @@ async function generateReport(req, res) {
           const isVerified = Boolean(l.verified_at || l.verified_by || (l.student_remarks && /\[CREDITED:[0-9.]+\]/.test(l.student_remarks)));
           const hrs = (customHours !== null) ? customHours : Number(l.hours_rendered || 0);
 
-          let siteName = 'Deployment Venue';
-          if (l.deployments) {
-            siteName = l.deployments.community_requests?.community_name || l.deployments.deployment_batch_name || 'Community Site';
-          }
+          const batchId = l.deployment_id || 'unassigned';
+          const batchName = l.deployments?.deployment_batch_name || 'Community Deployment Batch';
+          const batchCode = l.deployment_id ? `DEP-${l.deployment_id.slice(0, 8).toUpperCase()}` : 'DEP-GENERAL';
 
           return {
-            date: l.attendance_date || '---',
+            batch_id: batchId,
+            batch_name: batchName,
+            batch_code: batchCode,
+            student_number: prof.student_number || '---',
             student_name: prof.full_name || 'Student Volunteer',
             course: getCourseAbbr(prof.course),
             raw_course: prof.course || '',
             section: formatFullSection(prof.section),
-            community: siteName,
             time_in: formatTime(l.check_in_time),
             time_out: formatTime(l.check_out_time),
             hours_rendered: `${hrs.toFixed(1)}h`,
@@ -685,98 +791,18 @@ async function generateReport(req, res) {
           rows = rows.filter(r => matchDateRange(r.raw_date, dateFrom, dateTo));
         }
 
-        reportData.rows = rows;
-        reportData.summaryMetrics = {};
-        break;
-      }
-
-      // 6. RENDERED SERVICE HOURS
-      case 'rendered_hours': {
-        reportData.title = 'Cumulative Rendered Service Hours Audit Summary';
-        reportData.subtitle = 'Mandated 90-Hour CWTS Civic Service Fulfillment Audit';
-        reportData.columns = [
-          { key: 'student_number', label: 'Student No.' },
-          { key: 'student_name', label: 'Student Name' },
-          { key: 'course', label: 'Course' },
-          { key: 'total_rendered', label: 'Hours Rendered' },
-          { key: 'target_hours', label: 'Target Hours' },
-          { key: 'progress', label: 'Completion %' },
-          { key: 'status', label: 'Clearance Status' }
-        ];
-
-        const { data: students, error: stuErr } = await supabase
-          .from('users')
-          .select(`
-            user_id,
-            email,
-            created_at,
-            student_profiles (
-              full_name,
-              student_number,
-              course,
-              section
-            )
-          `)
-          .eq('role', 'student');
-
-        if (stuErr) throw stuErr;
-
-        const { data: logs, error: logErr } = await supabase
-          .from('attendance_records')
-          .select('student_user_id, hours_rendered, verified_at, verified_by, student_remarks, attendance_date, created_at');
-
-        if (logErr) throw logErr;
-
-        // When date range is specified, only count hours rendered within the requested window
-        const targetLogs = (dateFrom || dateTo)
-          ? (logs || []).filter(l => matchDateRange(l.attendance_date || l.created_at, dateFrom, dateTo))
-          : (logs || []);
-
-        const studentCreditedMap = new Map();
-        targetLogs.forEach(l => {
-          let customHours = null;
-          if (l.student_remarks) {
-            const match = String(l.student_remarks).match(/\[CREDITED:([0-9.]+)\]/);
-            if (match) {
-              const parsedVal = parseFloat(match[1]);
-              if (!isNaN(parsedVal)) customHours = parsedVal;
-            }
+        // Sort primarily by batch so batch row separation is cleanly grouped
+        rows.sort((a, b) => {
+          if (a.batch_id === 'unassigned' && b.batch_id !== 'unassigned') return 1;
+          if (b.batch_id === 'unassigned' && a.batch_id !== 'unassigned') return -1;
+          if (a.batch_id !== b.batch_id) {
+            return (a.batch_name || '').localeCompare(b.batch_name || '');
           }
-          const isVerified = Boolean(l.verified_at || l.verified_by || (l.student_remarks && /\[CREDITED:[0-9.]+\]/.test(l.student_remarks)));
-          if (isVerified) {
-            const val = (customHours !== null) ? customHours : Number(l.hours_rendered || 0);
-            studentCreditedMap.set(l.student_user_id, (studentCreditedMap.get(l.student_user_id) || 0) + val);
+          if (a.raw_date !== b.raw_date) {
+            return String(b.raw_date).localeCompare(String(a.raw_date));
           }
+          return (a.student_name || '').localeCompare(b.student_name || '');
         });
-
-        const targetHours = 90.0;
-        let rows = (students || []).map(s => {
-          const prof = Array.isArray(s.student_profiles) ? (s.student_profiles[0] || {}) : (s.student_profiles || {});
-          const totalHrs = studentCreditedMap.get(s.user_id) || 0;
-          const progressPct = ((totalHrs / targetHours) * 100).toFixed(1);
-          const isCompleted = totalHrs >= targetHours;
-
-          return {
-            student_number: prof.student_number || '---',
-            student_name: prof.full_name || s.email,
-            course: getCourseAbbr(prof.course),
-            raw_course: prof.course || '',
-            section: formatFullSection(prof.section),
-            total_rendered: `${totalHrs.toFixed(1)}h`,
-            raw_hours: totalHrs,
-            target_hours: `${targetHours.toFixed(1)}h`,
-            progress: `${Math.min(100, Number(progressPct)).toFixed(1)}%`,
-            status: isCompleted ? 'Completed' : 'In Progress',
-            created_at: s.created_at
-          };
-        });
-
-        if (course !== 'ALL') rows = rows.filter(r => matchCourseReport(r.raw_course, course));
-        if (section !== 'ALL') rows = rows.filter(r => matchSectionReport(r.section, section));
-        if (status !== 'ALL') {
-          if (status === 'Completed') rows = rows.filter(r => r.status === 'Completed');
-          else if (status === 'Pending') rows = rows.filter(r => r.status === 'In Progress');
-        }
 
         reportData.rows = rows;
         reportData.summaryMetrics = {};
@@ -808,7 +834,11 @@ async function generateReport(req, res) {
             comments,
             submitted_by,
             date_submitted,
-            created_at
+            created_at,
+            deployments (
+              deployment_id,
+              deployment_batch_name
+            )
           `)
           .order('created_at', { ascending: false });
 
@@ -826,7 +856,14 @@ async function generateReport(req, res) {
           const formattedDate = dateStr ? new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '---';
           const ratingNum = Number(f.rating) || 5;
 
+          const batchId = f.deployment_id || 'unassigned';
+          const batchName = f.deployments?.deployment_batch_name || 'Community Deployment Batch';
+          const batchCode = f.deployment_id ? `DEP-${f.deployment_id.slice(0, 8).toUpperCase()}` : 'DEP-GENERAL';
+
           return {
+            batch_id: batchId,
+            batch_name: batchName,
+            batch_code: batchCode,
             date: formattedDate,
             community: f.community_name || 'Partner Community',
             official_name: f.submitted_by || 'Community Supervisor',
@@ -856,6 +893,19 @@ async function generateReport(req, res) {
           rows = rows.filter(r => matchDateRange(r.raw_date, dateFrom, dateTo));
         }
 
+        // Sort primarily by batch so batch row separation is cleanly grouped
+        rows.sort((a, b) => {
+          if (a.batch_id === 'unassigned' && b.batch_id !== 'unassigned') return 1;
+          if (b.batch_id === 'unassigned' && a.batch_id !== 'unassigned') return -1;
+          if (a.batch_id !== b.batch_id) {
+            return (a.batch_name || '').localeCompare(b.batch_name || '');
+          }
+          if (a.raw_date !== b.raw_date) {
+            return String(b.raw_date).localeCompare(String(a.raw_date));
+          }
+          return (a.community || '').localeCompare(b.community || '');
+        });
+
         reportData.rows = rows;
         reportData.summaryMetrics = {};
         break;
@@ -868,7 +918,6 @@ async function generateReport(req, res) {
         reportData.columns = [
           { key: 'student_number', label: 'Student No.' },
           { key: 'student_name', label: 'Student Volunteer' },
-          { key: 'course', label: 'Course' },
           { key: 'punctuality', label: 'Punctuality' },
           { key: 'engagement', label: 'Engagement' },
           { key: 'teamwork', label: 'Teamwork' },
@@ -879,7 +928,13 @@ async function generateReport(req, res) {
 
         const { data: evals, error: evalErr } = await supabase
           .from('student_evaluations')
-          .select('*')
+          .select(`
+            *,
+            deployments (
+              deployment_id,
+              deployment_batch_name
+            )
+          `)
           .order('created_at', { ascending: false });
 
         if (evalErr) throw evalErr;
@@ -900,7 +955,14 @@ async function generateReport(req, res) {
           const overall = Number(e.overall_score || 0).toFixed(2);
           const grade = e.performance_grade || 'Satisfactory';
 
+          const batchId = e.deployment_id || 'unassigned';
+          const batchName = e.deployments?.deployment_batch_name || 'Community Deployment Batch';
+          const batchCode = e.deployment_id ? `DEP-${e.deployment_id.slice(0, 8).toUpperCase()}` : 'DEP-GENERAL';
+
           return {
+            batch_id: batchId,
+            batch_name: batchName,
+            batch_code: batchCode,
             student_number: prof.student_number || '---',
             student_name: e.student_name || prof.full_name || 'Student Volunteer',
             course: getCourseAbbr(prof.course || e.course),
@@ -929,6 +991,16 @@ async function generateReport(req, res) {
         if (dateFrom || dateTo) {
           rows = rows.filter(r => matchDateRange(r.raw_date, dateFrom, dateTo));
         }
+
+        // Sort primarily by batch so batch row separation is cleanly grouped
+        rows.sort((a, b) => {
+          if (a.batch_id === 'unassigned' && b.batch_id !== 'unassigned') return 1;
+          if (b.batch_id === 'unassigned' && a.batch_id !== 'unassigned') return -1;
+          if (a.batch_id !== b.batch_id) {
+            return (a.batch_name || '').localeCompare(b.batch_name || '');
+          }
+          return (a.student_name || '').localeCompare(b.student_name || '');
+        });
 
         reportData.rows = rows;
         reportData.summaryMetrics = {};

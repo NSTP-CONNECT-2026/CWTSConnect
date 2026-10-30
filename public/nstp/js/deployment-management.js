@@ -205,14 +205,9 @@
             </div>
           </td>
           <td>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <span class="badge" style="background: rgba(47, 125, 91, 0.08); color: var(--cwts-primary-dark); border-color: rgba(47, 125, 91, 0.2); width: fit-content;">
-                ${escapeHtml(req.activity_type || 'Community Service')}
-              </span>
-              <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">
-                Track: ${escapeHtml(component)}
-              </span>
-            </div>
+            <span class="badge" style="background: rgba(47, 125, 91, 0.08); color: var(--cwts-primary-dark); border-color: rgba(47, 125, 91, 0.2); width: fit-content;">
+              ${escapeHtml(req.activity_type || 'Community Service')}
+            </span>
           </td>
           <td style="text-align: center;">
             ${isAlreadyAssigned ? `
