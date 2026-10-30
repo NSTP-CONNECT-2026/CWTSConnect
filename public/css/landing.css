@@ -200,7 +200,7 @@ button, input {
   transform: translateY(0);
 }
 
-/* --- MAIN: CENTERED SINGLE SECTION --- */
+/* --- MAIN: CENTERED SINGLE SECTION WITH COMMUNITY VOLUNTEER BACKGROUND --- */
 .single-page-wrapper {
   flex: 1;
   display: flex;
@@ -208,14 +208,41 @@ button, input {
   justify-content: center;
   align-items: center;
   width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--cwts-bg-surface);
+}
+
+.hero-bg-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../images/landing-bg-hands.jpg') no-repeat center bottom;
+  background-size: cover;
+  opacity: 0.92;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 38%, rgba(241, 245, 243, 0.92) 0%, rgba(241, 245, 243, 0.7) 48%, rgba(241, 245, 243, 0.15) 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .single-hero-section {
   width: 100%;
-  padding: var(--space-2xl) 0;
+  padding: 64px 0 72px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-centered-container {
@@ -225,6 +252,7 @@ button, input {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 .hero-title {
@@ -296,27 +324,81 @@ button, input {
     font-size: 1.25rem;
   }
 
+  /* Full-Height Mobile Screen (Flush to the bottom) */
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .single-page-wrapper {
+    flex: 1;
+    height: calc(100vh - 56px);
+    height: calc(100dvh - 56px);
+    min-height: calc(100dvh - 56px);
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .single-hero-section {
+    width: 100%;
+    height: 100%;
+    padding: 16px 0 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-centered-container {
+    padding: 0 16px;
+    margin-top: -30px; /* centers content elegantly above the hands at the bottom */
+  }
+
+  /* Background Layer on Mobile - Flush along the bottom edge */
+  .hero-bg-layer {
+    background-size: cover;
+    background-position: center bottom;
+    opacity: 0.95;
+  }
+
+  .hero-bg-overlay {
+    background: radial-gradient(circle at 50% 32%, rgba(241, 245, 243, 0.94) 0%, rgba(241, 245, 243, 0.72) 48%, rgba(241, 245, 243, 0.1) 100%);
+  }
+
   /* Container & Section Spacing */
   .container {
     padding: 0 16px;
   }
-  .single-hero-section {
-    padding: 36px 0 44px;
-  }
 
   /* Clear Font Hierarchy for Mobile */
   .hero-title {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
     line-height: 1.25;
     letter-spacing: -0.015em;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
   .hero-description {
-    font-size: 0.875rem;
-    line-height: 1.55;
+    font-size: 0.85rem;
+    line-height: 1.5;
     color: #475569;
-    margin-bottom: 24px;
-    padding: 0 8px;
+    margin-bottom: 22px;
+    padding: 0 4px;
   }
 
   /* Two buttons fit in ONE row on mobile */
@@ -340,16 +422,9 @@ button, input {
     border-radius: var(--radius-btn);
   }
 
-  /* Footer on Mobile */
-  .footer-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 4px;
-    padding: 12px 16px;
-    font-size: 0.7rem;
-  }
+  /* Hide Footer Completely on Mobile */
   .single-site-footer {
-    height: auto;
+    display: none !important;
   }
 }
 
