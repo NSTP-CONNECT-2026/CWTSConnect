@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setText('kpiTotalRequests', reqs.total ?? 0);
     setText('kpiApprovedRequests', reqs.approved ?? 0);
     setText('kpiPendingRequests', reqs.pending ?? 0);
+    setText('kpiExpiredRequests', reqs.expired ?? 0);
 
     // 3. Deployments
     const deps = summary.deployments || {};
@@ -284,10 +285,10 @@ document.addEventListener('DOMContentLoaded', function () {
       chartInstances.reqDoughnut = new Chart(reqDoughnutCtx, {
         type: 'doughnut',
         data: {
-          labels: charts.requestsDistribution?.labels || ['Approved & Deployed', 'Approved (Available)', 'Pending Review', 'Completed'],
+          labels: charts.requestsDistribution?.labels || ['Completed Activities', 'Active / Deployed', 'Pending Review', 'Rejected', 'Expired (Lapsed)'],
           datasets: [{
-            data: charts.requestsDistribution?.data || [0, 0, 0, 0],
-            backgroundColor: ['#2F7D5B', '#3B82F6', '#F59E0B', '#0B3D2E'],
+            data: charts.requestsDistribution?.data || [0, 0, 0, 0, 0],
+            backgroundColor: charts.requestsDistribution?.colors || ['#0B3D2E', '#2F7D5B', '#F59E0B', '#EF4444', '#94A3B8'],
             borderWidth: 2,
             borderColor: '#FFFFFF'
           }]
@@ -313,10 +314,10 @@ document.addEventListener('DOMContentLoaded', function () {
       chartInstances.gradesDoughnut = new Chart(gradesDoughnutCtx, {
         type: 'doughnut',
         data: {
-          labels: charts.gradesDistribution?.labels || ['Outstanding (4.75 - 5.0)', 'Very Satisfactory (4.0 - 4.74)', 'Satisfactory (3.0 - 3.99)'],
+          labels: charts.gradesDistribution?.labels || ['Outstanding (4.75 - 5.0)', 'Very Satisfactory (4.0 - 4.74)', 'Satisfactory (3.0 - 3.99)', 'Needs Improvement (< 3.0)'],
           datasets: [{
-            data: charts.gradesDistribution?.data || [0, 0, 0],
-            backgroundColor: ['#0B3D2E', '#2F7D5B', '#F59E0B'],
+            data: charts.gradesDistribution?.data || [0, 0, 0, 0],
+            backgroundColor: charts.gradesDistribution?.colors || ['#0B3D2E', '#2F7D5B', '#F59E0B', '#EF4444'],
             borderWidth: 2,
             borderColor: '#FFFFFF'
           }]

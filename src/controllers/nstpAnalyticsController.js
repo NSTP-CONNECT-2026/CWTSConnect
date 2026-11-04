@@ -11,6 +11,7 @@
  */
 
 const supabase = require('../config/supabaseClient');
+const { getAllCommunityRequests } = require('../services/communityRequestService');
 
 /**
  * Normalizes course string to acronym (e.g. "Bachelor of Science in Information Technology" -> "BSIT")
@@ -19,11 +20,15 @@ function normalizeCourseAcronym(courseStr) {
   if (!courseStr) return 'Other';
   const c = courseStr.trim();
   if (/information technology/i.test(c) || /^bsit$/i.test(c)) return 'BSIT';
-  if (/business administration/i.test(c) || /^bsba$/i.test(c)) return 'BSBA';
-  if (/secondary education|elementary education|education/i.test(c) || /^bsed$/i.test(c)) return 'BSED';
-  if (/criminology/i.test(c) || /^bs\s*crim$/i.test(c)) return 'BS Crim';
-  if (/hospitality management|hotel and restaurant/i.test(c) || /^bshm$/i.test(c) || /^bshrm$/i.test(c)) return 'BSHM';
   if (/computer science/i.test(c) || /^bscs$/i.test(c)) return 'BSCS';
+  if (/business administration/i.test(c) || /^bsba$/i.test(c)) return 'BSBA';
+  if (/criminology/i.test(c) || /^bs\s*crim$/i.test(c)) return 'BS Crim';
+  if (/hospitality/i.test(c) || /^bshm$/i.test(c) || /^bshrm$/i.test(c)) return 'BSHM';
+  if (/tourism/i.test(c) || /^bstm$/i.test(c)) return 'BSTM';
+  if (/secondary education/i.test(c) || /^bsed$/i.test(c)) return 'BSED';
+  if (/elementary education/i.test(c) || /^beed$/i.test(c)) return 'BEED';
+  if (/accountancy/i.test(c) || /^bsa\s*\(acct\)$/i.test(c)) return 'BSA (Acct)';
+  if (/agriculture/i.test(c) || /^bsa\s*\(agri\)$/i.test(c)) return 'BSA (Agri)';
   return c;
 }
 
@@ -79,9 +84,12 @@ async function getNstpAnalytics(req, res) {
       const approved = reqs.filter(r => r.status === 'approved').length;
       const pending = reqs.filter(r => r.status === 'pending').length;
 
-      if (s.cmo_compliance_status === 'compliant' || approved >= 4) {
+      const isCompliant = s.cmo_compliance_status === 'compliant' || approved >= 4;
+      const isPending = !isCompliant && (s.cmo_compliance_status === 'pending_review' || (approved + pending === 4 && pending > 0));
+
+      if (isCompliant) {
         compliantStudents++;
-      } else if (s.cmo_compliance_status === 'pending_review' || pending > 0) {
+      } else if (isPending) {
         pendingStudents++;
       } else {
         incompleteStudents++;
@@ -100,17 +108,20 @@ async function getNstpAnalytics(req, res) {
       rate: complianceRate
     };
 
-    // 4. Fetch Community Requests
-    const { data: commRequests } = await supabase
-      .from('community_requests')
-      .select('request_id, activity_title, activity_type, request_status, created_at');
-
-    const reqList = commRequests || [];
+    // 4. Fetch Community Requests (Synced with community-requests.html via communityRequestService)
+    const reqList = await getAllCommunityRequests({});
     const totalRequests = reqList.length;
-    const approvedRequests = reqList.filter(r => r.request_status === 'approved').length;
-    const pendingRequests = reqList.filter(r => r.request_status === 'pending').length;
-    const completedRequests = reqList.filter(r => r.request_status === 'completed').length;
-    const rejectedRequests = reqList.filter(r => r.request_status === 'rejected').length;
+
+    // Filter categories aligned with community-requests.html
+    const expiredRequests = reqList.filter(r => r.is_expired).length;
+    const pendingRequests = reqList.filter(r => !r.is_expired && (r.request_status || '').toLowerCase() === 'pending').length;
+    const approvedRequests = reqList.filter(r => !r.is_expired && (r.request_status || '').toLowerCase() === 'approved').length;
+    const rejectedRequests = reqList.filter(r => ['rejected', 'cancelled'].includes((r.request_status || '').toLowerCase())).length;
+
+    // Of the approved requests, correlate completed vs active/ongoing deployment
+    const completedActivities = reqList.filter(r => !r.is_expired && r.deployment_status === 'completed').length;
+    const deployedActiveActivities = reqList.filter(r => !r.is_expired && r.is_deployed && r.deployment_status !== 'completed').length;
+    const availableApprovedRequests = reqList.filter(r => !r.is_expired && !r.is_deployed && (r.request_status || '').toLowerCase() === 'approved').length;
 
     // 5. Fetch Deployments & Assigned Students
     const { data: deps } = await supabase
@@ -123,10 +134,6 @@ async function getNstpAnalytics(req, res) {
 
     const depList = deps || [];
     const depStudList = depStudents || [];
-
-    const deployedRequestIds = new Set(depList.map(d => d.request_id).filter(Boolean));
-    const matchedRequests = reqList.filter(r => deployedRequestIds.has(r.request_id)).length;
-    const availableApproved = Math.max(0, approvedRequests - matchedRequests);
 
     const activeBatches = depList.filter(d => d.deployment_status === 'active' || d.deployment_status === 'ongoing').length;
     const completedBatches = depList.filter(d => d.deployment_status === 'completed').length;
@@ -148,10 +155,11 @@ async function getNstpAnalytics(req, res) {
       total: totalRequests,
       approved: approvedRequests,
       pending: pendingRequests,
-      completed: completedRequests,
+      completed: completedActivities,
       rejected: rejectedRequests,
-      matched: matchedRequests,
-      availableApproved: availableApproved
+      expired: expiredRequests,
+      matched: deployedActiveActivities + completedActivities,
+      availableApproved: availableApprovedRequests
     };
 
     // 6. Fetch Attendance Records & Rendered Hours
@@ -186,8 +194,9 @@ async function getNstpAnalytics(req, res) {
       const isCredited = Boolean(att.verified_at || att.verified_by || (att.student_remarks && /\[CREDITED:[0-9.]+\]/.test(att.student_remarks)));
       if (isCredited) {
         const val = (customHours !== null) ? customHours : Number(att.hours_rendered || 0);
-        totalCreditedHours += val;
-        studentCreditedMap.set(att.student_user_id, (studentCreditedMap.get(att.student_user_id) || 0) + val);
+        totalCreditedHours = Math.round((totalCreditedHours + val) * 10) / 10;
+        const currentStudentHours = studentCreditedMap.get(att.student_user_id) || 0;
+        studentCreditedMap.set(att.student_user_id, Math.round((currentStudentHours + val) * 10) / 10);
       }
     });
 
@@ -202,11 +211,14 @@ async function getNstpAnalytics(req, res) {
       excused: excusedLogs
     };
 
+    const completedStudents = Array.from(studentCreditedMap.values()).filter(h => h >= 90).length;
+    const inProgressStudents = Math.max(0, totalStudents - completedStudents);
+
     const hoursMetrics = {
-      totalRendered: totalCreditedHours,
+      totalRendered: Number(totalCreditedHours.toFixed(1)),
       targetHours: 90.0,
-      completedStudents: Array.from(studentCreditedMap.values()).filter(h => h >= 90).length,
-      inProgressStudents: totalStudents,
+      completedStudents: completedStudents,
+      inProgressStudents: inProgressStudents,
       averageHours: Number(averageHours)
     };
 
@@ -232,7 +244,7 @@ async function getNstpAnalytics(req, res) {
       : '0.00';
 
     let puncSum = 0, engSum = 0, teamSum = 0, initSum = 0;
-    let outstandingCount = 0, verySatCount = 0, satCount = 0;
+    let outstandingCount = 0, verySatCount = 0, satCount = 0, needsImprovementCount = 0;
 
     evalList.forEach(e => {
       const punc = Number(e.rating_punctuality || e.criteria?.punctuality?.score || 0);
@@ -252,6 +264,8 @@ async function getNstpAnalytics(req, res) {
         verySatCount++;
       } else if (score >= 3.0) {
         satCount++;
+      } else {
+        needsImprovementCount++;
       }
     });
 
@@ -277,7 +291,8 @@ async function getNstpAnalytics(req, res) {
       averageScore: Number(avgScore),
       outstandingCount: outstandingCount,
       verySatisfactoryCount: verySatCount,
-      satisfactoryCount: satCount
+      satisfactoryCount: satCount,
+      needsImprovementCount: needsImprovementCount
     };
 
     // 8. Visual Charts Data Preparation
@@ -309,22 +324,26 @@ async function getNstpAnalytics(req, res) {
         }
         const isCredited = Boolean(att.verified_at || att.verified_by || (att.student_remarks && /\[CREDITED:[0-9.]+\]/.test(att.student_remarks)));
         if (isCredited) {
-          entry.hours += (customHours !== null) ? customHours : Number(att.hours_rendered || 0);
+          const val = (customHours !== null) ? customHours : Number(att.hours_rendered || 0);
+          entry.hours = Math.round((entry.hours + val) * 10) / 10;
         }
       });
 
       let sessionIndex = 1;
       dateMap.forEach((val, dateKey) => {
         cumulativeAtt += val.logs;
-        cumulativeHours += val.hours;
+        cumulativeHours = Math.round((cumulativeHours + val.hours) * 10) / 10;
         
         let label = `Session ${sessionIndex}`;
-        try {
-          const parsed = new Date(dateKey);
-          if (!isNaN(parsed.getTime())) {
-            label = parsed.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        if (dateKey && dateKey !== 'Session') {
+          const parts = String(dateKey).split('T')[0].split('-');
+          if (parts.length === 3) {
+            const parsed = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            if (!isNaN(parsed.getTime())) {
+              label = parsed.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }
           }
-        } catch (e) {}
+        }
 
         timelineLabels.push(label);
         attendanceTimeline.push(cumulativeAtt);
@@ -377,16 +396,18 @@ async function getNstpAnalytics(req, res) {
         },
         evaluationCriteria: evaluationCriteria,
         requestsDistribution: {
-          labels: ['Approved & Deployed', 'Approved (Available)', 'Pending Review', 'Completed'],
-          data: [matchedRequests, availableApproved, pendingRequests, completedRequests]
+          labels: ['Completed Activities', 'Active / Deployed', 'Pending Review', 'Rejected', 'Expired (Lapsed)'],
+          data: [completedActivities, deployedActiveActivities, pendingRequests, rejectedRequests, expiredRequests],
+          colors: ['#0B3D2E', '#2F7D5B', '#F59E0B', '#EF4444', '#94A3B8']
         },
         complianceDistribution: {
           labels: ['Verified & Compliant', 'Pending Review', 'Incomplete'],
           data: [complianceData.compliant, complianceData.pending, complianceData.incomplete]
         },
         gradesDistribution: {
-          labels: ['Outstanding (4.75 - 5.0)', 'Very Satisfactory (4.0 - 4.74)', 'Satisfactory (3.0 - 3.99)'],
-          data: [outstandingCount, verySatCount, satCount]
+          labels: ['Outstanding (4.75 - 5.0)', 'Very Satisfactory (4.0 - 4.74)', 'Satisfactory (3.0 - 3.99)', 'Needs Improvement (< 3.0)'],
+          data: [outstandingCount, verySatCount, satCount, needsImprovementCount],
+          colors: ['#0B3D2E', '#2F7D5B', '#F59E0B', '#EF4444']
         }
       }
     });
