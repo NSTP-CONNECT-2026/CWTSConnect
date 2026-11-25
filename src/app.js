@@ -31,6 +31,9 @@ const FileSessionStore = require('./config/sessionStore');
 
 const app = express();
 
+// Trust reverse proxy (e.g. Render, Heroku) for secure cookies and accurate IP headers
+app.set('trust proxy', 1);
+
 // ─── Security Headers ────────────────────────────────────────────────────────
 app.use(helmet({
   contentSecurityPolicy: false // Disable for simplicity; configure properly in production

@@ -9,6 +9,31 @@
 (function () {
   'use strict';
 
+  // Extract and persist admin key if provided in URL or sessionStorage (for remote/deployment access)
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlKey = urlParams.get('key') || urlParams.get('admin_key');
+  if (urlKey) {
+    try { sessionStorage.setItem('cwts_admin_key', urlKey); } catch (e) {}
+  }
+  const storedKey = (function() {
+    try { return sessionStorage.getItem('cwts_admin_key') || ''; } catch (e) { return ''; }
+  })();
+  const effectiveKey = urlKey || storedKey;
+
+  // Unified fetch helper that automatically includes credentials & admin header
+  async function adminFetch(url, options = {}) {
+    options.credentials = options.credentials || 'include';
+    options.headers = options.headers || {};
+    if (effectiveKey) {
+      if (options.headers instanceof Headers) {
+        options.headers.set('x-admin-key', effectiveKey);
+      } else {
+        options.headers['x-admin-key'] = effectiveKey;
+      }
+    }
+    return fetch(url, options);
+  }
+
   // State Management
   let currentTab = 'accounts';
   
@@ -235,7 +260,7 @@
       const status = userStatusFilter?.value || 'all';
 
       const url = `/api/admin/users?role=${encodeURIComponent(role)}&status=${encodeURIComponent(status)}&search=${encodeURIComponent(search)}&page=${usersPage}&limit=15`;
-      const res = await fetch(url);
+      const res = await adminFetch(url);
       const json = await res.json();
 
       if (!json.success) {
@@ -363,7 +388,7 @@
       btnSaveEmailUpdate.disabled = true;
       btnSaveEmailUpdate.textContent = 'Saving...';
 
-      const res = await fetch(`/api/admin/users/${encodeURIComponent(activeEditingUserId)}/email`, {
+      const res = await adminFetch(`/api/admin/users/${encodeURIComponent(activeEditingUserId)}/email`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: newEmail })
@@ -401,7 +426,7 @@
       btnConfirmPasswordReset.disabled = true;
       btnConfirmPasswordReset.textContent = 'Resetting...';
 
-      const res = await fetch(`/api/admin/users/${encodeURIComponent(activeResetUserId)}/reset-password`, {
+      const res = await adminFetch(`/api/admin/users/${encodeURIComponent(activeResetUserId)}/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: pwd })
@@ -424,7 +449,7 @@
 
   window.adminToggleStatus = async function (userId, newStatus) {
     try {
-      const res = await fetch(`/api/admin/users/${encodeURIComponent(userId)}/status`, {
+      const res = await adminFetch(`/api/admin/users/${encodeURIComponent(userId)}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -453,7 +478,7 @@
       btnSubmitCreateCoord.disabled = true;
       btnSubmitCreateCoord.textContent = 'Creating...';
 
-      const res = await fetch('/api/admin/coordinators', {
+      const res = await adminFetch('/api/admin/coordinators', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, full_name: name, password: pwd })
@@ -524,7 +549,7 @@
         const role = auditRoleFilter?.value || 'all';
         const action = auditActionFilter?.value || 'all';
         const search = (auditSearchInput?.value || '').trim();
-        window.location.href = `/api/admin/audit-export?role=${encodeURIComponent(role)}&actionType=${encodeURIComponent(action)}&search=${encodeURIComponent(search)}`;
+        window.location.href = `/api/admin/audit-export?role=${encodeURIComponent(role)}&actionType=${encodeURIComponent(action)}&search=${encodeURIComponent(search)}${effectiveKey ? `&key=${encodeURIComponent(effectiveKey)}` : ''}`;
       });
     }
   }
@@ -546,7 +571,7 @@
       const action = auditActionFilter?.value || 'all';
 
       const url = `/api/admin/audit-logs?role=${encodeURIComponent(role)}&actionType=${encodeURIComponent(action)}&search=${encodeURIComponent(search)}&page=${auditPage}&limit=20`;
-      const res = await fetch(url);
+      const res = await adminFetch(url);
       const json = await res.json();
 
       if (!json.success) throw new Error(json.message);
@@ -621,7 +646,7 @@
 
   async function loadAuditSummary() {
     try {
-      const res = await fetch('/api/admin/audit-summary');
+      const res = await adminFetch('/api/admin/audit-summary');
       const json = await res.json();
       if (!json.success) return;
 
@@ -659,8 +684,8 @@
   async function loadHealthDiagnostics() {
     try {
       const [healthRes, errorRes] = await Promise.all([
-        fetch('/api/admin/health'),
-        fetch('/api/admin/errors')
+        adminFetch('/api/admin/health'),
+        adminFetch('/api/admin/errors')
       ]);
 
       const healthJson = await healthRes.json();
