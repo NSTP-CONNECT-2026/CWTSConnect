@@ -64,6 +64,11 @@ function isLocalOrAuthorized(req) {
  * and stealth 404 for unauthorized visitors.
  */
 function requireAdminAccess(req, res, next) {
+  // Always allow static asset requests (CSS, JS, fonts, images) to load directly
+  if (/\.(css|js|png|jpe?g|gif|svg|ico|woff2?|ttf|eot)$/i.test(req.path)) {
+    return next();
+  }
+
   if (!isLocalOrAuthorized(req)) {
     // Stealth mode: Return 404 so unauthorized visitors believe this route does not exist
     if (req.originalUrl.startsWith('/api/')) {
