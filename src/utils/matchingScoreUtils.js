@@ -144,9 +144,10 @@ function calculateAvailabilityScore(studentId) {
  * Computes exact SAW Suitability Rankings per SOURCE CODE.TXT
  * @param {Array} eligibleStudents - Array of eligible candidate student objects
  * @param {object} request - Community request object
+ * @param {object} [customWeights] - Optional custom weights { location, skills } or { w_loc, w_skill }
  * @returns {Array} Array of ranked recommendations with exact suitabilityScore
  */
-function computeSawSuitabilityRankings(eligibleStudents, request) {
+function computeSawSuitabilityRankings(eligibleStudents, request, customWeights) {
   if (!eligibleStudents || eligibleStudents.length === 0 || !request) {
     return [];
   }
@@ -169,9 +170,22 @@ function computeSawSuitabilityRankings(eligibleStudents, request) {
   }
   const totalRequiredSkills = Math.max(1, neededSkills.length);
 
-  // Assigned Weights from Manuscript: Location = 0.30, Skills = 0.70
-  const W_LOC = 0.30;
-  const W_SKILL = 0.70;
+  // Criteria Weights: Default from Manuscript is Location = 0.30, Skills = 0.70, but Coordinator can customize
+  let W_LOC = 0.30;
+  let W_SKILL = 0.70;
+
+  if (customWeights) {
+    if (typeof customWeights.location === 'number' && !isNaN(customWeights.location)) {
+      W_LOC = customWeights.location;
+    } else if (typeof customWeights.w_loc === 'number' && !isNaN(customWeights.w_loc)) {
+      W_LOC = customWeights.w_loc;
+    }
+    if (typeof customWeights.skills === 'number' && !isNaN(customWeights.skills)) {
+      W_SKILL = customWeights.skills;
+    } else if (typeof customWeights.w_skill === 'number' && !isNaN(customWeights.w_skill)) {
+      W_SKILL = customWeights.w_skill;
+    }
+  }
 
   // PART 2: Criteria Quantification Process
   const rawList = eligibleStudents.map(student => {
@@ -285,9 +299,28 @@ function computeSawSuitabilityRankings(eligibleStudents, request) {
 }
 
 /**
- * Calculates overall match score using SAW formula (30% Location, 70% Skills)
+ * Calculates overall match score using SAW formula (Default: 30% Location, 70% Skills or user-defined weights)
+ * @param {object} student - Student object
+ * @param {object} request - Community request object
+ * @param {object} [customWeights] - Optional custom weights { location, skills } or { w_loc, w_skill }
  */
-function calculateOverallMatchScore(student, request) {
+function calculateOverallMatchScore(student, request, customWeights) {
+  let W_LOC = 0.30;
+  let W_SKILL = 0.70;
+
+  if (customWeights) {
+    if (typeof customWeights.location === 'number' && !isNaN(customWeights.location)) {
+      W_LOC = customWeights.location;
+    } else if (typeof customWeights.w_loc === 'number' && !isNaN(customWeights.w_loc)) {
+      W_LOC = customWeights.w_loc;
+    }
+    if (typeof customWeights.skills === 'number' && !isNaN(customWeights.skills)) {
+      W_SKILL = customWeights.skills;
+    } else if (typeof customWeights.w_skill === 'number' && !isNaN(customWeights.w_skill)) {
+      W_SKILL = customWeights.w_skill;
+    }
+  }
+
   const p = student.student_profiles ? (Array.isArray(student.student_profiles) ? student.student_profiles[0] : student.student_profiles) : student;
   const sCoords = resolveLocationCoords(p.location, p.municipality);
   const rCoords = resolveLocationCoords(request.location || request.coordinates, request.municipality);
@@ -315,7 +348,7 @@ function calculateOverallMatchScore(student, request) {
   });
 
   const normSkill = matched / neededCount;
-  const finalScore = (normLoc * 0.30) + (normSkill * 0.70);
+  const finalScore = (normLoc * W_LOC) + (normSkill * W_SKILL);
   const suitabilityScore = Math.round(finalScore * 1000) / 10;
 
   return {
@@ -324,6 +357,8 @@ function calculateOverallMatchScore(student, request) {
     breakdown: {
       locationScore: Math.round(normLoc * 100),
       skillsScore: Math.round(normSkill * 100),
+      wLoc: W_LOC,
+      wSkill: W_SKILL,
       componentScore: 100,
       availabilityScore: 100
     }

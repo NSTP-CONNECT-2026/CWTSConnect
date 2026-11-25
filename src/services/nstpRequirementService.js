@@ -5,6 +5,12 @@
 
 const supabase = require('../config/supabaseClient');
 const { STATUS_TYPES, CMO_COMPLIANCE_STATUS } = require('../utils/requirementTypes');
+const { getActiveRequirements } = require('./requirementConfigService');
+const { 
+  getCustomRequirementsForUser, 
+  getCustomRequirementById, 
+  updateCustomRequirementStatus 
+} = require('./customStudentRequirementStorage');
 const { 
   computeOverallComplianceStatus, 
   getComplianceSummary,
@@ -80,9 +86,15 @@ async function getAllStudentsWithRequirements(filters = {}) {
       reqsByUser.get(req.user_id).push(req);
     });
 
+    const activeConfig = getActiveRequirements();
+    const dynamicTotalRequired = activeConfig.length > 0 ? activeConfig.length : 4;
+
     // Map requirement counts in memory
     const studentsWithCounts = students.map((student) => {
-      const reqs = reqsByUser.get(student.user_id) || [];
+      const dbReqs = reqsByUser.get(student.user_id) || [];
+      const customReqs = getCustomRequirementsForUser(student.user_id) || [];
+      const reqs = [...dbReqs, ...customReqs];
+
       const approvedCount = reqs.filter(req => req.status === STATUS_TYPES.APPROVED).length;
       const pendingCount = reqs.filter(req => req.status === STATUS_TYPES.PENDING).length;
       const rejectedCount = reqs.filter(req => req.status === STATUS_TYPES.REJECTED).length;
@@ -98,7 +110,7 @@ async function getAllStudentsWithRequirements(filters = {}) {
         profileData = student.student_profiles;
       }
 
-      const computedStatus = student.cmo_compliance_status || (approvedCount === 4 ? 'compliant' : (submittedCount === 4 ? 'pending_review' : 'incomplete'));
+      const computedStatus = student.cmo_compliance_status || (approvedCount >= dynamicTotalRequired ? 'compliant' : (submittedCount >= dynamicTotalRequired ? 'pending_review' : 'incomplete'));
 
       return {
         ...student,
@@ -109,7 +121,7 @@ async function getAllStudentsWithRequirements(filters = {}) {
         pending_count: pendingCount,
         rejected_count: rejectedCount,
         submitted_documents_count: submittedCount,
-        total_required: 4,
+        total_required: dynamicTotalRequired,
         last_submission_date: lastSubmission ? new Date(lastSubmission).toISOString() : null
       };
     });
@@ -174,27 +186,35 @@ async function getStudentRequirementDetails(studentId) {
       throw new Error('Failed to fetch requirements: ' + reqError.message);
     }
 
-    // Create a map of existing requirements
+    // Create a map of existing requirements (Supabase + local custom records)
     const requirementMap = {};
     if (requirements) {
       requirements.forEach(req => {
         requirementMap[req.requirement_type] = req;
       });
     }
+    const customReqs = getCustomRequirementsForUser(studentId) || [];
+    customReqs.forEach(req => {
+      requirementMap[req.requirement_type] = req;
+    });
 
-    // Define all required types
-    const allRequirementTypes = [
-      'notarized_parent_waiver',
-      'validated_student_id',
-      'valid_parent_id',
-      'medical_certificate'
-    ];
+    // Dynamically retrieve coordinator-configured active requirements
+    const activeConfig = getActiveRequirements();
 
     // Build complete requirements array
-    const completeRequirements = allRequirementTypes.map(type => {
+    const completeRequirements = activeConfig.map(reqDef => {
+      const type = reqDef.code;
       const existing = requirementMap[type];
       return {
         requirement_type: type,
+        type: type,
+        key: type,
+        name: reqDef.name,
+        displayName: reqDef.name,
+        desc: reqDef.description,
+        description: reqDef.description,
+        is_required: reqDef.is_required !== false,
+        order: reqDef.order || 0,
         requirement_id: existing ? existing.requirement_id : null,
         file_name: existing ? existing.file_name : null,
         file_path: existing ? existing.file_path : null,
@@ -211,7 +231,9 @@ async function getStudentRequirementDetails(studentId) {
 
     return {
       student: student,
-      requirements: completeRequirements
+      requirements: completeRequirements,
+      configured_requirements: activeConfig,
+      total_required: activeConfig.length
     };
   } catch (error) {
     throw new Error('Service error: ' + error.message);
@@ -239,14 +261,25 @@ async function reviewRequirement(requirementId, reviewerId, status, remarks = nu
     }
 
     // Get current requirement
-    const { data: currentReq, error: fetchError } = await supabase
+    let currentReq = null;
+    let isCustomStorage = false;
+
+    const { data: dbReq, error: fetchError } = await supabase
       .from('student_cmo_requirements')
       .select('*')
       .eq('requirement_id', requirementId)
       .single();
 
-    if (fetchError) {
-      throw new Error('Requirement not found: ' + fetchError.message);
+    if (dbReq) {
+      currentReq = dbReq;
+    } else {
+      const customReq = getCustomRequirementById(requirementId);
+      if (customReq) {
+        currentReq = customReq;
+        isCustomStorage = true;
+      } else {
+        throw new Error('Requirement not found: ' + (fetchError ? fetchError.message : 'Invalid ID'));
+      }
     }
 
     // Validate status transition
@@ -255,22 +288,28 @@ async function reviewRequirement(requirementId, reviewerId, status, remarks = nu
     }
 
     // Update requirement
-    const updateData = {
-      status: status,
-      remarks: status === STATUS_TYPES.REJECTED ? remarks : null,
-      reviewed_at: new Date().toISOString(),
-      reviewed_by: reviewerId
-    };
+    let updatedReq;
+    if (isCustomStorage) {
+      updatedReq = updateCustomRequirementStatus(requirementId, status, remarks, reviewerId);
+    } else {
+      const updateData = {
+        status: status,
+        remarks: status === STATUS_TYPES.REJECTED ? remarks : null,
+        reviewed_at: new Date().toISOString(),
+        reviewed_by: reviewerId
+      };
 
-    const { data: updatedReq, error: updateError } = await supabase
-      .from('student_cmo_requirements')
-      .update(updateData)
-      .eq('requirement_id', requirementId)
-      .select()
-      .single();
+      const { data, error: updateError } = await supabase
+        .from('student_cmo_requirements')
+        .update(updateData)
+        .eq('requirement_id', requirementId)
+        .select()
+        .single();
 
-    if (updateError) {
-      throw new Error('Failed to update requirement: ' + updateError.message);
+      if (updateError) {
+        throw new Error('Failed to update requirement: ' + updateError.message);
+      }
+      updatedReq = data;
     }
 
     // Update overall compliance status for the student
@@ -308,15 +347,15 @@ async function reviewRequirement(requirementId, reviewerId, status, remarks = nu
  */
 async function updateStudentComplianceStatus(studentId) {
   try {
-    // Use the database function to update compliance status
-    const { data, error } = await supabase
-      .rpc('update_cmo_compliance_status', { student_user_id: studentId });
+    const { getCmoRequirementsStatus } = require('./studentCmoRequirementService');
+    const summary = await getCmoRequirementsStatus(studentId);
+    
+    await supabase
+      .from('users')
+      .update({ cmo_compliance_status: summary.overall_status })
+      .eq('user_id', studentId);
 
-    if (error) {
-      throw new Error('Failed to update compliance status: ' + error.message);
-    }
-
-    return data;
+    return summary.overall_status;
   } catch (error) {
     console.error('Compliance status update error:', error.message);
     throw error;

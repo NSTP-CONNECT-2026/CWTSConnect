@@ -339,7 +339,11 @@
     }
 
     try {
-      const res = await fetch(`/api/nstp/deployments/recommendations/${encodeURIComponent(requestId)}`);
+      const urlParams = new URLSearchParams(window.location.search);
+      const wLoc = urlParams.get('w_loc');
+      const wSkill = urlParams.get('w_skill');
+      const queryStr = (wLoc && wSkill) ? `?w_loc=${encodeURIComponent(wLoc)}&w_skill=${encodeURIComponent(wSkill)}` : '';
+      const res = await fetch(`/api/nstp/deployments/recommendations/${encodeURIComponent(requestId)}${queryStr}`);
       const result = await res.json();
 
       let recs = [];

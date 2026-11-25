@@ -91,7 +91,15 @@ async function getDSSRecommendationsForDeployment(req, res) {
       });
     }
 
-    const recommendations = await deploymentService.getDSSRecommendationsForDeployment(requestId);
+    let customWeights = undefined;
+    if (req.query && (req.query.w_loc !== undefined || req.query.w_skill !== undefined)) {
+      customWeights = {
+        location: req.query.w_loc !== undefined ? parseFloat(req.query.w_loc) : 0.30,
+        skills: req.query.w_skill !== undefined ? parseFloat(req.query.w_skill) : 0.70
+      };
+    }
+
+    const recommendations = await deploymentService.getDSSRecommendationsForDeployment(requestId, customWeights);
     
     // Provide both direct Array in data and wrapped object for maximum compatibility
     res.json({
@@ -136,6 +144,22 @@ async function createDeployment(req, res) {
 
     const newDeployment = await deploymentService.createDeployment(deploymentData, assignedBy);
     
+    // Audit log
+    try {
+      const { logAction } = require('../services/auditLogger');
+      logAction({
+        actorId: assignedBy,
+        actorName: req.session?.user?.full_name || req.session?.user?.email || 'NSTP Coordinator',
+        actorRole: 'nstp_official',
+        actionType: 'DEPLOYMENT_CREATED',
+        targetType: 'deployment',
+        targetId: newDeployment?.deployment_id || 'N/A',
+        targetName: `Deployment for Request #${deploymentData.request_id || ''}`,
+        description: `Created deployment assignment for request #${deploymentData.request_id || ''} with ${deploymentData.student_user_ids?.length || 0} students assigned.`,
+        req
+      });
+    } catch (e) {}
+
     res.status(201).json({
       success: true,
       message: 'Deployment created successfully',

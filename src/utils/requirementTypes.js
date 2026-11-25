@@ -1,6 +1,9 @@
 /**
  * CMO Requirement Types Configuration
+ * Dynamically driven by Coordinator settings in requirementConfigService
  */
+
+const { getActiveRequirements } = require('../services/requirementConfigService');
 
 const REQUIREMENT_TYPES = {
   NOTARIZED_PARENT_WAIVER: 'notarized_parent_waiver',
@@ -17,10 +20,10 @@ const REQUIREMENT_DISPLAY_NAMES = {
 };
 
 const REQUIREMENT_DESCRIPTIONS = {
-  [REQUIREMENT_TYPES.NOTARIZED_PARENT_WAIVER]: 'Upload a scanned copy or clear photo of the notarized parent\'s waiver.',
-  [REQUIREMENT_TYPES.VALIDATED_STUDENT_ID]: 'Upload a scanned copy or clear photo of your validated student ID.',
-  [REQUIREMENT_TYPES.VALID_PARENT_ID]: 'Upload a scanned copy or clear photo of your parent or guardian\'s valid ID.',
-  [REQUIREMENT_TYPES.MEDICAL_CERTIFICATE]: 'Upload a scanned copy or clear photo of your medical certificate.'
+  [REQUIREMENT_TYPES.NOTARIZED_PARENT_WAIVER]: 'Upload a clear photo or scanned copy of the signed and notarized parent\'s waiver form.',
+  [REQUIREMENT_TYPES.VALIDATED_STUDENT_ID]: 'Upload a clear photo or scanned copy of your validated LSPU Student ID.',
+  [REQUIREMENT_TYPES.VALID_PARENT_ID]: 'Upload a clear photo of your parent or legal guardian\'s government-issued ID.',
+  [REQUIREMENT_TYPES.MEDICAL_CERTIFICATE]: 'Upload a clear photo or scanned copy of your fit-to-train medical certificate.'
 };
 
 const STATUS_TYPES = {
@@ -52,31 +55,51 @@ const CMO_COMPLIANCE_DISPLAY_NAMES = {
 };
 
 /**
- * Validates if requirement type is valid
+ * Validates if requirement type is valid according to active coordinator-configured requirements
  * @param {string} type - Requirement type to validate
  * @returns {boolean} Is valid
  */
 function isValidRequirementType(type) {
+  if (!type) return false;
+  const activeReqs = getActiveRequirements();
+  if (activeReqs.some(r => r.code === type || r.id === type)) return true;
   return Object.values(REQUIREMENT_TYPES).includes(type);
 }
 
 /**
- * Gets all requirement types as array
- * @returns {Array} Array of requirement types
+ * Gets all active requirement types as array of strings
+ * @returns {Array<string>} Array of requirement types
  */
 function getAllRequirementTypes() {
+  const activeReqs = getActiveRequirements();
+  if (Array.isArray(activeReqs) && activeReqs.length > 0) {
+    return activeReqs.map(r => r.code);
+  }
   return Object.values(REQUIREMENT_TYPES);
 }
 
 /**
- * Gets requirement info for frontend
+ * Gets requirement info for frontend rendering
  * @returns {Array} Array of requirement info objects
  */
 function getRequirementInfo() {
+  const activeReqs = getActiveRequirements();
+  if (Array.isArray(activeReqs) && activeReqs.length > 0) {
+    return activeReqs.map(r => ({
+      type: r.code,
+      id: r.code,
+      displayName: r.name,
+      description: r.description,
+      isRequired: r.is_required !== false,
+      order: r.order || 0
+    }));
+  }
+
   return getAllRequirementTypes().map(type => ({
     type,
-    displayName: REQUIREMENT_DISPLAY_NAMES[type],
-    description: REQUIREMENT_DESCRIPTIONS[type]
+    id: type,
+    displayName: REQUIREMENT_DISPLAY_NAMES[type] || type,
+    description: REQUIREMENT_DESCRIPTIONS[type] || 'Upload a clear photo or scanned copy.'
   }));
 }
 

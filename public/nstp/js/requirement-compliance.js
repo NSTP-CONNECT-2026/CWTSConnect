@@ -12,6 +12,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Global Data
   let allComplianceRecords = [];
+  let currentConfiguredRequirements = [];
+
+  // Manage Requirements DOM Elements
+  const openManageReqModalBtn = document.getElementById('openManageReqModalBtn');
+  const manageReqModal = document.getElementById('manageReqModal');
+  const closeManageReqModalBtn = document.getElementById('closeManageReqModalBtn');
+  const doneManageReqModalBtn = document.getElementById('doneManageReqModalBtn');
+  const toggleAddReqFormBtn = document.getElementById('toggleAddReqFormBtn');
+  const addReqFormCard = document.getElementById('addReqFormCard');
+  const cancelAddReqBtn = document.getElementById('cancelAddReqBtn');
+  const addReqForm = document.getElementById('addReqForm');
+  const configuredReqListContainer = document.getElementById('configuredReqListContainer');
+  const manageReqTotalCount = document.getElementById('manageReqTotalCount');
+  const resetReqsBtn = document.getElementById('resetReqsBtn');
+  const newReqName = document.getElementById('newReqName');
+  const newReqDesc = document.getElementById('newReqDesc');
+  const newReqMandatory = document.getElementById('newReqMandatory');
 
   // Undergraduate Programs (Strictly LSPU SC Undergraduate List)
   const UNDERGRADUATE_COURSES = [
@@ -137,10 +154,243 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function init() {
     setupFilters();
+    setupManageReqModal();
     showLoading();
-    await Promise.all([loadComplianceSummary(), loadRequirementsList()]);
+    await Promise.all([loadComplianceSummary(), loadRequirementsList(), loadRequirementConfig()]);
     hideLoading();
   }
+
+  function setupManageReqModal() {
+    if (openManageReqModalBtn && manageReqModal) {
+      openManageReqModalBtn.addEventListener('click', () => {
+        manageReqModal.classList.add('active');
+        loadRequirementConfig();
+      });
+    }
+
+    if (closeManageReqModalBtn && manageReqModal) {
+      closeManageReqModalBtn.addEventListener('click', () => {
+        manageReqModal.classList.remove('active');
+      });
+    }
+
+    if (doneManageReqModalBtn && manageReqModal) {
+      doneManageReqModalBtn.addEventListener('click', () => {
+        manageReqModal.classList.remove('active');
+      });
+    }
+
+    if (toggleAddReqFormBtn && addReqFormCard) {
+      toggleAddReqFormBtn.addEventListener('click', () => {
+        const isHidden = addReqFormCard.style.display === 'none' || !addReqFormCard.style.display;
+        addReqFormCard.style.display = isHidden ? 'block' : 'none';
+        if (isHidden && newReqName) newReqName.focus();
+      });
+    }
+
+    if (cancelAddReqBtn && addReqFormCard) {
+      cancelAddReqBtn.addEventListener('click', () => {
+        addReqFormCard.style.display = 'none';
+        if (addReqForm) addReqForm.reset();
+      });
+    }
+
+    if (addReqForm) {
+      addReqForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = (newReqName ? newReqName.value : '').trim();
+        const description = (newReqDesc ? newReqDesc.value : '').trim();
+        const is_required = newReqMandatory ? newReqMandatory.checked : true;
+
+        if (!name) {
+          alert('Mangyaring ilagay ang pangalan ng requirement.');
+          return;
+        }
+
+        const saveBtn = document.getElementById('saveNewReqBtn');
+        if (saveBtn) {
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Isinesave...';
+        }
+
+        try {
+          const res = await fetch('/api/nstp/requirements-config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ name, description, is_required, is_active: true })
+          });
+
+          const result = await res.json();
+          if (res.ok && result.success) {
+            alert('Matagumpay na naidagdag ang bagong requirement!');
+            addReqForm.reset();
+            addReqFormCard.style.display = 'none';
+            await loadRequirementConfig();
+            await Promise.all([loadComplianceSummary(), loadRequirementsList()]);
+          } else {
+            alert(result.message || 'Hindi ma-save ang requirement.');
+          }
+        } catch (err) {
+          console.error('Error adding requirement:', err);
+          alert('Nagkaroon ng network error.');
+        } finally {
+          if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'I-save ang Requirement';
+          }
+        }
+      });
+    }
+
+    if (resetReqsBtn) {
+      resetReqsBtn.addEventListener('click', async () => {
+        if (!confirm('Sigurado ka bang nais mong ibalik sa default na 4 requirements?')) {
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/nstp/requirements-config/reset', {
+            method: 'POST',
+            credentials: 'include'
+          });
+          const result = await res.json();
+          if (res.ok && result.success) {
+            alert('Matagumpay na na-reset ang requirements sa default 4.');
+            await loadRequirementConfig();
+            await Promise.all([loadComplianceSummary(), loadRequirementsList()]);
+          } else {
+            alert(result.message || 'Hindi ma-reset ang requirements.');
+          }
+        } catch (err) {
+          console.error('Error resetting requirements:', err);
+          alert('Network error.');
+        }
+      });
+    }
+  }
+
+  async function loadRequirementConfig() {
+    try {
+      const res = await fetch('/api/nstp/requirements-config', {
+        method: 'GET',
+        credentials: 'include'
+      });
+      if (res.ok) {
+        const result = await res.json();
+        currentConfiguredRequirements = (result.success && Array.isArray(result.data)) ? result.data : [];
+        renderConfiguredRequirements(currentConfiguredRequirements);
+      }
+    } catch (err) {
+      console.error('Error fetching requirements config:', err);
+    }
+  }
+
+  function renderConfiguredRequirements(reqs) {
+    if (!configuredReqListContainer) return;
+    const activeReqs = reqs.filter(r => r.is_active);
+    if (manageReqTotalCount) {
+      manageReqTotalCount.textContent = activeReqs.length;
+    }
+
+    if (!reqs || reqs.length === 0) {
+      configuredReqListContainer.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 0.8125rem;">Walang naka-configure na requirement.</div>';
+      return;
+    }
+
+    configuredReqListContainer.innerHTML = reqs.map((req, idx) => {
+      const isAct = req.is_active !== false;
+      const isReq = req.is_required !== false;
+      const code = escapeHtml(req.code || req.id);
+      const name = escapeHtml(req.name);
+      const desc = escapeHtml(req.description || 'Walang paglalarawan.');
+
+      return `
+        <div class="config-req-card ${isAct ? '' : 'inactive'}" id="req_card_${code}">
+          <div class="config-req-info">
+            <div class="config-req-icon">
+              <span style="font-weight: 700; font-size: 0.8125rem;">${idx + 1}</span>
+            </div>
+            <div>
+              <div class="config-req-title">
+                <span>${name}</span>
+                <span class="doc-mini-pill ${isReq ? 'approved' : 'missing'}" style="font-size: 0.65rem;">
+                  ${isReq ? 'Mandatory' : 'Optional'}
+                </span>
+                <span class="doc-mini-pill ${isAct ? 'approved' : 'rejected'}" style="font-size: 0.65rem;">
+                  ${isAct ? 'Aktibo' : 'Naka-disable'}
+                </span>
+              </div>
+              <div class="config-req-desc">${desc}</div>
+              <div style="font-size: 0.6875rem; color: #94a3b8; margin-top: 3px;">
+                Code: <code>${code}</code> • Pwede ang picture / camera snapshot o PDF
+              </div>
+            </div>
+          </div>
+          <div class="config-req-actions">
+            <button type="button" 
+                    class="btn btn-secondary btn-sm" 
+                    onclick="window.toggleReqActive('${code}', ${isAct})"
+                    style="font-size: 0.75rem; padding: 4px 10px; height: 32px;"
+                    title="${isAct ? 'I-disable ang requirement' : 'I-activate ang requirement'}">
+              <span>${isAct ? 'I-disable' : 'I-activate'}</span>
+            </button>
+            <button type="button" 
+                    class="btn-icon-action danger" 
+                    onclick="window.deleteReqItem('${code}', '${name}')"
+                    title="Tanggalin ang requirement">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.toggleReqActive = async function (code, currentIsActive) {
+    try {
+      const res = await fetch(`/api/nstp/requirements-config/${encodeURIComponent(code)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ is_active: !currentIsActive })
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        await loadRequirementConfig();
+        await Promise.all([loadComplianceSummary(), loadRequirementsList()]);
+      } else {
+        alert(result.message || 'Hindi ma-update ang status ng requirement.');
+      }
+    } catch (err) {
+      console.error('Error toggling requirement:', err);
+    }
+  };
+
+  window.deleteReqItem = async function (code, name) {
+    if (!confirm(`Sigurado ka bang nais mong tanggalin ang requirement na "${name}"?`)) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/nstp/requirements-config/${encodeURIComponent(code)}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        alert(`Ang requirement na "${name}" ay natanggal na.`);
+        await loadRequirementConfig();
+        await Promise.all([loadComplianceSummary(), loadRequirementsList()]);
+      } else {
+        alert(result.message || 'Hindi matanggal ang requirement.');
+      }
+    } catch (err) {
+      console.error('Error deleting requirement:', err);
+    }
+  };
 
   async function loadComplianceSummary() {
     try {
@@ -192,20 +442,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  function getActiveRequirementsCount() {
+    const active = currentConfiguredRequirements.filter(r => r.is_active !== false);
+    return active.length > 0 ? active.length : 4;
+  }
+
   function updateKPIStats(records) {
     if (!records || !Array.isArray(records)) return;
     const total = records.length;
+    const reqCount = getActiveRequirementsCount();
     const compliant = records.filter(item => {
       const compStatus = (item.compliance_status || item.cmo_compliance_status || '').toLowerCase();
       const approvedCount = item.approved_count || 0;
-      const totalDocs = item.total_required || 4;
+      const totalDocs = item.total_required || reqCount;
       return compStatus === 'compliant' || approvedCount >= totalDocs;
     }).length;
 
     const pending = records.filter(item => {
       const compStatus = (item.compliance_status || item.cmo_compliance_status || '').toLowerCase();
       const approvedCount = item.approved_count || 0;
-      const totalDocs = item.total_required || 4;
+      const totalDocs = item.total_required || reqCount;
       const subCount = item.submitted_documents_count || 0;
       return compStatus === 'pending_review' || (subCount >= totalDocs && approvedCount < totalDocs);
     }).length;
@@ -298,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const compStatus = (item.compliance_status || item.cmo_compliance_status || '').toLowerCase();
       const approvedCount = item.approved_count ?? 0;
-      const totalDocs = item.total_required || 4;
+      const totalDocs = item.total_required || getActiveRequirementsCount();
       const subCount = item.submitted_documents_count ?? 0;
 
       const isCompliant = compStatus === 'compliant' || approvedCount >= totalDocs;
@@ -356,7 +612,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Progress
       const approvedCount = item.approved_count || 0;
-      const totalDocs = item.total_required || 4;
+      const totalDocs = item.total_required || getActiveRequirementsCount();
       const percent = Math.min(100, Math.round((approvedCount / totalDocs) * 100));
       const fillClass = percent >= 100 ? 'high' : (percent >= 50 ? 'mid' : 'low');
 

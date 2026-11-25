@@ -462,7 +462,7 @@
 
 
           <!-- ====================================================================
-               PHASE 3: DSS Quantification, Normalization & SAW Matrix
+               PHASE 3: DSS Quantification & Direct SAW Weighting Matrix
                ==================================================================== -->
           <div class="dss-step-panel" id="dssPanel3">
             
@@ -471,13 +471,113 @@
               <!-- Dynamic Request Summary -->
             </div>
 
+            <!-- ====================================================================
+                 DSS CRITERIA WEIGHTS CONFIGURATION PANEL (MCDM / SAW)
+                 ==================================================================== -->
+            <div class="dss-weights-card" id="dssWeightsCard">
+              <div class="dss-weights-header">
+                <div class="dss-weights-header-left">
+                  <div class="dss-weights-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <line x1="4" y1="21" x2="4" y2="14"></line>
+                      <line x1="4" y1="10" x2="4" y2="3"></line>
+                      <line x1="12" y1="21" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12" y2="3"></line>
+                      <line x1="20" y1="21" x2="20" y2="16"></line>
+                      <line x1="20" y1="12" x2="20" y2="3"></line>
+                      <line x1="1" y1="14" x2="7" y2="14"></line>
+                      <line x1="9" y1="8" x2="15" y2="8"></line>
+                      <line x1="17" y1="16" x2="23" y2="16"></line>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="dss-weights-title">Decision Criteria Weight Configuration (SAW Method)</h3>
+                    <p class="dss-weights-subtitle">NSTP Coordinator-defined weighting for candidate suitability. Total weight must equal 100%.</p>
+                  </div>
+                </div>
+                <div class="dss-weights-header-right">
+                  <span class="dss-weight-status-badge valid" id="weightTotalStatusBadge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span id="weightTotalStatusText">Total: 100% (Balanced)</span>
+                  </span>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btnResetWeights" title="Reset to default 70% Skills / 30% Location">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <span>Reset Default (70/30)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Visual Weight Proportions Bar -->
+              <div class="dss-weight-ratio-bar-wrap">
+                <div class="dss-weight-ratio-bar">
+                  <div class="dss-weight-segment-skills" id="weightBarSkills" style="width: 70%;">
+                    <span id="weightBarSkillsText">Skills: 70%</span>
+                  </div>
+                  <div class="dss-weight-segment-loc" id="weightBarLoc" style="width: 30%;">
+                    <span id="weightBarLocText">Location: 30%</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Interactive Sliders / Inputs Grid -->
+              <div class="dss-weights-grid">
+                <!-- Criterion 1: Skills Compatibility (Benefit) -->
+                <div class="dss-weight-item">
+                  <div class="dss-weight-item-head">
+                    <div>
+                      <div class="dss-weight-label">Skills Compatibility Weight (<span class="math-w">w<sub>skills</sub></span>)</div>
+                      <div class="dss-weight-criterion-type benefit">Benefit Criterion • Higher Match Ratio is Better</div>
+                    </div>
+                    <div class="dss-weight-val-box">
+                      <input type="number" id="skillsWeightInput" min="0" max="100" step="1" value="70" class="dss-weight-num-input" />
+                      <span class="dss-weight-unit">%</span>
+                    </div>
+                  </div>
+                  <div class="dss-slider-wrap">
+                    <input type="range" id="skillsWeightSlider" min="0" max="100" step="1" value="70" class="dss-weight-range-slider skills-slider" />
+                  </div>
+                </div>
+
+                <!-- Criterion 2: Location Proximity (Cost) -->
+                <div class="dss-weight-item">
+                  <div class="dss-weight-item-head">
+                    <div>
+                      <div class="dss-weight-label">Location Proximity Weight (<span class="math-w">w<sub>location</sub></span>)</div>
+                      <div class="dss-weight-criterion-type cost">Cost Criterion • Closer Distance is Better</div>
+                    </div>
+                    <div class="dss-weight-val-box">
+                      <input type="number" id="locWeightInput" min="0" max="100" step="1" value="30" class="dss-weight-num-input" />
+                      <span class="dss-weight-unit">%</span>
+                    </div>
+                  </div>
+                  <div class="dss-slider-wrap">
+                    <input type="range" id="locWeightSlider" min="0" max="100" step="1" value="30" class="dss-weight-range-slider loc-slider" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Presets Toolbar -->
+              <div class="dss-weights-presets-bar">
+                <span class="presets-label">Presets:</span>
+                <button type="button" class="weight-preset-pill active" id="presetBtn7030" data-skills="70" data-loc="30">
+                  Default (70% Skills / 30% Location)
+                </button>
+                <button type="button" class="weight-preset-pill" id="presetBtn5050" data-skills="50" data-loc="50">
+                  Balanced (50% Skills / 50% Location)
+                </button>
+                <button type="button" class="weight-preset-pill" id="presetBtn8020" data-skills="80" data-loc="20">
+                  Skills-Focused (80% Skills / 20% Location)
+                </button>
+                <button type="button" class="weight-preset-pill" id="presetBtn3070" data-skills="30" data-loc="70">
+                  Proximity-Focused (30% Skills / 70% Location)
+                </button>
+              </div>
+            </div>
+
             <!-- Calculation Sub-Tabs Switcher -->
             <div class="dss-calc-tabs">
               <button type="button" class="dss-calc-tab-btn active" id="calcTabQuant" onclick="window.switchCalcTab('quant')">
                 Quantification
-              </button>
-              <button type="button" class="dss-calc-tab-btn" id="calcTabNorm" onclick="window.switchCalcTab('norm')">
-                Normalization
               </button>
               <button type="button" class="dss-calc-tab-btn" id="calcTabSaw" onclick="window.switchCalcTab('saw')">
                 SAW Computation
@@ -504,31 +604,15 @@
                   </tbody>
                 </table>
 
-                <!-- 2. Normalization Table -->
-                <table class="neu-table hidden" id="normalizationTable">
-                  <thead>
-                    <tr>
-                      <th style="width: 28%;">Student</th>
-                      <th style="width: 18%;">Distance</th>
-                      <th style="width: 20%;">Normalized Distance</th>
-                      <th style="width: 18%;">Skills Match</th>
-                      <th style="width: 16%; text-align: right;">Normalized Skill</th>
-                    </tr>
-                  </thead>
-                  <tbody id="normalizationTableBody">
-                    <!-- Populated dynamically -->
-                  </tbody>
-                </table>
-
-                <!-- 3. SAW Weighting Table -->
+                <!-- 2. SAW Weighting Table (Direct Weighting) -->
                 <table class="neu-table hidden" id="sawComputationTable">
                   <thead>
                     <tr>
-                      <th style="width: 28%;">Student</th>
-                      <th style="width: 18%;">Location (30%)</th>
-                      <th style="width: 18%;">Skills (70%)</th>
-                      <th style="width: 20%;">Formula Breakdown</th>
-                      <th style="width: 16%; text-align: right;">Suitability</th>
+                      <th style="width: 26%;">Student</th>
+                      <th style="width: 24%;" id="thSawLocation">Location (30%)</th>
+                      <th style="width: 24%;" id="thSawSkills">Skills (70%)</th>
+                      <th style="width: 14%;">Formula Breakdown</th>
+                      <th style="width: 12%; text-align: right;">Suitability</th>
                     </tr>
                   </thead>
                   <tbody id="sawComputationTableBody">
@@ -578,7 +662,10 @@
                 <button type="button" class="btn btn-secondary btn-sm" id="btnSelectAllRanked">Select All</button>
                 <button type="button" class="btn btn-secondary btn-sm" id="btnDeselectAllRanked">Clear</button>
               </div>
-              <div class="toolbar-right">
+              <div class="toolbar-right" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <span class="badge" id="rankingActiveWeightsBadge" style="background: rgba(47, 125, 91, 0.1); color: var(--cwts-primary-dark); font-weight: 700; font-size: 0.78rem; padding: 4px 10px; border-radius: var(--radius-pill); border: 1px solid rgba(47, 125, 91, 0.25);">
+                  Weights: 70% Skills / 30% Location
+                </span>
                 <span style="font-size: 0.875rem; font-weight: 700; color: var(--cwts-primary-dark);" id="selectedStudentSummaryLabel">0 Students Selected</span>
               </div>
             </div>
@@ -592,8 +679,14 @@
                       <th class="col-select"><input type="checkbox" id="masterSelectCheckbox" /></th>
                       <th class="col-rank">Rank</th>
                       <th class="col-student">Student</th>
-                      <th class="col-loc">Location Score</th>
-                      <th class="col-skill">Skills Score</th>
+                      <th class="col-loc" id="thRankingLocation">
+                        <div>Location Score</div>
+                        <div style="font-size: 0.6875rem; font-weight: 500; color: var(--text-muted);" id="subRankingLoc">w = 0.30</div>
+                      </th>
+                      <th class="col-skill" id="thRankingSkills">
+                        <div>Skills Score</div>
+                        <div style="font-size: 0.6875rem; font-weight: 500; color: var(--text-muted);" id="subRankingSkill">w = 0.70</div>
+                      </th>
                       <th class="col-suit">Suitability</th>
                       <th class="col-action">Action</th>
                     </tr>

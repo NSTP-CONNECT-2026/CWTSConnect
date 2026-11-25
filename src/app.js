@@ -23,8 +23,10 @@ const makeUpRequestRoutes = require('./routes/makeUpRequestRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const requestTypeRoutes = require('./routes/requestTypeRoutes');
 const skillRoutes = require('./routes/skillRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const { isAuthenticated } = require('./middlewares/authMiddleware');
 const { roleMiddleware } = require('./middlewares/roleMiddleware');
+const { requireAdminAccess } = require('./middlewares/adminAuthMiddleware');
 const FileSessionStore = require('./config/sessionStore');
 
 const app = express();
@@ -72,6 +74,11 @@ app.use(session({
 }));
 
 // ─── Protected Page Routes (MUST BE BEFORE STATIC FILES) ─────────────────────
+
+// System Administrator Portal (Zero-login for localhost, stealth 404 for others)
+app.get(['/admin', '/admin/', '/admin/portal.html', '/admin/dashboard.html'], requireAdminAccess, (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/admin/portal.html'));
+});
 
 // NSTP Official Dashboard
 app.get('/nstp/dashboard.html', isAuthenticated, roleMiddleware('nstp_official'), (req, res) => {
@@ -208,10 +215,12 @@ app.get('/student/test-dashboard.html', isAuthenticated, roleMiddleware('student
   res.sendFile(path.join(__dirname, '../public/student/test-dashboard.html'));
 });
 
-// ─── Static Files ─────────────────────────────────────────────────────────────
+// ─── Static Files (Admin Protected) ──────────────────────────────────────────
+app.use('/admin', requireAdminAccess);
 app.use(express.static(path.join(__dirname, '../public')));
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
+app.use('/api/admin', adminRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/nstp/deployments', deploymentRoutes);
 app.use('/api/student/deployments', deploymentRoutes);

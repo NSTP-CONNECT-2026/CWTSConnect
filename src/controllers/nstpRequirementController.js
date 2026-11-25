@@ -10,6 +10,14 @@ const {
   getComplianceSummaryStats,
   getRequirementFileUrl
 } = require('../services/nstpRequirementService');
+const {
+  getAllRequirementsConfig,
+  getActiveRequirements,
+  addRequirement,
+  updateRequirement,
+  deleteRequirement,
+  resetToDefaults
+} = require('../services/requirementConfigService');
 
 /**
  * GET /api/nstp/requirements
@@ -113,6 +121,22 @@ async function reviewRequirementById(req, res) {
       remarks
     );
 
+    // Audit log
+    try {
+      const { logAction } = require('../services/auditLogger');
+      logAction({
+        actorId: reviewerId,
+        actorName: req.session.user?.full_name || req.session.user?.email || 'NSTP Coordinator',
+        actorRole: 'nstp_official',
+        actionType: status.toLowerCase() === 'approved' ? 'CMO_APPROVED' : 'CMO_REJECTED',
+        targetType: 'requirement',
+        targetId: requirementId,
+        targetName: updatedRequirement?.requirement_type || 'CMO Requirement',
+        description: `${status.toLowerCase() === 'approved' ? 'Approved' : 'Rejected'} requirement (${updatedRequirement?.requirement_type || 'CMO Document'}). Remarks: "${remarks || 'None'}"`,
+        req
+      });
+    } catch (e) {}
+
     res.json({
       success: true,
       data: updatedRequirement,
@@ -213,10 +237,141 @@ async function getComplianceSummary(req, res) {
   }
 }
 
+/**
+ * GET /api/nstp/requirements-config
+ * Gets all configured requirements (both active and inactive)
+ */
+async function getRequirementsConfig(req, res) {
+  try {
+    const all = getAllRequirementsConfig();
+    const active = getActiveRequirements();
+
+    res.json({
+      success: true,
+      data: {
+        requirements: all,
+        active: active,
+        total_active: active.length
+      },
+      message: 'Requirements configuration fetched successfully'
+    });
+  } catch (error) {
+    console.error('Get requirements config error:', error.message);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch requirements configuration: ' + error.message
+    });
+  }
+}
+
+/**
+ * POST /api/nstp/requirements-config
+ * Adds a new requirement definition
+ */
+async function createRequirementConfig(req, res) {
+  try {
+    const { name, description, code, is_required } = req.body;
+    const actorId = req.user ? req.user.user_id : 'coordinator';
+
+    const newReq = addRequirement({ name, description, code, is_required }, actorId);
+
+    res.status(201).json({
+      success: true,
+      data: newReq,
+      message: `Requirement "${newReq.name}" added successfully.`
+    });
+  } catch (error) {
+    console.error('Create requirement config error:', error.message);
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
+
+/**
+ * PUT /api/nstp/requirements-config/:code
+ * Updates an existing requirement definition
+ */
+async function updateRequirementConfig(req, res) {
+  try {
+    const { code } = req.params;
+    const updates = req.body;
+    const actorId = req.user ? req.user.user_id : 'coordinator';
+
+    const updated = updateRequirement(code, updates, actorId);
+
+    res.json({
+      success: true,
+      data: updated,
+      message: `Requirement "${updated.name}" updated successfully.`
+    });
+  } catch (error) {
+    console.error('Update requirement config error:', error.message);
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
+
+/**
+ * DELETE /api/nstp/requirements-config/:code
+ * Deletes or deactivates a requirement definition
+ */
+async function deleteRequirementConfig(req, res) {
+  try {
+    const { code } = req.params;
+    const actorId = req.user ? req.user.user_id : 'coordinator';
+
+    const removed = deleteRequirement(code, actorId);
+
+    res.json({
+      success: true,
+      data: removed,
+      message: `Requirement "${removed.name}" removed successfully.`
+    });
+  } catch (error) {
+    console.error('Delete requirement config error:', error.message);
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
+
+/**
+ * POST /api/nstp/requirements-config/reset
+ * Resets requirements configuration back to standard defaults
+ */
+async function resetRequirementsConfig(req, res) {
+  try {
+    const actorId = req.user ? req.user.user_id : 'coordinator';
+    const defaults = resetToDefaults(actorId);
+
+    res.json({
+      success: true,
+      data: defaults,
+      message: 'Requirements configuration reset to standard defaults.'
+    });
+  } catch (error) {
+    console.error('Reset requirements config error:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
+
 module.exports = {
   getRequirements,
   getStudentRequirements,
   reviewRequirementById,
   getRequirementFile,
-  getComplianceSummary
+  getComplianceSummary,
+  getRequirementsConfig,
+  createRequirementConfig,
+  updateRequirementConfig,
+  deleteRequirementConfig,
+  resetRequirementsConfig
 };

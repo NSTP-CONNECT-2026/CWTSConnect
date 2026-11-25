@@ -11,20 +11,30 @@ const {
 
 const router = express.Router();
 
-// Configure multer for file uploads
+// Configure multer for file uploads (supports all image types and PDF up to 10MB)
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
-    files: 1 // Only one file at a time
+    fileSize: 10 * 1024 * 1024, // 10MB limit (supports clear phone camera pictures)
+    files: 1
   },
   fileFilter: (req, file, cb) => {
-    // Allow only specific file types
-    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-    if (allowedTypes.includes(file.mimetype)) {
+    const mime = (file.mimetype || '').toLowerCase();
+    const allowedTypes = [
+      'application/pdf',
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/webp',
+      'image/gif',
+      'image/bmp',
+      'image/heic',
+      'image/heif'
+    ];
+    if (allowedTypes.includes(mime) || mime.startsWith('image/')) {
       cb(null, true);
     } else {
-      cb(new Error('Invalid file type. Only PDF, JPG, JPEG, and PNG files are allowed.'), false);
+      cb(new Error('Invalid file type. Please upload a clear photo/image (JPG, PNG, WEBP) or PDF document.'), false);
     }
   }
 });

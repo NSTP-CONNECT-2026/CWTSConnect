@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const submissionDateText = hasFile ? formatDate(requirement.uploaded_at) : 'Not yet submitted';
     const isImage = Boolean(
       (requirement.file_type && requirement.file_type.startsWith('image/')) ||
-      /\.(png|jpe?g|webp|gif|svg)($|\?)/i.test(requirement.file_name || requirement.file_url || '')
+      /\.(png|jpe?g|webp|gif|svg|heic|heif)($|\?)/i.test(requirement.file_name || requirement.file_url || '')
     );
 
     let pasilipHtml = '';
@@ -226,8 +226,8 @@ document.addEventListener('DOMContentLoaded', function() {
               <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
             </svg>
           </div>
-          <div class="pasilip-empty-title">Walang file na na-upload</div>
-          <div class="pasilip-empty-sub">Pumili ng PDF, JPG, o PNG (Hanggang 5MB)</div>
+          <div class="pasilip-empty-title">Walang file o litrato na na-upload</div>
+          <div class="pasilip-empty-sub">Pumili o kumuha ng litrato (JPG, PNG, WEBP) o PDF (Hanggang 10MB)</div>
         </div>
       `;
     }
@@ -245,22 +245,22 @@ document.addEventListener('DOMContentLoaded', function() {
         <input type="file" 
                id="file-${requirement.type}" 
                class="file-input" 
-               accept=".pdf,.jpg,.jpeg,.png"
+               accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.heif,image/*"
                style="display: none;">
         <label for="file-${requirement.type}" class="file-choose-label">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
           </svg>
-          <span>${hasFile ? 'Palitan ang File' : 'Pumili ng File'}</span>
+          <span>${hasFile ? 'Palitan ang Litrato / File' : 'Pumili o Kumuha ng Litrato / PDF'}</span>
         </label>
         <span class="file-name file-selected-text">
-          ${hasFile ? 'Pumili ng bago kung nais palitan' : 'Walang napiling file'}
+          ${hasFile ? 'Pumili ng bagong litrato o file kung nais palitan' : 'Walang napiling litrato o file'}
         </span>
         <button type="button" 
                 class="upload-btn btn btn-primary btn-sm" 
                 data-requirement-type="${requirement.type}">
           <span class="spinner" aria-hidden="true"></span>
-          <span class="btn-text">${hasFile ? 'I-upload ang Kapalit' : 'I-upload ang Dokumento'}</span>
+          <span class="btn-text">${hasFile ? 'I-upload ang Kapalit' : 'I-upload ang Requirement'}</span>
         </button>
       </div>
     ` : '';
@@ -419,20 +419,21 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function validateFile(file) {
-    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const isImage = file.type.startsWith('image/') || /\.(jpe?g|png|webp|heic|heif|gif)$/i.test(file.name);
+    const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+    const maxSize = 10 * 1024 * 1024; // 10MB
 
-    if (!allowedTypes.includes(file.type)) {
+    if (!isImage && !isPdf) {
       return {
         isValid: false,
-        error: 'Invalid file type. Only PDF, JPG, JPEG, and PNG files are accepted.'
+        error: 'Hindi tanggap ang uri ng file. Maaari lamang mag-upload ng Larawan (JPG, PNG, WEBP) o PDF.'
       };
     }
 
     if (file.size > maxSize) {
       return {
         isValid: false,
-        error: 'File size too large. Maximum size allowed is 5MB.'
+        error: 'Masyadong malaki ang file. Hanggang 10MB lamang ang pinapayagan.'
       };
     }
 

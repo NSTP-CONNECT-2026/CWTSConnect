@@ -5,43 +5,64 @@ const {
   CMO_COMPLIANCE_STATUS,
   isValidRequirementType 
 } = require('../utils/requirementTypes');
+const { getActiveRequirements } = require('./requirementConfigService');
+const { 
+  getCustomRequirementsForUser, 
+  saveCustomRequirement 
+} = require('./customStudentRequirementStorage');
 const { uploadCmoRequirementFile, deleteCmoRequirementFile } = require('./fileUploadService');
 
 /**
  * Gets all CMO requirements for a student
+ * Dynamically driven by active requirements configured by NSTP Coordinator
  * @param {string} userId - Student user ID
  * @returns {Promise<Array>} Array of requirements with status
  */
 async function getStudentCmoRequirements(userId) {
   try {
-    // Get existing requirements from database
+    // 1. Get existing requirements from Supabase database
     const { data: existingRequirements, error } = await supabase
       .from('student_cmo_requirements')
       .select('*')
       .eq('user_id', userId);
 
     if (error) {
-      throw new Error('Failed to fetch CMO requirements: ' + error.message);
+      console.warn('[studentCmoRequirementService] Supabase fetch notice:', error.message);
     }
 
-    // Create a map of existing requirements
+    // 2. Get local custom records fallback
+    const customReqs = getCustomRequirementsForUser(userId);
+
+    // Create a unified map of existing requirement records
     const requirementMap = {};
     if (existingRequirements) {
       existingRequirements.forEach(req => {
         requirementMap[req.requirement_type] = req;
       });
     }
+    if (customReqs) {
+      customReqs.forEach(req => {
+        requirementMap[req.requirement_type] = req;
+      });
+    }
 
-    // Return all requirement types with their current status
-    const allRequirementTypes = getAllRequirementTypes();
-    return allRequirementTypes.map(type => {
-      const existing = requirementMap[type];
+    // 3. Return all currently active requirements configured by Coordinator
+    const activeReqs = getActiveRequirements();
+    return activeReqs.map(reqDef => {
+      const existing = requirementMap[reqDef.code];
       return {
-        requirement_type: type,
+        requirement_type: reqDef.code,
+        type: reqDef.code,
+        displayName: reqDef.name,
+        name: reqDef.name,
+        description: reqDef.description,
+        is_required: reqDef.is_required !== false,
         status: existing ? existing.status : STATUS_TYPES.NOT_SUBMITTED,
         file_name: existing ? existing.file_name : null,
         file_url: existing ? existing.file_url : null,
+        file_path: existing ? existing.file_path : null,
         file_size: existing ? existing.file_size : null,
+        file_type: existing ? existing.file_type : null,
         uploaded_at: existing ? existing.uploaded_at : null,
         remarks: existing ? existing.remarks : null,
         requirement_id: existing ? existing.requirement_id : null
@@ -54,6 +75,7 @@ async function getStudentCmoRequirements(userId) {
 
 /**
  * Uploads or updates a CMO requirement
+ * Allows students to submit all requirements through images (JPG, PNG, WEBP, etc.) or PDF
  * @param {string} userId - Student user ID
  * @param {string} requirementType - Type of requirement
  * @param {object} file - Multer file object
@@ -66,7 +88,7 @@ async function uploadCmoRequirement(userId, requirementType, file) {
       throw new Error('Invalid requirement type');
     }
 
-    // Check if requirement already exists and is approved
+    // Check existing in Supabase
     const { data: existingReq, error: fetchError } = await supabase
       .from('student_cmo_requirements')
       .select('*')
@@ -74,16 +96,17 @@ async function uploadCmoRequirement(userId, requirementType, file) {
       .eq('requirement_type', requirementType)
       .single();
 
-    if (fetchError && fetchError.code !== 'PGRST116') {
-      throw new Error('Failed to check existing requirement: ' + fetchError.message);
-    }
+    // Check existing in custom storage fallback
+    const customList = getCustomRequirementsForUser(userId);
+    const existingCustom = customList.find(r => r.requirement_type === requirementType);
+    const currentRecord = existingReq || existingCustom;
 
     // Don't allow replacement if already approved
-    if (existingReq && existingReq.status === STATUS_TYPES.APPROVED) {
-      throw new Error('Cannot replace approved requirement. Contact NSTP Official if changes are needed.');
+    if (currentRecord && currentRecord.status === STATUS_TYPES.APPROVED) {
+      throw new Error('Cannot replace approved requirement. Contact NSTP Coordinator if changes are needed.');
     }
 
-    // Upload file to Supabase Storage
+    // Upload file to Cloudinary (or Supabase Storage fallback)
     const uploadResult = await uploadCmoRequirementFile(
       file.buffer,
       file.originalname,
@@ -92,8 +115,10 @@ async function uploadCmoRequirement(userId, requirementType, file) {
     );
 
     // Delete old file if exists
-    if (existingReq && existingReq.file_path) {
-      await deleteCmoRequirementFile(existingReq.file_path);
+    if (currentRecord && currentRecord.file_path) {
+      try {
+        await deleteCmoRequirementFile(currentRecord.file_path);
+      } catch (_) {}
     }
 
     // Prepare requirement data
@@ -106,36 +131,45 @@ async function uploadCmoRequirement(userId, requirementType, file) {
       file_type: file.mimetype,
       file_size: file.size,
       status: STATUS_TYPES.PENDING,
-      remarks: null, // Clear old remarks on resubmission
+      remarks: null,
       uploaded_at: new Date().toISOString()
     };
 
     let result;
-    if (existingReq) {
-      // Update existing requirement
-      const { data, error } = await supabase
-        .from('student_cmo_requirements')
-        .update(requirementData)
-        .eq('requirement_id', existingReq.requirement_id)
-        .select()
-        .single();
+    try {
+      if (existingReq) {
+        // Update existing in Supabase
+        const { data, error } = await supabase
+          .from('student_cmo_requirements')
+          .update(requirementData)
+          .eq('requirement_id', existingReq.requirement_id)
+          .select()
+          .single();
 
-      if (error) {
-        throw new Error('Failed to update requirement: ' + error.message);
-      }
-      result = data;
-    } else {
-      // Create new requirement
-      const { data, error } = await supabase
-        .from('student_cmo_requirements')
-        .insert(requirementData)
-        .select()
-        .single();
+        if (error) throw error;
+        result = data;
+      } else {
+        // Insert new in Supabase
+        const { data, error } = await supabase
+          .from('student_cmo_requirements')
+          .insert(requirementData)
+          .select()
+          .single();
 
-      if (error) {
-        throw new Error('Failed to create requirement: ' + error.message);
+        if (error) throw error;
+        result = data;
       }
-      result = data;
+    } catch (dbError) {
+      // If DB has check constraint on requirement_type, fallback to local storage adapter
+      if (dbError.message && dbError.message.includes('check constraint')) {
+        console.warn(`[Storage Fallback] Supabase CHECK constraint detected for "${requirementType}". Persisting locally.`);
+        result = saveCustomRequirement({
+          ...requirementData,
+          requirement_id: currentRecord?.requirement_id || 'custom_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7)
+        });
+      } else {
+        throw dbError;
+      }
     }
 
     // Synchronize overall CMO compliance status in users table
@@ -162,7 +196,7 @@ async function uploadCmoRequirement(userId, requirementType, file) {
  */
 async function getCmoRequirementsStatus(userId) {
   try {
-    // Get all requirements
+    // Get all active requirements
     const requirements = await getStudentCmoRequirements(userId);
     
     // Count by status
@@ -176,9 +210,9 @@ async function getCmoRequirementsStatus(userId) {
     let overallStatus;
     if (rejectedCount > 0) {
       overallStatus = CMO_COMPLIANCE_STATUS.REJECTED;
-    } else if (approvedCount === totalRequired) {
+    } else if (totalRequired > 0 && approvedCount >= totalRequired) {
       overallStatus = CMO_COMPLIANCE_STATUS.COMPLIANT;
-    } else if (submittedCount === totalRequired) {
+    } else if (totalRequired > 0 && submittedCount >= totalRequired) {
       overallStatus = CMO_COMPLIANCE_STATUS.PENDING_REVIEW;
     } else {
       overallStatus = CMO_COMPLIANCE_STATUS.INCOMPLETE;
@@ -205,14 +239,12 @@ async function getCmoRequirementsStatus(userId) {
  */
 async function updateUserCmoComplianceStatus(userId) {
   try {
-    const { data, error } = await supabase
-      .rpc('update_cmo_compliance_status', { student_user_id: userId });
-
-    if (error) {
-      throw new Error('Failed to update CMO compliance status: ' + error.message);
-    }
-
-    return data;
+    const summary = await getCmoRequirementsStatus(userId);
+    await supabase
+      .from('users')
+      .update({ cmo_compliance_status: summary.overall_status })
+      .eq('user_id', userId);
+    return summary.overall_status;
   } catch (error) {
     console.error('CMO compliance status update error:', error.message);
     return null;

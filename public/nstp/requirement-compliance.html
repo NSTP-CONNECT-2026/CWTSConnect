@@ -394,16 +394,26 @@
                 <input type="text" id="complianceSearchInput" class="toolbar-input" placeholder="Search by student name, number, or email..." />
               </div>
 
-              <button type="button" class="btn-filter-toggle" id="toggleComplianceFiltersBtn" aria-expanded="false" title="Show or hide filters">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                </svg>
-                <span>Filter</span>
-                <span class="filter-badge-dot" id="complianceFilterActiveDot" style="display: none;"></span>
-                <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="btn btn-primary btn-sm" id="openManageReqModalBtn" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 0 16px; height: 40px; border-radius: var(--radius-md); box-shadow: var(--neu-shadow-btn-primary);">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <span>Manage Requirements</span>
+                </button>
+
+                <button type="button" class="btn-filter-toggle" id="toggleComplianceFiltersBtn" aria-expanded="false" title="Show or hide filters">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                  </svg>
+                  <span>Filter</span>
+                  <span class="filter-badge-dot" id="complianceFilterActiveDot" style="display: none;"></span>
+                  <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+              </div>
             </div>
 
             <!-- Collapsible Filters Section (Hidden by Default) -->
@@ -512,6 +522,97 @@
 
       </main>
 
+    </div>
+  </div>
+
+  <!-- Manage Requirements Modal (Coordinator sets ano-ano at ilan) -->
+  <div class="modal-backdrop" id="manageReqModal" role="dialog" aria-modal="true" aria-labelledby="manageReqModalTitle">
+    <div class="modal-card" style="max-width: 680px; width: 95%; max-height: 90vh;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="manageReqModalTitle">Manage CMO Requirements</h3>
+          <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 2px;">
+            Itakda kung ano-anong dokumento at ilan ang kailangang ipasa ng mga mag-aaral.
+          </p>
+        </div>
+        <button type="button" class="modal-close-btn" id="closeManageReqModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 20px; overflow-y: auto;">
+        
+        <!-- Quick Summary & Add Trigger Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 12px 16px; background: rgba(47, 125, 91, 0.06); border: 1px solid rgba(47, 125, 91, 0.15); border-radius: var(--radius-md);">
+          <div>
+            <div style="font-size: 0.875rem; font-weight: 700; color: var(--cwts-primary-dark);">
+              Aktibong Requirements: <span id="manageReqTotalCount" style="color: var(--cwts-accent-green); font-size: 1.1rem;">4</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">
+              Lahat ng requirements ay maaaring ipasa ng student gamit ang litrato (camera/photo) o PDF.
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" id="toggleAddReqFormBtn" style="gap: 6px; font-weight: 600;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Magdagdag</span>
+          </button>
+        </div>
+
+        <!-- Add New Requirement Card (Collapsible) -->
+        <div id="addReqFormCard" style="display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h4 style="font-size: 0.9375rem; font-weight: 700; color: var(--text-main); margin: 0;">Magdagdag ng Bagong Requirement</h4>
+            <button type="button" id="cancelAddReqBtn" style="background: none; border: none; font-size: 0.75rem; color: var(--text-muted); cursor: pointer;">I-cancel</button>
+          </div>
+
+          <form id="addReqForm">
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label class="form-label" for="newReqName" style="font-size: 0.8125rem; font-weight: 600;">Pangalan ng Requirement <span style="color: #dc2626;">*</span></label>
+              <input type="text" id="newReqName" class="form-input" placeholder="Halimbawa: Barangay Clearance, Good Moral, etc." required style="font-size: 0.875rem;" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label class="form-label" for="newReqDesc" style="font-size: 0.8125rem; font-weight: 600;">Paglalarawan / Tagubilin sa Mag-aaral</label>
+              <textarea id="newReqDesc" class="form-input" rows="2" placeholder="Halimbawa: Mag-upload ng malinaw na litrato o kopya ng Barangay Clearance para sa taong ito." style="font-size: 0.8125rem; resize: vertical;"></textarea>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 12px; border-top: 1px solid #f1f5f9;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8125rem; font-weight: 600; cursor: pointer; color: var(--text-main);">
+                <input type="checkbox" id="newReqMandatory" checked style="accent-color: var(--cwts-accent-green); width: 16px; height: 16px;" />
+                <span>Kailangan (Mandatory Requirement)</span>
+              </label>
+
+              <button type="submit" class="btn btn-primary btn-sm" id="saveNewReqBtn" style="font-weight: 600;">
+                <span>I-save ang Requirement</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Requirements List -->
+        <div style="font-size: 0.8125rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">
+          Talaan ng mga Requirements
+        </div>
+        <div id="configuredReqListContainer" style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Reset Button Option -->
+        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-size: 0.75rem; color: var(--text-muted);">
+            Nais mo bang ibalik sa standard 4 CMO requirements?
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="resetReqsBtn" style="color: #64748b; font-size: 0.75rem;">
+            I-reset sa Default (4)
+          </button>
+        </div>
+
+      </div>
+
+      <div class="modal-footer" style="padding: 14px 20px; justify-content: flex-end;">
+        <button type="button" class="btn btn-secondary btn-sm" id="doneManageReqModalBtn">Isara</button>
+      </div>
     </div>
   </div>
 

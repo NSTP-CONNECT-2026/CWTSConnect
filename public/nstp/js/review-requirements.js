@@ -142,30 +142,46 @@ document.addEventListener('DOMContentLoaded', function () {
       studentAvatar.textContent = initials;
     }
 
-    // Map requirements list
+    // Map requirements list dynamically from active coordinator configuration
+    const activeReqList = (Array.isArray(data.requirements) && data.requirements.length > 0)
+      ? data.requirements
+      : REQUIRED_TYPES;
+
+    const totalRequired = data.total_required || activeReqList.length || 4;
+
     const submittedReqs = Array.isArray(data.requirements) ? data.requirements : (data.cmo_requirements || []);
     const reqMap = {};
     submittedReqs.forEach(r => {
-      const normKey = (r.requirement_type || r.type || '').toLowerCase().replace(/[\s/-]+/g, '_');
+      const normKey = (r.requirement_type || r.type || r.key || '').toLowerCase().replace(/[\s/-]+/g, '_');
       reqMap[normKey] = r;
       if (r.type) reqMap[r.type.toLowerCase().replace(/[\s/-]+/g, '_')] = r;
+      if (r.code) reqMap[r.code.toLowerCase().replace(/[\s/-]+/g, '_')] = r;
     });
 
     let approvedCount = 0;
 
-    // Render 4 requirement cards
-    const cardsHtml = REQUIRED_TYPES.map((typeDef, index) => {
-      let reqDoc = reqMap[typeDef.key];
-      if (!reqDoc && typeDef.aliases) {
-        for (const alias of typeDef.aliases) {
-          if (reqMap[alias]) {
-            reqDoc = reqMap[alias];
-            break;
+    // Render requirement cards dynamically
+    const cardsHtml = activeReqList.map((typeDef, index) => {
+      const typeKey = (typeDef.key || typeDef.code || typeDef.type || typeDef.requirement_type || '').toLowerCase().replace(/[\s/-]+/g, '_');
+      const typeName = typeDef.name || typeDef.displayName || 'CMO Requirement';
+      const typeDesc = typeDef.desc || typeDef.description || 'Upload required CMO document or photo.';
+
+      let reqDoc = reqMap[typeKey] || typeDef;
+      if (!reqDoc || !reqDoc.requirement_id) {
+        if (typeDef.aliases) {
+          for (const alias of typeDef.aliases) {
+            if (reqMap[alias]) {
+              reqDoc = reqMap[alias];
+              break;
+            }
           }
         }
       }
-      if (!reqDoc) {
-        reqDoc = reqMap[typeDef.name.toLowerCase().replace(/[\s/-]+/g, '_')];
+      if (!reqDoc || !reqDoc.requirement_id) {
+        const byNameKey = typeName.toLowerCase().replace(/[\s/-]+/g, '_');
+        if (reqMap[byNameKey]) {
+          reqDoc = reqMap[byNameKey];
+        }
       }
 
       // Truly submitted if record exists and is not 'not_submitted' with valid ID or file
@@ -197,18 +213,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       }
 
-      const fileName = isSubmitted ? (reqDoc.file_name || `${typeDef.name} Upload`) : null;
+      const fileName = isSubmitted ? (reqDoc.file_name || `${typeName} Upload`) : null;
       const rawDate = isSubmitted ? (reqDoc.uploaded_at || reqDoc.created_at) : null;
       const submittedAt = rawDate ? new Date(rawDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null;
       const remarks = isSubmitted ? (reqDoc.remarks || '') : '';
 
+      const isImage = Boolean(
+        (reqDoc.file_type && reqDoc.file_type.startsWith('image/')) ||
+        /\.(png|jpe?g|webp|gif|svg|heic|heif)($|\?)/i.test(fileName || fileUrl || '')
+      );
+
       return `
-        <div class="req-item-card" id="card_${typeDef.key}">
+        <div class="req-item-card" id="card_${typeKey}">
           <div>
             <div class="req-item-header">
               <div>
-                <h3 class="req-item-title">${typeDef.name}</h3>
-                <p class="req-item-desc">${typeDef.desc}</p>
+                <h3 class="req-item-title">${escapeHtml(typeName)}</h3>
+                <p class="req-item-desc">${escapeHtml(typeDesc)}</p>
               </div>
               <div>${badgeHtml}</div>
             </div>
@@ -216,13 +237,24 @@ document.addEventListener('DOMContentLoaded', function () {
             ${isSubmitted ? `
               <div class="req-file-preview-box">
                 <div class="file-info-snippet">
-                  <div class="file-icon-badge">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                    </svg>
+                  <div class="file-icon-badge" style="${isImage ? 'background: rgba(16, 185, 129, 0.12); color: #059669;' : ''}">
+                    ${isImage ? `
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                      </svg>
+                    ` : `
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                      </svg>
+                    `}
                   </div>
                   <div>
-                    <div class="file-title-text">${escapeHtml(fileName)}</div>
+                    <div class="file-title-text" style="display: flex; align-items: center; gap: 6px;">
+                      <span>${escapeHtml(fileName)}</span>
+                      ${isImage ? '<span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #059669; font-size: 0.65rem; padding: 1px 5px;">Photo/Image</span>' : ''}
+                    </div>
                     <div class="file-date-text">Submitted on ${submittedAt || 'Recent'}</div>
                   </div>
                 </div>
@@ -230,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   <button type="button" 
                           class="btn btn-secondary btn-sm btn-view-doc"
                           data-file-url="${escapeHtml(fileUrl)}"
-                          data-title="${escapeHtml(typeDef.name)}"
+                          data-title="${escapeHtml(typeName)}"
                           data-file-name="${escapeHtml(fileName)}"
                           data-status="${escapeHtml(status)}"
                           data-date="${escapeHtml(submittedAt || '')}"
@@ -239,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
                       <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                     </svg>
-                    <span>View File</span>
+                    <span>View ${isImage ? 'Image' : 'File'}</span>
                   </button>
                 ` : ''}
               </div>
@@ -279,14 +311,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (requirementsGrid) requirementsGrid.innerHTML = cardsHtml;
 
-    // Overall Status Progress
-    if (approvedDocsCount) approvedDocsCount.textContent = `${approvedCount} of 4 Requirements Approved`;
+    // Overall Status Progress (Dynamic count based on coordinator's configured active requirements)
+    if (approvedDocsCount) approvedDocsCount.textContent = `${approvedCount} of ${totalRequired} Requirements Approved`;
     if (overallStatusBadge) {
       const actuallySubmitted = submittedReqs.filter(r => r.status && r.status.toLowerCase() !== 'not_submitted' && (r.file_url || r.file_path || r.requirement_id || r.id));
-      if (approvedCount === 4) {
+      if (approvedCount >= totalRequired) {
         overallStatusBadge.className = 'badge badge-complete';
         overallStatusBadge.textContent = 'Fully Compliant';
-      } else if (actuallySubmitted.length === 4 && actuallySubmitted.some(r => (r.status || '').toLowerCase() === 'pending')) {
+      } else if (actuallySubmitted.length >= totalRequired && actuallySubmitted.some(r => (r.status || '').toLowerCase() === 'pending')) {
         overallStatusBadge.className = 'badge badge-pending';
         overallStatusBadge.textContent = 'Pending Verification';
       } else {

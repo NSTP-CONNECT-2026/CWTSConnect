@@ -11,7 +11,12 @@ const {
   getStudentRequirements,
   reviewRequirementById,
   getRequirementFile,
-  getComplianceSummary
+  getComplianceSummary,
+  getRequirementsConfig,
+  createRequirementConfig,
+  updateRequirementConfig,
+  deleteRequirementConfig,
+  resetRequirementsConfig
 } = require('../controllers/nstpRequirementController');
 
 const router = express.Router();
@@ -51,6 +56,15 @@ router.get('/requirements/file/:requirementId', getRequirementFile);
  * Get dashboard summary counts
  */
 router.get('/compliance-summary', getComplianceSummary);
+
+/**
+ * Requirement Configuration Endpoints (Coordinator sets ano-ano at ilan)
+ */
+router.get('/requirements-config', getRequirementsConfig);
+router.post('/requirements-config', createRequirementConfig);
+router.put('/requirements-config/:code', updateRequirementConfig);
+router.delete('/requirements-config/:code', deleteRequirementConfig);
+router.post('/requirements-config/reset', resetRequirementsConfig);
 
 /**
  * GET /api/nstp/debug/files

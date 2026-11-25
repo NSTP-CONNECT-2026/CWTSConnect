@@ -36,6 +36,21 @@ async function login(req, res) {
     const result = await loginUser(email, password);
 
     if (!result.success) {
+      try {
+        const { logAction } = require('../services/auditLogger');
+        logAction({
+          actorId: 'guest',
+          actorName: email,
+          actorRole: 'guest',
+          actionType: 'FAILED_LOGIN_ATTEMPT',
+          targetType: 'account',
+          targetId: email,
+          targetName: email,
+          description: `Failed login attempt for email "${email}": ${result.message}`,
+          req
+        });
+      } catch (e) {}
+
       return res.status(401).json({
         success: false,
         message: result.message
@@ -50,6 +65,22 @@ async function login(req, res) {
       account_status: result.user.account_status,
       profile_status: result.user.profile_status
     };
+
+    // Audit log successful login
+    try {
+      const { logAction } = require('../services/auditLogger');
+      logAction({
+        actorId: result.user.user_id,
+        actorName: result.user.email,
+        actorRole: result.user.role,
+        actionType: 'USER_LOGIN',
+        targetType: 'session',
+        targetId: result.user.user_id,
+        targetName: result.user.email,
+        description: `User "${result.user.email}" (${result.user.role}) logged in successfully.`,
+        req
+      });
+    } catch (e) {}
 
     // Determine redirect path based on role
     let redirectPath;

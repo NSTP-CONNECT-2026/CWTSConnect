@@ -106,9 +106,25 @@ async function generateMatchRecommendations(req, res) {
       });
     }
 
+    let customWeights = undefined;
+    if (req.body && req.body.weights) {
+      customWeights = req.body.weights;
+    } else if (req.body && (req.body.w_skill !== undefined || req.body.w_loc !== undefined)) {
+      customWeights = {
+        location: req.body.w_loc !== undefined ? parseFloat(req.body.w_loc) : 0.30,
+        skills: req.body.w_skill !== undefined ? parseFloat(req.body.w_skill) : 0.70
+      };
+    } else if (req.query && (req.query.w_skill !== undefined || req.query.w_loc !== undefined)) {
+      customWeights = {
+        location: req.query.w_loc !== undefined ? parseFloat(req.query.w_loc) : 0.30,
+        skills: req.query.w_skill !== undefined ? parseFloat(req.query.w_skill) : 0.70
+      };
+    }
+
     const recommendations = await dssMatchingService.generateMatchRecommendations(
       requestId, 
-      generatedBy
+      generatedBy,
+      customWeights
     );
     
     res.json({

@@ -563,9 +563,10 @@ async function getScreeningStudents(targetRequestOrId) {
  * Generates match recommendations for a specific request
  * @param {string} requestId - Community request ID
  * @param {string} generatedBy - NSTP Official user ID
+ * @param {object} [customWeights] - Optional custom weights { location, skills } or { w_loc, w_skill }
  * @returns {Promise<Array>} Array of ranked match recommendations
  */
-async function generateMatchRecommendations(requestId, generatedBy) {
+async function generateMatchRecommendations(requestId, generatedBy, customWeights) {
   try {
     // Get the specific request
     const { data: request, error: requestError } = await supabase
@@ -644,7 +645,7 @@ async function generateMatchRecommendations(requestId, generatedBy) {
 
     // Calculate match scores for each student
     const matchResults = relevantStudents.map(student => {
-      const scoreResult = calculateOverallMatchScore(student, request);
+      const scoreResult = calculateOverallMatchScore(student, request, customWeights);
       
       return {
         student_user_id: student.user_id,

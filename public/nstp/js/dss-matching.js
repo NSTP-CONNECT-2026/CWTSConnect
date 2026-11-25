@@ -25,18 +25,41 @@ document.addEventListener('DOMContentLoaded', function () {
   let screeningFilter = 'all'; // 'all', 'eligible', 'ineligible'
   let screeningSearchTerm = '';
 
+  // Decision Criteria Weights (Default: 70% Skills, 30% Location - Coordinator Customizable)
+  let dssWeights = {
+    skills: 0.70,
+    location: 0.30
+  };
+
   // DOM Elements
   const dssSkeleton = document.getElementById('dssSkeleton');
   const dssContent = document.getElementById('dssContent');
   const approvedRequestsGrid = document.getElementById('approvedRequestsGrid');
   const eligibilityTableBody = document.getElementById('eligibilityTableBody');
   const quantificationTableBody = document.getElementById('quantificationTableBody');
-  const normalizationTableBody = document.getElementById('normalizationTableBody');
   const sawComputationTableBody = document.getElementById('sawComputationTableBody');
   const rankingTableBody = document.getElementById('rankingTableBody');
   const studentDetailsModal = document.getElementById('studentDetailsModal');
   const studentModalBody = document.getElementById('studentModalBody');
   const studentModalFooter = document.getElementById('studentModalFooter');
+
+  // Criteria Weight Configuration Elements
+  const skillsWeightInput = document.getElementById('skillsWeightInput');
+  const skillsWeightSlider = document.getElementById('skillsWeightSlider');
+  const locWeightInput = document.getElementById('locWeightInput');
+  const locWeightSlider = document.getElementById('locWeightSlider');
+  const weightBarSkills = document.getElementById('weightBarSkills');
+  const weightBarLoc = document.getElementById('weightBarLoc');
+  const weightBarSkillsText = document.getElementById('weightBarSkillsText');
+  const weightBarLocText = document.getElementById('weightBarLocText');
+  const weightTotalStatusBadge = document.getElementById('weightTotalStatusBadge');
+  const weightTotalStatusText = document.getElementById('weightTotalStatusText');
+  const btnResetWeights = document.getElementById('btnResetWeights');
+  const thSawLocation = document.getElementById('thSawLocation');
+  const thSawSkills = document.getElementById('thSawSkills');
+  const subRankingLoc = document.getElementById('subRankingLoc');
+  const subRankingSkill = document.getElementById('subRankingSkill');
+  const rankingActiveWeightsBadge = document.getElementById('rankingActiveWeightsBadge');
 
   // Step Panels & Nav Buttons
   const stepPanels = [
@@ -60,10 +83,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Calculation Sub-Tabs
   const calcTabQuant = document.getElementById('calcTabQuant');
-  const calcTabNorm = document.getElementById('calcTabNorm');
   const calcTabSaw = document.getElementById('calcTabSaw');
   const quantTable = document.getElementById('quantificationTable');
-  const normTable = document.getElementById('normalizationTable');
   const sawTable = document.getElementById('sawComputationTable');
 
   // Selection Controls
@@ -92,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function init() {
     setupStepNavigation();
+    setupWeightsControls();
     setupSelectionControls();
     setupScreeningControls();
     setupStudentModal();
@@ -879,9 +901,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const totalRequiredSkills = Math.max(1, neededSkills.length);
 
-    // Assigned Weights from Manuscript: Location = 0.30, Skills = 0.70
-    const W_LOC = 0.30;
-    const W_SKILL = 0.70;
+    // Assigned Weights from Coordinator Settings (Default: Location = 0.30, Skills = 0.70)
+    const W_LOC = dssWeights.location;
+    const W_SKILL = dssWeights.skills;
 
     // ------------------------------------------------------------------
     // PART 2: CRITERIA QUANTIFICATION PROCESS
@@ -952,38 +974,33 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ------------------------------------------------------------------
-    // PART 3: VECTOR / CRITERIA NORMALIZATION PROCESS
-    // Min_Distance = MIN(Raw_Distance of all eligible candidates)
-    // Normalized_Location_Score = Min_Distance / Student_Raw_Distance (Cost)
-    // Normalized_Skill_Score = Raw_Skill_Ratio (Benefit direct 0-to-1)
+    // DIRECT SIMPLE ADDITIVE WEIGHTING (SAW) COMPUTATION & RANKING
+    // - Distance: Lowest Distance divided by Student Distance, multiplied by Location Weight (W_LOC)
+    // - Skills: Matched Skills divided by Required Skills, multiplied by Skills Weight (W_SKILL)
+    // - Final Score = Weighted Location + Weighted Skills
+    // - Suitability Score = Final Score * 100%
     // ------------------------------------------------------------------
     const minDistance = Math.min(...rawDecisionMatrix.map(r => r.rawDistance));
 
-    const normalizedDecisionMatrix = rawDecisionMatrix.map(row => {
-      const nLoc = Math.round((minDistance / row.rawDistance) * 1000) / 1000;
-      const nSkill = row.rawSkillRatio;
+    const sawComputationList = rawDecisionMatrix.map(row => {
+      // Direct division: lowest distance / student distance, then multiplied by weight
+      const locRatio = row.rawDistance > 0 ? (minDistance / row.rawDistance) : 1;
+      const weightedLoc = Math.round(locRatio * W_LOC * 1000) / 1000;
 
-      return {
-        ...row,
-        minDistance,
-        nLoc,
-        nSkill
-      };
-    });
+      // Direct division: matched skills / required skills, then multiplied by weight
+      const skillRatio = row.totalRequiredSkills > 0 ? (row.matchedSkillsCount / row.totalRequiredSkills) : 0;
+      const weightedSkill = Math.round(skillRatio * W_SKILL * 1000) / 1000;
 
-    // ------------------------------------------------------------------
-    // PART 4: SIMPLE ADDITIVE WEIGHTING (SAW) COMPUTATION & RANKING
-    // Final_Score = (Normalized_Location_Score * 0.30) + (Normalized_Skill_Score * 0.70)
-    // Suitability_Score = Final_Score * 100%
-    // ------------------------------------------------------------------
-    const sawComputationList = normalizedDecisionMatrix.map(row => {
-      const weightedLoc = Math.round(row.nLoc * W_LOC * 1000) / 1000;
-      const weightedSkill = Math.round(row.nSkill * W_SKILL * 1000) / 1000;
       const finalScore = Math.round((weightedLoc + weightedSkill) * 1000) / 1000;
       const suitabilityScore = Math.round(finalScore * 1000) / 10; // in percent (e.g. 84.5%)
 
       return {
         ...row,
+        minDistance,
+        locRatio,
+        skillRatio,
+        nLoc: locRatio,
+        nSkill: skillRatio,
         weightedLoc,
         weightedSkill,
         finalScore,
@@ -999,12 +1016,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const dssPhase3Summary = document.getElementById('dssPhase3Summary');
     if (dssPhase3Summary) {
       const count = eligibleList.length;
-      dssPhase3Summary.innerHTML = `<strong>${count} ${count === 1 ? 'Candidate' : 'Candidates'} Evaluated</strong> • Min Distance: ${minDistance.toFixed(2)} km`;
+      dssPhase3Summary.innerHTML = `<strong>${count} ${count === 1 ? 'Candidate' : 'Candidates'} Evaluated</strong> • Weights: Location (${Math.round(W_LOC * 100)}%) + Skills (${Math.round(W_SKILL * 100)}%) • Min Distance: ${minDistance.toFixed(2)} km`;
+    }
+
+    // Dynamic headers in tables
+    if (thSawLocation) thSawLocation.textContent = `Location (${Math.round(W_LOC * 100)}%)`;
+    if (thSawSkills) thSawSkills.textContent = `Skills (${Math.round(W_SKILL * 100)}%)`;
+    if (subRankingLoc) subRankingLoc.textContent = `w = ${W_LOC.toFixed(2)}`;
+    if (subRankingSkill) subRankingSkill.textContent = `w = ${W_SKILL.toFixed(2)}`;
+    if (rankingActiveWeightsBadge) {
+      rankingActiveWeightsBadge.textContent = `Weights: ${Math.round(W_SKILL * 100)}% Skills / ${Math.round(W_LOC * 100)}% Location`;
     }
 
     // Render Calculation Tables
     renderQuantificationTable(sawComputationList, minDistance);
-    renderNormalizationTable(sawComputationList, minDistance);
     renderSawComputationTable(sawComputationList);
     renderRankingTable(rankedRecommendations);
   }
@@ -1055,39 +1080,11 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /**
-   * RENDER TABLE 2: VECTOR / CRITERIA NORMALIZATION
-   * Shows Location Normalization (Min / Raw) and Skills Normalization (0-to-1)
-   */
-  function renderNormalizationTable(rows, minDistance) {
-    if (!normalizationTableBody) return;
-
-    normalizationTableBody.innerHTML = rows.map(r => `
-      <tr>
-        <td>
-          <div class="user-name-title">${r.studentName}</div>
-          <div class="user-sub-meta">${r.course} • <span class="user-code-tag">${r.studentNumber}</span></div>
-        </td>
-        <td>
-          <div style="font-weight: 500; color: var(--text-main); font-size: 0.875rem;">${r.rawDistance.toFixed(2)} km</div>
-        </td>
-        <td>
-          <div style="font-size: 0.9375rem; font-weight: 700; color: var(--cwts-primary-dark);">${r.nLoc.toFixed(3)}</div>
-          <div class="user-sub-meta">${minDistance.toFixed(2)} / ${r.rawDistance.toFixed(2)}</div>
-        </td>
-        <td>
-          <div style="font-weight: 500; color: var(--text-main); font-size: 0.875rem;">${r.matchedSkillsCount} of ${r.totalRequiredSkills}</div>
-          <div class="user-sub-meta">Ratio: ${r.rawSkillRatio.toFixed(2)}</div>
-        </td>
-        <td style="text-align: right;">
-          <div style="font-size: 0.9375rem; font-weight: 700; color: var(--cwts-accent-green);">${r.nSkill.toFixed(3)}</div>
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  /**
-   * RENDER TABLE 3: SIMPLE ADDITIVE WEIGHTING (SAW) COMPUTATION
-   * Clean breakdown: Location (30%) + Skills (70%) = Suitability Score
+   * RENDER TABLE 2: SIMPLE ADDITIVE WEIGHTING (SAW) DIRECT COMPUTATION
+   * Direct calculation:
+   * - Location: (Lowest Distance / Student Distance) × Weight
+   * - Skills: (Matched Skills / Required Skills) × Weight
+   * - Final Score = Location + Skills = Suitability Score
    */
   function renderSawComputationTable(rows) {
     if (!sawComputationTableBody) return;
@@ -1099,17 +1096,18 @@ document.addEventListener('DOMContentLoaded', function () {
           <div class="user-sub-meta">${r.course} • <span class="user-code-tag">${r.studentNumber}</span></div>
         </td>
         <td>
-          <div style="font-weight: 600; color: var(--text-main); font-size: 0.875rem;">${r.weightedLoc.toFixed(3)}</div>
-          <div class="user-sub-meta">${r.nLoc.toFixed(3)} × 0.30</div>
+          <div style="font-weight: 700; color: var(--cwts-primary-dark); font-size: 0.9375rem;">${r.weightedLoc.toFixed(3)}</div>
+          <div class="user-sub-meta">(${r.minDistance.toFixed(2)} km / ${r.rawDistance.toFixed(2)} km) × ${dssWeights.location.toFixed(2)}</div>
         </td>
         <td>
-          <div style="font-weight: 600; color: var(--text-main); font-size: 0.875rem;">${r.weightedSkill.toFixed(3)}</div>
-          <div class="user-sub-meta">${r.nSkill.toFixed(3)} × 0.70</div>
+          <div style="font-weight: 700; color: var(--cwts-accent-green); font-size: 0.9375rem;">${r.weightedSkill.toFixed(3)}</div>
+          <div class="user-sub-meta">(${r.matchedSkillsCount} / ${r.totalRequiredSkills}) × ${dssWeights.skills.toFixed(2)}</div>
         </td>
         <td>
           <div style="font-family: monospace; font-size: 0.8125rem; color: var(--text-main);">
             ${r.weightedLoc.toFixed(3)} + ${r.weightedSkill.toFixed(3)} = <strong>${r.finalScore.toFixed(3)}</strong>
           </div>
+          <div class="user-sub-meta">Location + Skills</div>
         </td>
         <td style="text-align: right;">
           <span class="badge badge-approved" style="font-size: 0.875rem; font-weight: 700; padding: 4px 10px;">${r.suitabilityScore.toFixed(1)}%</span>
@@ -1169,11 +1167,11 @@ document.addEventListener('DOMContentLoaded', function () {
           </td>
           <td>
             <div style="font-weight: 600; color: var(--text-main); font-size: 0.875rem;">${r.nLoc.toFixed(2)}</div>
-            <div class="user-sub-meta">w = 0.30</div>
+            <div class="user-sub-meta">w = ${dssWeights.location.toFixed(2)}</div>
           </td>
           <td>
             <div style="font-weight: 600; color: var(--text-main); font-size: 0.875rem;">${r.nSkill.toFixed(2)}</div>
-            <div class="user-sub-meta">w = 0.70</div>
+            <div class="user-sub-meta">w = ${dssWeights.skills.toFixed(2)}</div>
           </td>
           <td style="text-align: center;">
             <div style="font-size: 1.125rem; font-weight: 800; color: var(--cwts-primary-dark); white-space: nowrap;">
@@ -1214,9 +1212,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (quantificationTableBody) {
       quantificationTableBody.innerHTML = emptyRowHtml(5, 'No Eligible Candidates to Quantify', 'No candidates met all gatekeeper eligibility constraints (CMO requirements and profile setup).');
-    }
-    if (normalizationTableBody) {
-      normalizationTableBody.innerHTML = emptyRowHtml(5, 'No Eligible Candidates to Normalize', 'No candidate scores available for vector normalization.');
     }
     if (sawComputationTableBody) {
       sawComputationTableBody.innerHTML = emptyRowHtml(5, 'No SAW Calculations Available', 'Cannot perform Simple Additive Weighting without qualified candidates.');
@@ -1273,17 +1268,178 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   /**
-   * CALCULATION SUB-TABS SWITCHER (Screen 23 vs 24 vs 25)
+   * CALCULATION SUB-TABS SWITCHER (Screen 23 vs Screen 25)
    */
   window.switchCalcTab = function (tabType) {
-    calcTabQuant.classList.toggle('active', tabType === 'quant');
-    calcTabNorm.classList.toggle('active', tabType === 'norm');
-    calcTabSaw.classList.toggle('active', tabType === 'saw');
+    if (calcTabQuant) calcTabQuant.classList.toggle('active', tabType === 'quant');
+    if (calcTabSaw) calcTabSaw.classList.toggle('active', tabType === 'saw');
 
-    quantTable.classList.toggle('hidden', tabType !== 'quant');
-    normTable.classList.toggle('hidden', tabType !== 'norm');
-    sawTable.classList.toggle('hidden', tabType !== 'saw');
+    if (quantTable) quantTable.classList.toggle('hidden', tabType !== 'quant');
+    if (sawTable) sawTable.classList.toggle('hidden', tabType !== 'saw');
   };
+
+  /**
+   * CRITERIA WEIGHTS CONFIGURATION (MCDM / SAW)
+   * Coordinator can dynamically configure the weights for Skills Compatibility (Benefit)
+   * and Location Proximity (Cost). Sum of weights must equal 100%.
+   */
+  function setupWeightsControls() {
+    // Load persisted weights from localStorage if valid
+    try {
+      const saved = localStorage.getItem('nstp_dss_custom_weights');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.skills === 'number' && typeof parsed.location === 'number') {
+          const sum = Math.round((parsed.skills + parsed.location) * 100);
+          if (sum === 100) {
+            dssWeights.skills = parsed.skills;
+            dssWeights.location = parsed.location;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Could not read saved DSS weights:', e);
+    }
+
+    // Sync UI elements to dssWeights
+    syncWeightsUI();
+
+    // Skills Slider Event (Auto-complement Location)
+    if (skillsWeightSlider) {
+      skillsWeightSlider.addEventListener('input', (e) => {
+        const skillVal = parseInt(e.target.value, 10) || 0;
+        const locVal = 100 - skillVal;
+        applyWeights(skillVal, locVal, 'skillsSlider');
+      });
+    }
+
+    // Location Slider Event (Auto-complement Skills)
+    if (locWeightSlider) {
+      locWeightSlider.addEventListener('input', (e) => {
+        const locVal = parseInt(e.target.value, 10) || 0;
+        const skillVal = 100 - locVal;
+        applyWeights(skillVal, locVal, 'locSlider');
+      });
+    }
+
+    // Skills Numeric Input Event
+    if (skillsWeightInput) {
+      skillsWeightInput.addEventListener('change', (e) => {
+        let skillVal = parseInt(e.target.value, 10);
+        if (isNaN(skillVal)) skillVal = 70;
+        skillVal = Math.max(0, Math.min(100, skillVal));
+        const locVal = 100 - skillVal;
+        applyWeights(skillVal, locVal);
+      });
+    }
+
+    // Location Numeric Input Event
+    if (locWeightInput) {
+      locWeightInput.addEventListener('change', (e) => {
+        let locVal = parseInt(e.target.value, 10);
+        if (isNaN(locVal)) locVal = 30;
+        locVal = Math.max(0, Math.min(100, locVal));
+        const skillVal = 100 - locVal;
+        applyWeights(skillVal, locVal);
+      });
+    }
+
+    // Preset Buttons Click Events
+    document.querySelectorAll('.weight-preset-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sVal = parseInt(btn.getAttribute('data-skills'), 10);
+        const lVal = parseInt(btn.getAttribute('data-loc'), 10);
+        if (!isNaN(sVal) && !isNaN(lVal)) {
+          applyWeights(sVal, lVal);
+        }
+      });
+    });
+
+    // Reset to Default Weights Button (70/30)
+    if (btnResetWeights) {
+      btnResetWeights.addEventListener('click', () => {
+        applyWeights(70, 30);
+        showMessage('Criteria weights reset to default (70% Skills / 30% Location).', 'info');
+      });
+    }
+  }
+
+  function applyWeights(skillsPercent, locPercent, triggeredFrom = '') {
+    skillsPercent = Math.max(0, Math.min(100, skillsPercent));
+    locPercent = Math.max(0, Math.min(100, locPercent));
+
+    dssWeights.skills = skillsPercent / 100;
+    dssWeights.location = locPercent / 100;
+
+    try {
+      localStorage.setItem('nstp_dss_custom_weights', JSON.stringify(dssWeights));
+    } catch (e) {}
+
+    syncWeightsUI(triggeredFrom);
+
+    // If active request and eligible candidates exist, immediately recompute SAW matrices
+    if (selectedRequest && eligibleStudents && eligibleStudents.length > 0) {
+      computeDssMatrices(eligibleStudents, selectedRequest);
+    }
+  }
+
+  function syncWeightsUI(skipElement = '') {
+    const sPct = Math.round(dssWeights.skills * 100);
+    const lPct = Math.round(dssWeights.location * 100);
+    const total = sPct + lPct;
+
+    if (skillsWeightSlider && skipElement !== 'skillsSlider') skillsWeightSlider.value = sPct;
+    if (locWeightSlider && skipElement !== 'locSlider') locWeightSlider.value = lPct;
+    if (skillsWeightInput) skillsWeightInput.value = sPct;
+    if (locWeightInput) locWeightInput.value = lPct;
+
+    // Visual Ratio Segmented Bar
+    if (weightBarSkills) {
+      weightBarSkills.style.width = `${sPct}%`;
+      if (weightBarSkillsText) weightBarSkillsText.textContent = `Skills: ${sPct}%`;
+    }
+    if (weightBarLoc) {
+      weightBarLoc.style.width = `${lPct}%`;
+      if (weightBarLocText) weightBarLocText.textContent = `Location: ${lPct}%`;
+    }
+
+    // Status Badge & Total Indicator
+    if (weightTotalStatusBadge) {
+      if (total === 100) {
+        weightTotalStatusBadge.className = 'dss-weight-status-badge valid';
+        weightTotalStatusBadge.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span id="weightTotalStatusText">Total: 100% (Balanced)</span>
+        `;
+      } else {
+        weightTotalStatusBadge.className = 'dss-weight-status-badge invalid';
+        weightTotalStatusBadge.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span id="weightTotalStatusText">Total: ${total}% (Must be 100%)</span>
+        `;
+      }
+    }
+
+    // Presets active highlight
+    document.querySelectorAll('.weight-preset-pill').forEach(pill => {
+      const ps = parseInt(pill.getAttribute('data-skills'), 10);
+      const pl = parseInt(pill.getAttribute('data-loc'), 10);
+      if (ps === sPct && pl === lPct) {
+        pill.classList.add('active');
+      } else {
+        pill.classList.remove('active');
+      }
+    });
+
+    // Dynamic headers in tables
+    if (thSawLocation) thSawLocation.textContent = `Location (${lPct}%)`;
+    if (thSawSkills) thSawSkills.textContent = `Skills (${sPct}%)`;
+    if (subRankingLoc) subRankingLoc.textContent = `w = ${dssWeights.location.toFixed(2)}`;
+    if (subRankingSkill) subRankingSkill.textContent = `w = ${dssWeights.skills.toFixed(2)}`;
+    if (rankingActiveWeightsBadge) {
+      rankingActiveWeightsBadge.textContent = `Weights: ${sPct}% Skills / ${lPct}% Location`;
+    }
+  }
 
   /**
    * SELECTION CONTROLS (Screen 27)
@@ -1381,7 +1537,7 @@ document.addEventListener('DOMContentLoaded', function () {
     showMessage('DSS matching approved! Redirecting to Deployment Management...', 'success');
 
     setTimeout(() => {
-      window.location.href = `deployment-management.html?requestId=${encodeURIComponent(reqId)}&students=${encodeURIComponent(ids)}`;
+      window.location.href = `deployment-management.html?requestId=${encodeURIComponent(reqId)}&students=${encodeURIComponent(ids)}&w_loc=${encodeURIComponent(dssWeights.location)}&w_skill=${encodeURIComponent(dssWeights.skills)}`;
     }, 1200);
   }
 
@@ -1536,7 +1692,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div style="background: rgba(248, 250, 252, 0.95); border: 1px solid rgba(226, 232, 240, 0.9); border-radius: var(--radius-md); padding: 14px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--cwts-primary-dark); letter-spacing: 0.03em;">
-                  Location Score (30%)
+                  Location Score (${Math.round(dssWeights.location * 100)}%)
                 </span>
                 ${nLoc ? `<span style="font-size: 0.75rem; font-weight: 700; color: #047857; background: rgba(4, 120, 87, 0.08); padding: 2px 8px; border-radius: 4px;">Score: ${nLoc}</span>` : ''}
               </div>
@@ -1551,7 +1707,7 @@ document.addEventListener('DOMContentLoaded', function () {
               ` : ''}
               ${weightedLoc ? `
                 <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">
-                  Weighted: ${nLoc} x 0.30 = <strong>${weightedLoc}</strong>
+                  Formula: (${candidate?.minDistance != null ? candidate.minDistance.toFixed(2) + ' km / ' + rawDist + ' km' : nLoc}) × ${dssWeights.location.toFixed(2)} = <strong>${weightedLoc}</strong>
                 </div>
               ` : ''}
             </div>
@@ -1560,7 +1716,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div style="background: rgba(248, 250, 252, 0.95); border: 1px solid rgba(226, 232, 240, 0.9); border-radius: var(--radius-md); padding: 14px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--cwts-primary-dark); letter-spacing: 0.03em;">
-                  Skills Score (70%)
+                  Skills Score (${Math.round(dssWeights.skills * 100)}%)
                 </span>
                 ${nSkill ? `<span style="font-size: 0.75rem; font-weight: 700; color: #047857; background: rgba(4, 120, 87, 0.08); padding: 2px 8px; border-radius: 4px;">Score: ${nSkill}</span>` : ''}
               </div>
@@ -1574,7 +1730,7 @@ document.addEventListener('DOMContentLoaded', function () {
               </div>
               ${weightedSkill ? `
                 <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 8px;">
-                  Weighted: ${nSkill} x 0.70 = <strong>${weightedSkill}</strong>
+                  Formula: (${candidate?.matchedSkillsCount != null ? candidate.matchedSkillsCount + ' / ' + candidate.totalRequiredSkills : nSkill}) × ${dssWeights.skills.toFixed(2)} = <strong>${weightedSkill}</strong>
                 </div>
               ` : ''}
             </div>

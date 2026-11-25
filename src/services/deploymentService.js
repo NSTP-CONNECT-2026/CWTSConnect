@@ -301,9 +301,10 @@ async function getDeployableRequests() {
 /**
  * Gets DSS recommendations for a specific request using exact SAW Suitability Rankings per SOURCE CODE.TXT
  * @param {string} requestId - Community request ID
+ * @param {object} [customWeights] - Optional custom weights { location, skills }
  * @returns {Promise<Array>} Array of DSS recommendations with exact suitabilityScore
  */
-async function getDSSRecommendationsForDeployment(requestId) {
+async function getDSSRecommendationsForDeployment(requestId, customWeights) {
   try {
     const { computeSawSuitabilityRankings } = require('../utils/matchingScoreUtils');
 
@@ -353,8 +354,8 @@ async function getDSSRecommendationsForDeployment(requestId) {
 
     const studentsToRank = relevantStudents.length > 0 ? relevantStudents : eligibleStudents;
 
-    // 3. Compute exact SAW Suitability Rankings
-    const rankedRecommendations = computeSawSuitabilityRankings(studentsToRank, request);
+    // 3. Compute exact SAW Suitability Rankings (with optional custom weights)
+    const rankedRecommendations = computeSawSuitabilityRankings(studentsToRank, request, customWeights);
 
     // 4. Mark active availability based on the target request's schedule/date
     for (const rec of rankedRecommendations) {
