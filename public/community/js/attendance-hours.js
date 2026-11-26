@@ -1228,7 +1228,7 @@
         if (isNaN(val)) return;
         if (val > max) {
           this.value = max.toFixed(1);
-          showToast(`Hindi maaaring lumagpas sa ${max.toFixed(1)} hrs ang Rendered Hours batay sa Time In at Time Out. Pwede lang bumaba o sumakto.`, 'error');
+          showToast(`Rendered Hours cannot exceed ${max.toFixed(1)} hrs based on Time In and Time Out.`, 'error');
         } else if (val < 0) {
           this.value = '0.0';
         }

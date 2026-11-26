@@ -203,14 +203,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const is_required = newReqMandatory ? newReqMandatory.checked : true;
 
         if (!name) {
-          alert('Mangyaring ilagay ang pangalan ng requirement.');
+          alert('Please enter a requirement name.');
           return;
         }
 
         const saveBtn = document.getElementById('saveNewReqBtn');
         if (saveBtn) {
           saveBtn.disabled = true;
-          saveBtn.textContent = 'Isinesave...';
+          saveBtn.textContent = 'Saving...';
         }
 
         try {
@@ -223,21 +223,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
           const result = await res.json();
           if (res.ok && result.success) {
-            alert('Matagumpay na naidagdag ang bagong requirement!');
+            alert('New requirement added successfully!');
             addReqForm.reset();
             addReqFormCard.style.display = 'none';
             await loadRequirementConfig();
             await Promise.all([loadComplianceSummary(), loadRequirementsList()]);
           } else {
-            alert(result.message || 'Hindi ma-save ang requirement.');
+            alert(result.message || 'Failed to save requirement.');
           }
         } catch (err) {
           console.error('Error adding requirement:', err);
-          alert('Nagkaroon ng network error.');
+          alert('A network error occurred.');
         } finally {
           if (saveBtn) {
             saveBtn.disabled = false;
-            saveBtn.textContent = 'I-save ang Requirement';
+            saveBtn.textContent = 'Save Requirement';
           }
         }
       });
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (resetReqsBtn) {
       resetReqsBtn.addEventListener('click', async () => {
-        if (!confirm('Sigurado ka bang nais mong ibalik sa default na 4 requirements?')) {
+        if (!confirm('Are you sure you want to reset to the default 4 requirements?')) {
           return;
         }
 
@@ -256,11 +256,11 @@ document.addEventListener('DOMContentLoaded', function () {
           });
           const result = await res.json();
           if (res.ok && result.success) {
-            alert('Matagumpay na na-reset ang requirements sa default 4.');
+            alert('Requirements successfully reset to default 4.');
             await loadRequirementConfig();
             await Promise.all([loadComplianceSummary(), loadRequirementsList()]);
           } else {
-            alert(result.message || 'Hindi ma-reset ang requirements.');
+            alert(result.message || 'Failed to reset requirements.');
           }
         } catch (err) {
           console.error('Error resetting requirements:', err);
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (!reqs || reqs.length === 0) {
-      configuredReqListContainer.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 0.8125rem;">Walang naka-configure na requirement.</div>';
+      configuredReqListContainer.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 0.8125rem;">No requirements configured yet.</div>';
       return;
     }
 
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const isReq = req.is_required !== false;
       const code = escapeHtml(req.code || req.id);
       const name = escapeHtml(req.name);
-      const desc = escapeHtml(req.description || 'Walang paglalarawan.');
+      const desc = escapeHtml(req.description || 'No description provided.');
 
       return `
         <div class="config-req-card ${isAct ? '' : 'inactive'}" id="req_card_${code}">
@@ -318,12 +318,12 @@ document.addEventListener('DOMContentLoaded', function () {
                   ${isReq ? 'Mandatory' : 'Optional'}
                 </span>
                 <span class="doc-mini-pill ${isAct ? 'approved' : 'rejected'}" style="font-size: 0.65rem;">
-                  ${isAct ? 'Aktibo' : 'Naka-disable'}
+                  ${isAct ? 'Active' : 'Disabled'}
                 </span>
               </div>
               <div class="config-req-desc">${desc}</div>
               <div style="font-size: 0.6875rem; color: #94a3b8; margin-top: 3px;">
-                Code: <code>${code}</code> • Pwede ang picture / camera snapshot o PDF
+                Code: <code>${code}</code> • Photo / Camera snapshot or PDF accepted
               </div>
             </div>
           </div>
@@ -332,13 +332,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     class="btn btn-secondary btn-sm" 
                     onclick="window.toggleReqActive('${code}', ${isAct})"
                     style="font-size: 0.75rem; padding: 4px 10px; height: 32px;"
-                    title="${isAct ? 'I-disable ang requirement' : 'I-activate ang requirement'}">
-              <span>${isAct ? 'I-disable' : 'I-activate'}</span>
+                    title="${isAct ? 'Disable requirement' : 'Activate requirement'}">
+              <span>${isAct ? 'Disable' : 'Activate'}</span>
             </button>
             <button type="button" 
                     class="btn-icon-action danger" 
                     onclick="window.deleteReqItem('${code}', '${name}')"
-                    title="Tanggalin ang requirement">
+                    title="Delete requirement">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <polyline points="3 6 5 6 21 6"></polyline>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function () {
         await loadRequirementConfig();
         await Promise.all([loadComplianceSummary(), loadRequirementsList()]);
       } else {
-        alert(result.message || 'Hindi ma-update ang status ng requirement.');
+        alert(result.message || 'Failed to update requirement status.');
       }
     } catch (err) {
       console.error('Error toggling requirement:', err);
@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   window.deleteReqItem = async function (code, name) {
-    if (!confirm(`Sigurado ka bang nais mong tanggalin ang requirement na "${name}"?`)) {
+    if (!confirm(`Are you sure you want to delete the requirement "${name}"?`)) {
       return;
     }
     try {
@@ -381,11 +381,11 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       const result = await res.json();
       if (res.ok && result.success) {
-        alert(`Ang requirement na "${name}" ay natanggal na.`);
+        alert(`Requirement "${name}" deleted successfully.`);
         await loadRequirementConfig();
         await Promise.all([loadComplianceSummary(), loadRequirementsList()]);
       } else {
-        alert(result.message || 'Hindi matanggal ang requirement.');
+        alert(result.message || 'Failed to delete requirement.');
       }
     } catch (err) {
       console.error('Error deleting requirement:', err);

@@ -1,5 +1,47 @@
 [
   {
+    "log_id": "1a1893d7-d280-4ae9-a983-675da55a481b",
+    "actor_id": "52317e52-8e02-4893-9363-8367934e7c25",
+    "actor_name": "alphi.fidelino@lspu.edu.ph",
+    "actor_role": "student",
+    "action_type": "USER_LOGIN",
+    "target_type": "session",
+    "target_id": "52317e52-8e02-4893-9363-8367934e7c25",
+    "target_name": "alphi.fidelino@lspu.edu.ph",
+    "description": "User \"alphi.fidelino@lspu.edu.ph\" (student) logged in successfully.",
+    "ip_address": "127.0.0.1",
+    "metadata": null,
+    "created_at": "2026-11-26T01:05:19.116Z"
+  },
+  {
+    "log_id": "bb873c61-65a2-4a0e-84d8-1c03251876c3",
+    "actor_id": "76dbbecd-4deb-4b6d-9c23-1f1e58df5916",
+    "actor_name": "nstpconnect@gmail.com",
+    "actor_role": "nstp_official",
+    "action_type": "USER_LOGIN",
+    "target_type": "session",
+    "target_id": "76dbbecd-4deb-4b6d-9c23-1f1e58df5916",
+    "target_name": "nstpconnect@gmail.com",
+    "description": "User \"nstpconnect@gmail.com\" (nstp_official) logged in successfully.",
+    "ip_address": "127.0.0.1",
+    "metadata": null,
+    "created_at": "2026-11-26T01:01:19.701Z"
+  },
+  {
+    "log_id": "8652bc0b-00c7-45b5-8086-8c77d41effe1",
+    "actor_id": "52317e52-8e02-4893-9363-8367934e7c25",
+    "actor_name": "alphi.fidelino@lspu.edu.ph",
+    "actor_role": "student",
+    "action_type": "USER_LOGIN",
+    "target_type": "session",
+    "target_id": "52317e52-8e02-4893-9363-8367934e7c25",
+    "target_name": "alphi.fidelino@lspu.edu.ph",
+    "description": "User \"alphi.fidelino@lspu.edu.ph\" (student) logged in successfully.",
+    "ip_address": "127.0.0.1",
+    "metadata": null,
+    "created_at": "2026-11-26T00:59:55.534Z"
+  },
+  {
     "log_id": "e445adef-9566-4db9-b257-b7bcad5d730b",
     "actor_id": "52317e52-8e02-4893-9363-8367934e7c25",
     "actor_name": "alphi.fidelino@lspu.edu.ph",

@@ -226,8 +226,8 @@ document.addEventListener('DOMContentLoaded', function() {
               <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
             </svg>
           </div>
-          <div class="pasilip-empty-title">Walang file o litrato na na-upload</div>
-          <div class="pasilip-empty-sub">Pumili o kumuha ng litrato (JPG, PNG, WEBP) o PDF (Hanggang 10MB)</div>
+          <div class="pasilip-empty-title">No file or photo uploaded yet</div>
+          <div class="pasilip-empty-sub">Select or capture photo (JPG, PNG, WEBP) or PDF (Up to 10MB)</div>
         </div>
       `;
     }
@@ -251,16 +251,16 @@ document.addEventListener('DOMContentLoaded', function() {
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
           </svg>
-          <span>${hasFile ? 'Palitan ang Litrato / File' : 'Pumili o Kumuha ng Litrato / PDF'}</span>
+          <span>${hasFile ? 'Replace Photo / File' : 'Choose Photo / PDF'}</span>
         </label>
         <span class="file-name file-selected-text">
-          ${hasFile ? 'Pumili ng bagong litrato o file kung nais palitan' : 'Walang napiling litrato o file'}
+          ${hasFile ? 'Choose a new photo or file to replace' : 'No photo or file selected'}
         </span>
         <button type="button" 
                 class="upload-btn btn btn-primary btn-sm" 
                 data-requirement-type="${requirement.type}">
           <span class="spinner" aria-hidden="true"></span>
-          <span class="btn-text">${hasFile ? 'I-upload ang Kapalit' : 'I-upload ang Requirement'}</span>
+          <span class="btn-text">${hasFile ? 'Upload Replacement' : 'Upload Requirement'}</span>
         </button>
       </div>
     ` : '';
@@ -426,14 +426,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!isImage && !isPdf) {
       return {
         isValid: false,
-        error: 'Hindi tanggap ang uri ng file. Maaari lamang mag-upload ng Larawan (JPG, PNG, WEBP) o PDF.'
+        error: 'Unsupported file format. Please upload an Image (JPG, PNG, WEBP) or PDF.'
       };
     }
 
     if (file.size > maxSize) {
       return {
         isValid: false,
-        error: 'Masyadong malaki ang file. Hanggang 10MB lamang ang pinapayagan.'
+        error: 'File size exceeds limit. Maximum file size allowed is 10MB.'
       };
     }
 
